@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracer.Engine", "RayTracer.Engine\RayTracer.Engine.vcxproj", "{21784B46-0789-43FE-AF2F-3D2D6BF64A1B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF50A480-E9DA-4FE8-B592-526EB00B96A9} = {DF50A480-E9DA-4FE8-B592-526EB00B96A9}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.Client", "RayTracer.Client\RayTracer.Client.csproj", "{0E5CE9E8-CC90-4EEF-8321-3051B5A66863}"
+	ProjectSection(ProjectDependencies) = postProject
+		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B} = {21784B46-0789-43FE-AF2F-3D2D6BF64A1B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracer.Engine.Lib", "RayTracer.Engine.Lib\RayTracer.Engine.Lib.vcxproj", "{DF50A480-E9DA-4FE8-B592-526EB00B96A9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracer.Engine.Lib.Bench", "RayTracer.Engine.Lib.Bench\RayTracer.Engine.Lib.Bench.vcxproj", "{FC5D2F52-F41F-402C-A4A7-00697E650219}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF50A480-E9DA-4FE8-B592-526EB00B96A9} = {DF50A480-E9DA-4FE8-B592-526EB00B96A9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracer.Engine.Lib.Tests", "RayTracer.Engine.Lib.Tests\RayTracer.Engine.Lib.Tests.vcxproj", "{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B}.Debug|Any CPU.Build.0 = Debug|x64
+		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B}.Release|Any CPU.ActiveCfg = Release|x64
+		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B}.Release|Any CPU.Build.0 = Release|x64
+		{0E5CE9E8-CC90-4EEF-8321-3051B5A66863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E5CE9E8-CC90-4EEF-8321-3051B5A66863}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E5CE9E8-CC90-4EEF-8321-3051B5A66863}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E5CE9E8-CC90-4EEF-8321-3051B5A66863}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF50A480-E9DA-4FE8-B592-526EB00B96A9}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{DF50A480-E9DA-4FE8-B592-526EB00B96A9}.Debug|Any CPU.Build.0 = Debug|x64
+		{DF50A480-E9DA-4FE8-B592-526EB00B96A9}.Release|Any CPU.ActiveCfg = Release|x64
+		{DF50A480-E9DA-4FE8-B592-526EB00B96A9}.Release|Any CPU.Build.0 = Release|x64
+		{FC5D2F52-F41F-402C-A4A7-00697E650219}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{FC5D2F52-F41F-402C-A4A7-00697E650219}.Debug|Any CPU.Build.0 = Debug|x64
+		{FC5D2F52-F41F-402C-A4A7-00697E650219}.Release|Any CPU.ActiveCfg = Release|x64
+		{FC5D2F52-F41F-402C-A4A7-00697E650219}.Release|Any CPU.Build.0 = Release|x64
+		{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}.Debug|Any CPU.Build.0 = Debug|x64
+		{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}.Release|Any CPU.ActiveCfg = Release|x64
+		{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}.Release|Any CPU.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A38E7DB1-F935-46BC-8B4A-37671257F7E5}
+	EndGlobalSection
+EndGlobal
