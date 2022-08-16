@@ -14,5 +14,5 @@ TEST(SphereIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersection)
 	auto result = sphere.Intersect(ray);
 
 	// Assert
-	EXPECT_EQ(result, 6);
+	EXPECT_NEAR(result, 6, 0.01f);
 }

@@ -1,6 +1,5 @@
 #include "SphereSoa.h"
 
-#include <immintrin.h>
 #include "Simd.h"
 
 using namespace RayTracer;
@@ -121,29 +120,29 @@ SphereSoaIntersectionResult RayTracer::SphereSoa::IntersectSimd(const Ray& ray) 
 	__m256 entranceDistance = _mm256_mul_ps(_mm256_sub_ps(negativeB, discriminantSqrt), inverseA);
 	__m256 maxEntranceDistance = _mm256_max_ps(entranceDistance, _mm256_setzero_ps());
 
-	// For each float if it is greater than or equal to 0.0f, then copy it to final result; otherwise, copy nan to the final result.
+	// For each float, if it is greater than or equal to 0.0f, then copy it to final result; otherwise, copy nan to the final result.
 	__m256 exitDistanceComparison = _mm256_cmp_ps(exitDistance, _mm256_setzero_ps(), _CMP_GE_OQ); // exitDistanceComparison = exitDistance >= 0.0f
 	__m256 finalResult = _mm256_blendv_ps(nan, maxEntranceDistance, exitDistanceComparison);
 
-	// Find the minimum value.
-	__m256 v1 = finalResult; // example v1=[1 2 3 4 5 6 7 8]
-	__m256 v2 = _mm256_permute_ps(v1, (int)147); // 147 is control code for rotate left by upper 4 elements and lower 4 elements separately v2=[2 3 4 1 6 7 8 5]
-	__m256 v3 = _mm256_min_ps(v1, v2); // v3=[2 3 4 4 6 7 8 8]
-	__m256 v4 = _mm256_permute_ps(v3, (int)147); // v4=[3 4 4 2 7 8 8 6]
-	__m256 v5 = _mm256_min_ps(v3, v4); // v5=[3 4 4 4 7 8 8 8]
-	__m256 v6 = _mm256_permute_ps(v5, (int)147); // v6=[4 4 4 3 8 8 8 7]
-	__m256 v7 = _mm256_min_ps(v5, v6); // contains max of upper four elements and lower 4 elements. v7=[4 4 4 4 8 8 8 8]
-	__m128 v8 = _mm256_extractf128_ps(v7, 1);
-	__m128 v9 = _mm_min_ps(_mm256_castps256_ps128(v7), v8);
+	float minimumDistance;
+	HORIZONTAL_MIN_256(finalResult, minimumDistance);
 
-	alignas(16) float result[4];
-	_mm_store_ps(result, v9);
-
-	float minimumDistance = result[3];
-
-	// Find the index of the minimum value.
+	// Find the index of the minimum distance.
+	//
+	// Assume the minimum distance found was 4 and the finalResult register holds the following values [7 9 4 5 | 5 9 6 8].
+	// The compare instruction below will set all bits in each float that matches the minimum distance found and clear the
+	// bits if it doesn't match. So the resulting minimumCompare register would look like [0 0 1 0 | 0 0 0 0].
 	__m256 minimumCompare = _mm256_cmp_ps(_mm256_broadcast_ss(&minimumDistance), finalResult, _CMP_EQ_OQ);
+
+	// Creating a mask from the minimumCompare register will give us a byte where each bit is set if the most significant
+	// bit in the float is set. With the example above, our mask byte would look like 0b0010'0000.
 	int minimumMoveMask = _mm256_movemask_ps(minimumCompare);
+
+	// Set the 8th bit so that we will always return the 8th sphere in the array if no sphere is hit.
+	minimumMoveMask |= 0x80;
+
+	// Count the number of least signficant zero bits until a one bit is found. In the example above the index would be 5.
+	// Since the 8th bit is set above, we will never get a result larger than 7.
 	int minimumIndex = _tzcnt_u32(minimumMoveMask);
 
 	return SphereSoaIntersectionResult(_spheres[minimumIndex], minimumDistance);

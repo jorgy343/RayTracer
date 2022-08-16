@@ -39,6 +39,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SimdTests.cpp" />
     <ClCompile Include="SphereSoaTests.cpp" />
     <ClCompile Include="SphereTests.cpp" />
     <ClCompile Include="pch.cpp">
