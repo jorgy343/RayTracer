@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PerspectiveCamera.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Simd.h" />
     <ClInclude Include="Sphere.h" />
@@ -18,6 +19,7 @@
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PerspectiveCamera.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SphereSoa.cpp" />

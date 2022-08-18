@@ -2,9 +2,9 @@
 
 #include <immintrin.h>
 
-#define DOT256(aX, bX, aY, bY, aZ, bZ) _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)))
+#define DOT_256(aX, bX, aY, bY, aZ, bZ) _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)))
 
-#define NEGATE256(ymmA) _mm256_xor_ps(ymmA, _mm256_set1_ps(-0.0f))
+#define NEGATE_256(ymmA) _mm256_xor_ps(ymmA, _mm256_set1_ps(-0.0f))
 
 #define HORIZONTAL_MIN_256(ymmA, result) \
 															/*      [upper   |   lower]																			*/ \

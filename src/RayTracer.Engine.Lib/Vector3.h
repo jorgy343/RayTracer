@@ -15,8 +15,9 @@ namespace RayTracer
 		Vector3(float scalar);
 		Vector3(float x, float y, float z);
 
-		void Normalize();
+		Vector3& Normalize();
 		float Dot(const Vector3& right) const;
+		Vector3 CrossProduct(const Vector3& right) const;
 
 		float Length() const;
 		float LengthSquared() const;

@@ -99,20 +99,20 @@ SphereSoaIntersectionResult RayTracer::SphereSoa::IntersectSimd(const Ray& ray) 
 	__m256 rayDirectionY = _mm256_broadcast_ss(&ray.Direction.Y);
 	__m256 rayDirectionZ = _mm256_broadcast_ss(&ray.Direction.Z);
 
-	__m256 a = DOT256(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
-	__m256 b = DOT256(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
+	__m256 a = DOT_256(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
+	__m256 b = DOT_256(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
 
 	__m256 sphereRadius = _mm256_load_ps(_radius);
 	__m256 sphereRadiusSquared = _mm256_mul_ps(sphereRadius, sphereRadius);
 
-	__m256 vDotV = DOT256(vX, vX, vY, vY, vZ, vZ);
+	__m256 vDotV = DOT_256(vX, vX, vY, vY, vZ, vZ);
 	__m256 c = _mm256_sub_ps(vDotV, sphereRadiusSquared);
 
 	__m256 discriminant = _mm256_sub_ps(_mm256_mul_ps(b, b), _mm256_mul_ps(a, c));
 	__m256 discriminantSqrt = _mm256_sqrt_ps(discriminant);
 
 	__m256 inverseA = _mm256_rcp_ps(a);
-	__m256 negativeB = NEGATE256(b);
+	__m256 negativeB = NEGATE_256(b);
 
 	__m256 exitDistance = _mm256_mul_ps(_mm256_add_ps(negativeB, discriminantSqrt), inverseA);
 

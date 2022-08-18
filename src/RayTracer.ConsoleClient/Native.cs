@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace RayTracer.Client;
+namespace RayTracer.ConsoleClient;
 
 public static unsafe class Native
 {

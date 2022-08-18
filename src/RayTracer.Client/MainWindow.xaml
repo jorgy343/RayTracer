@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+            <Image Source="{Binding Path=Bitmap}" Width="400" Height="400" />
+        </ScrollViewer>
     </Grid>
 </Window>

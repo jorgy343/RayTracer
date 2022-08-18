@@ -20,18 +20,28 @@ Vector3::Vector3(float x, float y, float z)
 
 }
 
-void Vector3::Normalize()
+Vector3& Vector3::Normalize()
 {
 	auto inverseLength = 1.0f / Length();
 
 	X *= inverseLength;
 	Y *= inverseLength;
 	Z *= inverseLength;
+
+	return *this;
 }
 
 float Vector3::Dot(const Vector3& right) const
 {
 	return (X * right.X) + (Y * right.Y) + (Z * right.Z);
+}
+
+Vector3 Vector3::CrossProduct(const Vector3& right) const
+{
+	return Vector3(
+		Y * right.Z - Z * right.Y,
+		Z * right.X - X * right.Z,
+		X * right.Y - Y * right.X);
 }
 
 float Vector3::Length() const
