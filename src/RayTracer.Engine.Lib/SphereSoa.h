@@ -2,6 +2,7 @@
 
 #include <limits>
 
+#include "Vcl.h"
 #include "Sphere.h"
 
 namespace RayTracer
@@ -34,6 +35,5 @@ namespace RayTracer
 
 		void AddSphere(const Sphere* sphere);
 		SphereSoaIntersectionResult Intersect(const Ray& ray) const;
-		SphereSoaIntersectionResult IntersectSimd(const Ray& ray) const;
 	};
 }

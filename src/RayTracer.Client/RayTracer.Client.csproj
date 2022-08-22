@@ -9,8 +9,10 @@
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	</PropertyGroup>
 
-	<Target Name="CopyNativeAssemblies" AfterTargets="AfterBuild">
-		<Copy SourceFiles="..\x64\$(Configuration)\RayTracer.Engine.dll;..\x64\$(Configuration)\RayTracer.Engine.pdb" DestinationFolder="$(OutputPath)" />
-	</Target>
+	<ItemGroup>
+		<Content Include="..\x64\$(Configuration)\RayTracer.Engine.dll;..\x64\$(Configuration)\RayTracer.Engine.pdb">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

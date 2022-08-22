@@ -4,6 +4,26 @@
 
 using namespace RayTracer;
 
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutside_Intersects_ReturnsNearestIntersection)
+{
+	// Arrange
+	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+
+	auto sphereSoa = SphereSoa();
+
+	sphereSoa.AddSphere(&sphere1);
+	sphereSoa.Finalize();
+
+	auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+
+	// Act
+	auto result = sphereSoa.Intersect(ray);
+
+	// Assert
+	EXPECT_NEAR(result.Distance, 6, 0.01f);
+	EXPECT_EQ(result.Sphere, &sphere1);
+}
+
 TEST(SphereSoaIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersection)
 {
 	// Arrange
@@ -63,14 +83,14 @@ TEST(SphereSoaIntersectionSimdTests, RayOutside_Intersects_ReturnsNearestInterse
 	auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
 
 	// Act
-	auto result = sphereSoa.IntersectSimd(ray);
+	auto result = sphereSoa.Intersect(ray);
 
 	// Assert
 	EXPECT_NEAR(result.Distance, 6, 0.01f);
 	EXPECT_EQ(result.Sphere, &sphere1);
 }
 
-TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsNan)
+TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsInf)
 {
 	// Arrange
 	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
@@ -96,14 +116,14 @@ TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsNan)
 	auto ray = Ray(Vector3(2, 0, 0), Vector3(-1, 0, 0)); // Ray is pointing backwards so it should hit spheres but the results will be thrown out.
 
 	// Act
-	auto result = sphereSoa.IntersectSimd(ray);
+	auto result = sphereSoa.Intersect(ray);
 
 	// Assert
-	EXPECT_TRUE(std::isnan(result.Distance));
-	EXPECT_EQ(result.Sphere, &sphere8);
+	EXPECT_TRUE(std::isinf(result.Distance));
+	EXPECT_EQ(result.Sphere, &sphere2);
 }
 
-TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsNan)
+TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsInf)
 {
 	// Arrange
 	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
@@ -129,9 +149,9 @@ TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsNan)
 	auto ray = Ray(Vector3(2, 0, 0), Vector3(0, 1, 0)); // Ray pointing up instead of forward, will miss all spheres.
 
 	// Act
-	auto result = sphereSoa.IntersectSimd(ray);
+	auto result = sphereSoa.Intersect(ray);
 
 	// Assert
-	EXPECT_TRUE(std::isnan(result.Distance));
-	EXPECT_EQ(result.Sphere, &sphere8);
+	EXPECT_TRUE(std::isinf(result.Distance));
+	EXPECT_EQ(result.Sphere, &sphere2);
 }

@@ -22,7 +22,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracer.Engine.Lib.Bench"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracer.Engine.Lib.Tests", "RayTracer.Engine.Lib.Tests\RayTracer.Engine.Lib.Tests.vcxproj", "{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer.ConsoleClient", "RayTracer.ConsoleClient\RayTracer.ConsoleClient.csproj", "{9DBE7567-317D-4068-8803-411FC5369D09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.ConsoleClient", "RayTracer.ConsoleClient\RayTracer.ConsoleClient.csproj", "{9DBE7567-317D-4068-8803-411FC5369D09}"
 	ProjectSection(ProjectDependencies) = postProject
 		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B} = {21784B46-0789-43FE-AF2F-3D2D6BF64A1B}
 	EndProjectSection

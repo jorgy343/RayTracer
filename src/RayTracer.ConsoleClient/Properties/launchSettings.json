@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RayTracer.ConsoleClient": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
