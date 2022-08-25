@@ -1,6 +1,7 @@
 #include "Sphere.h"
 
 #include <immintrin.h>
+#include <limits>
 
 using namespace RayTracer;
 
@@ -16,7 +17,7 @@ Sphere::Sphere(const Vector3& position, float radius)
 
 }
 
-float RayTracer::Sphere::Intersect(const Ray& ray) const
+float Sphere::Intersect(const Ray& ray) const
 {
     auto v = ray.Position - Position;
 

@@ -1,69 +1,66 @@
 #include "SphereSoa.h"
 
+#include <limits>
+
+#include "Vcl.h"
 #include "Simd.h"
 
 using namespace RayTracer;
 using namespace vcl;
 
-RayTracer::SphereSoaIntersectionResult::SphereSoaIntersectionResult(const RayTracer::Sphere* sphere, float distance)
-	: Sphere(sphere), Distance(distance)
+SphereSoa::SphereSoa(int initialSize)
+    : _positionX(), _positionY(), _positionZ(), _radius(), _spheres()
 {
-
-}
-
-SphereSoa::SphereSoa()
-{
-	for (auto i = 0; i < 8; i++)
-	{
-		_positionX[i] = std::numeric_limits<float>::quiet_NaN();
-		_positionY[i] = std::numeric_limits<float>::quiet_NaN();
-		_positionZ[i] = std::numeric_limits<float>::quiet_NaN();
-		_radius[i] = std::numeric_limits<float>::quiet_NaN();
-		_spheres[i] = nullptr;
-	}
-
-	_count = 0;
-}
-
-void SphereSoa::Reset()
-{
-	_count = 0;
-}
-
-void SphereSoa::Finalize()
-{
-	for (auto i = _count; i < 8; i++)
-	{
-		_positionX[i] = std::numeric_limits<float>::quiet_NaN();
-		_positionY[i] = std::numeric_limits<float>::quiet_NaN();
-		_positionZ[i] = std::numeric_limits<float>::quiet_NaN();
-		_radius[i] = std::numeric_limits<float>::quiet_NaN();
-		_spheres[i] = nullptr;
-	}
+	_positionX.reserve(initialSize);
+	_positionY.reserve(initialSize);
+	_positionZ.reserve(initialSize);
+	_radius.reserve(initialSize);
+	_spheres.reserve(initialSize);
 }
 
 char SphereSoa::GetCount() const
 {
-	return _count;
+    return _positionX.size();
 }
 
 void SphereSoa::AddSphere(const Sphere* sphere)
 {
-	if (_count >= 8)
-	{
-		return;
-	}
-
-	_positionX[_count] = sphere->Position.X;
-	_positionY[_count] = sphere->Position.Y;
-	_positionZ[_count] = sphere->Position.Z;
-	_radius[_count] = sphere->Radius;
-	_spheres[_count] = sphere;
-
-	_count++;
+    _positionX.push_back(sphere->Position.X);
+    _positionY.push_back(sphere->Position.Y);
+    _positionZ.push_back(sphere->Position.Z);
+    _radius.push_back(sphere->Radius);
+    _spheres.push_back(sphere);
 }
 
-SphereSoaIntersectionResult RayTracer::SphereSoa::Intersect(const Ray& ray) const
+IntersectionResult<Sphere> SphereSoa::Intersect(const Ray& ray) const
+{
+    auto i = 0;
+    auto result = IntersectionResult<Sphere>(nullptr, std::numeric_limits<float>::infinity(), Vector3(0.0f));
+
+    for (; i + 8 <= _positionX.size(); i += 8)
+    {
+		auto multiSphereResult = IntersectSoa(ray, i);
+
+		if (multiSphereResult.Distance < result.Distance)
+		{
+			result = multiSphereResult;
+		}
+    }
+
+    for (; i < _positionX.size(); i++)
+    {
+        auto singleSphereResult = _spheres[i]->Intersect(ray);
+
+        if (singleSphereResult < result.Distance)
+        {
+            result = IntersectionResult<Sphere>(nullptr, singleSphereResult, Vector3(0.0f));
+        }
+    }
+
+    return result;
+}
+
+IntersectionResult<Sphere> SphereSoa::IntersectSoa(const Ray& ray, int sphereIndex) const
 {
 	Vec8f rayPositionX(ray.Position.X);
 	Vec8f rayPositionY(ray.Position.Y);
@@ -73,9 +70,9 @@ SphereSoaIntersectionResult RayTracer::SphereSoa::Intersect(const Ray& ray) cons
 	Vec8f spherePositionY;
 	Vec8f spherePositionZ;
 
-	spherePositionX.load_a(_positionX);
-	spherePositionY.load_a(_positionY);
-	spherePositionZ.load_a(_positionZ);
+	spherePositionX.load_a(&_positionX[sphereIndex]);
+	spherePositionY.load_a(&_positionY[sphereIndex]);
+	spherePositionZ.load_a(&_positionZ[sphereIndex]);
 
 	Vec8f vX = rayPositionX - spherePositionX;
 	Vec8f vY = rayPositionY - spherePositionY;
@@ -89,7 +86,7 @@ SphereSoaIntersectionResult RayTracer::SphereSoa::Intersect(const Ray& ray) cons
 	Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
 
 	Vec8f sphereRadius;
-	sphereRadius.load_a(_radius);
+	sphereRadius.load_a(&_radius[sphereIndex]);
 
 	Vec8f vDotV = SimdDot(vX, vX, vY, vY, vZ, vZ);
 	Vec8f c = vDotV - (sphereRadius * sphereRadius);
@@ -108,5 +105,8 @@ SphereSoaIntersectionResult RayTracer::SphereSoa::Intersect(const Ray& ray) cons
 	float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
 	int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
-	return SphereSoaIntersectionResult(_spheres[minimumIndex == -1 ? 0 : minimumIndex], minimumEntranceDistance);
+	return IntersectionResult<Sphere>(
+		_spheres[sphereIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+		minimumEntranceDistance,
+		Vector3(0.0f));
 }

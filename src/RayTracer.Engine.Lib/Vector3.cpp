@@ -1,5 +1,7 @@
 #include "Vector3.h"
 
+#include <cmath>
+
 using namespace RayTracer;
 
 Vector3::Vector3()

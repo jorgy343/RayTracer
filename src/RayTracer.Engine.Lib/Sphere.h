@@ -11,7 +11,7 @@ namespace RayTracer
 		Vector3 Position;
 
 	private:
-		float _padding;
+		[[maybe_unused]] float _padding;
 
 	public:
 		float Radius;

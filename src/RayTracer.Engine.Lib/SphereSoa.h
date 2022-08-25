@@ -1,39 +1,29 @@
 #pragma once
 
-#include <limits>
-
 #include "Vcl.h"
+#include "Alignment.h"
 #include "Sphere.h"
+#include "IntersectionResult.h"
 
 namespace RayTracer
 {
-	class SphereSoaIntersectionResult
-	{
-	public:
-		const Sphere* Sphere;
-		float Distance;
-
-		SphereSoaIntersectionResult(const RayTracer::Sphere* sphere, float distance);
-	};
-
-	class alignas(64) SphereSoa
+	class SphereSoa
 	{
 	private:
-		float _positionX[8];
-		float _positionY[8];
-		float _positionZ[8];
-		float _radius[8];
-		const Sphere* _spheres[8];
-		char _count;
+		AlignedVector<float, 64> _positionX;
+		AlignedVector<float, 64> _positionY;
+		AlignedVector<float, 64> _positionZ;
+		AlignedVector<float, 64> _radius;
+		AlignedVector<const Sphere*, 64> _spheres;
+
+		inline IntersectionResult<Sphere> IntersectSoa(const Ray& ray, int sphereIndex) const;
 
 	public:
-		SphereSoa();
+		SphereSoa(int initialSize = 32);
 
-		void Reset();
-		void Finalize();
 		char GetCount() const;
-
 		void AddSphere(const Sphere* sphere);
-		SphereSoaIntersectionResult Intersect(const Ray& ray) const;
+
+		IntersectionResult<Sphere> Intersect(const Ray& ray) const;
 	};
 }

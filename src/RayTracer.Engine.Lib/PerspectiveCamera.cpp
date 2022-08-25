@@ -1,6 +1,10 @@
 #include "PerspectiveCamera.h"
 
-RayTracer::PerspectiveCamera::PerspectiveCamera(
+#include <cmath>
+
+using namespace RayTracer;
+
+PerspectiveCamera::PerspectiveCamera(
     const Vector3& position,
     const Vector3& lookAt,
     const Vector3& up,
@@ -18,7 +22,7 @@ RayTracer::PerspectiveCamera::PerspectiveCamera(
 
 }
 
-void RayTracer::PerspectiveCamera::CreateRays(int startingX, int startingY, int width, int height, Ray* rayBuffer)
+void PerspectiveCamera::CreateRays(int startingX, int startingY, int width, int height, Ray* rayBuffer)
 {
     Vector3 direction = (LookAt - Position).Normalize();
 

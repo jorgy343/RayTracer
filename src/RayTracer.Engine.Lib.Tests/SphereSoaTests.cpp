@@ -12,7 +12,6 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutside_Intersects_ReturnsNearestI
 	auto sphereSoa = SphereSoa();
 
 	sphereSoa.AddSphere(&sphere1);
-	sphereSoa.Finalize();
 
 	auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
 
@@ -21,7 +20,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutside_Intersects_ReturnsNearestI
 
 	// Assert
 	EXPECT_NEAR(result.Distance, 6, 0.01f);
-	EXPECT_EQ(result.Sphere, &sphere1);
+	EXPECT_EQ(result.Shape, &sphere1);
 }
 
 TEST(SphereSoaIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersection)
@@ -54,7 +53,7 @@ TEST(SphereSoaIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersectio
 
 	// Assert
 	EXPECT_NEAR(result.Distance, 6, 0.01f);
-	EXPECT_EQ(result.Sphere, &sphere1);
+	EXPECT_EQ(result.Shape, &sphere1);
 }
 
 TEST(SphereSoaIntersectionSimdTests, RayOutside_Intersects_ReturnsNearestIntersection)
@@ -87,7 +86,7 @@ TEST(SphereSoaIntersectionSimdTests, RayOutside_Intersects_ReturnsNearestInterse
 
 	// Assert
 	EXPECT_NEAR(result.Distance, 6, 0.01f);
-	EXPECT_EQ(result.Sphere, &sphere1);
+	EXPECT_EQ(result.Shape, &sphere1);
 }
 
 TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsInf)
@@ -120,7 +119,7 @@ TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsInf)
 
 	// Assert
 	EXPECT_TRUE(std::isinf(result.Distance));
-	EXPECT_EQ(result.Sphere, &sphere2);
+	EXPECT_EQ(result.Shape, &sphere2);
 }
 
 TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsInf)
@@ -153,5 +152,5 @@ TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsInf)
 
 	// Assert
 	EXPECT_TRUE(std::isinf(result.Distance));
-	EXPECT_EQ(result.Sphere, &sphere2);
+	EXPECT_EQ(result.Shape, &sphere2);
 }
