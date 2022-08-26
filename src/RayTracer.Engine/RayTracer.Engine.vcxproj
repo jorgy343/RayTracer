@@ -52,9 +52,6 @@
     <IncludePath>..\RayTracer.Engine.Lib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="DllMain.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="DllMain.cpp" />
   </ItemGroup>
   <ItemGroup>

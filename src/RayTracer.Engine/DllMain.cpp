@@ -2,8 +2,8 @@ import RayTracer.PerspectiveCamera;
 import RayTracer.Sphere;
 import RayTracer.SphereSoa;
 
-#include "DllMain.h"
-
+#include <memory>
+#include <vector>
 #include <cmath>
 
 using namespace RayTracer;
