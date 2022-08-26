@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Sphere.h"
+import RayTracer.Sphere;
 
 using namespace RayTracer;
 

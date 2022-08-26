@@ -1,10 +1,10 @@
-#pragma once
+export module RayTracer.IntersectionResult;
 
-#include "Vector3.h"
+import RayTracer.Vector3;
 
 namespace RayTracer
 {
-	template<typename TShape>
+	export template<typename TShape>
 	class IntersectionResult
 	{
 	public:
@@ -13,7 +13,7 @@ namespace RayTracer
 		Vector3 Normal;
 
 		IntersectionResult(const TShape* shape, float distance, const Vector3& normal)
-			: Shape(shape), Distance(distance), Normal(normal)
+			: Shape{shape}, Distance{distance}, Normal{normal}
 		{
 
 		}

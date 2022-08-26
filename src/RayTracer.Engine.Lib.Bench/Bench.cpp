@@ -1,7 +1,8 @@
 #define ANKERL_NANOBENCH_IMPLEMENT
 #include "nanobench.h"
 
-#include "SphereSoa.h"
+import RayTracer.Sphere;
+import RayTracer.SphereSoa;
 
 using namespace RayTracer;
 
@@ -30,15 +31,6 @@ int main()
     auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
 
     auto epochIterations = 10000000;
-
-    ankerl::nanobench::Bench()
-        .epochIterations(epochIterations)
-        .run("Sphere.Intersect(Ray)", [&]
-            {
-                auto result = sphere1.Intersect(ray);
-
-                ankerl::nanobench::doNotOptimizeAway(result);
-            });
 
     ankerl::nanobench::Bench()
         .epochIterations(epochIterations)

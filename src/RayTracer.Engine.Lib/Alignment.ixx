@@ -1,11 +1,11 @@
-#pragma once
-
 #include <vector>
+
+export module RayTracer.Alignment;
 
 namespace RayTracer
 {
     // Originally from: https://stackoverflow.com/a/70994249/1078268
-    template<typename ElementType, std::size_t ALIGNMENT_IN_BYTES>
+    export template<typename ElementType, std::size_t ALIGNMENT_IN_BYTES>
     class AlignedAllocator
     {
     private:
@@ -16,7 +16,7 @@ namespace RayTracer
     public:
         using value_type = ElementType;
 
-        static std::align_val_t constexpr ALIGNMENT{ ALIGNMENT_IN_BYTES };
+        static std::align_val_t constexpr ALIGNMENT{ALIGNMENT_IN_BYTES};
 
         constexpr AlignedAllocator() noexcept
         {
@@ -59,6 +59,6 @@ namespace RayTracer
         }
     };
 
-    template<typename ElementType, std::size_t ALIGNMENT_IN_BYTES>
+    export template<typename ElementType, std::size_t ALIGNMENT_IN_BYTES>
     using AlignedVector = std::vector<ElementType, AlignedAllocator<ElementType, ALIGNMENT_IN_BYTES>>;
 }

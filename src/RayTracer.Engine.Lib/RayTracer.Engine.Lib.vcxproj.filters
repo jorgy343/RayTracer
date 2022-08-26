@@ -13,51 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{e7b29746-335b-408c-a822-9c31dbe42dad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Simd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PerspectiveCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Vcl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SphereSoa.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Alignment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IntersectionResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Ray.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="PerspectiveCamera.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Vector3.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Ray.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="PerspectiveCamera.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sphere.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="SphereSoa.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="SphereSoa.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Simd.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="IntersectionResult.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Alignment.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

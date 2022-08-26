@@ -1,6 +1,8 @@
 #include "pch.h"
 
-#include "SphereSoa.h"
+import RayTracer.Vector3;
+import RayTracer.Sphere;
+import RayTracer.SphereSoa;
 
 using namespace RayTracer;
 

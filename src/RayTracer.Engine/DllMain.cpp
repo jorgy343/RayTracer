@@ -1,3 +1,7 @@
+import RayTracer.PerspectiveCamera;
+import RayTracer.Sphere;
+import RayTracer.SphereSoa;
+
 #include "DllMain.h"
 
 #include <cmath>
@@ -6,13 +10,13 @@ using namespace RayTracer;
 
 extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int startingY, int width, int height, float* pixelBuffer)
 {
-    auto perspectiveCamera = PerspectiveCamera(
+    PerspectiveCamera perspectiveCamera{
         Vector3(0, 0, 0),
         Vector3(1, 0, 0),
         Vector3(0, 1, 0),
         90.0f,
         800,
-        600);
+        600};
 
     auto rayBuffer = std::vector<Ray>(width * height);
     perspectiveCamera.CreateRays(0, 0, width, height, rayBuffer.data());
@@ -26,6 +30,8 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
     sphereSoa.AddSphere(&sphere1);
     sphereSoa.AddSphere(&sphere2);
     sphereSoa.AddSphere(&sphere3);
+
+    sphereSoa.Finalize();
 
     for (auto y = 0; y < height; y++)
     {

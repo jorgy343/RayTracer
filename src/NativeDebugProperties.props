@@ -21,14 +21,13 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <OpenMPSupport>false</OpenMPSupport>
-      <EnableModules>false</EnableModules>
+      <EnableModules>true</EnableModules>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
       <AssemblerOutput>AssemblyCode</AssemblerOutput>
-      <UseUnicodeForAssemblerListing>
-      </UseUnicodeForAssemblerListing>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
       <CallingConvention>Cdecl</CallingConvention>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
