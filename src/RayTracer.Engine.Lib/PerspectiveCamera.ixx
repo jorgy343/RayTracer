@@ -10,14 +10,14 @@ namespace RayTracer
     export class PerspectiveCamera
     {
     public:
-        Vector3 Position;
-        Vector3 LookAt;
-        Vector3 Up;
+        Vector3 Position{};
+        Vector3 LookAt{};
+        Vector3 Up{};
 
-        float FieldOfView;
+        float FieldOfView{0.0f};
 
-        int ScreenWidth;
-        int ScreenHeight;
+        int ScreenWidth{0};
+        int ScreenHeight{0};
 
         PerspectiveCamera(
             const Vector3& position,
@@ -40,8 +40,8 @@ namespace RayTracer
         {
             Vector3 direction = (LookAt - Position).Normalize();
 
-            Vector3 du = -Up.CrossProduct(direction).Normalize();
-            Vector3 dv = -du.CrossProduct(direction).Normalize();
+            Vector3 du = -(Up % direction).Normalize();
+            Vector3 dv = -(du % direction).Normalize();
 
             float halfWidth = tanf(FieldOfView / 2.0f);
             float halfHeight = (ScreenHeight / ScreenWidth) * halfWidth;

@@ -8,151 +8,151 @@ using namespace RayTracer;
 
 TEST(SphereSoaIntersectionTests, OneSphere_RayOutside_Intersects_ReturnsNearestIntersection)
 {
-	// Arrange
-	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+    // Arrange
+    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
 
-	auto sphereSoa = SphereSoa();
+    auto sphereSoa = SphereSoa();
 
-	sphereSoa.AddSphere(&sphere1);
+    sphereSoa.AddSphere(&sphere1);
 
-	auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
 
-	// Act
-	auto result = sphereSoa.Intersect(ray);
+    // Act
+    auto result = sphereSoa.Intersect(ray);
 
-	// Assert
-	EXPECT_NEAR(result.Distance, 6, 0.01f);
-	EXPECT_EQ(result.Shape, &sphere1);
+    // Assert
+    EXPECT_NEAR(result.Distance, 6, 0.01f);
+    EXPECT_EQ(result.Shape, &sphere1);
 }
 
 TEST(SphereSoaIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersection)
 {
-	// Arrange
-	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-	auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-	auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-	auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-	auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-	auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-	auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-	auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    // Arrange
+    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
+    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
+    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
+    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
+    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
+    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
+    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
 
-	auto sphereSoa = SphereSoa();
+    auto sphereSoa = SphereSoa();
 
-	sphereSoa.AddSphere(&sphere2);
-	sphereSoa.AddSphere(&sphere3);
-	sphereSoa.AddSphere(&sphere4);
-	sphereSoa.AddSphere(&sphere5);
-	sphereSoa.AddSphere(&sphere6);
-	sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
-	sphereSoa.AddSphere(&sphere7);
-	sphereSoa.AddSphere(&sphere8);
+    sphereSoa.AddSphere(&sphere2);
+    sphereSoa.AddSphere(&sphere3);
+    sphereSoa.AddSphere(&sphere4);
+    sphereSoa.AddSphere(&sphere5);
+    sphereSoa.AddSphere(&sphere6);
+    sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
+    sphereSoa.AddSphere(&sphere7);
+    sphereSoa.AddSphere(&sphere8);
 
-	auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
 
-	// Act
-	auto result = sphereSoa.Intersect(ray);
+    // Act
+    auto result = sphereSoa.Intersect(ray);
 
-	// Assert
-	EXPECT_NEAR(result.Distance, 6, 0.01f);
-	EXPECT_EQ(result.Shape, &sphere1);
+    // Assert
+    EXPECT_NEAR(result.Distance, 6, 0.01f);
+    EXPECT_EQ(result.Shape, &sphere1);
 }
 
 TEST(SphereSoaIntersectionSimdTests, RayOutside_Intersects_ReturnsNearestIntersection)
 {
-	// Arrange
-	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-	auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-	auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-	auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-	auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-	auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-	auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-	auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    // Arrange
+    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
+    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
+    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
+    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
+    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
+    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
+    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
 
-	auto sphereSoa = SphereSoa();
+    auto sphereSoa = SphereSoa();
 
-	sphereSoa.AddSphere(&sphere2);
-	sphereSoa.AddSphere(&sphere3);
-	sphereSoa.AddSphere(&sphere4);
-	sphereSoa.AddSphere(&sphere5);
-	sphereSoa.AddSphere(&sphere6);
-	sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
-	sphereSoa.AddSphere(&sphere7);
-	sphereSoa.AddSphere(&sphere8);
+    sphereSoa.AddSphere(&sphere2);
+    sphereSoa.AddSphere(&sphere3);
+    sphereSoa.AddSphere(&sphere4);
+    sphereSoa.AddSphere(&sphere5);
+    sphereSoa.AddSphere(&sphere6);
+    sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
+    sphereSoa.AddSphere(&sphere7);
+    sphereSoa.AddSphere(&sphere8);
 
-	auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
 
-	// Act
-	auto result = sphereSoa.Intersect(ray);
+    // Act
+    auto result = sphereSoa.Intersect(ray);
 
-	// Assert
-	EXPECT_NEAR(result.Distance, 6, 0.01f);
-	EXPECT_EQ(result.Shape, &sphere1);
+    // Assert
+    EXPECT_NEAR(result.Distance, 6, 0.01f);
+    EXPECT_EQ(result.Shape, &sphere1);
 }
 
 TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsInf)
 {
-	// Arrange
-	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-	auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-	auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-	auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-	auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-	auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-	auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-	auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    // Arrange
+    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
+    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
+    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
+    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
+    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
+    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
+    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
 
-	auto sphereSoa = SphereSoa();
+    auto sphereSoa = SphereSoa();
 
-	sphereSoa.AddSphere(&sphere2);
-	sphereSoa.AddSphere(&sphere3);
-	sphereSoa.AddSphere(&sphere4);
-	sphereSoa.AddSphere(&sphere5);
-	sphereSoa.AddSphere(&sphere6);
-	sphereSoa.AddSphere(&sphere1);
-	sphereSoa.AddSphere(&sphere7);
-	sphereSoa.AddSphere(&sphere8);
+    sphereSoa.AddSphere(&sphere2);
+    sphereSoa.AddSphere(&sphere3);
+    sphereSoa.AddSphere(&sphere4);
+    sphereSoa.AddSphere(&sphere5);
+    sphereSoa.AddSphere(&sphere6);
+    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.AddSphere(&sphere7);
+    sphereSoa.AddSphere(&sphere8);
 
-	auto ray = Ray(Vector3(2, 0, 0), Vector3(-1, 0, 0)); // Ray is pointing backwards so it should hit spheres but the results will be thrown out.
+    auto ray = Ray(Vector3(2, 0, 0), Vector3(-1, 0, 0)); // Ray is pointing backwards so it should hit spheres but the results will be thrown out.
 
-	// Act
-	auto result = sphereSoa.Intersect(ray);
+    // Act
+    auto result = sphereSoa.Intersect(ray);
 
-	// Assert
-	EXPECT_TRUE(std::isinf(result.Distance));
-	EXPECT_EQ(result.Shape, &sphere2);
+    // Assert
+    EXPECT_TRUE(std::isinf(result.Distance));
+    EXPECT_EQ(result.Shape, &sphere2);
 }
 
 TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsInf)
 {
-	// Arrange
-	auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-	auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-	auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-	auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-	auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-	auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-	auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-	auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    // Arrange
+    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
+    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
+    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
+    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
+    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
+    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
+    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
 
-	auto sphereSoa = SphereSoa();
+    auto sphereSoa = SphereSoa();
 
-	sphereSoa.AddSphere(&sphere2);
-	sphereSoa.AddSphere(&sphere3);
-	sphereSoa.AddSphere(&sphere4);
-	sphereSoa.AddSphere(&sphere5);
-	sphereSoa.AddSphere(&sphere6);
-	sphereSoa.AddSphere(&sphere1);
-	sphereSoa.AddSphere(&sphere7);
-	sphereSoa.AddSphere(&sphere8);
+    sphereSoa.AddSphere(&sphere2);
+    sphereSoa.AddSphere(&sphere3);
+    sphereSoa.AddSphere(&sphere4);
+    sphereSoa.AddSphere(&sphere5);
+    sphereSoa.AddSphere(&sphere6);
+    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.AddSphere(&sphere7);
+    sphereSoa.AddSphere(&sphere8);
 
-	auto ray = Ray(Vector3(2, 0, 0), Vector3(0, 1, 0)); // Ray pointing up instead of forward, will miss all spheres.
+    auto ray = Ray(Vector3(2, 0, 0), Vector3(0, 1, 0)); // Ray pointing up instead of forward, will miss all spheres.
 
-	// Act
-	auto result = sphereSoa.Intersect(ray);
+    // Act
+    auto result = sphereSoa.Intersect(ray);
 
-	// Assert
-	EXPECT_TRUE(std::isinf(result.Distance));
-	EXPECT_EQ(result.Shape, &sphere2);
+    // Assert
+    EXPECT_TRUE(std::isinf(result.Distance));
+    EXPECT_EQ(result.Shape, &sphere2);
 }
