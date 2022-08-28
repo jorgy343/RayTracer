@@ -56,5 +56,14 @@
     <ClCompile Include="DiffuseMaterial.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Vector4.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

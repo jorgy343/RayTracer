@@ -18,13 +18,16 @@
     <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
+    <ClCompile Include="Matrix4x4.ixx" />
     <ClCompile Include="PerspectiveCamera.ixx" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="Scene.ixx" />
     <ClCompile Include="Simd.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />
+    <ClCompile Include="Vector2.ixx" />
     <ClCompile Include="Vector3.ixx" />
+    <ClCompile Include="Vector4.ixx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
