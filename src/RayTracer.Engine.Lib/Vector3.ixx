@@ -1,6 +1,6 @@
-#include <cmath>
-
 export module RayTracer.Vector3;
+
+import RayTracer.Simd;
 
 namespace RayTracer
 {
@@ -11,10 +11,7 @@ namespace RayTracer
         float Y{};
         float Z{};
 
-        Vector3()
-        {
-
-        }
+        Vector3() = default;
 
         Vector3(float scalar)
             : X{scalar}, Y{scalar}, Z{scalar}
@@ -28,9 +25,9 @@ namespace RayTracer
 
         }
 
-        Vector3& Normalize()
+        inline Vector3& Normalize()
         {
-            float inverseLength = 1.0f / Length();
+            float inverseLength = UnsafeReciprical(Length());
 
             X *= inverseLength;
             Y *= inverseLength;
@@ -39,12 +36,12 @@ namespace RayTracer
             return *this;
         }
 
-        float Dot(const Vector3& right) const
+        inline float Dot(const Vector3& right) const
         {
             return (X * right.X) + (Y * right.Y) + (Z * right.Z);
         }
 
-        Vector3 CrossProduct(const Vector3& right) const
+        inline Vector3 CrossProduct(const Vector3& right) const
         {
             return Vector3(
                 Y * right.Z - Z * right.Y,
@@ -52,28 +49,64 @@ namespace RayTracer
                 X * right.Y - Y * right.X);
         }
 
-        float Length() const
+        inline float Length() const
         {
-            return sqrtf(LengthSquared());
+            return UnsafeSqrt(LengthSquared());
         }
 
-        float LengthSquared() const
+        inline float LengthSquared() const
         {
             return (X * X) + (Y * Y) + (Z * Z);
         }
 
-        Vector3& operator+()
+        Vector3 operator+() const
         {
+            return {+X, +Y, +Z};
+        }
+
+        Vector3 operator-() const
+        {
+            return {-X, -Y, -Z};
+        }
+
+        Vector3& operator++()
+        {
+            X += 1.0f;
+            Y += 1.0f;
+            Z += 1.0f;
+
             return *this;
         }
 
-        Vector3& operator-()
+        Vector3& operator--()
         {
-            X = -X;
-            Y = -Y;
-            Z = -Z;
+            X -= 1.0f;
+            Y -= 1.0f;
+            Z -= 1.0f;
 
             return *this;
+        }
+
+        Vector3 operator++(int)
+        {
+            Vector3 temp = *this;
+
+            X += 1.0f;
+            Y += 1.0f;
+            Z += 1.0f;
+
+            return temp;
+        }
+
+        Vector3 operator--(int)
+        {
+            Vector3 temp = *this;
+
+            X -= 1.0f;
+            Y -= 1.0f;
+            Z -= 1.0f;
+
+            return temp;
         }
 
         Vector3 operator+(const Vector3& right) const

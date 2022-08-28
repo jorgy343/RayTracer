@@ -47,5 +47,14 @@
     <ClCompile Include="Alignment.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="DirectionalLight.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffuseMaterial.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

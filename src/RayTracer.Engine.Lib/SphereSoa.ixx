@@ -14,19 +14,6 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export class SphereSoaIntersectionResult
-    {
-    public:
-        const Sphere* Sphere{nullptr};
-        float Distance{0.0f};
-
-        SphereSoaIntersectionResult(const RayTracer::Sphere* sphere, float distance)
-            : Sphere{sphere}, Distance{distance}
-        {
-
-        }
-    };
-
     export class SphereSoa
     {
     private:
@@ -48,7 +35,7 @@ namespace RayTracer
 
         char GetCount() const
         {
-            return _positionX.size();
+            return static_cast<char>(_positionX.size());
         }
 
         void AddSphere(const Sphere* sphere)
@@ -74,32 +61,22 @@ namespace RayTracer
 
         IntersectionResult<Sphere> Intersect(const Ray& ray) const
         {
-            SphereSoaIntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
+            IntersectionResult<Sphere> result{nullptr, std::numeric_limits<float>::infinity()};
 
             for (int i = 0; i + 8 <= _positionX.size(); i += 8)
             {
-                SphereSoaIntersectionResult multiSphereResult = IntersectSoa(ray, i);
+                IntersectionResult<Sphere> newResult = PrivateIntersectSoa(ray, i);
 
-                if (multiSphereResult.Distance < result.Distance)
+                if (newResult.Distance < result.Distance)
                 {
-                    result = multiSphereResult;
+                    result = newResult;
                 }
             }
 
-            Vector3 hitPosition{};
-            Vector3 normal{};
-
-            if (result.Sphere)
-            {
-                hitPosition = ray.Position + ray.Direction * result.Distance;
-                normal = (hitPosition - result.Sphere->Position).Normalize();
-            }
-
-            return {result.Sphere, result.Distance, hitPosition, normal};
+            return result;
         }
 
-    private:
-        inline SphereSoaIntersectionResult IntersectSoa(const Ray& ray, int startingSphereIndex) const
+        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingSphereIndex) const
         {
             Vec8f rayPositionX(ray.Position.X);
             Vec8f rayPositionY(ray.Position.Y);
@@ -121,14 +98,12 @@ namespace RayTracer
             Vec8f rayDirectionY(ray.Direction.Y);
             Vec8f rayDirectionZ(ray.Direction.Z);
 
-            Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
-            Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
-
             Vec8f sphereRadius;
             sphereRadius.load_a(&_radius[startingSphereIndex]);
 
-            Vec8f vDotV = SimdDot(vX, vX, vY, vY, vZ, vZ);
-            Vec8f c = vDotV - (sphereRadius * sphereRadius);
+            Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
+            Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
+            Vec8f c = SimdDot(vX, vX, vY, vY, vZ, vZ) - (sphereRadius * sphereRadius);
 
             Vec8f discriminant = (b * b) - (a * c);
             Vec8f discriminantSqrt = sqrt(discriminant);
@@ -137,16 +112,17 @@ namespace RayTracer
             Vec8f negativeB = -b;
 
             Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
+            Vec8f entranceDistance = max((negativeB - discriminantSqrt) * reciprocalA, Vec8f(0.0f));
 
-            Vec8f entranceDistance = max((negativeB - discriminantSqrt) * reciprocalA, Vec8f(0));
-            Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0), entranceDistance, infinite8f());
+            Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
 
             float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
-            return SphereSoaIntersectionResult(
+            return {
                 _spheres[startingSphereIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
-                minimumEntranceDistance);
+                minimumEntranceDistance
+            };
         }
     };
 }

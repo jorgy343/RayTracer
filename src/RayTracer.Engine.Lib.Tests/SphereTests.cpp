@@ -1,18 +1,59 @@
 #include "pch.h"
 
+#include <limits>
+
 import RayTracer.Sphere;
 
 using namespace RayTracer;
 
-TEST(SphereIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersection)
+TEST(SphereIntersectionTests, RayOutsideShape_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
-    auto sphere = Sphere(Vector3(10, 0, 0), 2);
-    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    Sphere sphere{{10, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     // Act
-    auto result = sphere.Intersect(ray);
+    float result = sphere.Intersect(ray);
 
     // Assert
     EXPECT_NEAR(result, 6, 0.01f);
+}
+
+TEST(SphereIntersectionTests, RayOutsideShapeAndPointingBackwards_Misses_ReturnsInfinity)
+{
+    // Arrange
+    Sphere sphere{{10, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {-1, 0, 0}};
+
+    // Act
+    float result = sphere.Intersect(ray);
+
+    // Assert
+    EXPECT_EQ(result, std::numeric_limits<float>::infinity());
+}
+
+TEST(SphereIntersectionTests, RayOutsideShape_Misses_ReturnsInfinity)
+{
+    // Arrange
+    Sphere sphere{{10, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {0, 1, 0}};
+
+    // Act
+    float result = sphere.Intersect(ray);
+
+    // Assert
+    EXPECT_EQ(result, std::numeric_limits<float>::infinity());
+}
+
+TEST(SphereIntersectionTests, RayInsideShape_Intersects_ReturnsZero)
+{
+    // Arrange
+    Sphere sphere{{2, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {1, 0, 0}};
+
+    // Act
+    float result = sphere.Intersect(ray);
+
+    // Assert
+    EXPECT_NEAR(result, 0, 0.01f);
 }

@@ -15,9 +15,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alignment.ixx" />
+    <ClCompile Include="DiffuseMaterial.ixx" />
+    <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
     <ClCompile Include="PerspectiveCamera.ixx" />
     <ClCompile Include="Ray.ixx" />
+    <ClCompile Include="Scene.ixx" />
     <ClCompile Include="Simd.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />

@@ -1,43 +1,101 @@
 #include "pch.h"
 
-import RayTracer.Vector3;
+import RayTracer.IntersectionResult;
 import RayTracer.Sphere;
 import RayTracer.SphereSoa;
+import RayTracer.Vector3;
 
 using namespace RayTracer;
 
-TEST(SphereSoaIntersectionTests, OneSphere_RayOutside_Intersects_ReturnsNearestIntersection)
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
-    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
+    Sphere sphere1{{10, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {1, 0, 0}};
 
-    auto sphereSoa = SphereSoa();
+    SphereSoa sphereSoa{};
 
     sphereSoa.AddSphere(&sphere1);
-
-    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    sphereSoa.Finalize();
 
     // Act
-    auto result = sphereSoa.Intersect(ray);
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
     EXPECT_EQ(result.Shape, &sphere1);
 }
 
-TEST(SphereSoaIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersection)
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShapeAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
-    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    Sphere sphere1{{10, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {-1, 0, 0}};
 
-    auto sphereSoa = SphereSoa();
+    SphereSoa sphereSoa{};
+
+    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Finalize();
+
+    // Act
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
+
+    // Assert
+    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.Shape, nullptr);
+}
+
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Misses_ReturnsInfinity)
+{
+    // Arrange
+    Sphere sphere1{{10, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {0, 1, 0}};
+
+    SphereSoa sphereSoa{};
+
+    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Finalize();
+
+    // Act
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
+
+    // Assert
+    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.Shape, nullptr);
+}
+
+TEST(SphereSoaIntersectionTests, OneSphere_RayInsideShape_Intersects_ReturnsZero)
+{
+    // Arrange
+    Sphere sphere1{{2, 0, 0}, 2};
+    Ray ray{{2, 0, 0}, {1, 0, 0}};
+
+    SphereSoa sphereSoa{};
+
+    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Finalize();
+
+    // Act
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
+
+    // Assert
+    EXPECT_NEAR(result.Distance, 0, 0.01f);
+    EXPECT_EQ(result.Shape, &sphere1);
+}
+
+TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideShapes_Intersects_ReturnsNearestIntersection)
+{
+    // Arrange
+    Sphere sphere1{{10, 0, 0}, 2};
+    Sphere sphere2{{12, 0, 0}, 2};
+    Sphere sphere3{{14, 0, 0}, 2};
+    Sphere sphere4{{16, 0, 0}, 2};
+    Sphere sphere5{{18, 0, 0}, 2};
+    Sphere sphere6{{20, 0, 0}, 2};
+    Sphere sphere7{{22, 0, 0}, 2};
+    Sphere sphere8{{24, 0, 0}, 2};
+
+    SphereSoa sphereSoa{};
 
     sphereSoa.AddSphere(&sphere2);
     sphereSoa.AddSphere(&sphere3);
@@ -48,29 +106,31 @@ TEST(SphereSoaIntersectionTests, RayOutside_Intersects_ReturnsNearestIntersectio
     sphereSoa.AddSphere(&sphere7);
     sphereSoa.AddSphere(&sphere8);
 
-    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    sphereSoa.Finalize();
+
+    Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     // Act
-    auto result = sphereSoa.Intersect(ray);
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
     EXPECT_EQ(result.Shape, &sphere1);
 }
 
-TEST(SphereSoaIntersectionSimdTests, RayOutside_Intersects_ReturnsNearestIntersection)
+TEST(SphereSoaIntersectionTests, RayOutsideShapesAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
-    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    Sphere sphere1{{10, 0, 0}, 2};
+    Sphere sphere2{{12, 0, 0}, 2};
+    Sphere sphere3{{14, 0, 0}, 2};
+    Sphere sphere4{{16, 0, 0}, 2};
+    Sphere sphere5{{18, 0, 0}, 2};
+    Sphere sphere6{{20, 0, 0}, 2};
+    Sphere sphere7{{22, 0, 0}, 2};
+    Sphere sphere8{{24, 0, 0}, 2};
 
-    auto sphereSoa = SphereSoa();
+    SphereSoa sphereSoa{};
 
     sphereSoa.AddSphere(&sphere2);
     sphereSoa.AddSphere(&sphere3);
@@ -81,78 +141,49 @@ TEST(SphereSoaIntersectionSimdTests, RayOutside_Intersects_ReturnsNearestInterse
     sphereSoa.AddSphere(&sphere7);
     sphereSoa.AddSphere(&sphere8);
 
-    auto ray = Ray(Vector3(2, 0, 0), Vector3(1, 0, 0));
+    sphereSoa.Finalize();
+
+    Ray ray{{2, 0, 0}, {-1, 0, 0}};
 
     // Act
-    auto result = sphereSoa.Intersect(ray);
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
 
     // Assert
-    EXPECT_NEAR(result.Distance, 6, 0.01f);
-    EXPECT_EQ(result.Shape, &sphere1);
+    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.Shape, nullptr);
 }
 
-TEST(SphereSoaIntersectionSimdTests, RayFacingBackwards_ReturnsInf)
+TEST(SphereSoaIntersectionTests, RayOutsideShapes_Misses_ReturnsInfinity)
 {
     // Arrange
-    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
+    Sphere sphere1{{10, 0, 0}, 2};
+    Sphere sphere2{{12, 0, 0}, 2};
+    Sphere sphere3{{14, 0, 0}, 2};
+    Sphere sphere4{{16, 0, 0}, 2};
+    Sphere sphere5{{18, 0, 0}, 2};
+    Sphere sphere6{{20, 0, 0}, 2};
+    Sphere sphere7{{22, 0, 0}, 2};
+    Sphere sphere8{{24, 0, 0}, 2};
 
-    auto sphereSoa = SphereSoa();
+    SphereSoa sphereSoa{};
 
     sphereSoa.AddSphere(&sphere2);
     sphereSoa.AddSphere(&sphere3);
     sphereSoa.AddSphere(&sphere4);
     sphereSoa.AddSphere(&sphere5);
     sphereSoa.AddSphere(&sphere6);
-    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
     sphereSoa.AddSphere(&sphere7);
     sphereSoa.AddSphere(&sphere8);
 
-    auto ray = Ray(Vector3(2, 0, 0), Vector3(-1, 0, 0)); // Ray is pointing backwards so it should hit spheres but the results will be thrown out.
+    sphereSoa.Finalize();
+
+    Ray ray{{2, 0, 0}, {0, 1, 0}};
 
     // Act
-    auto result = sphereSoa.Intersect(ray);
+    IntersectionResult<Sphere> result = sphereSoa.Intersect(ray);
 
     // Assert
-    EXPECT_TRUE(std::isinf(result.Distance));
-    EXPECT_EQ(result.Shape, &sphere2);
-}
-
-TEST(SphereSoaIntersectionSimdTests, RayMissesAllSpheres_ReturnsInf)
-{
-    // Arrange
-    auto sphere1 = Sphere(Vector3(10, 0, 0), 2);
-    auto sphere2 = Sphere(Vector3(12, 0, 0), 2);
-    auto sphere3 = Sphere(Vector3(14, 0, 0), 2);
-    auto sphere4 = Sphere(Vector3(16, 0, 0), 2);
-    auto sphere5 = Sphere(Vector3(18, 0, 0), 2);
-    auto sphere6 = Sphere(Vector3(20, 0, 0), 2);
-    auto sphere7 = Sphere(Vector3(22, 0, 0), 2);
-    auto sphere8 = Sphere(Vector3(24, 0, 0), 2);
-
-    auto sphereSoa = SphereSoa();
-
-    sphereSoa.AddSphere(&sphere2);
-    sphereSoa.AddSphere(&sphere3);
-    sphereSoa.AddSphere(&sphere4);
-    sphereSoa.AddSphere(&sphere5);
-    sphereSoa.AddSphere(&sphere6);
-    sphereSoa.AddSphere(&sphere1);
-    sphereSoa.AddSphere(&sphere7);
-    sphereSoa.AddSphere(&sphere8);
-
-    auto ray = Ray(Vector3(2, 0, 0), Vector3(0, 1, 0)); // Ray pointing up instead of forward, will miss all spheres.
-
-    // Act
-    auto result = sphereSoa.Intersect(ray);
-
-    // Assert
-    EXPECT_TRUE(std::isinf(result.Distance));
-    EXPECT_EQ(result.Shape, &sphere2);
+    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.Shape, nullptr);
 }

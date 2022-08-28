@@ -10,11 +10,9 @@ namespace RayTracer
     public:
         const TShape* Shape{nullptr};
         float Distance{0.0f};
-        Vector3 HitPosition{};
-        Vector3 Normal{};
 
-        IntersectionResult(const TShape* shape, float distance, const Vector3& hitPosition, const Vector3& normal)
-            : Shape{shape}, Distance{distance}, HitPosition{hitPosition}, Normal{normal}
+        IntersectionResult(const TShape* shape, float distance)
+            : Shape{shape}, Distance{distance}
         {
 
         }

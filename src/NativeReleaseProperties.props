@@ -32,6 +32,9 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <CallingConvention>Cdecl</CallingConvention>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <DisableSpecificWarnings>5201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/fp:contract %(AdditionalOptions)</AdditionalOptions>
+      <FloatingPointModel>Precise</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

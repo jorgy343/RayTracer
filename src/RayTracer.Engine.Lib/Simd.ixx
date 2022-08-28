@@ -16,4 +16,40 @@ namespace RayTracer
     {
         return _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)));
     }
+
+    export inline float UnsafeSqrt(float value)
+    {
+        __m128 mmValue = _mm_load_ss(&value);
+        _mm_store_ss(&value, _mm_sqrt_ps(mmValue));
+
+        return value;
+    }
+
+    export inline float UnsafeReciprical(float value)
+    {
+        __m128 mmValue = _mm_load_ss(&value);
+        _mm_store_ss(&value, _mm_rcp_ss(mmValue));
+
+        return value;
+    }
+
+    export inline float UnsafeMax(float value1, float value2)
+    {
+        __m128 mmValue1 = _mm_load_ss(&value1);
+        __m128 mmValue2 = _mm_load_ss(&value2);
+
+        _mm_store_ss(&value1, _mm_max_ss(mmValue1, mmValue2));
+
+        return value1;
+    }
+
+    export inline float UnsafeMin(float value1, float value2)
+    {
+        __m128 mmValue1 = _mm_load_ss(&value1);
+        __m128 mmValue2 = _mm_load_ss(&value2);
+
+        _mm_store_ss(&value1, _mm_min_ss(mmValue1, mmValue2));
+
+        return value1;
+    }
 }

@@ -28,6 +28,8 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <CallingConvention>Cdecl</CallingConvention>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+      <AdditionalOptions>/fp:contract %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>5201;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
