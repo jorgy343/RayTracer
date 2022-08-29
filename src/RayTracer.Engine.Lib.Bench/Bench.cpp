@@ -1,6 +1,7 @@
 #define ANKERL_NANOBENCH_IMPLEMENT
 #include "nanobench.h"
 
+import RayTracing.Matrix3x3;
 import RayTracing.Matrix4x4;
 import RayTracer.Sphere;
 import RayTracer.SphereSoa;
@@ -34,7 +35,7 @@ int main()
     Ray rayMiss{{2, 0, 0}, {-1, 0, 0}};
     Ray rayHit{{2, 0, 0}, {1, 0, 0}};
 
-    Matrix4x4 matrix1{
+    Matrix4x4 matrix4x4_1{
         1,
         2,
         3,
@@ -56,7 +57,7 @@ int main()
         7,
     };
 
-    Matrix4x4 matrix2{
+    Matrix4x4 matrix4x4_2{
         4,
         5,
         6,
@@ -76,6 +77,34 @@ int main()
         1,
         2,
         3,
+    };
+
+    Matrix3x3 matrix3x3_1{
+        1,
+        2,
+        3,
+
+        5,
+        6,
+        7,
+
+        9,
+        1,
+        2,
+    };
+
+    Matrix3x3 matrix3x3_2{
+        4,
+        5,
+        6,
+
+        1,
+        2,
+        3,
+
+        5,
+        6,
+        7,
     };
 
     int epochIterations = 10000000;
@@ -84,7 +113,15 @@ int main()
         .epochIterations(epochIterations)
         .run("Matrix4x4.operator*(Matrix4x4)", [&]
             {
-                Matrix4x4 result = matrix1 * matrix2;
+                Matrix4x4 result = matrix4x4_1 * matrix4x4_2;
+                ankerl::nanobench::doNotOptimizeAway(result);
+            });
+
+    ankerl::nanobench::Bench()
+        .epochIterations(epochIterations)
+        .run("Matrix3x3.operator*(Matrix3x3)", [&]
+            {
+                Matrix3x3 result = matrix3x3_1 * matrix3x3_2;
                 ankerl::nanobench::doNotOptimizeAway(result);
             });
 

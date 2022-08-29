@@ -18,6 +18,7 @@
     <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
+    <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
     <ClCompile Include="PerspectiveCamera.ixx" />
     <ClCompile Include="Ray.ixx" />

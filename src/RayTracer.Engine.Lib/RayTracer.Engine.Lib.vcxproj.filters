@@ -65,5 +65,8 @@
     <ClCompile Include="Matrix4x4.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix3x3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

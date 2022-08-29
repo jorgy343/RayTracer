@@ -7,12 +7,17 @@ import RayTracer.Vector2;
 
 namespace RayTracer
 {
-    export class Vector3
+    export class alignas(16) Vector3
     {
     public:
         float X{0.0f};
         float Y{0.0f};
         float Z{0.0f};
+
+    private:
+        float __DummyW{0.0f};
+
+    public:
 
         Vector3() = default;
 

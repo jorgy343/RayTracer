@@ -11,7 +11,7 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export class alignas(16) Matrix4x4
+    export class alignas(64) Matrix4x4
     {
     public:
         float
@@ -368,6 +368,12 @@ namespace RayTracer
 
         Matrix4x4 operator*(const Matrix4x4& right) const
         {
+            // Currently this is slower on zen 2 architecture.
+            //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
+            //Vec4f rightColumn2 = gather4f<1, 5, 9, 13>(&right.M11);
+            //Vec4f rightColumn3 = gather4f<2, 6, 10, 14>(&right.M11);
+            //Vec4f rightColumn4 = gather4f<3, 7, 11, 15>(&right.M11);
+
             Vec4f rightColumn1{right.M11, right.M12, right.M13, right.M14};
             Vec4f rightColumn2{right.M21, right.M22, right.M23, right.M24};
             Vec4f rightColumn3{right.M31, right.M32, right.M33, right.M34};
