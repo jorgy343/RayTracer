@@ -26,7 +26,8 @@ namespace RayTracer
             float fieldOfView,
             int screenWidth,
             int screenHeight)
-            : Position{position},
+            :
+            Position{position},
             LookAt{lookAt},
             Up{up},
             FieldOfView{fieldOfView},

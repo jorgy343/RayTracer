@@ -4,7 +4,7 @@
 
 export module RayTracing.Matrix3x3;
 
-import RayTracer.Simd;
+import RayTracer.Math;
 import RayTracer.Vector3;
 
 using namespace vcl;
@@ -76,6 +76,39 @@ namespace RayTracer
 
         Matrix3x3& Invert()
         {
+            // Source: https://stackoverflow.com/a/18504573/1078268
+
+            float det =
+                M11 * (M22 * M33 - M32 * M23) -
+                M12 * (M21 * M33 - M23 * M31) +
+                M13 * (M21 * M32 - M22 * M31);
+
+            float invDet = FastReciprical(det);
+
+            float m11 = (M22 * M33 - M32 * M23) * invDet;
+            float m12 = (M13 * M32 - M12 * M33) * invDet;
+            float m13 = (M12 * M23 - M13 * M22) * invDet;
+
+            float m21 = (M23 * M31 - M21 * M33) * invDet;
+            float m22 = (M11 * M33 - M13 * M31) * invDet;
+            float m23 = (M21 * M13 - M11 * M23) * invDet;
+
+            float m31 = (M21 * M32 - M31 * M22) * invDet;
+            float m32 = (M31 * M12 - M11 * M32) * invDet;
+            float m33 = (M11 * M22 - M21 * M12) * invDet;
+
+            M11 = m11;
+            M12 = m12;
+            M13 = m13;
+
+            M21 = m21;
+            M22 = m22;
+            M23 = m23;
+
+            M31 = m31;
+            M32 = m32;
+            M33 = m33;
+
             return *this;
         }
 

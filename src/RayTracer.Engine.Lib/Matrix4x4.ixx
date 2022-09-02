@@ -4,7 +4,7 @@
 
 export module RayTracing.Matrix4x4;
 
-import RayTracer.Simd;
+import RayTracer.Math;
 import RayTracer.Vector4;
 
 using namespace vcl;
@@ -90,7 +90,7 @@ namespace RayTracer
             // Normally you would check if the determinant is zero here and handle that case.
             // We're just going to assume it is not zero and continue as normal.
 
-            det = UnsafeReciprical(det);
+            det = FastReciprical(det);
 
             float a0 = (M11 * M22) - (M12 * M21);
             float a1 = (M11 * M23) - (M13 * M21);

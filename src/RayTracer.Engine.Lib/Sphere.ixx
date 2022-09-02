@@ -3,9 +3,9 @@
 
 export module RayTracer.Sphere;
 
-import RayTracer.DiffuseMaterial;
+import RayTracer.LambertianMaterial;
 import RayTracer.Ray;
-import RayTracer.Simd;
+import RayTracer.Math;
 import RayTracer.Vector3;
 
 namespace RayTracer
@@ -15,12 +15,12 @@ namespace RayTracer
     public:
         Vector3 Position{};
         float Radius{0.0f};
-        DiffuseMaterial* DiffuseMaterial{nullptr};
+        const LambertianMaterial* Material{nullptr};
 
         Sphere() = default;
 
-        Sphere(const Vector3& position, float radius)
-            : Position{position}, Radius{radius}
+        Sphere(const Vector3& position, float radius, const LambertianMaterial* material)
+            : Position{position}, Radius{radius}, Material{material}
         {
 
         }
@@ -39,13 +39,13 @@ namespace RayTracer
             float c = (v * v) - (Radius * Radius);
 
             float discriminant = (b * b) - (a * c);
-            float discriminantSqrt = UnsafeSqrt(discriminant);
+            float discriminantSqrt = FastSqrt(discriminant);
 
-            float reciprocalA = UnsafeReciprical(a);
+            float reciprocalA = FastReciprical(a);
             float negativeB = -b;
 
             float exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-            float entranceDistance = UnsafeMax((negativeB - discriminantSqrt) * reciprocalA, 0.0f);
+            float entranceDistance = FastMax((negativeB - discriminantSqrt) * reciprocalA, 0.0f);
 
             float clampedEntranceDistance = exitDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
             return clampedEntranceDistance;

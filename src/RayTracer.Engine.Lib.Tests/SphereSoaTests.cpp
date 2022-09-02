@@ -10,7 +10,7 @@ using namespace RayTracer;
 TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
-    Sphere sphere1{{10, 0, 0}, 2};
+    Sphere sphere1{{10, 0, 0}, 2, nullptr};
     Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     SphereSoa sphereSoa{};
@@ -29,7 +29,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Intersects_ReturnsNea
 TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShapeAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
-    Sphere sphere1{{10, 0, 0}, 2};
+    Sphere sphere1{{10, 0, 0}, 2, nullptr};
     Ray ray{{2, 0, 0}, {-1, 0, 0}};
 
     SphereSoa sphereSoa{};
@@ -48,7 +48,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShapeAndPointingBackwards_M
 TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Misses_ReturnsInfinity)
 {
     // Arrange
-    Sphere sphere1{{10, 0, 0}, 2};
+    Sphere sphere1{{10, 0, 0}, 2, nullptr};
     Ray ray{{2, 0, 0}, {0, 1, 0}};
 
     SphereSoa sphereSoa{};
@@ -67,7 +67,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Misses_ReturnsInfinit
 TEST(SphereSoaIntersectionTests, OneSphere_RayInsideShape_Intersects_ReturnsZero)
 {
     // Arrange
-    Sphere sphere1{{2, 0, 0}, 2};
+    Sphere sphere1{{2, 0, 0}, 2, nullptr};
     Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     SphereSoa sphereSoa{};
@@ -86,14 +86,14 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideShape_Intersects_ReturnsZero
 TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideShapes_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
-    Sphere sphere1{{10, 0, 0}, 2};
-    Sphere sphere2{{12, 0, 0}, 2};
-    Sphere sphere3{{14, 0, 0}, 2};
-    Sphere sphere4{{16, 0, 0}, 2};
-    Sphere sphere5{{18, 0, 0}, 2};
-    Sphere sphere6{{20, 0, 0}, 2};
-    Sphere sphere7{{22, 0, 0}, 2};
-    Sphere sphere8{{24, 0, 0}, 2};
+    Sphere sphere1{{10, 0, 0}, 2, nullptr};
+    Sphere sphere2{{12, 0, 0}, 2, nullptr};
+    Sphere sphere3{{14, 0, 0}, 2, nullptr};
+    Sphere sphere4{{16, 0, 0}, 2, nullptr};
+    Sphere sphere5{{18, 0, 0}, 2, nullptr};
+    Sphere sphere6{{20, 0, 0}, 2, nullptr};
+    Sphere sphere7{{22, 0, 0}, 2, nullptr};
+    Sphere sphere8{{24, 0, 0}, 2, nullptr};
 
     SphereSoa sphereSoa{};
 
@@ -121,14 +121,14 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideShapes_Intersects_Return
 TEST(SphereSoaIntersectionTests, RayOutsideShapesAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
-    Sphere sphere1{{10, 0, 0}, 2};
-    Sphere sphere2{{12, 0, 0}, 2};
-    Sphere sphere3{{14, 0, 0}, 2};
-    Sphere sphere4{{16, 0, 0}, 2};
-    Sphere sphere5{{18, 0, 0}, 2};
-    Sphere sphere6{{20, 0, 0}, 2};
-    Sphere sphere7{{22, 0, 0}, 2};
-    Sphere sphere8{{24, 0, 0}, 2};
+    Sphere sphere1{{10, 0, 0}, 2, nullptr};
+    Sphere sphere2{{12, 0, 0}, 2, nullptr};
+    Sphere sphere3{{14, 0, 0}, 2, nullptr};
+    Sphere sphere4{{16, 0, 0}, 2, nullptr};
+    Sphere sphere5{{18, 0, 0}, 2, nullptr};
+    Sphere sphere6{{20, 0, 0}, 2, nullptr};
+    Sphere sphere7{{22, 0, 0}, 2, nullptr};
+    Sphere sphere8{{24, 0, 0}, 2, nullptr};
 
     SphereSoa sphereSoa{};
 
@@ -156,14 +156,14 @@ TEST(SphereSoaIntersectionTests, RayOutsideShapesAndPointingBackwards_Misses_Ret
 TEST(SphereSoaIntersectionTests, RayOutsideShapes_Misses_ReturnsInfinity)
 {
     // Arrange
-    Sphere sphere1{{10, 0, 0}, 2};
-    Sphere sphere2{{12, 0, 0}, 2};
-    Sphere sphere3{{14, 0, 0}, 2};
-    Sphere sphere4{{16, 0, 0}, 2};
-    Sphere sphere5{{18, 0, 0}, 2};
-    Sphere sphere6{{20, 0, 0}, 2};
-    Sphere sphere7{{22, 0, 0}, 2};
-    Sphere sphere8{{24, 0, 0}, 2};
+    Sphere sphere1{{10, 0, 0}, 2, nullptr};
+    Sphere sphere2{{12, 0, 0}, 2, nullptr};
+    Sphere sphere3{{14, 0, 0}, 2, nullptr};
+    Sphere sphere4{{16, 0, 0}, 2, nullptr};
+    Sphere sphere5{{18, 0, 0}, 2, nullptr};
+    Sphere sphere6{{20, 0, 0}, 2, nullptr};
+    Sphere sphere7{{22, 0, 0}, 2, nullptr};
+    Sphere sphere8{{24, 0, 0}, 2, nullptr};
 
     SphereSoa sphereSoa{};
 

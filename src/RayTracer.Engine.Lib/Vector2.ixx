@@ -2,7 +2,7 @@
 
 export module RayTracer.Vector2;
 
-import RayTracer.Simd;
+import RayTracer.Math;
 
 namespace RayTracer
 {
@@ -41,7 +41,7 @@ namespace RayTracer
 
         inline float Length() const
         {
-            return UnsafeSqrt(LengthSquared());
+            return FastSqrt(LengthSquared());
         }
 
         inline float LengthSquared() const
@@ -51,7 +51,7 @@ namespace RayTracer
 
         inline Vector2& Normalize()
         {
-            float inverseLength = UnsafeReciprical(Length());
+            float inverseLength = FastReciprical(Length());
 
             X *= inverseLength;
             Y *= inverseLength;

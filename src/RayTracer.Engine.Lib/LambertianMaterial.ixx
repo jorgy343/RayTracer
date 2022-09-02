@@ -1,16 +1,16 @@
-export module RayTracer.DiffuseMaterial;
+export module RayTracer.LambertianMaterial;
 
 import RayTracer.Vector3;
 
 namespace RayTracer
 {
-    export class DiffuseMaterial
+    export class LambertianMaterial
     {
     public:
         Vector3 Color;
         Vector3 EmissiveColor;
 
-        DiffuseMaterial(const Vector3& color, const Vector3& emissiveColor)
+        LambertianMaterial(const Vector3& color, const Vector3& emissiveColor)
             : Color{color}, EmissiveColor{emissiveColor}
         {
 

@@ -7,7 +7,7 @@ export module RayTracer.SphereSoa;
 import RayTracer.Alignment;
 import RayTracer.IntersectionResult;
 import RayTracer.Ray;
-import RayTracer.Simd;
+import RayTracer.Math;
 import RayTracer.Sphere;
 
 using namespace vcl;

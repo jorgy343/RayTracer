@@ -1,3 +1,4 @@
+import RayTracer.LambertianMaterial;
 import RayTracer.PerspectiveCamera;
 import RayTracer.Scene;
 import RayTracer.Sphere;
@@ -22,15 +23,21 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
     std::vector<Ray> rayBuffer(width * height);
     perspectiveCamera.CreateRays(0, 0, width, height, rayBuffer.data());
 
-    Scene scene{{0.0f, 0.0f, 0.3f}};
+    Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    Sphere sphere1{{10, 0, 0}, 2};
-    Sphere sphere2{{13, 0, 3}, 2};
-    Sphere sphere3{{17, 0, -4}, 2};
+    LambertianMaterial material{{1.0f, 0.0f, 0.0f}, {0.1f, 0.1f, 0.1f}};
+
+    Sphere sphere1{{3, 0, -2}, 2, &material};
+    Sphere sphere2{{4, 0, 0}, 2, &material};
+    Sphere sphere3{{3, 0, 2}, 2, &material};
 
     scene.AddSphere(&sphere1);
     scene.AddSphere(&sphere2);
     scene.AddSphere(&sphere3);
+
+    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}};
+
+    scene.AddDirectionalLight(&light1);
 
     scene.Finalize();
 
@@ -40,11 +47,11 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
         {
             Ray ray = rayBuffer[(y * width) + x];
 
-            //IntersectionResult<Sphere> intersectionResult = sphereSoa.Intersect(ray);
+            Vector3 color = scene.CastRayColor(ray);
 
-            //pixelBuffer[((y * width) + x) * 4 + 0] = std::isinf(intersectionResult.Distance) ? 0.0f : 1.0f;
-            pixelBuffer[((y * width) + x) * 4 + 1] = 0.0f;
-            pixelBuffer[((y * width) + x) * 4 + 2] = 0.0f;
+            pixelBuffer[((y * width) + x) * 4 + 0] = color.X;
+            pixelBuffer[((y * width) + x) * 4 + 1] = color.Y;
+            pixelBuffer[((y * width) + x) * 4 + 2] = color.Z;
             pixelBuffer[((y * width) + x) * 4 + 3] = 0.0f;
         }
     }

@@ -1,6 +1,6 @@
 #include "Vcl.h"
 
-export module RayTracer.Simd;
+export module RayTracer.Math;
 
 using namespace vcl;
 
@@ -17,7 +17,7 @@ namespace RayTracer
         return _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)));
     }
 
-    export inline float UnsafeSqrt(float value)
+    export inline float FastSqrt(float value)
     {
         __m128 mmValue = _mm_load_ss(&value);
         _mm_store_ss(&value, _mm_sqrt_ps(mmValue));
@@ -25,7 +25,7 @@ namespace RayTracer
         return value;
     }
 
-    export inline float UnsafeReciprical(float value)
+    export inline float FastReciprical(float value)
     {
         __m128 mmValue = _mm_load_ss(&value);
         _mm_store_ss(&value, _mm_rcp_ss(mmValue));
@@ -33,7 +33,7 @@ namespace RayTracer
         return value;
     }
 
-    export inline float UnsafeMax(float value1, float value2)
+    export inline float FastMax(float value1, float value2)
     {
         __m128 mmValue1 = _mm_load_ss(&value1);
         __m128 mmValue2 = _mm_load_ss(&value2);
@@ -43,7 +43,7 @@ namespace RayTracer
         return value1;
     }
 
-    export inline float UnsafeMin(float value1, float value2)
+    export inline float FastMin(float value1, float value2)
     {
         __m128 mmValue1 = _mm_load_ss(&value1);
         __m128 mmValue2 = _mm_load_ss(&value2);

@@ -1,9 +1,13 @@
 #include <cmath>
 
+#include "Constants.h"
+
 export module RayTracer.Scene;
 
 import RayTracer.Alignment;
 import RayTracer.DirectionalLight;
+import RayTracer.LambertianMaterial;
+import RayTracer.Math;
 import RayTracer.SphereSoa;
 import RayTracer.Vector3;
 
@@ -40,16 +44,23 @@ namespace RayTracer
             _sphereSoa.Finalize();
         }
 
-        float CastRayDistance(const Ray& ray)
+        Vector3 CastRayColor(const Ray& ray) const
+        {
+            return CastRayColor(ray, 1);
+        }
+
+    private:
+        float CastRayDistance(const Ray& ray) const
         {
             IntersectionResult<Sphere> intersectionResult = _sphereSoa.Intersect(ray);
 
             return intersectionResult.Distance;
         }
 
-        Vector3 CastRay(const Ray& ray)
+        Vector3 CastRayColor(const Ray& ray, int depth) const
         {
             IntersectionResult<Sphere> intersectionResult = _sphereSoa.Intersect(ray);
+            intersectionResult.Distance -= 0.01f; // Bump the closest intersection backwards to ensure we don't shoot rays from inside the shape.
 
             Vector3 outputColor = _backgroundColor;
 
@@ -58,20 +69,43 @@ namespace RayTracer
                 Vector3 hitPosition = ray.Position + ray.Direction * intersectionResult.Distance;
                 Vector3 hitNormal = intersectionResult.Shape->CalculateNormal(hitPosition);
 
-                for (const DirectionalLight* light : _directionalLights)
+                Vector3 lightPower{0.0f};
+                lightPower += CalculateDirectionalLightPower(hitPosition, hitNormal);
+
+                Vector3 indirectLight{0.0f};
+
+                if (depth < 5)
                 {
-                    Ray shadowRay{hitPosition, -light->Direction};
 
-                    float shadowResult = CastRayDistance(shadowRay);
-
-                    if (!isinf(shadowResult))
-                    {
-
-                    }
                 }
+
+                const LambertianMaterial* material = intersectionResult.Shape->Material;
+                float rouletteFactor = 1.0f;
+
+                return (material->EmissiveColor * rouletteFactor) + ((lightPower * OneOverPi) + (indirectLight * OneOverPi)) * material->Color * rouletteFactor;
             }
 
             return outputColor;
+        }
+
+        Vector3 CalculateDirectionalLightPower(const Vector3& hitPosition, const Vector3& hitNormal) const
+        {
+            Vector3 lightPower{0.0f};
+
+            for (const DirectionalLight* light : _directionalLights)
+            {
+                Vector3 reversedLightDirection = -light->Direction; // TODO: Maybe store reversed direction on light.
+
+                Ray shadowRay{hitPosition, reversedLightDirection};
+                float shadowDistance = CastRayDistance(shadowRay);
+
+                if (shadowDistance == std::numeric_limits<float>::infinity())
+                {
+                    lightPower += light->Color * FastMax(0.0f, hitNormal * reversedLightDirection);
+                }
+            }
+
+            return lightPower;
         }
     };
 }
