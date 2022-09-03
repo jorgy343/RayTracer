@@ -27,9 +27,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
 
     LambertianMaterial material{{1.0f, 0.0f, 0.0f}, {0.1f, 0.1f, 0.1f}};
 
-    Sphere sphere1{{3, 0, -2}, 2, &material};
-    Sphere sphere2{{4, 0, 0}, 2, &material};
-    Sphere sphere3{{3, 0, 2}, 2, &material};
+    Sphere sphere1{{5, 0, -2}, 2, &material};
+    Sphere sphere2{{7, 0, 0}, 2, &material};
+    Sphere sphere3{{5, 0, 2}, 2, &material};
 
     scene.AddSphere(&sphere1);
     scene.AddSphere(&sphere2);

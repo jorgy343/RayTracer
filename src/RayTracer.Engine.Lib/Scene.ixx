@@ -74,15 +74,16 @@ namespace RayTracer
 
                 Vector3 indirectLight{0.0f};
 
-                if (depth < 5)
-                {
+                Ray indirectLightingRay;
 
+                if (depth <= 5)
+                {
+                    //CastRayColor(indirectLightingRay, depth + 1);
                 }
 
                 const LambertianMaterial* material = intersectionResult.Shape->Material;
-                float rouletteFactor = 1.0f;
 
-                return (material->EmissiveColor * rouletteFactor) + ((lightPower * OneOverPi) + (indirectLight * OneOverPi)) * material->Color * rouletteFactor;
+                return material->EmissiveColor + ((lightPower * OneOverPi) + (indirectLight * OneOverPi)) * material->Color;
             }
 
             return outputColor;
