@@ -9,12 +9,13 @@ import RayTracer.IntersectionResult;
 import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Plane;
+import RayTracer.GeometrySoa;
 
 using namespace vcl;
 
 namespace RayTracer
 {
-    export class PlaneSoa
+    export class PlaneSoa final : public GeometrySoa<Plane>
     {
     private:
         AlignedVector<float, 64> _normalX{};
@@ -33,12 +34,12 @@ namespace RayTracer
             _planes.reserve(initialCapacity);
         }
 
-        char GetCount() const
+        char GetCount() const override final
         {
             return static_cast<char>(_normalX.size());
         }
 
-        void AddPlane(const Plane* plane)
+        void Add(const Plane* plane) override final
         {
             _normalX.push_back(plane->Normal.X);
             _normalY.push_back(plane->Normal.Y);
@@ -47,7 +48,7 @@ namespace RayTracer
             _planes.push_back(plane);
         }
 
-        void Finalize()
+        void Finalize() override final
         {
             for (auto i = _normalX.size(); i % 8 != 0; i++)
             {
@@ -59,7 +60,7 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult<Plane> Intersect(const Ray& ray) const
+        IntersectionResult<Plane> Intersect(const Ray& ray) const override final
         {
             IntersectionResult<Plane> result{nullptr, std::numeric_limits<float>::infinity()};
 
@@ -76,7 +77,7 @@ namespace RayTracer
             return result;
         }
 
-        inline IntersectionResult<Plane> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        inline IntersectionResult<Plane> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const override final
         {
             Vec8f rayDirectionX{ray.Direction.X};
             Vec8f rayDirectionY{ray.Direction.Y};
@@ -85,7 +86,7 @@ namespace RayTracer
             Vec8f normalX = Vec8f{}.load_a(&_normalX[startingGeometryIndex]);
             Vec8f normalY = Vec8f{}.load_a(&_normalY[startingGeometryIndex]);
             Vec8f normalZ = Vec8f{}.load_a(&_normalZ[startingGeometryIndex]);
-
+            
             Vec8f normalDotDirection = SimdDot(normalX, rayDirectionX, normalY, rayDirectionY, normalZ, rayDirectionZ);
 
             // Normally we would check if the dot product was normal, but let's just assume that never happens.
@@ -99,9 +100,10 @@ namespace RayTracer
             Vec8f distance = Vec8f{}.load_a(&_distance[startingGeometryIndex]);
             Vec8f entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
 
-            Vec8f clampedEntranceDistance = select(entranceDistance < Vec8f(0.0f), infinite8f(), entranceDistance);
+            // Make sure infinite8f() is second so nans are replaced with inf.
+            Vec8f clampedEntranceDistance = select(entranceDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
 
-            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+            float minimumEntranceDistance = horizontal_min(clampedEntranceDistance);
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {

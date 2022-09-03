@@ -9,12 +9,13 @@ import RayTracer.IntersectionResult;
 import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Sphere;
+import RayTracer.GeometrySoa;
 
 using namespace vcl;
 
 namespace RayTracer
 {
-    export class SphereSoa
+    export class SphereSoa final : public GeometrySoa<Sphere>
     {
     private:
         AlignedVector<float, 64> _positionX{};
@@ -33,12 +34,12 @@ namespace RayTracer
             _spheres.reserve(initialCapacity);
         }
 
-        char GetCount() const
+        char GetCount() const override final
         {
             return static_cast<char>(_positionX.size());
         }
 
-        void AddSphere(const Sphere* sphere)
+        void Add(const Sphere* sphere) override final
         {
             _positionX.push_back(sphere->Position.X);
             _positionY.push_back(sphere->Position.Y);
@@ -47,7 +48,7 @@ namespace RayTracer
             _spheres.push_back(sphere);
         }
 
-        void Finalize()
+        void Finalize() override final
         {
             for (auto i = _positionX.size(); i % 8 != 0; i++)
             {
@@ -59,7 +60,7 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult<Sphere> Intersect(const Ray& ray) const
+        IntersectionResult<Sphere> Intersect(const Ray& ray) const override final
         {
             IntersectionResult<Sphere> result{nullptr, std::numeric_limits<float>::infinity()};
 
@@ -76,7 +77,7 @@ namespace RayTracer
             return result;
         }
 
-        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const override final
         {
             Vec8f rayPositionX{ray.Position.X};
             Vec8f rayPositionY{ray.Position.Y};
@@ -109,6 +110,7 @@ namespace RayTracer
             Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
             Vec8f entranceDistance = max((negativeB - discriminantSqrt) * reciprocalA, Vec8f(0.0f));
 
+            // Make sure infinite8f() is second so nans are replaced with inf.
             Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
 
             float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);

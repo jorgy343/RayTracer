@@ -15,7 +15,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Intersects_Returns
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Add(&sphere1);
     sphereSoa.Finalize();
 
     // Act
@@ -23,7 +23,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Intersects_Returns
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
-    EXPECT_EQ(result.Geometry, &sphere1);
+    EXPECT_EQ(result.HitGeometry, &sphere1);
 }
 
 TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackwards_Misses_ReturnsInfinity)
@@ -34,7 +34,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackward
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Add(&sphere1);
     sphereSoa.Finalize();
 
     // Act
@@ -42,7 +42,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackward
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Geometry, nullptr);
+    EXPECT_EQ(result.HitGeometry, nullptr);
 }
 
 TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfinity)
@@ -53,7 +53,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfi
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Add(&sphere1);
     sphereSoa.Finalize();
 
     // Act
@@ -61,7 +61,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfi
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Geometry, nullptr);
+    EXPECT_EQ(result.HitGeometry, nullptr);
 }
 
 TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZero)
@@ -72,7 +72,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZ
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere1);
+    sphereSoa.Add(&sphere1);
     sphereSoa.Finalize();
 
     // Act
@@ -80,7 +80,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZ
 
     // Assert
     EXPECT_NEAR(result.Distance, 0, 0.01f);
-    EXPECT_EQ(result.Geometry, &sphere1);
+    EXPECT_EQ(result.HitGeometry, &sphere1);
 }
 
 TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_ReturnsNearestIntersection)
@@ -97,14 +97,14 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_Ret
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere2);
-    sphereSoa.AddSphere(&sphere3);
-    sphereSoa.AddSphere(&sphere4);
-    sphereSoa.AddSphere(&sphere5);
-    sphereSoa.AddSphere(&sphere6);
-    sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
-    sphereSoa.AddSphere(&sphere7);
-    sphereSoa.AddSphere(&sphere8);
+    sphereSoa.Add(&sphere2);
+    sphereSoa.Add(&sphere3);
+    sphereSoa.Add(&sphere4);
+    sphereSoa.Add(&sphere5);
+    sphereSoa.Add(&sphere6);
+    sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
+    sphereSoa.Add(&sphere7);
+    sphereSoa.Add(&sphere8);
 
     sphereSoa.Finalize();
 
@@ -115,7 +115,7 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_Ret
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
-    EXPECT_EQ(result.Geometry, &sphere1);
+    EXPECT_EQ(result.HitGeometry, &sphere1);
 }
 
 TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_ReturnsInfinity)
@@ -132,14 +132,14 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere2);
-    sphereSoa.AddSphere(&sphere3);
-    sphereSoa.AddSphere(&sphere4);
-    sphereSoa.AddSphere(&sphere5);
-    sphereSoa.AddSphere(&sphere6);
-    sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
-    sphereSoa.AddSphere(&sphere7);
-    sphereSoa.AddSphere(&sphere8);
+    sphereSoa.Add(&sphere2);
+    sphereSoa.Add(&sphere3);
+    sphereSoa.Add(&sphere4);
+    sphereSoa.Add(&sphere5);
+    sphereSoa.Add(&sphere6);
+    sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
+    sphereSoa.Add(&sphere7);
+    sphereSoa.Add(&sphere8);
 
     sphereSoa.Finalize();
 
@@ -150,7 +150,7 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Geometry, nullptr);
+    EXPECT_EQ(result.HitGeometry, nullptr);
 }
 
 TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
@@ -167,14 +167,14 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.AddSphere(&sphere2);
-    sphereSoa.AddSphere(&sphere3);
-    sphereSoa.AddSphere(&sphere4);
-    sphereSoa.AddSphere(&sphere5);
-    sphereSoa.AddSphere(&sphere6);
-    sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
-    sphereSoa.AddSphere(&sphere7);
-    sphereSoa.AddSphere(&sphere8);
+    sphereSoa.Add(&sphere2);
+    sphereSoa.Add(&sphere3);
+    sphereSoa.Add(&sphere4);
+    sphereSoa.Add(&sphere5);
+    sphereSoa.Add(&sphere6);
+    sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
+    sphereSoa.Add(&sphere7);
+    sphereSoa.Add(&sphere8);
 
     sphereSoa.Finalize();
 
@@ -185,5 +185,5 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Geometry, nullptr);
+    EXPECT_EQ(result.HitGeometry, nullptr);
 }

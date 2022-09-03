@@ -16,6 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alignment.ixx" />
+    <ClCompile Include="Geometry.ixx" />
+    <ClCompile Include="GeometrySoa.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />

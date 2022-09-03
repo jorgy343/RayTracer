@@ -6,10 +6,11 @@ import RayTracer.LambertianMaterial;
 import RayTracer.Math;
 import RayTracer.Ray;
 import RayTracer.Vector3;
+import RayTracer.Geometry;
 
 namespace RayTracer
 {
-    export class alignas(16) Plane
+    export class alignas(16) Plane final : public Geometry
     {
     public:
         Vector3 Normal{};
@@ -28,12 +29,17 @@ namespace RayTracer
 
         }
 
-        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const
+        inline const LambertianMaterial* GetMaterial() const override final
+        {
+            return Material;
+        }
+
+        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
         {
             return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
         }
 
-        float Intersect(const Ray& ray) const
+        float Intersect(const Ray& ray) const override final
         {
             float normalDotDirection = Normal * ray.Direction;
 

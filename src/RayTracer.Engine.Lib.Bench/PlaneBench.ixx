@@ -24,14 +24,14 @@ namespace RayTracer::Bench
 
     export void RunPlaneBench()
     {
-        planeSoa.AddPlane(&plane2);
-        planeSoa.AddPlane(&plane3);
-        planeSoa.AddPlane(&plane4);
-        planeSoa.AddPlane(&plane5);
-        planeSoa.AddPlane(&plane6);
-        planeSoa.AddPlane(&plane1); // This is the sphere that will be hit.
-        planeSoa.AddPlane(&plane7);
-        planeSoa.AddPlane(&plane8);
+        planeSoa.Add(&plane2);
+        planeSoa.Add(&plane3);
+        planeSoa.Add(&plane4);
+        planeSoa.Add(&plane5);
+        planeSoa.Add(&plane6);
+        planeSoa.Add(&plane1); // This is the sphere that will be hit.
+        planeSoa.Add(&plane7);
+        planeSoa.Add(&plane8);
 
         planeSoa.Finalize();
 

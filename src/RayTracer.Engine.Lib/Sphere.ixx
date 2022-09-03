@@ -7,10 +7,11 @@ import RayTracer.LambertianMaterial;
 import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Vector3;
+import RayTracer.Geometry;
 
 namespace RayTracer
 {
-    export class alignas(16) Sphere
+    export class alignas(16) Sphere final : public Geometry
     {
     public:
         Vector3 Position{};
@@ -25,12 +26,17 @@ namespace RayTracer
 
         }
 
-        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const
+        inline const LambertianMaterial* GetMaterial() const override final
+        {
+            return Material;
+        }
+
+        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
         {
             return (hitPosition - Position).Normalize();
         }
 
-        float Intersect(const Ray& ray) const
+        float Intersect(const Ray& ray) const override final
         {
             Vector3 v = ray.Position - Position;
 

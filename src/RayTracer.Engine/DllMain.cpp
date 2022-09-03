@@ -25,7 +25,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    LambertianMaterial material{{1.0f, 0.0f, 0.0f}, {0.1f, 0.1f, 0.1f}};
+    LambertianMaterial material{{1.0f, 0.0f, 0.0f}, {0.1f, 0.1f, 0.5f}};
 
     Sphere sphere1{{5, 0, -2}, 2, &material};
     Sphere sphere2{{7, 0, 0}, 2, &material};
@@ -35,11 +35,11 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
     scene.AddSphere(&sphere2);
     scene.AddSphere(&sphere3);
 
-    Plane plane1{{1.0f, 0.0f, 0.0f}, 15.0f, &material};
+    Plane plane1{{-1.0f, 0.0f, 0.0f}, 12.0f, &material};
 
     scene.AddPlane(&plane1);
 
-    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, Vector3{0.0f, -1.0f, 0.3f}.Normalize()};
+    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, Vector3{0.3f, -1.0f, 0.0f}.Normalize()};
 
     scene.AddDirectionalLight(&light1);
 

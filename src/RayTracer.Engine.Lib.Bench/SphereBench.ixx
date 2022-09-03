@@ -24,14 +24,14 @@ namespace RayTracer::Bench
 
     export void RunSphereBench()
     {
-        sphereSoa.AddSphere(&sphere2);
-        sphereSoa.AddSphere(&sphere3);
-        sphereSoa.AddSphere(&sphere4);
-        sphereSoa.AddSphere(&sphere5);
-        sphereSoa.AddSphere(&sphere6);
-        sphereSoa.AddSphere(&sphere1); // This is the sphere that will be hit.
-        sphereSoa.AddSphere(&sphere7);
-        sphereSoa.AddSphere(&sphere8);
+        sphereSoa.Add(&sphere2);
+        sphereSoa.Add(&sphere3);
+        sphereSoa.Add(&sphere4);
+        sphereSoa.Add(&sphere5);
+        sphereSoa.Add(&sphere6);
+        sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
+        sphereSoa.Add(&sphere7);
+        sphereSoa.Add(&sphere8);
 
         sphereSoa.Finalize();
 

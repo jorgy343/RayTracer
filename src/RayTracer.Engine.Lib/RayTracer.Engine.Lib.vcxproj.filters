@@ -77,5 +77,11 @@
     <ClCompile Include="PlaneSoa.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="GeometrySoa.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
