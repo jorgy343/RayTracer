@@ -13,10 +13,28 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{ca6d9842-a563-4649-961d-93f75a675095}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bench.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4Bench.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3x3Bench.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereBench.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneBench.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

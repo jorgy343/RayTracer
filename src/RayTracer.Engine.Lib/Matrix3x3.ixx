@@ -2,7 +2,7 @@
 
 #include "Vcl.h"
 
-export module RayTracing.Matrix3x3;
+export module RayTracer.Matrix3x3;
 
 import RayTracer.Math;
 import RayTracer.Vector3;

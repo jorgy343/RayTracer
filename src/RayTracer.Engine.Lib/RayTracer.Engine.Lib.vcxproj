@@ -22,6 +22,8 @@
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
     <ClCompile Include="PerspectiveCamera.ixx" />
+    <ClCompile Include="Plane.ixx" />
+    <ClCompile Include="PlaneSoa.ixx" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="Scene.ixx" />
     <ClCompile Include="Math.ixx" />

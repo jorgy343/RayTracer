@@ -2,7 +2,7 @@ import RayTracer.LambertianMaterial;
 import RayTracer.PerspectiveCamera;
 import RayTracer.Scene;
 import RayTracer.Sphere;
-import RayTracer.SphereSoa;
+import RayTracer.Plane;
 
 #include <memory>
 #include <vector>
@@ -35,7 +35,11 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
     scene.AddSphere(&sphere2);
     scene.AddSphere(&sphere3);
 
-    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}};
+    Plane plane1{{1.0f, 0.0f, 0.0f}, 15.0f, &material};
+
+    scene.AddPlane(&plane1);
+
+    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, Vector3{0.0f, -1.0f, 0.3f}.Normalize()};
 
     scene.AddDirectionalLight(&light1);
 

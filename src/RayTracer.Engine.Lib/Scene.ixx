@@ -8,7 +8,10 @@ import RayTracer.Alignment;
 import RayTracer.DirectionalLight;
 import RayTracer.LambertianMaterial;
 import RayTracer.Math;
+import RayTracer.Sphere;
 import RayTracer.SphereSoa;
+import RayTracer.Plane;
+import RayTracer.PlaneSoa;
 import RayTracer.Vector3;
 
 namespace RayTracer
@@ -21,6 +24,7 @@ namespace RayTracer
         AlignedVector<const DirectionalLight*, 64> _directionalLights{};
 
         SphereSoa _sphereSoa{};
+        PlaneSoa _planeSoa{};
 
     public:
         Scene(Vector3 backgroundColor)
@@ -39,9 +43,15 @@ namespace RayTracer
             _sphereSoa.AddSphere(sphere);
         }
 
+        void AddPlane(const Plane* plane)
+        {
+            _planeSoa.AddPlane(plane);
+        }
+
         void Finalize()
         {
             _sphereSoa.Finalize();
+            _planeSoa.Finalize();
         }
 
         Vector3 CastRayColor(const Ray& ray) const
@@ -52,14 +62,17 @@ namespace RayTracer
     private:
         float CastRayDistance(const Ray& ray) const
         {
-            IntersectionResult<Sphere> intersectionResult = _sphereSoa.Intersect(ray);
+            IntersectionResult<Sphere> sphereIntersectionResult = _sphereSoa.Intersect(ray);
+            IntersectionResult<Plane> planeIntersectionResult = _planeSoa.Intersect(ray);
 
-            return intersectionResult.Distance;
+            return FastMin(sphereIntersectionResult.Distance, planeIntersectionResult.Distance);
         }
 
         Vector3 CastRayColor(const Ray& ray, int depth) const
         {
             IntersectionResult<Sphere> intersectionResult = _sphereSoa.Intersect(ray);
+            IntersectionResult<Plane> planeIntersectionResult = _planeSoa.Intersect(ray);
+
             intersectionResult.Distance -= 0.01f; // Bump the closest intersection backwards to ensure we don't shoot rays from inside the geometry.
 
             Vector3 outputColor = _backgroundColor;
@@ -67,7 +80,7 @@ namespace RayTracer
             if (intersectionResult.Geometry)
             {
                 Vector3 hitPosition = ray.Position + ray.Direction * intersectionResult.Distance;
-                Vector3 hitNormal = intersectionResult.Geometry->CalculateNormal(hitPosition);
+                Vector3 hitNormal = intersectionResult.Geometry->CalculateNormal(ray, hitPosition);
 
                 Vector3 lightPower{0.0f};
                 lightPower += CalculateDirectionalLightPower(hitPosition, hitNormal);

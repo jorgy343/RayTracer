@@ -82,6 +82,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bench.cpp" />
+    <ClCompile Include="Config.ixx" />
+    <ClCompile Include="Matrix3x3Bench.ixx" />
+    <ClCompile Include="Matrix4x4Bench.ixx" />
+    <ClCompile Include="PlaneBench.ixx" />
+    <ClCompile Include="SphereBench.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RayTracer.Engine.Lib\RayTracer.Engine.Lib.vcxproj">

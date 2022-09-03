@@ -76,30 +76,25 @@ namespace RayTracer
             return result;
         }
 
-        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingSphereIndex) const
+        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
-            Vec8f rayPositionX(ray.Position.X);
-            Vec8f rayPositionY(ray.Position.Y);
-            Vec8f rayPositionZ(ray.Position.Z);
+            Vec8f rayPositionX{ray.Position.X};
+            Vec8f rayPositionY{ray.Position.Y};
+            Vec8f rayPositionZ{ray.Position.Z};
 
-            Vec8f spherePositionX;
-            Vec8f spherePositionY;
-            Vec8f spherePositionZ;
-
-            spherePositionX.load_a(&_positionX[startingSphereIndex]);
-            spherePositionY.load_a(&_positionY[startingSphereIndex]);
-            spherePositionZ.load_a(&_positionZ[startingSphereIndex]);
+            Vec8f spherePositionX = Vec8f{}.load_a(&_positionX[startingGeometryIndex]);
+            Vec8f spherePositionY = Vec8f{}.load_a(&_positionY[startingGeometryIndex]);
+            Vec8f spherePositionZ = Vec8f{}.load_a(&_positionZ[startingGeometryIndex]);
 
             Vec8f vX = rayPositionX - spherePositionX;
             Vec8f vY = rayPositionY - spherePositionY;
             Vec8f vZ = rayPositionZ - spherePositionZ;
 
-            Vec8f rayDirectionX(ray.Direction.X);
-            Vec8f rayDirectionY(ray.Direction.Y);
-            Vec8f rayDirectionZ(ray.Direction.Z);
+            Vec8f rayDirectionX{ray.Direction.X};
+            Vec8f rayDirectionY{ray.Direction.Y};
+            Vec8f rayDirectionZ{ray.Direction.Z};
 
-            Vec8f sphereRadius;
-            sphereRadius.load_a(&_radius[startingSphereIndex]);
+            Vec8f sphereRadius = Vec8f{}.load_a(&_radius[startingGeometryIndex]);
 
             Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
             Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
@@ -120,8 +115,8 @@ namespace RayTracer
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {
-                _spheres[startingSphereIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
-                minimumEntranceDistance
+                _spheres[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                minimumEntranceDistance,
             };
         }
     };

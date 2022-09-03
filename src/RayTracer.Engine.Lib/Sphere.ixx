@@ -25,7 +25,7 @@ namespace RayTracer
 
         }
 
-        inline Vector3 CalculateNormal(const Vector3& hitPosition) const
+        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const
         {
             return (hitPosition - Position).Normalize();
         }

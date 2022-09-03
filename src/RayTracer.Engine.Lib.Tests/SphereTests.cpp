@@ -57,3 +57,16 @@ TEST(SphereIntersectionTests, RayInsideGeometry_Intersects_ReturnsZero)
     // Assert
     EXPECT_NEAR(result, 0, 0.01f);
 }
+
+TEST(SphereIntersectionTests, InfiniteSphere_Misses_ReturnsInfinity)
+{
+    // Arrange
+    Sphere sphere{{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()}, std::numeric_limits<float>::infinity(), nullptr};
+    Ray ray{{2, 0, 0}, {1, 0, 0}};
+
+    // Act
+    float result = sphere.Intersect(ray);
+
+    // Assert
+    EXPECT_EQ(result, std::numeric_limits<float>::infinity());
+}
