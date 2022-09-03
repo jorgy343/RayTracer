@@ -7,7 +7,7 @@ import RayTracer.Vector3;
 
 using namespace RayTracer;
 
-TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Intersects_ReturnsNearestIntersection)
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
     Sphere sphere1{{10, 0, 0}, 2, nullptr};
@@ -23,10 +23,10 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Intersects_ReturnsNea
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
-    EXPECT_EQ(result.Shape, &sphere1);
+    EXPECT_EQ(result.Geometry, &sphere1);
 }
 
-TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShapeAndPointingBackwards_Misses_ReturnsInfinity)
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
     Sphere sphere1{{10, 0, 0}, 2, nullptr};
@@ -42,10 +42,10 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShapeAndPointingBackwards_M
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Shape, nullptr);
+    EXPECT_EQ(result.Geometry, nullptr);
 }
 
-TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Misses_ReturnsInfinity)
+TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfinity)
 {
     // Arrange
     Sphere sphere1{{10, 0, 0}, 2, nullptr};
@@ -61,10 +61,10 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideShape_Misses_ReturnsInfinit
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Shape, nullptr);
+    EXPECT_EQ(result.Geometry, nullptr);
 }
 
-TEST(SphereSoaIntersectionTests, OneSphere_RayInsideShape_Intersects_ReturnsZero)
+TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZero)
 {
     // Arrange
     Sphere sphere1{{2, 0, 0}, 2, nullptr};
@@ -80,10 +80,10 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideShape_Intersects_ReturnsZero
 
     // Assert
     EXPECT_NEAR(result.Distance, 0, 0.01f);
-    EXPECT_EQ(result.Shape, &sphere1);
+    EXPECT_EQ(result.Geometry, &sphere1);
 }
 
-TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideShapes_Intersects_ReturnsNearestIntersection)
+TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
     Sphere sphere1{{10, 0, 0}, 2, nullptr};
@@ -115,10 +115,10 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideShapes_Intersects_Return
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
-    EXPECT_EQ(result.Shape, &sphere1);
+    EXPECT_EQ(result.Geometry, &sphere1);
 }
 
-TEST(SphereSoaIntersectionTests, RayOutsideShapesAndPointingBackwards_Misses_ReturnsInfinity)
+TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
     Sphere sphere1{{10, 0, 0}, 2, nullptr};
@@ -150,10 +150,10 @@ TEST(SphereSoaIntersectionTests, RayOutsideShapesAndPointingBackwards_Misses_Ret
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Shape, nullptr);
+    EXPECT_EQ(result.Geometry, nullptr);
 }
 
-TEST(SphereSoaIntersectionTests, RayOutsideShapes_Misses_ReturnsInfinity)
+TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
 {
     // Arrange
     Sphere sphere1{{10, 0, 0}, 2, nullptr};
@@ -185,5 +185,5 @@ TEST(SphereSoaIntersectionTests, RayOutsideShapes_Misses_ReturnsInfinity)
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
-    EXPECT_EQ(result.Shape, nullptr);
+    EXPECT_EQ(result.Geometry, nullptr);
 }

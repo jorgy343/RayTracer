@@ -4,15 +4,15 @@ import RayTracer.Vector3;
 
 namespace RayTracer
 {
-    export template<typename TShape>
+    export template<typename TGeometry>
         class IntersectionResult
     {
     public:
-        const TShape* Shape{nullptr};
+        const TGeometry* Geometry{nullptr};
         float Distance{0.0f};
 
-        IntersectionResult(const TShape* shape, float distance)
-            : Shape{shape}, Distance{distance}
+        IntersectionResult(const TGeometry* geometry, float distance)
+            : Geometry{geometry}, Distance{distance}
         {
 
         }

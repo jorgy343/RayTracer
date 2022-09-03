@@ -6,7 +6,7 @@ import RayTracer.Sphere;
 
 using namespace RayTracer;
 
-TEST(SphereIntersectionTests, RayOutsideShape_Intersects_ReturnsNearestIntersection)
+TEST(SphereIntersectionTests, RayOutsideGeometry_Intersects_ReturnsNearestIntersection)
 {
     // Arrange
     Sphere sphere{{10, 0, 0}, 2, nullptr};
@@ -19,7 +19,7 @@ TEST(SphereIntersectionTests, RayOutsideShape_Intersects_ReturnsNearestIntersect
     EXPECT_NEAR(result, 6, 0.01f);
 }
 
-TEST(SphereIntersectionTests, RayOutsideShapeAndPointingBackwards_Misses_ReturnsInfinity)
+TEST(SphereIntersectionTests, RayOutsideGeometryAndPointingBackwards_Misses_ReturnsInfinity)
 {
     // Arrange
     Sphere sphere{{10, 0, 0}, 2, nullptr};
@@ -32,7 +32,7 @@ TEST(SphereIntersectionTests, RayOutsideShapeAndPointingBackwards_Misses_Returns
     EXPECT_EQ(result, std::numeric_limits<float>::infinity());
 }
 
-TEST(SphereIntersectionTests, RayOutsideShape_Misses_ReturnsInfinity)
+TEST(SphereIntersectionTests, RayOutsideGeometry_Misses_ReturnsInfinity)
 {
     // Arrange
     Sphere sphere{{10, 0, 0}, 2, nullptr};
@@ -45,7 +45,7 @@ TEST(SphereIntersectionTests, RayOutsideShape_Misses_ReturnsInfinity)
     EXPECT_EQ(result, std::numeric_limits<float>::infinity());
 }
 
-TEST(SphereIntersectionTests, RayInsideShape_Intersects_ReturnsZero)
+TEST(SphereIntersectionTests, RayInsideGeometry_Intersects_ReturnsZero)
 {
     // Arrange
     Sphere sphere{{2, 0, 0}, 2, nullptr};

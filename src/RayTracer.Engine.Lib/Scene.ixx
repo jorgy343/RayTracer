@@ -60,14 +60,14 @@ namespace RayTracer
         Vector3 CastRayColor(const Ray& ray, int depth) const
         {
             IntersectionResult<Sphere> intersectionResult = _sphereSoa.Intersect(ray);
-            intersectionResult.Distance -= 0.01f; // Bump the closest intersection backwards to ensure we don't shoot rays from inside the shape.
+            intersectionResult.Distance -= 0.01f; // Bump the closest intersection backwards to ensure we don't shoot rays from inside the geometry.
 
             Vector3 outputColor = _backgroundColor;
 
-            if (intersectionResult.Shape)
+            if (intersectionResult.Geometry)
             {
                 Vector3 hitPosition = ray.Position + ray.Direction * intersectionResult.Distance;
-                Vector3 hitNormal = intersectionResult.Shape->CalculateNormal(hitPosition);
+                Vector3 hitNormal = intersectionResult.Geometry->CalculateNormal(hitPosition);
 
                 Vector3 lightPower{0.0f};
                 lightPower += CalculateDirectionalLightPower(hitPosition, hitNormal);
@@ -81,7 +81,7 @@ namespace RayTracer
                     //CastRayColor(indirectLightingRay, depth + 1);
                 }
 
-                const LambertianMaterial* material = intersectionResult.Shape->Material;
+                const LambertianMaterial* material = intersectionResult.Geometry->Material;
 
                 return material->EmissiveColor + ((lightPower * OneOverPi) + (indirectLight * OneOverPi)) * material->Color;
             }
