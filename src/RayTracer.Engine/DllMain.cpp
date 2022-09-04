@@ -35,7 +35,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
     scene.AddSphere(&sphere2);
     scene.AddSphere(&sphere3);
 
-    Plane plane1{{-1.0f, 0.0f, 0.0f}, 12.0f, &material};
+    Plane plane1{{-1.0f, 0.0f, 0.0f}, {12.0f, 0.0f, 0.0f}, &material};
 
     scene.AddPlane(&plane1);
 

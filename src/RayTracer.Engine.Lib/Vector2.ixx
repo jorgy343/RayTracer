@@ -34,6 +34,40 @@ namespace RayTracer
             return *this;
         }
 
+        inline bool Compare(const Vector2& right, float maximumAllowedErrorPerComponent)
+        {
+            bool areNansBad =
+                std::isnan(X) ^ std::isnan(right.X) ||
+                std::isnan(Y) ^ std::isnan(right.Y);
+
+            if (areNansBad)
+            {
+                return false;
+            }
+
+            bool areInfinitiesBad =
+                std::isinf(X) ^ std::isinf(right.X) ||
+                std::isinf(Y) ^ std::isinf(right.Y);
+
+            if (areInfinitiesBad)
+            {
+                return false;
+            }
+
+            return
+                (!std::isfinite(X) || !std::isfinite(right.X) || fabsf(X - right.X) < maximumAllowedErrorPerComponent) &&
+                (!std::isfinite(Y) || !std::isfinite(right.Y) || fabsf(Y - right.Y) < maximumAllowedErrorPerComponent);
+        }
+
+        inline Vector2 ComponentwiseMultiply(const Vector2& right) const
+        {
+            return Vector2
+            {
+                X * right.X,
+                Y * right.Y,
+            };
+        }
+
         inline float Dot(const Vector2& right) const
         {
             return (X * right.X) + (Y * right.Y);

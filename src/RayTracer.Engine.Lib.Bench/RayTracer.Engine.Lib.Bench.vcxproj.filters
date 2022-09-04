@@ -36,6 +36,9 @@
     <ClCompile Include="PlaneBench.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="AxisAlignedBoxBench.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nanobench.h">

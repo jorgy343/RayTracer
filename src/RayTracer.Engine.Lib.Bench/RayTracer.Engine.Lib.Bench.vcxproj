@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AxisAlignedBoxBench.ixx" />
     <ClCompile Include="Bench.cpp" />
     <ClCompile Include="Config.ixx" />
     <ClCompile Include="Matrix3x3Bench.ixx" />

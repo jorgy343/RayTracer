@@ -89,8 +89,6 @@ namespace RayTracer
             
             Vec8f normalDotDirection = SimdDot(normalX, rayDirectionX, normalY, rayDirectionY, normalZ, rayDirectionZ);
 
-            // Normally we would check if the dot product was normal, but let's just assume that never happens.
-
             Vec8f rayPositionX{ray.Position.X};
             Vec8f rayPositionY{ray.Position.Y};
             Vec8f rayPositionZ{ray.Position.Z};
@@ -103,7 +101,7 @@ namespace RayTracer
             // Make sure infinite8f() is second so nans are replaced with inf.
             Vec8f clampedEntranceDistance = select(entranceDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
 
-            float minimumEntranceDistance = horizontal_min(clampedEntranceDistance);
+            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {

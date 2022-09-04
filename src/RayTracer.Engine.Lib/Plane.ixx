@@ -42,18 +42,11 @@ namespace RayTracer
         float Intersect(const Ray& ray) const override final
         {
             float normalDotDirection = Normal * ray.Direction;
-
-            // Normally we would check if the dot product was normal, but let's just assume that never happens.
-
             float normalDotRayPosition = Normal * ray.Position;
+
             float entranceDistance = -(Distance + normalDotRayPosition) * FastReciprical(normalDotDirection);
 
-            if (entranceDistance < 0.0f)
-            {
-                return std::numeric_limits<float>::infinity();
-            }
-
-            return entranceDistance;
+            return entranceDistance < 0.0f ? std::numeric_limits<float>::infinity() : entranceDistance;
         }
     };
 }

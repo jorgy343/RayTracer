@@ -48,12 +48,52 @@ namespace RayTracer
             return *this;
         }
 
+        inline bool Compare(const Vector3& right, float maximumAllowedErrorPerComponent)
+        {
+            bool areNansBad =
+                std::isnan(X) ^ std::isnan(right.X) ||
+                std::isnan(Y) ^ std::isnan(right.Y) ||
+                std::isnan(Z) ^ std::isnan(right.Z);
+
+            if (areNansBad)
+            {
+                return false;
+            }
+
+            bool areInfinitiesBad =
+                std::isinf(X) ^ std::isinf(right.X) ||
+                std::isinf(Y) ^ std::isinf(right.Y) ||
+                std::isinf(Z) ^ std::isinf(right.Z);
+
+            if (areInfinitiesBad)
+            {
+                return false;
+            }
+
+            return
+                (!std::isfinite(X) || !std::isfinite(right.X) || fabsf(X - right.X) < maximumAllowedErrorPerComponent) &&
+                (!std::isfinite(Y) || !std::isfinite(right.Y) || fabsf(Y - right.Y) < maximumAllowedErrorPerComponent) &&
+                (!std::isfinite(Z) || !std::isfinite(right.Z) || fabsf(Z - right.Z) < maximumAllowedErrorPerComponent);
+        }
+
+        inline Vector3 ComponentwiseMultiply(const Vector3& right) const
+        {
+            return Vector3
+            {
+                X * right.X,
+                Y * right.Y,
+                Z * right.Z,
+            };
+        }
+
         inline Vector3 CrossProduct(const Vector3& right) const
         {
-            return Vector3(
+            return Vector3
+            {
                 Y * right.Z - Z * right.Y,
                 Z * right.X - X * right.Z,
-                X * right.Y - Y * right.X);
+                X * right.Y - Y * right.X
+            };
         }
 
         inline float Dot(const Vector3& right) const

@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alignment.ixx" />
+    <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="Geometry.ixx" />
     <ClCompile Include="GeometrySoa.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />

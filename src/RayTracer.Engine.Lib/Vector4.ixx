@@ -52,6 +52,48 @@ namespace RayTracer
             return *this;
         }
 
+        inline bool Compare(const Vector4& right, float maximumAllowedErrorPerComponent)
+        {
+            bool areNansBad =
+                std::isnan(X) ^ std::isnan(right.X) ||
+                std::isnan(Y) ^ std::isnan(right.Y) ||
+                std::isnan(Z) ^ std::isnan(right.Z) ||
+                std::isnan(W) ^ std::isnan(right.W);
+
+            if (areNansBad)
+            {
+                return false;
+            }
+
+            bool areInfinitiesBad =
+                std::isinf(X) ^ std::isinf(right.X) ||
+                std::isinf(Y) ^ std::isinf(right.Y) ||
+                std::isinf(Z) ^ std::isinf(right.Z) ||
+                std::isinf(W) ^ std::isinf(right.W);
+
+            if (areInfinitiesBad)
+            {
+                return false;
+            }
+
+            return
+                (!std::isfinite(X) || !std::isfinite(right.X) || fabsf(X - right.X) < maximumAllowedErrorPerComponent) &&
+                (!std::isfinite(Y) || !std::isfinite(right.Y) || fabsf(Y - right.Y) < maximumAllowedErrorPerComponent) &&
+                (!std::isfinite(Z) || !std::isfinite(right.Z) || fabsf(Z - right.Z) < maximumAllowedErrorPerComponent) &&
+                (!std::isfinite(W) || !std::isfinite(right.W) || fabsf(W - right.W) < maximumAllowedErrorPerComponent);
+        }
+
+        inline Vector4 ComponentwiseMultiply(const Vector4& right) const
+        {
+            return Vector4
+            {
+                X * right.X,
+                Y * right.Y,
+                Z * right.Z,
+                W * right.W,
+            };
+        }
+
         inline float Dot(const Vector4& right) const
         {
             return (X * right.X) + (Y * right.Y) + (Z * right.Z) + (W * right.W);
