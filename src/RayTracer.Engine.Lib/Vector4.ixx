@@ -94,6 +94,21 @@ namespace RayTracer
             };
         }
 
+        inline float Distance(const Vector4& right)
+        {
+            return FastSqrt(DistanceSquared(right));
+        }
+
+        inline float DistanceSquared(const Vector4& right)
+        {
+            float x = X - right.X;
+            float y = Y - right.Y;
+            float z = Z - right.Z;
+            float w = W - right.W;
+
+            return x * x + y * y + z * z + w * w;
+        }
+
         inline float Dot(const Vector4& right) const
         {
             return (X * right.X) + (Y * right.Y) + (Z * right.Z) + (W * right.W);

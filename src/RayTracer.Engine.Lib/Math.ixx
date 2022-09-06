@@ -17,6 +17,16 @@ namespace RayTracer
         return _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)));
     }
 
+    export inline Vec4f ConvertNanToInf(Vec4f const value)
+    {
+        return min(max(value, -infinite4f()), infinite4f());
+    }
+
+    export inline Vec8f ConvertNanToInf(Vec8f const value)
+    {
+        return min(max(value, -infinite8f()), infinite8f());
+    }
+
     export inline float FastSqrt(float value)
     {
         __m128 mmValue = _mm_load_ss(&value);
@@ -33,7 +43,7 @@ namespace RayTracer
         return value;
     }
 
-    export inline float FastMax(float value1, float value2)
+    export inline float FastMax(float value1, float const value2)
     {
         __m128 mmValue1 = _mm_load_ss(&value1);
         __m128 mmValue2 = _mm_load_ss(&value2);
@@ -43,7 +53,7 @@ namespace RayTracer
         return value1;
     }
 
-    export inline float FastMin(float value1, float value2)
+    export inline float FastMin(float value1, float const value2)
     {
         __m128 mmValue1 = _mm_load_ss(&value1);
         __m128 mmValue2 = _mm_load_ss(&value2);

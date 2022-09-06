@@ -16,6 +16,18 @@
     <Filter Include="Modules">
       <UniqueIdentifier>{e7b29746-335b-408c-a822-9c31dbe42dad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Materials">
+      <UniqueIdentifier>{340d6178-f05a-40c1-b4b5-ae0746df4b22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Geometries">
+      <UniqueIdentifier>{756f9817-26d7-41c1-844f-86e471b0a97a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Lights">
+      <UniqueIdentifier>{906e228a-ba1e-4f90-a847-a2bae8c6863e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Cameras">
+      <UniqueIdentifier>{625fcd53-d8f4-42f9-9471-f3ab59f96128}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vcl.h">
@@ -26,19 +38,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PerspectiveCamera.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="Vector3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Ray.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Sphere.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereSoa.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Math.ixx">
@@ -50,13 +53,7 @@
     <ClCompile Include="Alignment.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionalLight.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="LambertianMaterial.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Vector4.ixx">
@@ -71,19 +68,49 @@
     <ClCompile Include="Matrix3x3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Plane.ixx">
-      <Filter>Modules</Filter>
+    <ClCompile Include="AxisAlignedBox.ixx">
+      <Filter>Modules\Geometries</Filter>
     </ClCompile>
-    <ClCompile Include="PlaneSoa.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometrySoa.ixx">
-      <Filter>Modules</Filter>
+    <ClCompile Include="AxisAlignedBoxSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.ixx">
-      <Filter>Modules</Filter>
+      <Filter>Modules\Geometries</Filter>
     </ClCompile>
-    <ClCompile Include="AxisAlignedBox.ixx">
+    <ClCompile Include="GeometrySoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="PerspectiveCamera.ixx">
+      <Filter>Modules\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="LambertianMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="ScatterResult.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="MonteCarlo.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>

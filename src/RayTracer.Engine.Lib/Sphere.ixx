@@ -51,7 +51,7 @@ namespace RayTracer
             float negativeB = -b;
 
             float exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-            float entranceDistance = FastMax((negativeB - discriminantSqrt) * reciprocalA, 0.0f);
+            float entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
 
             return exitDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
         }

@@ -11,7 +11,7 @@ namespace RayTracer
     {
     public:
         virtual char GetCount() const = 0;
-        virtual void Add(const TGeometry* plane) = 0;
+        virtual void Add(const TGeometry* geometry) = 0;
         virtual void Finalize() = 0;
 
         virtual IntersectionResult<TGeometry> Intersect(const Ray& ray) const = 0;

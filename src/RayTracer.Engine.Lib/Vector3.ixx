@@ -96,6 +96,20 @@ namespace RayTracer
             };
         }
 
+        inline float Distance(const Vector3& right)
+        {
+            return FastSqrt(DistanceSquared(right));
+        }
+
+        inline float DistanceSquared(const Vector3& right)
+        {
+            float x = X - right.X;
+            float y = Y - right.Y;
+            float z = Z - right.Z;
+
+            return x * x + y * y + z * z;
+        }
+
         inline float Dot(const Vector3& right) const
         {
             return (X * right.X) + (Y * right.Y) + (Z * right.Z);
@@ -120,6 +134,12 @@ namespace RayTracer
             Z *= inverseLength;
 
             return *this;
+        }
+
+        inline Vector3 NormalizeNondestructive() const
+        {
+            Vector3 result = *this;
+            return result.Normalize();
         }
 
         Vector3 operator+() const

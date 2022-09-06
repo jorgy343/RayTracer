@@ -22,7 +22,7 @@ namespace RayTracer
         AlignedVector<float, 64> _positionY{};
         AlignedVector<float, 64> _positionZ{};
         AlignedVector<float, 64> _radius{};
-        AlignedVector<const Sphere*, 64> _spheres{};
+        AlignedVector<const Sphere*, 64> _geometries{};
         
     public:
         SphereSoa(int initialCapacity = 32)
@@ -31,7 +31,7 @@ namespace RayTracer
             _positionY.reserve(initialCapacity);
             _positionZ.reserve(initialCapacity);
             _radius.reserve(initialCapacity);
-            _spheres.reserve(initialCapacity);
+            _geometries.reserve(initialCapacity);
         }
 
         char GetCount() const override final
@@ -39,24 +39,24 @@ namespace RayTracer
             return static_cast<char>(_positionX.size());
         }
 
-        void Add(const Sphere* sphere) override final
+        void Add(const Sphere* geometry) override final
         {
-            _positionX.push_back(sphere->Position.X);
-            _positionY.push_back(sphere->Position.Y);
-            _positionZ.push_back(sphere->Position.Z);
-            _radius.push_back(sphere->Radius);
-            _spheres.push_back(sphere);
+            _positionX.push_back(geometry->Position.X);
+            _positionY.push_back(geometry->Position.Y);
+            _positionZ.push_back(geometry->Position.Z);
+            _radius.push_back(geometry->Radius);
+            _geometries.push_back(geometry);
         }
 
         void Finalize() override final
         {
-            for (auto i = _positionX.size(); i % 8 != 0; i++)
+            for (int i = _positionX.size(); i % 8 != 0; i++)
             {
                 _positionX.push_back(std::numeric_limits<float>::infinity());
                 _positionY.push_back(std::numeric_limits<float>::infinity());
                 _positionZ.push_back(std::numeric_limits<float>::infinity());
                 _radius.push_back(std::numeric_limits<float>::infinity());
-                _spheres.push_back(nullptr);
+                _geometries.push_back(nullptr);
             }
         }
 
@@ -108,7 +108,7 @@ namespace RayTracer
             Vec8f negativeB = -b;
 
             Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-            Vec8f entranceDistance = max((negativeB - discriminantSqrt) * reciprocalA, Vec8f(0.0f));
+            Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
 
             // Make sure infinite8f() is second so nans are replaced with inf.
             Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
@@ -117,7 +117,7 @@ namespace RayTracer
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {
-                _spheres[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
                 minimumEntranceDistance,
             };
         }

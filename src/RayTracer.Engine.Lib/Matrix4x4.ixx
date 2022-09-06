@@ -99,20 +99,20 @@ namespace RayTracer
             float a4 = (M14 * M22) - (M12 * M24);
             float a5 = (M13 * M24) - (M14 * M23);
 
-            float d21 = M12 * b5 + M13 * b4 + M14 * b3;
-            float d22 = M11 * b5 + M13 * b2 + M14 * b1;
-            float d23 = M11 * -b4 + M12 * b2 + M14 * b0;
-            float d24 = M11 * b3 + M12 * -b1 + M13 * b0;
+            float d21 = M12 * +b5 + M13 * +b4 + M14 * b3;
+            float d22 = M11 * +b5 + M13 * +b2 + M14 * b1;
+            float d23 = M11 * -b4 + M12 * +b2 + M14 * b0;
+            float d24 = M11 * +b3 + M12 * -b1 + M13 * b0;
 
-            float d31 = M42 * a5 + M43 * a4 + M44 * a3;
-            float d32 = M41 * a5 + M43 * a2 + M44 * a1;
-            float d33 = M41 * -a4 + M42 * a2 + M44 * a0;
-            float d34 = M41 * a3 + M42 * -a1 + M43 * a0;
+            float d31 = M42 * +a5 + M43 * +a4 + M44 * a3;
+            float d32 = M41 * +a5 + M43 * +a2 + M44 * a1;
+            float d33 = M41 * -a4 + M42 * +a2 + M44 * a0;
+            float d34 = M41 * +a3 + M42 * -a1 + M43 * a0;
 
-            float d41 = M32 * a5 + M33 * a4 + M34 * a3;
-            float d42 = M31 * a5 + M33 * a2 + M34 * a1;
-            float d43 = M31 * -a4 + M32 * a2 + M34 * a0;
-            float d44 = M31 * a3 + M32 * -a1 + M33 * a0;
+            float d41 = M32 * +a5 + M33 * +a4 + M34 * a3;
+            float d42 = M31 * +a5 + M33 * +a2 + M34 * a1;
+            float d43 = M31 * -a4 + M32 * +a2 + M34 * a0;
+            float d44 = M31 * +a3 + M32 * -a1 + M33 * a0;
 
             M11 = +d11 * det;
             M12 = -d21 * det;

@@ -1,10 +1,12 @@
 export module RayTracer.LambertianMaterial;
 
+import RayTracer.Material;
 import RayTracer.Vector3;
+import RayTracer.ScatterResult;
 
 namespace RayTracer
 {
-    export class LambertianMaterial
+    export class LambertianMaterial final : public Material
     {
     public:
         Vector3 Color;
@@ -14,6 +16,11 @@ namespace RayTracer
             : Color{color}, EmissiveColor{emissiveColor}
         {
 
+        }
+
+        ScatterResult GenerateScatterRay(const Ray& incomingRay, const Vector3& hitPosition, const Vector3& hitNormal) const override final
+        {
+            return ScatterResult{Ray{}, 0.0f};
         }
     };
 }

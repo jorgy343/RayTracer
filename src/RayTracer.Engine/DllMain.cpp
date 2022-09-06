@@ -3,6 +3,7 @@ import RayTracer.PerspectiveCamera;
 import RayTracer.Scene;
 import RayTracer.Sphere;
 import RayTracer.Plane;
+import RayTracer.AxisAlignedBox;
 
 #include <memory>
 #include <vector>
@@ -14,7 +15,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
 {
     PerspectiveCamera perspectiveCamera{
         {0, 0, 0},
-        {1, 0, 0},
+        {0, 0, 1},
         {0, 1, 0},
         90.0f,
         800,
@@ -25,21 +26,23 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    LambertianMaterial material{{1.0f, 0.0f, 0.0f}, {0.1f, 0.1f, 0.5f}};
+    LambertianMaterial material{{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}};
 
-    Sphere sphere1{{5, 0, -2}, 2, &material};
-    Sphere sphere2{{7, 0, 0}, 2, &material};
-    Sphere sphere3{{5, 0, 2}, 2, &material};
+    Sphere sphere1{{-2, 0, 5}, 2, &material};
+    Sphere sphere2{{0, 0, 7}, 2, &material};
+    Sphere sphere3{{2, 0, 5}, 2, &material};
 
     scene.AddSphere(&sphere1);
     scene.AddSphere(&sphere2);
     scene.AddSphere(&sphere3);
 
-    Plane plane1{{-1.0f, 0.0f, 0.0f}, {12.0f, 0.0f, 0.0f}, &material};
-
+    Plane plane1{Vector3{0.0f, 0.1f, -1.0f}.Normalize(), {0.0f, 0.0f, 12.0f}, &material};
     scene.AddPlane(&plane1);
 
-    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, Vector3{0.3f, -1.0f, 0.0f}.Normalize()};
+    AxisAlignedBox axisAlignedBox{{-8, -2, 5}, {-6, 2, 9}, &material};
+    scene.AddAxisAlignedBox(&axisAlignedBox);
+
+    DirectionalLight light1{{1.0f, 1.0f, 1.0f}, Vector3{0.0f, -1.0f, 0.3f}.Normalize()};
 
     scene.AddDirectionalLight(&light1);
 

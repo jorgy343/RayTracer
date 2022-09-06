@@ -22,7 +22,7 @@ namespace RayTracer
         AlignedVector<float, 64> _normalY{};
         AlignedVector<float, 64> _normalZ{};
         AlignedVector<float, 64> _distance{};
-        AlignedVector<const Plane*, 64> _planes{};
+        AlignedVector<const Plane*, 64> _geometries{};
 
     public:
         PlaneSoa(int initialCapacity = 32)
@@ -31,7 +31,7 @@ namespace RayTracer
             _normalY.reserve(initialCapacity);
             _normalZ.reserve(initialCapacity);
             _distance.reserve(initialCapacity);
-            _planes.reserve(initialCapacity);
+            _geometries.reserve(initialCapacity);
         }
 
         char GetCount() const override final
@@ -39,24 +39,24 @@ namespace RayTracer
             return static_cast<char>(_normalX.size());
         }
 
-        void Add(const Plane* plane) override final
+        void Add(const Plane* geometry) override final
         {
-            _normalX.push_back(plane->Normal.X);
-            _normalY.push_back(plane->Normal.Y);
-            _normalZ.push_back(plane->Normal.Z);
-            _distance.push_back(plane->Distance);
-            _planes.push_back(plane);
+            _normalX.push_back(geometry->Normal.X);
+            _normalY.push_back(geometry->Normal.Y);
+            _normalZ.push_back(geometry->Normal.Z);
+            _distance.push_back(geometry->Distance);
+            _geometries.push_back(geometry);
         }
 
         void Finalize() override final
         {
-            for (auto i = _normalX.size(); i % 8 != 0; i++)
+            for (int i = _normalX.size(); i % 8 != 0; i++)
             {
                 _normalX.push_back(std::numeric_limits<float>::infinity());
                 _normalY.push_back(std::numeric_limits<float>::infinity());
                 _normalZ.push_back(std::numeric_limits<float>::infinity());
                 _distance.push_back(std::numeric_limits<float>::infinity());
-                _planes.push_back(nullptr);
+                _geometries.push_back(nullptr);
             }
         }
 
@@ -105,7 +105,7 @@ namespace RayTracer
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {
-                _planes[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
                 minimumEntranceDistance,
             };
         }
