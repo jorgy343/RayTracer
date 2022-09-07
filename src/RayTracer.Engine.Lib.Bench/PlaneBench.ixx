@@ -5,6 +5,7 @@ export module RayTracer.Bench.PlaneBench;
 import RayTracer.Bench.Config;
 import RayTracer.Plane;
 import RayTracer.PlaneSoa;
+import RayTracer.RayResultType;
 
 namespace RayTracer::Bench
 {
@@ -50,10 +51,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("PlaneSoa.Intersect(Ray)", [&]
                 {
-                    auto result1 = planeSoa.PrivateIntersectSoa(rayMiss, 0);
+                    auto result1 = planeSoa.PrivateIntersectSoa<RayResultType::Entrance>(rayMiss, 0);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = planeSoa.PrivateIntersectSoa(rayHit, 0);
+                    auto result2 = planeSoa.PrivateIntersectSoa<RayResultType::Entrance>(rayHit, 0);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
     }

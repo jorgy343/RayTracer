@@ -5,6 +5,7 @@ export module RayTracer.Bench.AxisAlignedBoxBench;
 import RayTracer.Bench.Config;
 import RayTracer.AxisAlignedBox;
 import RayTracer.AxisAlignedBoxSoa;
+import RayTracer.RayResultType;
 
 namespace RayTracer::Bench
 {
@@ -50,10 +51,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("AxisAlignedBoxSoa.Intersect(Ray)", [&]
                 {
-                    auto result1 = axisAlignedBoxSoa.PrivateIntersectSoa(rayMiss, 0);
+                    auto result1 = axisAlignedBoxSoa.PrivateIntersectSoa<RayResultType::Entrance>(rayMiss, 0);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = axisAlignedBoxSoa.PrivateIntersectSoa(rayHit, 0);
+                    auto result2 = axisAlignedBoxSoa.PrivateIntersectSoa<RayResultType::Exit>(rayHit, 0);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
     }

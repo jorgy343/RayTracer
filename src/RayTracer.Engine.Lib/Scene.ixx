@@ -73,18 +73,18 @@ namespace RayTracer
     private:
         float CastRayDistance(const Ray& ray) const
         {
-            IntersectionResult<Sphere> sphereIntersectionResult = _sphereSoa.Intersect(ray);
-            IntersectionResult<Geometry> planeIntersectionResult = _planeSoa.Intersect(ray);
-            IntersectionResult<Geometry> axisAlignedBoxIntersectionResult = _axisAlignedBoxSoa.Intersect(ray);
+            IntersectionResult<Sphere> sphereIntersectionResult = _sphereSoa.IntersectEntrance(ray);
+            IntersectionResult<Geometry> planeIntersectionResult = _planeSoa.IntersectEntrance(ray);
+            IntersectionResult<Geometry> axisAlignedBoxIntersectionResult = _axisAlignedBoxSoa.IntersectEntrance(ray);
 
             return FastMax(0.0f, FastMin(FastMin(sphereIntersectionResult.Distance, planeIntersectionResult.Distance), axisAlignedBoxIntersectionResult.Distance));
         }
 
         Vector3 CastRayColor(const Ray& ray, int depth) const
         {
-            IntersectionResult<Geometry> sphereIntersectionResult = _sphereSoa.Intersect(ray);
-            IntersectionResult<Geometry> planeIntersectionResult = _planeSoa.Intersect(ray);
-            IntersectionResult<Geometry> axisAlignedBoxIntersectionResult = _axisAlignedBoxSoa.Intersect(ray);
+            IntersectionResult<Geometry> sphereIntersectionResult = _sphereSoa.IntersectEntrance(ray);
+            IntersectionResult<Geometry> planeIntersectionResult = _planeSoa.IntersectEntrance(ray);
+            IntersectionResult<Geometry> axisAlignedBoxIntersectionResult = _axisAlignedBoxSoa.IntersectEntrance(ray);
 
             IntersectionResult<Geometry> intersectionResult = sphereIntersectionResult.Distance < planeIntersectionResult.Distance ? sphereIntersectionResult : planeIntersectionResult;
             intersectionResult = intersectionResult.Distance < axisAlignedBoxIntersectionResult.Distance ? intersectionResult : axisAlignedBoxIntersectionResult;

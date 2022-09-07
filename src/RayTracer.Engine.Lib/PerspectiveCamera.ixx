@@ -56,8 +56,8 @@ namespace RayTracer
 
             Vector3 upperLeftCorner = Position - du * 0.5f + dv * 0.5f - forward;
 
-            float recipricalWidth = FastReciprical(width);
-            float recpiricalHeight = FastReciprical(height);
+            float recipricalWidth = FastReciprical(static_cast<float>(width));
+            float recpiricalHeight = FastReciprical(static_cast<float>(height));
 
             int index = 0;
             for (int y = startingY; y < startingY + height; ++y)

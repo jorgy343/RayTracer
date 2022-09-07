@@ -10,6 +10,7 @@ import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Plane;
 import RayTracer.GeometrySoa;
+import RayTracer.RayResultType;
 
 using namespace vcl;
 
@@ -60,24 +61,18 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult<Plane> Intersect(const Ray& ray) const override final
+        IntersectionResult<Plane> IntersectEntrance(const Ray& ray) const override final
         {
-            IntersectionResult<Plane> result{nullptr, std::numeric_limits<float>::infinity()};
-
-            for (int i = 0; i + 8 <= _normalX.size(); i += 8)
-            {
-                IntersectionResult<Plane> newResult = PrivateIntersectSoa(ray, i);
-
-                if (newResult.Distance < result.Distance)
-                {
-                    result = newResult;
-                }
-            }
-
-            return result;
+            return Intersect<RayResultType::Entrance>(ray);
         }
 
-        inline IntersectionResult<Plane> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const override final
+        IntersectionResult<Plane> IntersectExit(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Exit>(ray);
+        }
+
+        template <RayResultType TRayResultType>
+        inline IntersectionResult<Plane> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
             Vec8f rayDirectionX{ray.Direction.X};
             Vec8f rayDirectionY{ray.Direction.Y};
@@ -108,6 +103,25 @@ namespace RayTracer
                 _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
                 minimumEntranceDistance,
             };
+        }
+
+    private:
+        template <RayResultType TRayResultType>
+        inline IntersectionResult<Plane> Intersect(const Ray& ray) const
+        {
+            IntersectionResult<Plane> result{nullptr, std::numeric_limits<float>::infinity()};
+
+            for (int i = 0; i + 8 <= _normalX.size(); i += 8)
+            {
+                IntersectionResult<Plane> newResult = PrivateIntersectSoa<TRayResultType>(ray, i);
+
+                if (newResult.Distance < result.Distance)
+                {
+                    result = newResult;
+                }
+            }
+
+            return result;
         }
     };
 }

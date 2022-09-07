@@ -10,6 +10,7 @@ import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Sphere;
 import RayTracer.GeometrySoa;
+import RayTracer.RayResultType;
 
 using namespace vcl;
 
@@ -60,24 +61,18 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult<Sphere> Intersect(const Ray& ray) const override final
+        IntersectionResult<Sphere> IntersectEntrance(const Ray& ray) const override final
         {
-            IntersectionResult<Sphere> result{nullptr, std::numeric_limits<float>::infinity()};
-
-            for (int i = 0; i + 8 <= _positionX.size(); i += 8)
-            {
-                IntersectionResult<Sphere> newResult = PrivateIntersectSoa(ray, i);
-
-                if (newResult.Distance < result.Distance)
-                {
-                    result = newResult;
-                }
-            }
-
-            return result;
+            return Intersect<RayResultType::Entrance>(ray);
         }
 
-        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const override final
+        IntersectionResult<Sphere> IntersectExit(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Exit>(ray);
+        }
+
+        template <RayResultType TRayResultType>
+        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
             Vec8f rayPositionX{ray.Position.X};
             Vec8f rayPositionY{ray.Position.Y};
@@ -108,18 +103,47 @@ namespace RayTracer
             Vec8f negativeB = -b;
 
             Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-            Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+            
+            Vec8f result;
+            if constexpr (TRayResultType == RayResultType::Entrance)
+            {
+                Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+                result = entranceDistance;
+            }
+            else
+            {
+                result = exitDistance;
+            }
 
             // Make sure infinite8f() is second so nans are replaced with inf.
-            Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
+            Vec8f clampedResult = select(exitDistance >= Vec8f(0.0f), result, infinite8f());
 
-            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+            float minimumEntranceDistance = horizontal_min1(clampedResult);
+            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedResult);
 
             return {
                 _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
                 minimumEntranceDistance,
             };
+        }
+
+    private:
+        template <RayResultType TRayResultType>
+        inline IntersectionResult<Sphere> Intersect(const Ray& ray) const
+        {
+            IntersectionResult<Sphere> result{nullptr, std::numeric_limits<float>::infinity()};
+
+            for (int i = 0; i + 8 <= _positionX.size(); i += 8)
+            {
+                IntersectionResult<Sphere> newResult = PrivateIntersectSoa<TRayResultType>(ray, i);
+
+                if (newResult.Distance < result.Distance)
+                {
+                    result = newResult;
+                }
+            }
+
+            return result;
         }
     };
 }
