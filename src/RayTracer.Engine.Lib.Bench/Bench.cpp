@@ -1,5 +1,6 @@
 #define ANKERL_NANOBENCH_IMPLEMENT
 #include "nanobench.h"
+#include "Vcl.h"
 
 import RayTracer.Bench.SphereBench;
 import RayTracer.Bench.PlaneBench;

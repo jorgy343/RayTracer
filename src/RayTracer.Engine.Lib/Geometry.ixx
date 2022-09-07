@@ -5,7 +5,7 @@ export module RayTracer.Geometry;
 import RayTracer.LambertianMaterial;
 import RayTracer.Vector3;
 import RayTracer.Ray;
-import RayTracer.RayResultType;
+import RayTracer.IntersectionResultType;
 
 namespace RayTracer
 {

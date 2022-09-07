@@ -10,7 +10,7 @@ import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.AxisAlignedBox;
 import RayTracer.GeometrySoa;
-import RayTracer.RayResultType;
+import RayTracer.IntersectionResultType;
 
 using namespace vcl;
 
@@ -79,15 +79,15 @@ namespace RayTracer
 
         IntersectionResult<AxisAlignedBox> IntersectEntrance(const Ray& ray) const override final
         {
-            return Intersect<RayResultType::Entrance>(ray);
+            return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
         IntersectionResult<AxisAlignedBox> IntersectExit(const Ray& ray) const override final
         {
-            return Intersect<RayResultType::Exit>(ray);
+            return Intersect<IntersectionResultType::Exit>(ray);
         }
 
-        template <RayResultType TRayResultType>
+        template <IntersectionResultType TIntersectionResultType>
         inline IntersectionResult<AxisAlignedBox> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
             Vec8f minimumX = Vec8f{}.load_a(&_minimumX[startingGeometryIndex]);
@@ -118,7 +118,7 @@ namespace RayTracer
             Vec8f entranceDistance = vcl::max(vcl::max(vcl::min(minX, maxX), vcl::min(minY, maxY)), vcl::min(minZ, maxZ));
 
             Vec8f result;
-            if constexpr (TRayResultType == RayResultType::Entrance)
+            if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
                 result = entranceDistance;
             }
@@ -139,14 +139,14 @@ namespace RayTracer
         }
 
     private:
-        template <RayResultType TRayResultType>
+        template <IntersectionResultType TIntersectionResultType>
         inline IntersectionResult<AxisAlignedBox> Intersect(const Ray& ray) const
         {
             IntersectionResult<AxisAlignedBox> result{nullptr, std::numeric_limits<float>::infinity()};
 
             for (int i = 0; i + 8 <= _minimumX.size(); i += 8)
             {
-                IntersectionResult<AxisAlignedBox> newResult = PrivateIntersectSoa<TRayResultType>(ray, i);
+                IntersectionResult<AxisAlignedBox> newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
 
                 if (newResult.Distance < result.Distance)
                 {

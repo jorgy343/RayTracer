@@ -10,7 +10,7 @@ import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Sphere;
 import RayTracer.GeometrySoa;
-import RayTracer.RayResultType;
+import RayTracer.IntersectionResultType;
 
 using namespace vcl;
 
@@ -63,15 +63,15 @@ namespace RayTracer
 
         IntersectionResult<Sphere> IntersectEntrance(const Ray& ray) const override final
         {
-            return Intersect<RayResultType::Entrance>(ray);
+            return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
         IntersectionResult<Sphere> IntersectExit(const Ray& ray) const override final
         {
-            return Intersect<RayResultType::Exit>(ray);
+            return Intersect<IntersectionResultType::Exit>(ray);
         }
 
-        template <RayResultType TRayResultType>
+        template <IntersectionResultType TIntersectionResultType>
         inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
             Vec8f rayPositionX{ray.Position.X};
@@ -105,7 +105,7 @@ namespace RayTracer
             Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
             
             Vec8f result;
-            if constexpr (TRayResultType == RayResultType::Entrance)
+            if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
                 Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
                 result = entranceDistance;
@@ -128,14 +128,14 @@ namespace RayTracer
         }
 
     private:
-        template <RayResultType TRayResultType>
+        template <IntersectionResultType TIntersectionResultType>
         inline IntersectionResult<Sphere> Intersect(const Ray& ray) const
         {
             IntersectionResult<Sphere> result{nullptr, std::numeric_limits<float>::infinity()};
 
             for (int i = 0; i + 8 <= _positionX.size(); i += 8)
             {
-                IntersectionResult<Sphere> newResult = PrivateIntersectSoa<TRayResultType>(ray, i);
+                IntersectionResult<Sphere> newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
 
                 if (newResult.Distance < result.Distance)
                 {

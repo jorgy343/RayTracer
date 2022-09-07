@@ -1,11 +1,12 @@
 #include "nanobench.h"
+#include "Vcl.h"
 
 export module RayTracer.Bench.PlaneBench;
 
 import RayTracer.Bench.Config;
 import RayTracer.Plane;
 import RayTracer.PlaneSoa;
-import RayTracer.RayResultType;
+import RayTracer.IntersectionResultType;
 
 namespace RayTracer::Bench
 {
@@ -51,10 +52,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("PlaneSoa.Intersect(Ray)", [&]
                 {
-                    auto result1 = planeSoa.PrivateIntersectSoa<RayResultType::Entrance>(rayMiss, 0);
+                    auto result1 = planeSoa.PrivateIntersectSoa<IntersectionResultType::Entrance>(rayMiss, 0);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = planeSoa.PrivateIntersectSoa<RayResultType::Entrance>(rayHit, 0);
+                    auto result2 = planeSoa.PrivateIntersectSoa<IntersectionResultType::Entrance>(rayHit, 0);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
     }

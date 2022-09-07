@@ -113,7 +113,7 @@
     <ClCompile Include="MonteCarlo.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="RayResultType.ixx">
+    <ClCompile Include="IntersectionResultType.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
   </ItemGroup>
