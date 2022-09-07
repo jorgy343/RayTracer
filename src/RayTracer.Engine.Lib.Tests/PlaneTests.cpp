@@ -19,7 +19,7 @@ TEST_P(PlaneIntersectionTests, Intersects_ReturnsNearestIntersection)
     float expectedResult = std::get<2>(GetParam());
 
     // Act
-    float result = plane.Intersect(ray);
+    float result = plane.IntersectEntrance(ray);
 
     // Assert
     if (expectedResult == std::numeric_limits<float>::infinity())

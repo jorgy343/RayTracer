@@ -22,7 +22,6 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
         600};
 
     std::vector<Ray> rayBuffer(width * height);
-    perspectiveCamera.CreateRays(0, 0, width, height, rayBuffer.data());
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
@@ -48,18 +47,36 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
 
     scene.Finalize();
 
+    constexpr int totalIterations = 20;
+
+    for (int count = 0; count < totalIterations; count++)
+    {
+        perspectiveCamera.CreateRays(0, 0, width, height, rayBuffer.data());
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Ray ray = rayBuffer[(y * width) + x];
+
+                Vector3 color = scene.CastRayColor(ray);
+
+                pixelBuffer[((y * width) + x) * 4 + 0] += color.X;
+                pixelBuffer[((y * width) + x) * 4 + 1] += color.Y;
+                pixelBuffer[((y * width) + x) * 4 + 2] += color.Z;
+                pixelBuffer[((y * width) + x) * 4 + 3] += 0.0f;
+            }
+        }
+    }
+
     for (int y = 0; y < height; y++)
     {
         for (int x = 0; x < width; x++)
         {
-            Ray ray = rayBuffer[(y * width) + x];
-
-            Vector3 color = scene.CastRayColor(ray);
-
-            pixelBuffer[((y * width) + x) * 4 + 0] = color.X;
-            pixelBuffer[((y * width) + x) * 4 + 1] = color.Y;
-            pixelBuffer[((y * width) + x) * 4 + 2] = color.Z;
-            pixelBuffer[((y * width) + x) * 4 + 3] = 0.0f;
+            pixelBuffer[((y * width) + x) * 4 + 0] /= totalIterations;
+            pixelBuffer[((y * width) + x) * 4 + 1] /= totalIterations;
+            pixelBuffer[((y * width) + x) * 4 + 2] /= totalIterations;
+            pixelBuffer[((y * width) + x) * 4 + 3] /= totalIterations;
         }
     }
 }

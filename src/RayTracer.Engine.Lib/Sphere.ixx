@@ -8,6 +8,7 @@ import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Vector3;
 import RayTracer.Geometry;
+import RayTracer.RayResultType;
 
 namespace RayTracer
 {
@@ -36,7 +37,19 @@ namespace RayTracer
             return (hitPosition - Position).Normalize();
         }
 
-        float Intersect(const Ray& ray) const override final
+        virtual float IntersectEntrance(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Entrance>(ray);
+        }
+
+        virtual float IntersectExit(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Exit>(ray);
+        }
+
+    private:
+        template <RayResultType TRayResultType>
+        inline float Intersect(const Ray& ray) const
         {
             Vector3 v = ray.Position - Position;
 
@@ -51,9 +64,19 @@ namespace RayTracer
             float negativeB = -b;
 
             float exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-            float entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
 
-            return exitDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+            float result;
+            if constexpr (TRayResultType == RayResultType::Entrance)
+            {
+                float entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+                result = entranceDistance;
+            }
+            else
+            {
+                result = exitDistance;
+            }
+
+            return exitDistance >= 0.0f ? result : std::numeric_limits<float>::infinity();
         }
     };
 }

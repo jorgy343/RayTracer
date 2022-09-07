@@ -7,6 +7,7 @@ import RayTracer.Math;
 import RayTracer.Ray;
 import RayTracer.Vector3;
 import RayTracer.Geometry;
+import RayTracer.RayResultType;
 
 namespace RayTracer
 {
@@ -39,7 +40,19 @@ namespace RayTracer
             return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
         }
 
-        float Intersect(const Ray& ray) const override final
+        virtual float IntersectEntrance(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Entrance>(ray);
+        }
+
+        virtual float IntersectExit(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Exit>(ray);
+        }
+
+    private:
+        template <RayResultType TRayResultType>
+        inline float Intersect(const Ray& ray) const
         {
             float normalDotDirection = Normal * ray.Direction;
             float normalDotRayPosition = Normal * ray.Position;

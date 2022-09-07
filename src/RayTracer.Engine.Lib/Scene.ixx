@@ -117,7 +117,7 @@ namespace RayTracer
 
                 const LambertianMaterial* material = intersectionResult.HitGeometry->GetMaterial();
 
-                return material->EmissiveColor + FastReciprical(_directionalLights.size() + 1) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
+                return material->EmissiveColor + FastReciprical(static_cast<float>(_directionalLights.size()) + 1) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
             }
 
             return outputColor;

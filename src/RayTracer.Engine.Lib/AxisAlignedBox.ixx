@@ -8,6 +8,7 @@ export module RayTracer.AxisAlignedBox;
 import RayTracer.Math;
 import RayTracer.Geometry;
 import RayTracer.Vector3;
+import RayTracer.RayResultType;
 
 using namespace vcl;
 
@@ -79,7 +80,19 @@ namespace RayTracer
             return normal;
         }
 
-        float Intersect(const Ray& ray) const override final
+        virtual float IntersectEntrance(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Entrance>(ray);
+        }
+
+        virtual float IntersectExit(const Ray& ray) const override final
+        {
+            return Intersect<RayResultType::Exit>(ray);
+        }
+
+    private:
+        template <RayResultType TRayResultType>
+        inline float Intersect(const Ray& ray) const
         {
             Vec4f minimum = Vec4f{}.load(&Minimum.X);
             Vec4f maximum = Vec4f{}.load(&Maximum.X);
@@ -106,7 +119,17 @@ namespace RayTracer
 
             float entranceDistance = horizontal_max1(tempMin);
 
-            return entranceDistance > exitDistance ? std::numeric_limits<float>::infinity() : entranceDistance;
+            float result;
+            if constexpr (TRayResultType == RayResultType::Entrance)
+            {
+                result = entranceDistance;
+            }
+            else
+            {
+                result = exitDistance;
+            }
+
+            return entranceDistance > exitDistance ? std::numeric_limits<float>::infinity() : result;
         }
     };
 }

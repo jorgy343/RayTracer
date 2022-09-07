@@ -2,6 +2,7 @@
 
 export module RayTracer.PerspectiveCamera;
 
+import RayTracer.Math;
 import RayTracer.Vector3;
 import RayTracer.Ray;
 
@@ -39,32 +40,36 @@ namespace RayTracer
 
         void CreateRays(int startingX, int startingY, int width, int height, Ray* rayBuffer)
         {
-            Vector3 direction = (LookAt - Position).Normalize();
+            Vector3 forward = (Position - LookAt).Normalize();
 
-            Vector3 du = -(Up % direction).Normalize();
-            Vector3 dv = -(du % direction).Normalize();
+            Vector3 u = (Up % forward).Normalize();
+            Vector3 v = (forward % u).Normalize();
 
-            float halfWidth = tanf(FieldOfView / 2.0f);
-            float halfHeight = (ScreenHeight / ScreenWidth) * halfWidth;
+            float aspectRatio = static_cast<float>(ScreenWidth) / static_cast<float>(ScreenHeight);
+            float halfWidth = tanf(FieldOfView * 0.5f);
 
-            du *= 2.0f * halfWidth / ScreenWidth;
-            dv *= 2.0f * halfWidth / ScreenHeight;
+            float viewportHeight = halfWidth * 2.0f;
+            float viewportWidth = aspectRatio * viewportHeight;
+
+            Vector3 du = viewportWidth * u;
+            Vector3 dv = viewportHeight * v;
+
+            Vector3 upperLeftCorner = Position - du * 0.5f + dv * 0.5f - forward;
+
+            float recipricalWidth = FastReciprical(width);
+            float recpiricalHeight = FastReciprical(height);
 
             int index = 0;
             for (int y = startingY; y < startingY + height; ++y)
             {
                 for (int x = startingX; x < startingX + width; ++x)
                 {
-                    // Gives us the upper left coordinates of the pixel.
-                    float pixelIndexX = x - 0.5f * ScreenWidth;
-                    float pixelIndexY = y - 0.5f * ScreenHeight;
+                    float normalizedX = (x + static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * recipricalWidth;
+                    float normalizedY = (y + static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * recpiricalHeight;
 
-                    // Takes the upper left coordinates of the pixel and add an offset which will give us the coordinates somewhere inside
-                    // of the pixel. Multiply that by the delta direction to get the actual direction for the pixel.
-                    Vector3 u = (pixelIndexX + 0.5f) * du;
-                    Vector3 v = (pixelIndexY + 0.5f) * dv;
+                    Vector3 rayDirection = upperLeftCorner + (normalizedX * du) - (normalizedY * dv) - Position;
 
-                    rayBuffer[index++] = Ray{Position, (direction + u + v).Normalize()};
+                    rayBuffer[index++] = Ray{Position, rayDirection.Normalize()};
                 }
             }
         }

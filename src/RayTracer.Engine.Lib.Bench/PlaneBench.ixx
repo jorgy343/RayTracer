@@ -39,10 +39,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("Plane.Intersect(Ray)", [&]
                 {
-                    auto result1 = plane1.Intersect(rayMiss);
+                    auto result1 = plane1.IntersectEntrance(rayMiss);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = plane1.Intersect(rayHit);
+                    auto result2 = plane1.IntersectEntrance(rayHit);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
 

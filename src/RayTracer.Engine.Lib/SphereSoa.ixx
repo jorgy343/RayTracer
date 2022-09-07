@@ -50,7 +50,7 @@ namespace RayTracer
 
         void Finalize() override final
         {
-            for (int i = _positionX.size(); i % 8 != 0; i++)
+            for (long long i = _positionX.size(); i % 8 != 0; i++)
             {
                 _positionX.push_back(std::numeric_limits<float>::infinity());
                 _positionY.push_back(std::numeric_limits<float>::infinity());

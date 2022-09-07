@@ -39,10 +39,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("AxisAlignedBox.Intersect(Ray)", [&]
                 {
-                    auto result1 = box1.Intersect(rayMiss);
+                    auto result1 = box1.IntersectEntrance(rayMiss);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = box1.Intersect(rayHit);
+                    auto result2 = box1.IntersectEntrance(rayHit);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
 
