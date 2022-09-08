@@ -31,6 +31,8 @@
     <ClCompile Include="PerspectiveCamera.ixx" />
     <ClCompile Include="Plane.ixx" />
     <ClCompile Include="PlaneSoa.ixx" />
+    <ClCompile Include="PointLight.ixx" />
+    <ClCompile Include="Random.ixx" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="IntersectionResultType.ixx" />
     <ClCompile Include="ScatterResult.ixx" />

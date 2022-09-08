@@ -116,5 +116,11 @@
     <ClCompile Include="IntersectionResultType.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
+    <ClCompile Include="Random.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

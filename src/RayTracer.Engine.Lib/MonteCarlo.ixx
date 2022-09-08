@@ -27,6 +27,6 @@ namespace RayTracer
         Vector3 v = (w % a).Normalize();
         Vector3 u = w % v;
 
-        return (normal.X * u) + (normal.Y * v) + (normal.Z * w);
+        return (vectorToTransform.X * u) + (vectorToTransform.Y * v) + (vectorToTransform.Z * w);
     }
 }
