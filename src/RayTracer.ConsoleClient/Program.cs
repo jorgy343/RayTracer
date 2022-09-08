@@ -13,11 +13,11 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 
     unsafe
     {
-        Parallel.For(0, 600, y =>
+        Parallel.For(0, screenHeight - 1, y =>
         {
             fixed (float* pixelBufferPointer = pixelBuffer)
             {
-                Native.TraceScene(screenWidth, screenHeight, 0, y, 800, y + 1, 16, 8, pixelBufferPointer);
+                Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(0, (uint)y), new UIntVector2(screenWidth - 1, (uint)y), 1, 1, pixelBufferPointer);
             }
         });
     }
@@ -32,7 +32,7 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
                 pixelBuffer[((point.Y * screenWidth) + x) * 4 + 2],
                 1.0f);
         }
-    }, new Rectangle(0, 0, 800, 600)));
+    }, new Rectangle(0, 0, screenWidth, screenHeight)));
 
     await image.SaveAsPngAsync("test-image.png");
 }

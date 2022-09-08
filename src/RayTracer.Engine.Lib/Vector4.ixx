@@ -8,84 +8,97 @@ import RayTracer.Vector3;
 
 namespace RayTracer
 {
-    export class alignas(16) Vector4
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    class alignas(sizeof(T) * 4) Vector4T
     {
     public:
-        float X{0.0f};
-        float Y{0.0f};
-        float Z{0.0f};
-        float W{0.0f};
+        T X{0};
+        T Y{0};
+        T Z{0};
+        T W{0};
 
-        Vector4() = default;
+        Vector4T() = default;
 
-        explicit Vector4(float scalar)
+        explicit Vector4T(T scalar)
             : X{scalar}, Y{scalar}, Z{scalar}, W{scalar}
         {
 
         }
 
-        Vector4(float x, float y, float z, float w)
+        Vector4T(T x, T y, T z, T w)
             : X{x}, Y{y}, Z{z}, W{w}
         {
 
         }
 
-        Vector4(const Vector2& vector2, float z, float w)
+        Vector4T(const Vector2T<T>& vector2, T z, T w)
             : X{vector2.X}, Y{vector2.Y}, Z{z}, W{w}
         {
 
         }
 
-        Vector4(const Vector3& vector3, float w)
+        Vector4T(const Vector3T<T>& vector3, T w)
             : X{vector3.X}, Y{vector3.Y}, Z{vector3.Z}, W{w}
         {
 
         }
 
-        inline Vector4& Abs()
+        inline Vector4T& Abs()
         {
-            X = fabsf(X);
-            Y = fabsf(Y);
-            Z = fabsf(Z);
-            W = fabsf(W);
+            X = std::abs(X);
+            Y = std::abs(Y);
+            Z = std::abs(Z);
+            W = std::abs(W);
 
             return *this;
         }
 
-        inline bool Compare(const Vector4& right, float maximumAllowedErrorPerComponent)
+        inline bool Compare(const Vector4T& right, T maximumAllowedErrorPerComponent)
         {
-            bool areNansBad =
-                std::isnan(X) ^ std::isnan(right.X) ||
-                std::isnan(Y) ^ std::isnan(right.Y) ||
-                std::isnan(Z) ^ std::isnan(right.Z) ||
-                std::isnan(W) ^ std::isnan(right.W);
-
-            if (areNansBad)
+            if constexpr (std::floating_point<T>)
             {
-                return false;
+                bool areNansBad =
+                    std::isnan(X) ^ std::isnan(right.X) ||
+                    std::isnan(Y) ^ std::isnan(right.Y) ||
+                    std::isnan(Z) ^ std::isnan(right.Z) ||
+                    std::isnan(W) ^ std::isnan(right.W);
+
+                if (areNansBad)
+                {
+                    return false;
+                }
+
+                bool areInfinitiesBad =
+                    std::isinf(X) ^ std::isinf(right.X) ||
+                    std::isinf(Y) ^ std::isinf(right.Y) ||
+                    std::isinf(Z) ^ std::isinf(right.Z) ||
+                    std::isinf(W) ^ std::isinf(right.W);
+
+                if (areInfinitiesBad)
+                {
+                    return false;
+                }
+
+                return
+                    (!std::isfinite(X) || !std::isfinite(right.X) || std::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!std::isfinite(Y) || !std::isfinite(right.Y) || std::abs(Y - right.Y) < maximumAllowedErrorPerComponent) &&
+                    (!std::isfinite(Z) || !std::isfinite(right.Z) || std::abs(Z - right.Z) < maximumAllowedErrorPerComponent) &&
+                    (!std::isfinite(W) || !std::isfinite(right.W) || std::abs(W - right.W) < maximumAllowedErrorPerComponent);
             }
-
-            bool areInfinitiesBad =
-                std::isinf(X) ^ std::isinf(right.X) ||
-                std::isinf(Y) ^ std::isinf(right.Y) ||
-                std::isinf(Z) ^ std::isinf(right.Z) ||
-                std::isinf(W) ^ std::isinf(right.W);
-
-            if (areInfinitiesBad)
+            else
             {
-                return false;
+                return
+                    X == right.X &&
+                    Y == right.Y &&
+                    Z == right.Z &&
+                    W == right.W;
             }
-
-            return
-                (!std::isfinite(X) || !std::isfinite(right.X) || fabsf(X - right.X) < maximumAllowedErrorPerComponent) &&
-                (!std::isfinite(Y) || !std::isfinite(right.Y) || fabsf(Y - right.Y) < maximumAllowedErrorPerComponent) &&
-                (!std::isfinite(Z) || !std::isfinite(right.Z) || fabsf(Z - right.Z) < maximumAllowedErrorPerComponent) &&
-                (!std::isfinite(W) || !std::isfinite(right.W) || fabsf(W - right.W) < maximumAllowedErrorPerComponent);
         }
 
-        inline Vector4 ComponentwiseMultiply(const Vector4& right) const
+        inline Vector4T ComponentwiseMultiply(const Vector4T& right) const
         {
-            return Vector4
+            return Vector4T
             {
                 X * right.X,
                 Y * right.Y,
@@ -94,39 +107,61 @@ namespace RayTracer
             };
         }
 
-        inline float Distance(const Vector4& right)
+        inline T Distance(const Vector4T& right)
         {
-            return FastSqrt(DistanceSquared(right));
+            if constexpr (std::same_as<float, T>)
+            {
+                return FastSqrt(DistanceSquared(right));
+            }
+            else
+            {
+                return std::sqrt(DistanceSquared(right));
+            }
         }
 
-        inline float DistanceSquared(const Vector4& right)
+        inline T DistanceSquared(const Vector4T& right)
         {
-            float x = X - right.X;
-            float y = Y - right.Y;
-            float z = Z - right.Z;
-            float w = W - right.W;
+            T x = X - right.X;
+            T y = Y - right.Y;
+            T z = Z - right.Z;
+            T w = W - right.W;
 
             return x * x + y * y + z * z + w * w;
         }
 
-        inline float Dot(const Vector4& right) const
+        inline T Dot(const Vector4T& right) const
         {
             return (X * right.X) + (Y * right.Y) + (Z * right.Z) + (W * right.W);
         }
 
-        inline float Length() const
+        inline T Length() const
         {
-            return FastSqrt(LengthSquared());
+            if constexpr (std::derived_from<float, T>)
+            {
+                return FastSqrt(LengthSquared());
+            }
+            else
+            {
+                return std::sqrt(LengthSquared());
+            }
         }
 
-        inline float LengthSquared() const
+        inline T LengthSquared() const
         {
             return (X * X) + (Y * Y) + (Z * Z) + (W * W);
         }
 
-        inline Vector4& Normalize()
+        inline Vector4T& Normalize()
         {
-            float inverseLength = FastReciprical(Length());
+            T inverseLength;
+            if constexpr (std::same_as<float, T>)
+            {
+                inverseLength = FastReciprical(Length());
+            }
+            else
+            {
+                inverseLength = T{1} / Length();
+            }
 
             X *= inverseLength;
             Y *= inverseLength;
@@ -136,96 +171,96 @@ namespace RayTracer
             return *this;
         }
 
-        Vector4 operator+() const
+        Vector4T operator+() const
         {
             return {+X, +Y, +Z, +W};
         }
 
-        Vector4 operator-() const
+        Vector4T operator-() const
         {
             return {-X, -Y, -Z, -W};
         }
 
-        Vector4& operator++()
+        Vector4T& operator++()
         {
-            X += 1.0f;
-            Y += 1.0f;
-            Z += 1.0f;
-            W += 1.0f;
+            X += T{1};
+            Y += T{1};
+            Z += T{1};
+            W += T{1};
 
             return *this;
         }
 
-        Vector4& operator--()
+        Vector4T& operator--()
         {
-            X -= 1.0f;
-            Y -= 1.0f;
-            Z -= 1.0f;
-            W -= 1.0f;
+            X -= T{1};
+            Y -= T{1};
+            Z -= T{1};
+            W -= T{1};
 
             return *this;
         }
 
-        Vector4 operator++(int)
+        Vector4T operator++(int)
         {
-            Vector4 temp = *this;
+            Vector4T temp = *this;
 
-            X += 1.0f;
-            Y += 1.0f;
-            Z += 1.0f;
-            W += 1.0f;
+            X += T{1};
+            Y += T{1};
+            Z += T{1};
+            W += T{1};
 
             return temp;
         }
 
-        Vector4 operator--(int)
+        Vector4T operator--(int)
         {
-            Vector4 temp = *this;
+            Vector4T temp = *this;
 
-            X -= 1.0f;
-            Y -= 1.0f;
-            Z -= 1.0f;
-            W -= 1.0f;
+            X -= T{1};
+            Y -= T{1};
+            Z -= T{1};
+            W -= T{1};
 
             return temp;
         }
 
-        Vector4 operator+(const Vector4& right) const
+        Vector4T operator+(const Vector4T& right) const
         {
-            return Vector4{X + right.X, Y + right.Y, Z + right.Z, W + right.W};
+            return Vector4T{X + right.X, Y + right.Y, Z + right.Z, W + right.W};
         }
 
-        Vector4 operator-(const Vector4& right) const
+        Vector4T operator-(const Vector4T& right) const
         {
-            return Vector4{X - right.X, Y - right.Y, Z - right.Z, W - right.W};
+            return Vector4T{X - right.X, Y - right.Y, Z - right.Z, W - right.W};
         }
 
-        float operator*(const Vector4& right) const
+        T operator*(const Vector4T& right) const
         {
             return Dot(right);
         }
 
-        Vector4 operator+(float right) const
+        Vector4T operator+(T right) const
         {
-            return Vector4{X + right, Y + right, Z + right, W + right};
+            return Vector4T{X + right, Y + right, Z + right, W + right};
         }
 
-        Vector4 operator-(float right) const
+        Vector4T operator-(T right) const
         {
-            return Vector4{X - right, Y - right, Z - right, W - right};
+            return Vector4T{X - right, Y - right, Z - right, W - right};
         }
 
-        Vector4 operator*(float right) const
+        Vector4T operator*(T right) const
         {
-            return Vector4{X * right, Y * right, Z * right, W * right};
+            return Vector4T{X * right, Y * right, Z * right, W * right};
         }
 
-        Vector4 operator/(float right) const
+        Vector4T operator/(T right) const
         {
-            return Vector4{X / right, Y / right, Z / right, W / right};
+            return Vector4T{X / right, Y / right, Z / right, W / right};
         }
 
-        Vector4& operator+=(const Vector4& other)
+        Vector4T& operator+=(const Vector4T& other)
         {
             X += other.X;
             Y += other.Y;
@@ -235,7 +270,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector4& operator-=(const Vector4& other)
+        Vector4T& operator-=(const Vector4T& other)
         {
             X -= other.X;
             Y -= other.Y;
@@ -245,7 +280,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector4& operator+=(float other)
+        Vector4T& operator+=(T other)
         {
             X += other;
             Y += other;
@@ -255,7 +290,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector4& operator-=(float other)
+        Vector4T& operator-=(T other)
         {
             X -= other;
             Y -= other;
@@ -265,7 +300,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector4& operator*=(float other)
+        Vector4T& operator*=(T other)
         {
             X *= other;
             Y *= other;
@@ -275,7 +310,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector4& operator/=(float other)
+        Vector4T& operator/=(T other)
         {
             X /= other;
             Y /= other;
@@ -286,13 +321,21 @@ namespace RayTracer
         }
     };
 
-    export Vector4 operator+(float left, const Vector4& right)
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    Vector4T<T> operator+(T left, const Vector4T<T>& right)
     {
         return {left + right.X, left + right.Y, left + right.Z, left + right.W};
     }
 
-    export Vector4 operator*(float left, const Vector4& right)
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    Vector4T<T> operator*(T left, const Vector4T<T>& right)
     {
         return {left * right.X, left * right.Y, left * right.Z, left * right.W};
     }
+
+    export using Vector4 = Vector4T<float>;
+    export using IntVector4 = Vector4T<int>;
+    export using UIntVector4 = Vector4T<unsigned int>;
 }

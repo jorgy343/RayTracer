@@ -5,6 +5,7 @@ import RayTracer.Sphere;
 import RayTracer.Plane;
 import RayTracer.AxisAlignedBox;
 import RayTracer.PointLight;
+import RayTracer.Vector2;
 
 #include <memory>
 #include <vector>
@@ -12,7 +13,7 @@ import RayTracer.PointLight;
 
 using namespace RayTracer;
 
-extern "C" __declspec(dllexport) void __cdecl TraceScene(int screenWidth, int screenHeight, int startingX, int startingY, int endingX, int endingY, int subpixelCount, int iterations, float* pixelBuffer)
+extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, int iterations, float* pixelBuffer)
 {
     int subpixelCountSquared = subpixelCount * subpixelCount;
 
@@ -23,7 +24,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int screenWidth, int sc
         90.0f};
 
     std::vector<Ray> rayBuffer{};
-    rayBuffer.reserve((endingX - startingX) * (endingY - startingY) * subpixelCountSquared);
+    rayBuffer.reserve((inclusiveEndingPoint.X - inclusiveStartingPoint.X + 1) * (inclusiveEndingPoint.Y - inclusiveStartingPoint.Y + 1) * subpixelCountSquared);
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
@@ -67,12 +68,12 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int screenWidth, int sc
 
     for (int count = 0; count < iterations; count++)
     {
-        perspectiveCamera.CreateRays(screenWidth, screenHeight, startingX, startingY, endingX, endingY, subpixelCount, rayBuffer);
+        perspectiveCamera.CreateRays(screenSize, inclusiveStartingPoint, inclusiveEndingPoint, subpixelCount, rayBuffer);
         int rayBufferIndex = 0;
 
-        for (int y = startingY; y < endingY; y++)
+        for (int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
         {
-            for (int x = startingX; x < endingX; x++)
+            for (int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
             {
                 Vector3 color{};
 
@@ -87,22 +88,22 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int screenWidth, int sc
 
                 color /= static_cast<float>(subpixelCountSquared);
 
-                pixelBuffer[((y * screenWidth) + x) * 4 + 0] += color.X;
-                pixelBuffer[((y * screenWidth) + x) * 4 + 1] += color.Y;
-                pixelBuffer[((y * screenWidth) + x) * 4 + 2] += color.Z;
-                pixelBuffer[((y * screenWidth) + x) * 4 + 3] += 0.0f;
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += color.X;
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += color.Y;
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += color.Z;
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 3] += 0.0f;
             }
         }
     }
 
-    for (int y = startingY; y < endingY; y++)
+    for (int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
     {
-        for (int x = startingX; x < endingX; x++)
+        for (int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
         {
-            pixelBuffer[((y * screenWidth) + x) * 4 + 0] /= iterations;
-            pixelBuffer[((y * screenWidth) + x) * 4 + 1] /= iterations;
-            pixelBuffer[((y * screenWidth) + x) * 4 + 2] /= iterations;
-            pixelBuffer[((y * screenWidth) + x) * 4 + 3] /= iterations;
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= iterations;
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= iterations;
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= iterations;
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= iterations;
         }
     }
 }

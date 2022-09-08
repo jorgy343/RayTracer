@@ -1,4 +1,5 @@
 #include <cmath>
+#include <concepts>
 
 export module RayTracer.Vector2;
 
@@ -6,99 +7,132 @@ import RayTracer.Math;
 
 namespace RayTracer
 {
-    export class Vector2
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    class alignas(sizeof(T) * 2) Vector2T
     {
     public:
-        float X{0.0f};
-        float Y{0.0f};
+        T X{0};
+        T Y{0};
 
-        Vector2() = default;
+        Vector2T() = default;
 
-        explicit Vector2(float scalar)
+        explicit Vector2T(T scalar)
             : X{scalar}, Y{scalar}
         {
 
         }
 
-        Vector2(float x, float y)
+        Vector2T(T x, T y)
             : X{x}, Y{y}
         {
 
         }
 
-        inline Vector2& Abs()
+        inline Vector2T& Abs()
         {
-            X = fabsf(X);
-            Y = fabsf(Y);
+            X = std::abs(X);
+            Y = std::abs(Y);
 
             return *this;
         }
 
-        inline bool Compare(const Vector2& right, float maximumAllowedErrorPerComponent)
+        inline bool Compare(const Vector2T& right, T maximumAllowedErrorPerComponent)
         {
-            bool areNansBad =
-                std::isnan(X) ^ std::isnan(right.X) ||
-                std::isnan(Y) ^ std::isnan(right.Y);
-
-            if (areNansBad)
+            if constexpr (std::floating_point<T>)
             {
-                return false;
+                bool areNansBad =
+                    std::isnan(X) ^ std::isnan(right.X) ||
+                    std::isnan(Y) ^ std::isnan(right.Y);
+
+                if (areNansBad)
+                {
+                    return false;
+                }
+
+                bool areInfinitiesBad =
+                    std::isinf(X) ^ std::isinf(right.X) ||
+                    std::isinf(Y) ^ std::isinf(right.Y);
+
+                if (areInfinitiesBad)
+                {
+                    return false;
+                }
+
+                return
+                    (!std::isfinite(X) || !std::isfinite(right.X) || std::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!std::isfinite(Y) || !std::isfinite(right.Y) || std::abs(Y - right.Y) < maximumAllowedErrorPerComponent);
             }
-
-            bool areInfinitiesBad =
-                std::isinf(X) ^ std::isinf(right.X) ||
-                std::isinf(Y) ^ std::isinf(right.Y);
-
-            if (areInfinitiesBad)
+            else
             {
-                return false;
+                return
+                    X == right.X &&
+                    Y == right.Y;
             }
-
-            return
-                (!std::isfinite(X) || !std::isfinite(right.X) || fabsf(X - right.X) < maximumAllowedErrorPerComponent) &&
-                (!std::isfinite(Y) || !std::isfinite(right.Y) || fabsf(Y - right.Y) < maximumAllowedErrorPerComponent);
         }
 
-        inline Vector2 ComponentwiseMultiply(const Vector2& right) const
+        inline Vector2T ComponentwiseMultiply(const Vector2T& right) const
         {
-            return Vector2
+            return Vector2T
             {
                 X * right.X,
                 Y * right.Y,
             };
         }
 
-        inline float Distance(const Vector2& right)
+        inline T Distance(const Vector2T& right)
         {
-            return FastSqrt(DistanceSquared(right));
+            if constexpr (std::same_as<float, T>)
+            {
+                return FastSqrt(DistanceSquared(right));
+            }
+            else
+            {
+                return std::sqrt(DistanceSquared(right));
+            }
         }
 
-        inline float DistanceSquared(const Vector2& right)
+        inline T DistanceSquared(const Vector2T& right)
         {
-            float x = X - right.X;
-            float y = Y - right.Y;
+            T x = X - right.X;
+            T y = Y - right.Y;
 
             return x * x + y * y;
         }
 
-        inline float Dot(const Vector2& right) const
+        inline T Dot(const Vector2T& right) const
         {
             return (X * right.X) + (Y * right.Y);
         }
 
-        inline float Length() const
+        inline T Length() const
         {
-            return FastSqrt(LengthSquared());
+            if constexpr (std::derived_from<float, T>)
+            {
+                return FastSqrt(LengthSquared());
+            }
+            else
+            {
+                return std::sqrt(LengthSquared());
+            }
         }
 
-        inline float LengthSquared() const
+        inline T LengthSquared() const
         {
             return (X * X) + (Y * Y);
         }
 
-        inline Vector2& Normalize()
+        inline Vector2T& Normalize()
         {
-            float inverseLength = FastReciprical(Length());
+            T inverseLength;
+            if constexpr (std::same_as<float, T>)
+            {
+                inverseLength = FastReciprical(Length());
+            }
+            else
+            {
+                inverseLength = T{1} / Length();
+            }
 
             X *= inverseLength;
             Y *= inverseLength;
@@ -106,88 +140,88 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2 operator+() const
+        Vector2T operator+() const
         {
             return {+X, +Y};
         }
 
-        Vector2 operator-() const
+        Vector2T operator-() const
         {
             return {-X, -Y};
         }
 
-        Vector2& operator++()
+        Vector2T& operator++()
         {
-            X += 1.0f;
-            Y += 1.0f;
+            X += T{1};
+            Y += T{1};
 
             return *this;
         }
 
-        Vector2& operator--()
+        Vector2T& operator--()
         {
-            X -= 1.0f;
-            Y -= 1.0f;
+            X -= T{1};
+            Y -= T{1};
 
             return *this;
         }
 
-        Vector2 operator++(int)
+        Vector2T operator++(int)
         {
-            Vector2 temp = *this;
+            Vector2T temp = *this;
 
-            X += 1.0f;
-            Y += 1.0f;
+            X += T{1};
+            Y += T{1};
 
             return temp;
         }
 
-        Vector2 operator--(int)
+        Vector2T operator--(int)
         {
-            Vector2 temp = *this;
+            Vector2T temp = *this;
 
-            X -= 1.0f;
-            Y -= 1.0f;
+            X -= T{1};
+            Y -= T{1};
 
             return temp;
         }
 
-        Vector2 operator+(const Vector2& right) const
+        Vector2T operator+(const Vector2T& right) const
         {
-            return Vector2{X + right.X, Y + right.Y};
+            return Vector2T{X + right.X, Y + right.Y};
         }
 
-        Vector2 operator-(const Vector2& right) const
+        Vector2T operator-(const Vector2T& right) const
         {
-            return Vector2{X - right.X, Y - right.Y};
+            return Vector2T{X - right.X, Y - right.Y};
         }
 
-        float operator*(const Vector2& right) const
+        T operator*(const Vector2T& right) const
         {
             return Dot(right);
         }
 
-        Vector2 operator+(float right) const
+        Vector2T operator+(T right) const
         {
-            return Vector2{X + right, Y + right};
+            return Vector2T{X + right, Y + right};
         }
 
-        Vector2 operator-(float right) const
+        Vector2T operator-(T right) const
         {
-            return Vector2{X - right, Y - right};
+            return Vector2T{X - right, Y - right};
         }
 
-        Vector2 operator*(float right) const
+        Vector2T operator*(T right) const
         {
-            return Vector2{X * right, Y * right};
+            return Vector2T{X * right, Y * right};
         }
 
-        Vector2 operator/(float right) const
+        Vector2T operator/(T right) const
         {
-            return Vector2{X / right, Y / right};
+            return Vector2T{X / right, Y / right};
         }
 
-        Vector2& operator+=(const Vector2& other)
+        Vector2T& operator+=(const Vector2T& other)
         {
             X += other.X;
             Y += other.Y;
@@ -195,7 +229,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2& operator-=(const Vector2& other)
+        Vector2T& operator-=(const Vector2T& other)
         {
             X -= other.X;
             Y -= other.Y;
@@ -203,7 +237,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2& operator+=(float other)
+        Vector2T& operator+=(T other)
         {
             X += other;
             Y += other;
@@ -211,7 +245,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2& operator-=(float other)
+        Vector2T& operator-=(T other)
         {
             X -= other;
             Y -= other;
@@ -219,7 +253,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2& operator*=(float other)
+        Vector2T& operator*=(T other)
         {
             X *= other;
             Y *= other;
@@ -227,7 +261,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2& operator/=(float other)
+        Vector2T& operator/=(T other)
         {
             X /= other;
             Y /= other;
@@ -236,13 +270,21 @@ namespace RayTracer
         }
     };
 
-    export Vector2 operator+(float left, const Vector2& right)
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    Vector2T<T> operator+(T left, const Vector2T<T>& right)
     {
         return {left + right.X, left + right.Y};
     }
 
-    export Vector2 operator*(float left, const Vector2& right)
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    Vector2T<T> operator*(T left, const Vector2T<T>& right)
     {
         return {left * right.X, left * right.Y};
     }
+
+    export using Vector2 = Vector2T<float>;
+    export using IntVector2 = Vector2T<int>;
+    export using UIntVector2 = Vector2T<unsigned int>;
 }

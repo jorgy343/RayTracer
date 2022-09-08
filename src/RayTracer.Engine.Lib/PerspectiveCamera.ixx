@@ -4,6 +4,7 @@
 export module RayTracer.PerspectiveCamera;
 
 import RayTracer.Math;
+import RayTracer.Vector2;
 import RayTracer.Vector3;
 import RayTracer.Ray;
 import RayTracer.Random;
@@ -36,14 +37,14 @@ namespace RayTracer
 
         }
 
-        void CreateRays(int screenWidth, int screenHeight, int startingX, int startingY, int endingX, int endingY, int subpixelCount, std::vector<Ray>& rayBuffer)
+        void CreateRays(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, std::vector<Ray>& rayBuffer)
         {
             Vector3 forward = (Position - LookAt).Normalize();
 
             Vector3 u = (Up % forward).Normalize();
             Vector3 v = (forward % u).Normalize();
 
-            float aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+            float aspectRatio = static_cast<float>(screenSize.X) / static_cast<float>(screenSize.Y);
             float halfWidth = tanf(FieldOfView * 0.5f);
 
             float viewportHeight = halfWidth * 2.0f;
@@ -54,15 +55,15 @@ namespace RayTracer
 
             Vector3 upperLeftCorner = Position - du * 0.5f + dv * 0.5f - forward;
 
-            float recipricalWidth = FastReciprical(static_cast<float>(screenWidth));
-            float recipricalHeight = FastReciprical(static_cast<float>(screenHeight));
+            float recipricalWidth = FastReciprical(static_cast<float>(screenSize.X));
+            float recipricalHeight = FastReciprical(static_cast<float>(screenSize.Y));
 
             float subpixelSizeX = FastReciprical(static_cast<float>(subpixelCount)) * recipricalWidth;
             float subpixelSizeY = FastReciprical(static_cast<float>(subpixelCount)) * recipricalHeight;
 
-            for (int y = startingY; y < endingY; y++)
+            for (int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
             {
-                for (int x = startingX; x < endingX; x++)
+                for (int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
                 {
                     for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
                     {

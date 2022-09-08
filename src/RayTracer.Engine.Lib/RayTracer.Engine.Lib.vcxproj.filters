@@ -38,9 +38,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Vector3.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="Ray.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -121,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="PointLight.ixx">
       <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
