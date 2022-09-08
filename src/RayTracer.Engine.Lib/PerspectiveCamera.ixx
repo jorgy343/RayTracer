@@ -1,4 +1,5 @@
 #include <cmath>
+#include <vector>
 
 export module RayTracer.PerspectiveCamera;
 
@@ -21,35 +22,28 @@ namespace RayTracer
 
         float FieldOfView{0.0f};
 
-        int ScreenWidth{0};
-        int ScreenHeight{0};
-
         PerspectiveCamera(
             const Vector3& position,
             const Vector3& lookAt,
             const Vector3& up,
-            float fieldOfView,
-            int screenWidth,
-            int screenHeight)
+            float fieldOfView)
             :
             Position{position},
             LookAt{lookAt},
             Up{up},
-            FieldOfView{fieldOfView},
-            ScreenWidth{screenWidth},
-            ScreenHeight{screenHeight}
+            FieldOfView{fieldOfView}
         {
 
         }
 
-        void CreateRays(int startingX, int startingY, int width, int height, int subpixelCount, Ray* rayBuffer)
+        void CreateRays(int screenWidth, int screenHeight, int startingX, int startingY, int endingX, int endingY, int subpixelCount, std::vector<Ray>& rayBuffer)
         {
             Vector3 forward = (Position - LookAt).Normalize();
 
             Vector3 u = (Up % forward).Normalize();
             Vector3 v = (forward % u).Normalize();
 
-            float aspectRatio = static_cast<float>(ScreenWidth) / static_cast<float>(ScreenHeight);
+            float aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
             float halfWidth = tanf(FieldOfView * 0.5f);
 
             float viewportHeight = halfWidth * 2.0f;
@@ -60,20 +54,19 @@ namespace RayTracer
 
             Vector3 upperLeftCorner = Position - du * 0.5f + dv * 0.5f - forward;
 
-            float recipricalWidth = FastReciprical(static_cast<float>(width));
-            float recipricalHeight = FastReciprical(static_cast<float>(height));
+            float recipricalWidth = FastReciprical(static_cast<float>(screenWidth));
+            float recipricalHeight = FastReciprical(static_cast<float>(screenHeight));
 
             float subpixelSizeX = FastReciprical(static_cast<float>(subpixelCount)) * recipricalWidth;
             float subpixelSizeY = FastReciprical(static_cast<float>(subpixelCount)) * recipricalHeight;
 
-            int index = 0;
-            for (int y = startingY; y < startingY + height; ++y)
+            for (int y = startingY; y < endingY; y++)
             {
-                for (int x = startingX; x < startingX + width; ++x)
+                for (int x = startingX; x < endingX; x++)
                 {
-                    for (int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
+                    for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
                     {
-                        for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
+                        for (int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
                         {
                             float normalizedX = x * recipricalWidth;
                             float normalizedY = y * recipricalHeight;
@@ -89,7 +82,7 @@ namespace RayTracer
 
                             Vector3 rayDirection = upperLeftCorner + (normalizedX * du) - (normalizedY * dv) - Position;
 
-                            rayBuffer[index++] = Ray{Position, rayDirection.Normalize()};
+                            rayBuffer.push_back(Ray{Position, rayDirection.Normalize()});
                         }
                     }
                 }

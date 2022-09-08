@@ -12,21 +12,18 @@ import RayTracer.PointLight;
 
 using namespace RayTracer;
 
-extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int startingY, int width, int height, float* pixelBuffer)
+extern "C" __declspec(dllexport) void __cdecl TraceScene(int screenWidth, int screenHeight, int startingX, int startingY, int endingX, int endingY, int subpixelCount, int iterations, float* pixelBuffer)
 {
-    constexpr int totalIterations = 4;
-    constexpr int subpixelCount = 8;
-    constexpr int subpixelCountSquared = subpixelCount * subpixelCount;
+    int subpixelCountSquared = subpixelCount * subpixelCount;
 
     PerspectiveCamera perspectiveCamera{
         {0, 0, 0},
         {0, 0, 1},
         {0, 1, 0},
-        90.0f,
-        800,
-        600};
+        90.0f};
 
-    std::vector<Ray> rayBuffer(width * height * subpixelCount * subpixelCount);
+    std::vector<Ray> rayBuffer{};
+    rayBuffer.reserve((endingX - startingX) * (endingY - startingY) * subpixelCountSquared);
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
@@ -63,55 +60,49 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(int startingX, int star
     AxisAlignedBox axisAlignedBox{{-8, -2, 5}, {-6, 2, 9}, &whiteMaterial};
     scene.AddGeometry(&axisAlignedBox);
 
-    //DirectionalLight light1{{1.0f, 1.0f, 1.0f}, Vector3{0.0f, -1.0f, 0.3f}.Normalize()};
     PointLight light1{{1.0f, 1.0f, 1.0f}, {0.0f, 10.0f, 0.0f}};
-
     scene.AddLight(&light1);
 
     scene.Finalize();
 
-    for (int count = 0; count < totalIterations; count++)
+    for (int count = 0; count < iterations; count++)
     {
-        perspectiveCamera.CreateRays(0, 0, width, height, subpixelCount, rayBuffer.data());
+        perspectiveCamera.CreateRays(screenWidth, screenHeight, startingX, startingY, endingX, endingY, subpixelCount, rayBuffer);
+        int rayBufferIndex = 0;
 
-        for (int y = 0; y < height; y++)
+        for (int y = startingY; y < endingY; y++)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = startingX; x < endingX; x++)
             {
-                //if (x != 310 || y != 350)
-                //{
-                //    continue;
-                //}
-
                 Vector3 color{};
 
-                for (int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
+                for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
                 {
-                    for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
+                    for (int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
                     {
-                        Ray ray = rayBuffer[((y * width) + x) * subpixelCountSquared + (subpixelY * subpixelCount) + subpixelX];
+                        Ray& ray = rayBuffer[rayBufferIndex++];
                         color += scene.CastRayColor(ray);
                     }
                 }
 
                 color /= static_cast<float>(subpixelCountSquared);
 
-                pixelBuffer[((y * width) + x) * 4 + 0] += color.X;
-                pixelBuffer[((y * width) + x) * 4 + 1] += color.Y;
-                pixelBuffer[((y * width) + x) * 4 + 2] += color.Z;
-                pixelBuffer[((y * width) + x) * 4 + 3] += 0.0f;
+                pixelBuffer[((y * screenWidth) + x) * 4 + 0] += color.X;
+                pixelBuffer[((y * screenWidth) + x) * 4 + 1] += color.Y;
+                pixelBuffer[((y * screenWidth) + x) * 4 + 2] += color.Z;
+                pixelBuffer[((y * screenWidth) + x) * 4 + 3] += 0.0f;
             }
         }
     }
 
-    for (int y = 0; y < height; y++)
+    for (int y = startingY; y < endingY; y++)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = startingX; x < endingX; x++)
         {
-            pixelBuffer[((y * width) + x) * 4 + 0] /= totalIterations;
-            pixelBuffer[((y * width) + x) * 4 + 1] /= totalIterations;
-            pixelBuffer[((y * width) + x) * 4 + 2] /= totalIterations;
-            pixelBuffer[((y * width) + x) * 4 + 3] /= totalIterations;
+            pixelBuffer[((y * screenWidth) + x) * 4 + 0] /= iterations;
+            pixelBuffer[((y * screenWidth) + x) * 4 + 1] /= iterations;
+            pixelBuffer[((y * screenWidth) + x) * 4 + 2] /= iterations;
+            pixelBuffer[((y * screenWidth) + x) * 4 + 3] /= iterations;
         }
     }
 }

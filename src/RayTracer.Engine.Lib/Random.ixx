@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <random>
 
 export module RayTracer.Random;
 
@@ -7,13 +8,14 @@ namespace RayTracer
     export class Random
     {
     private:
-        mutable uint32_t _state;
+        mutable uint32_t _state{};
 
     public:
-        Random(uint32_t seed = 92134)
-            : _state{seed}
+        Random()
         {
+            std::random_device randomDevice{};
 
+            _state = randomDevice();
         }
 
         inline uint32_t GetInteger() const
