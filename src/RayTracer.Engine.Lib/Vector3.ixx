@@ -137,7 +137,7 @@ namespace RayTracer
 
         inline T Length() const
         {
-            if constexpr (std::derived_from<float, T>)
+            if constexpr (std::same_as<float, T>)
             {
                 return FastSqrt(LengthSquared());
             }
@@ -157,7 +157,7 @@ namespace RayTracer
             T inverseLength;
             if constexpr (std::same_as<float, T>)
             {
-                inverseLength = FastReciprical(Length());
+                inverseLength = FastRecipricalSqrt(LengthSquared());
             }
             else
             {

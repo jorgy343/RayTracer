@@ -43,6 +43,14 @@ namespace RayTracer
         return value;
     }
 
+    export inline float FastRecipricalSqrt(float value)
+    {
+        __m128 mmValue = _mm_load_ss(&value);
+        _mm_store_ss(&value, _mm_rsqrt_ss(mmValue));
+
+        return value;
+    }
+
     export inline float FastMax(float value1, float const value2)
     {
         __m128 mmValue1 = _mm_load_ss(&value1);

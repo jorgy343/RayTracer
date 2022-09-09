@@ -61,7 +61,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     AxisAlignedBox axisAlignedBox{{-8, -2, 5}, {-6, 2, 9}, &whiteMaterial};
     scene.AddGeometry(&axisAlignedBox);
 
-    PointLight light1{{1.0f, 1.0f, 1.0f}, {0.0f, 10.0f, 0.0f}};
+    PointLight light1{{1.0f, 1.0f, 1.0f}, {-1.0f, 10.0f, 0.0f}};
     scene.AddLight(&light1);
 
     scene.Finalize();

@@ -120,7 +120,7 @@ namespace RayTracer
                     float random2 = _random.GetNormalizedFloat();
 
                     Vector3 randomHemisphereVector = CosineWeightedSampleHemisphere(random1, random2);
-                    Vector3 scatterDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);
+                    Vector3 scatterDirection = TransformTangentThing(hitNormal, randomHemisphereVector);
 
                     indirectLight = CastRayColor(Ray{hitPosition, scatterDirection}, depth + 1);
                 }

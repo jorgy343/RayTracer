@@ -6,6 +6,8 @@ using RayTracer.ConsoleClient;
 
 const int screenWidth = 800;
 const int screenHeight = 600;
+const int subpixelCount = 8;
+const int iterations = 16;
 
 using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 {
@@ -17,7 +19,7 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
         {
             fixed (float* pixelBufferPointer = pixelBuffer)
             {
-                Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(0, (uint)y), new UIntVector2(screenWidth - 1, (uint)y), 1, 1, pixelBufferPointer);
+                Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(0, (uint)y), new UIntVector2(screenWidth - 1, (uint)y), subpixelCount, iterations, pixelBufferPointer);
             }
         });
     }
