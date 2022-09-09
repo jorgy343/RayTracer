@@ -11,6 +11,8 @@ namespace RayTracer
 {
     export inline Vector3 CosineWeightedSampleHemisphere(float random1, float random2)
     {
+        // Source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
+
         float sinTheta = sqrtf(1 - random1 * random1);
         float phi = TwoPi * random2;
         float x = sinTheta * std::cosf(phi);
@@ -19,18 +21,10 @@ namespace RayTracer
         return Vector3{x, random1, z};
     }
 
-    export inline Vector3 TransformFromTangentSpaceToWorldSpace(const Vector3& normal, const Vector3& vectorToTransform)
+    export inline Vector3 TransformFromTangentSpaceToWorldSpace(const Vector3& hitNormal, const Vector3& vectorToTransform)
     {
-        Vector3 w = normal.NormalizeNondestructive();
-        Vector3 a = std::fabsf(w.X > 0.9f) ? Vector3{0, 1, 0} : Vector3{1, 0, 0};
-        Vector3 v = (w % a).Normalize();
-        Vector3 u = w % v;
+        // Source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
 
-        return (vectorToTransform.X * u) + (vectorToTransform.Y * v) + (vectorToTransform.Z * w);
-    }
-
-    export inline Vector3 TransformTangentThing(const Vector3& hitNormal, const Vector3& vectorToTransform)
-    {
         Vector3 nt;
         if (std::abs(hitNormal.X) > std::abs(hitNormal.Y))
         {
