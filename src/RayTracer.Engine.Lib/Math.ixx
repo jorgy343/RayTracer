@@ -30,7 +30,7 @@ namespace RayTracer
     export inline float FastSqrt(float value)
     {
         __m128 mmValue = _mm_load_ss(&value);
-        _mm_store_ss(&value, _mm_sqrt_ps(mmValue));
+        _mm_store_ss(&value, _mm_sqrt_ss(mmValue));
 
         return value;
     }
