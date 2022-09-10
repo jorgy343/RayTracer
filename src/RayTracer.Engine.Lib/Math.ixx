@@ -1,4 +1,8 @@
+#include <concepts>
+#include <cmath>
+
 #include "Vcl.h"
+#include "gcem.hpp"
 
 export module RayTracer.Math;
 
@@ -6,6 +10,189 @@ using namespace vcl;
 
 namespace RayTracer
 {
+    namespace Math
+    {
+        export template <typename T>
+            concept number = std::integral<T> || std::floating_point<T>;
+
+        export template <number T>
+            inline constexpr bool isnan(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::internal::is_nan(value);
+            }
+            else
+            {
+                return std::isnan(value);
+            }
+        }
+
+        export template <number T>
+            inline constexpr bool isinf(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::internal::is_inf(value);
+            }
+            else
+            {
+                return std::isinf(value);
+            }
+        }
+
+        export template <number T>
+            inline constexpr bool isfinite(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::internal::is_finite(value);
+            }
+            else
+            {
+                return std::isfinite(value);
+            }
+        }
+
+        export template <number T>
+            inline constexpr T abs(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::abs(value);
+            }
+            else
+            {
+                return std::abs(value);
+            }
+        }
+
+        export template <number T>
+            inline constexpr T min(T left, T right)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::min(left, right);
+            }
+            else
+            {
+                __m128 mmLeft1 = _mm_load_ss(&left);
+                __m128 mmRight2 = _mm_load_ss(&right);
+
+                float result;
+                _mm_store_ss(&result, _mm_min_ss(mmLeft1, mmRight2));
+
+                return result;
+            }
+        }
+
+        export template <number T>
+            inline constexpr T max(T left, T right)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::max(left, right);
+            }
+            else
+            {
+                __m128 mmLeft1 = _mm_load_ss(&left);
+                __m128 mmRight2 = _mm_load_ss(&right);
+
+                float result;
+                _mm_store_ss(&result, _mm_max_ss(mmLeft1, mmRight2));
+
+                return result;
+            }
+        }
+
+        export template <std::floating_point T>
+            inline constexpr T sqrt(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::sqrt(value);
+            }
+            else
+            {
+                __m128 mmValue = _mm_load_ss(&value);
+                _mm_store_ss(&value, _mm_sqrt_ss(mmValue));
+
+                return value;
+            }
+        }
+
+        export template <std::floating_point T>
+            inline constexpr T rcp(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return T{1} / value;
+            }
+            else
+            {
+                __m128 mmValue = _mm_load_ss(&value);
+                _mm_store_ss(&value, _mm_rcp_ss(mmValue));
+
+                return value;
+            }
+        }
+
+        export template <std::floating_point T>
+            inline constexpr T inv_sqrt(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::inv_sqrt(value);
+            }
+            else
+            {
+                __m128 mmValue = _mm_load_ss(&value);
+                _mm_store_ss(&value, _mm_rsqrt_ss(mmValue));
+
+                return value;
+            }
+        }
+
+        export template <std::integral T>
+            inline constexpr T pow(T base, T exponent)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::pow(base, exponent);
+            }
+            else
+            {
+                return std::pow(static_cast<double>(base), static_cast<double>(exponent));
+            }
+        }
+
+        export template <std::floating_point T, int Iterations = 20>
+            inline constexpr T cos(T radians)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::cos(radians);
+            }
+            else
+            {
+                return std::cos(radians);
+            }
+        }
+
+        export template <std::floating_point T, int Iterations = 20>
+            inline constexpr T sin(T radians)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::sin(radians);
+            }
+            else
+            {
+                return std::sin(radians);
+            }
+        }
+    }
+
     export inline Vec8f SimdDot(
         Vec8f const aX,
         Vec8f const bX,
@@ -25,49 +212,5 @@ namespace RayTracer
     export inline Vec8f ConvertNanToInf(Vec8f const value)
     {
         return min(max(value, -infinite8f()), infinite8f());
-    }
-
-    export inline float FastSqrt(float value)
-    {
-        __m128 mmValue = _mm_load_ss(&value);
-        _mm_store_ss(&value, _mm_sqrt_ss(mmValue));
-
-        return value;
-    }
-
-    export inline float FastReciprical(float value)
-    {
-        __m128 mmValue = _mm_load_ss(&value);
-        _mm_store_ss(&value, _mm_rcp_ss(mmValue));
-
-        return value;
-    }
-
-    export inline float FastRecipricalSqrt(float value)
-    {
-        __m128 mmValue = _mm_load_ss(&value);
-        _mm_store_ss(&value, _mm_rsqrt_ss(mmValue));
-
-        return value;
-    }
-
-    export inline float FastMax(float value1, float const value2)
-    {
-        __m128 mmValue1 = _mm_load_ss(&value1);
-        __m128 mmValue2 = _mm_load_ss(&value2);
-
-        _mm_store_ss(&value1, _mm_max_ss(mmValue1, mmValue2));
-
-        return value1;
-    }
-
-    export inline float FastMin(float value1, float const value2)
-    {
-        __m128 mmValue1 = _mm_load_ss(&value1);
-        __m128 mmValue2 = _mm_load_ss(&value2);
-
-        _mm_store_ss(&value1, _mm_min_ss(mmValue1, mmValue2));
-
-        return value1;
     }
 }

@@ -71,9 +71,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
         perspectiveCamera.CreateRays(screenSize, inclusiveStartingPoint, inclusiveEndingPoint, subpixelCount, rayBuffer);
         int rayBufferIndex = 0;
 
-        for (int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
+        for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
         {
-            for (int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
+            for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
             {
                 Vector3 color{};
 
@@ -96,9 +96,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
         }
     }
 
-    for (int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
+    for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
     {
-        for (int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
+        for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
         {
             pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= iterations;
             pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= iterations;

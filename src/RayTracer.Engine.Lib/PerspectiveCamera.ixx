@@ -55,15 +55,15 @@ namespace RayTracer
 
             Vector3 upperLeftCorner = Position - du * 0.5f + dv * 0.5f - forward;
 
-            float recipricalWidth = FastReciprical(static_cast<float>(screenSize.X));
-            float recipricalHeight = FastReciprical(static_cast<float>(screenSize.Y));
+            float recipricalWidth = Math::rcp(static_cast<float>(screenSize.X));
+            float recipricalHeight = Math::rcp(static_cast<float>(screenSize.Y));
 
-            float subpixelSizeX = FastReciprical(static_cast<float>(subpixelCount)) * recipricalWidth;
-            float subpixelSizeY = FastReciprical(static_cast<float>(subpixelCount)) * recipricalHeight;
+            float subpixelSizeX = Math::rcp(static_cast<float>(subpixelCount)) * recipricalWidth;
+            float subpixelSizeY = Math::rcp(static_cast<float>(subpixelCount)) * recipricalHeight;
 
-            for (int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
+            for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
             {
-                for (int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
+                for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
                 {
                     for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
                     {

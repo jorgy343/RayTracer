@@ -57,7 +57,7 @@ namespace RayTracer
             float normalDotDirection = Normal * ray.Direction;
             float normalDotRayPosition = Normal * ray.Position;
 
-            float entranceDistance = -(Distance + normalDotRayPosition) * FastReciprical(normalDotDirection);
+            float entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
 
             return entranceDistance < 0.0f ? std::numeric_limits<float>::infinity() : entranceDistance;
         }

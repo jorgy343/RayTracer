@@ -15,35 +15,35 @@ namespace RayTracer
         T X{0};
         T Y{0};
 
-        Vector2T() = default;
+        inline constexpr Vector2T() = default;
 
-        explicit Vector2T(T scalar)
+        inline constexpr explicit Vector2T(T scalar)
             : X{scalar}, Y{scalar}
         {
 
         }
 
-        Vector2T(T x, T y)
+        inline constexpr Vector2T(T x, T y)
             : X{x}, Y{y}
         {
 
         }
 
-        inline Vector2T& Abs()
+        inline constexpr Vector2T& Abs()
         {
-            X = std::abs(X);
-            Y = std::abs(Y);
+            X = Math::abs(X);
+            Y = Math::abs(Y);
 
             return *this;
         }
 
-        inline bool Compare(const Vector2T& right, T maximumAllowedErrorPerComponent)
+        inline constexpr bool Compare(const Vector2T& right, T maximumAllowedErrorPerComponent)
         {
             if constexpr (std::floating_point<T>)
             {
                 bool areNansBad =
-                    std::isnan(X) ^ std::isnan(right.X) ||
-                    std::isnan(Y) ^ std::isnan(right.Y);
+                    Math::isnan(X) ^ Math::isnan(right.X) ||
+                    Math::isnan(Y) ^ Math::isnan(right.Y);
 
                 if (areNansBad)
                 {
@@ -51,8 +51,8 @@ namespace RayTracer
                 }
 
                 bool areInfinitiesBad =
-                    std::isinf(X) ^ std::isinf(right.X) ||
-                    std::isinf(Y) ^ std::isinf(right.Y);
+                    Math::isinf(X) ^ Math::isinf(right.X) ||
+                    Math::isinf(Y) ^ Math::isinf(right.Y);
 
                 if (areInfinitiesBad)
                 {
@@ -60,8 +60,8 @@ namespace RayTracer
                 }
 
                 return
-                    (!std::isfinite(X) || !std::isfinite(right.X) || std::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
-                    (!std::isfinite(Y) || !std::isfinite(right.Y) || std::abs(Y - right.Y) < maximumAllowedErrorPerComponent);
+                    (!Math::isfinite(X) || !Math::isfinite(right.X) || Math::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(Y) || !Math::isfinite(right.Y) || Math::abs(Y - right.Y) < maximumAllowedErrorPerComponent);
             }
             else
             {
@@ -71,7 +71,7 @@ namespace RayTracer
             }
         }
 
-        inline Vector2T ComponentwiseMultiply(const Vector2T& right) const
+        inline constexpr Vector2T ComponentwiseMultiply(const Vector2T& right) const
         {
             return Vector2T
             {
@@ -80,19 +80,12 @@ namespace RayTracer
             };
         }
 
-        inline T Distance(const Vector2T& right)
+        inline constexpr T Distance(const Vector2T& right)
         {
-            if constexpr (std::same_as<float, T>)
-            {
-                return FastSqrt(DistanceSquared(right));
-            }
-            else
-            {
-                return std::sqrt(DistanceSquared(right));
-            }
+            return Math::sqrt(DistanceSquared(right));
         }
 
-        inline T DistanceSquared(const Vector2T& right)
+        inline constexpr T DistanceSquared(const Vector2T& right)
         {
             T x = X - right.X;
             T y = Y - right.Y;
@@ -100,34 +93,27 @@ namespace RayTracer
             return x * x + y * y;
         }
 
-        inline T Dot(const Vector2T& right) const
+        inline constexpr T Dot(const Vector2T& right) const
         {
             return (X * right.X) + (Y * right.Y);
         }
 
-        inline T Length() const
+        inline constexpr T Length() const
         {
-            if constexpr (std::same_as<float, T>)
-            {
-                return FastSqrt(LengthSquared());
-            }
-            else
-            {
-                return std::sqrt(LengthSquared());
-            }
+            return Math::sqrt(LengthSquared());
         }
 
-        inline T LengthSquared() const
+        inline constexpr T LengthSquared() const
         {
             return (X * X) + (Y * Y);
         }
 
-        inline Vector2T& Normalize()
+        inline constexpr Vector2T& Normalize()
         {
             T inverseLength;
             if constexpr (std::same_as<float, T>)
             {
-                inverseLength = FastRecipricalSqrt(LengthSquared());
+                inverseLength = Math::inv_sqrt(LengthSquared());
             }
             else
             {
@@ -140,17 +126,17 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T operator+() const
+        inline constexpr Vector2T operator+() const
         {
             return {+X, +Y};
         }
 
-        Vector2T operator-() const
+        inline constexpr Vector2T operator-() const
         {
             return {-X, -Y};
         }
 
-        Vector2T& operator++()
+        inline constexpr Vector2T& operator++()
         {
             X += T{1};
             Y += T{1};
@@ -158,7 +144,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T& operator--()
+        inline constexpr Vector2T& operator--()
         {
             X -= T{1};
             Y -= T{1};
@@ -166,7 +152,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T operator++(int)
+        inline constexpr Vector2T operator++(int)
         {
             Vector2T temp = *this;
 
@@ -176,7 +162,7 @@ namespace RayTracer
             return temp;
         }
 
-        Vector2T operator--(int)
+        inline constexpr Vector2T operator--(int)
         {
             Vector2T temp = *this;
 
@@ -186,42 +172,42 @@ namespace RayTracer
             return temp;
         }
 
-        Vector2T operator+(const Vector2T& right) const
+        inline constexpr Vector2T operator+(const Vector2T& right) const
         {
             return Vector2T{X + right.X, Y + right.Y};
         }
 
-        Vector2T operator-(const Vector2T& right) const
+        inline constexpr Vector2T operator-(const Vector2T& right) const
         {
             return Vector2T{X - right.X, Y - right.Y};
         }
 
-        T operator*(const Vector2T& right) const
+        inline constexpr T operator*(const Vector2T& right) const
         {
             return Dot(right);
         }
 
-        Vector2T operator+(T right) const
+        inline constexpr Vector2T operator+(T right) const
         {
             return Vector2T{X + right, Y + right};
         }
 
-        Vector2T operator-(T right) const
+        inline constexpr Vector2T operator-(T right) const
         {
             return Vector2T{X - right, Y - right};
         }
 
-        Vector2T operator*(T right) const
+        inline constexpr Vector2T operator*(T right) const
         {
             return Vector2T{X * right, Y * right};
         }
 
-        Vector2T operator/(T right) const
+        inline constexpr Vector2T operator/(T right) const
         {
             return Vector2T{X / right, Y / right};
         }
 
-        Vector2T& operator+=(const Vector2T& other)
+        inline constexpr Vector2T& operator+=(const Vector2T& other)
         {
             X += other.X;
             Y += other.Y;
@@ -229,7 +215,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T& operator-=(const Vector2T& other)
+        inline constexpr Vector2T& operator-=(const Vector2T& other)
         {
             X -= other.X;
             Y -= other.Y;
@@ -237,7 +223,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T& operator+=(T other)
+        inline constexpr Vector2T& operator+=(T other)
         {
             X += other;
             Y += other;
@@ -245,7 +231,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T& operator-=(T other)
+        inline constexpr Vector2T& operator-=(T other)
         {
             X -= other;
             Y -= other;
@@ -253,7 +239,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T& operator*=(T other)
+        inline constexpr Vector2T& operator*=(T other)
         {
             X *= other;
             Y *= other;
@@ -261,7 +247,7 @@ namespace RayTracer
             return *this;
         }
 
-        Vector2T& operator/=(T other)
+        inline constexpr Vector2T& operator/=(T other)
         {
             X /= other;
             Y /= other;
@@ -272,14 +258,14 @@ namespace RayTracer
 
     export template <typename T>
         requires std::integral<T> || std::floating_point<T>
-    Vector2T<T> operator+(T left, const Vector2T<T>& right)
+    inline constexpr Vector2T<T> operator+(T left, const Vector2T<T>&right)
     {
         return {left + right.X, left + right.Y};
     }
 
     export template <typename T>
         requires std::integral<T> || std::floating_point<T>
-    Vector2T<T> operator*(T left, const Vector2T<T>& right)
+    inline constexpr Vector2T<T> operator*(T left, const Vector2T<T>&right)
     {
         return {left * right.X, left * right.Y};
     }
@@ -287,4 +273,6 @@ namespace RayTracer
     export using Vector2 = Vector2T<float>;
     export using IntVector2 = Vector2T<int>;
     export using UIntVector2 = Vector2T<unsigned int>;
+
+    static_assert(Vector2{0, -5}.Abs().Normalize().Length() == 1);
 }

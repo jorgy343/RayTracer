@@ -18,7 +18,7 @@ namespace RayTracer
         Ray() = default;
 
         Ray(const Vector3& position, const Vector3& direction)
-            : Position{position}, Direction{direction}, InverseDirection{Vector3{FastReciprical(direction.X), FastReciprical(direction.Y), FastReciprical(direction.Z)}}
+            : Position{position}, Direction{direction}, InverseDirection{Vector3{Math::rcp(direction.X), Math::rcp(direction.Y), Math::rcp(direction.Z)}}
         {
 
         }

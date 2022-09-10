@@ -27,10 +27,9 @@ namespace RayTracer
         float __DummyM34{0.0f};
 
     public:
+        inline constexpr Matrix3x3() = default;
 
-        Matrix3x3() = default;
-
-        explicit Matrix3x3(float scalar)
+        inline constexpr explicit Matrix3x3(float scalar)
             :
             M11{scalar}, M12{scalar}, M13{scalar},
             M21{scalar}, M22{scalar}, M23{scalar},
@@ -39,7 +38,7 @@ namespace RayTracer
 
         }
 
-        Matrix3x3(
+        inline constexpr Matrix3x3(
             float m11, float m12, float m13,
             float m21, float m22, float m23,
             float m31, float m32, float m33)
@@ -51,7 +50,7 @@ namespace RayTracer
 
         }
 
-        Matrix3x3(
+        inline constexpr Matrix3x3(
             const Vector3& row1,
             const Vector3& row2,
             const Vector3& row3)
@@ -63,7 +62,7 @@ namespace RayTracer
 
         }
 
-        float Determinant() const
+        constexpr float Determinant() const
         {
             return
                 (M11 * M22 * M33) +
@@ -74,7 +73,7 @@ namespace RayTracer
                 (M11 * M23 * M32);
         }
 
-        Matrix3x3& Invert()
+        constexpr Matrix3x3& Invert()
         {
             // Source: https://stackoverflow.com/a/18504573/1078268
 
@@ -83,7 +82,7 @@ namespace RayTracer
                 M12 * (M21 * M33 - M23 * M31) +
                 M13 * (M21 * M32 - M22 * M31);
 
-            float invDet = FastReciprical(det);
+            float invDet = Math::rcp(det);
 
             float m11 = (M22 * M33 - M32 * M23) * invDet;
             float m12 = (M13 * M32 - M12 * M33) * invDet;
@@ -112,7 +111,7 @@ namespace RayTracer
             return *this;
         }
 
-        inline Matrix3x3& Transpose()
+        inline constexpr Matrix3x3& Transpose()
         {
             M11 = M11;
             M12 = M21;
@@ -129,7 +128,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3 operator+() const
+        inline constexpr Matrix3x3 operator+() const
         {
             return {
                 +M11,
@@ -146,7 +145,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3 operator-() const
+        inline constexpr Matrix3x3 operator-() const
         {
             return {
                 -M11,
@@ -163,7 +162,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3& operator++()
+        inline constexpr Matrix3x3& operator++()
         {
             M11 += 1.0f;
             M12 += 1.0f;
@@ -180,7 +179,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3& operator--()
+        inline constexpr Matrix3x3& operator--()
         {
             M11 -= 1.0f;
             M12 -= 1.0f;
@@ -197,7 +196,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3 operator++(int)
+        inline constexpr Matrix3x3 operator++(int)
         {
             Matrix3x3 temp = *this;
 
@@ -216,7 +215,7 @@ namespace RayTracer
             return temp;
         }
 
-        Matrix3x3 operator--(int)
+        inline constexpr Matrix3x3 operator--(int)
         {
             Matrix3x3 temp = *this;
 
@@ -235,7 +234,7 @@ namespace RayTracer
             return temp;
         }
 
-        Matrix3x3 operator+(const Matrix3x3& right) const
+        inline constexpr Matrix3x3 operator+(const Matrix3x3& right) const
         {
             return {
                 M11 + right.M11,
@@ -252,7 +251,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3 operator-(const Matrix3x3& right) const
+        inline constexpr Matrix3x3 operator-(const Matrix3x3& right) const
         {
             return {
                 M11 - right.M11,
@@ -307,7 +306,7 @@ namespace RayTracer
             return result;
         }
 
-        Matrix3x3 operator+(float right) const
+        inline constexpr Matrix3x3 operator+(float right) const
         {
             return {
                 M11 + right,
@@ -324,7 +323,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3 operator-(float right) const
+        inline constexpr Matrix3x3 operator-(float right) const
         {
             return {
                 M11 - right,
@@ -341,7 +340,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3 operator*(float right) const
+        inline constexpr Matrix3x3 operator*(float right) const
         {
             return {
                 M11 * right,
@@ -358,7 +357,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3 operator/(float right) const
+        inline constexpr Matrix3x3 operator/(float right) const
         {
             return {
                 M11 / right,
@@ -375,7 +374,7 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3& operator+=(const Matrix3x3& other)
+        inline constexpr Matrix3x3& operator+=(const Matrix3x3& other)
         {
             M11 += other.M11;
             M12 += other.M12;
@@ -392,7 +391,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3& operator-=(const Matrix3x3& other)
+        inline constexpr Matrix3x3& operator-=(const Matrix3x3& other)
         {
             M11 -= other.M11;
             M12 -= other.M12;
@@ -409,7 +408,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3& operator+=(float other)
+        inline constexpr Matrix3x3& operator+=(float other)
         {
             M11 += other;
             M12 += other;
@@ -426,7 +425,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3& operator-=(float other)
+        inline constexpr Matrix3x3& operator-=(float other)
         {
             M11 -= other;
             M12 -= other;
@@ -443,7 +442,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3& operator*=(float other)
+        inline constexpr Matrix3x3& operator*=(float other)
         {
             M11 *= other;
             M12 *= other;
@@ -460,7 +459,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix3x3& operator/=(float other)
+        inline constexpr Matrix3x3& operator/=(float other)
         {
             M11 /= other;
             M12 /= other;
@@ -478,7 +477,7 @@ namespace RayTracer
         }
     };
 
-    export Matrix3x3 operator*(float left, const Matrix3x3& right)
+    export inline constexpr Matrix3x3 operator*(float left, const Matrix3x3& right)
     {
         return {
             left * right.M11,
@@ -495,7 +494,7 @@ namespace RayTracer
         };
     }
 
-    export Vector3 operator*(const Vector3& left, const Matrix3x3& right)
+    export inline constexpr Vector3 operator*(const Vector3& left, const Matrix3x3& right)
     {
         return {
             (left.X * right.M11) + (left.Y * right.M21) + (left.Z * right.M31),

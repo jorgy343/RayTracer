@@ -3,11 +3,15 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Numerics;
 using RayTracer.ConsoleClient;
+using System.Diagnostics;
 
 const int screenWidth = 800;
 const int screenHeight = 600;
-const int subpixelCount = 8;
-const int iterations = 16;
+const int subpixelCount = 4;
+const int iterations = 4;
+
+var stopwatch = new Stopwatch();
+stopwatch.Start();
 
 using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 {
@@ -38,3 +42,6 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 
     await image.SaveAsPngAsync("test-image.png");
 }
+
+stopwatch.Stop();
+Console.WriteLine(stopwatch.Elapsed.TotalSeconds);

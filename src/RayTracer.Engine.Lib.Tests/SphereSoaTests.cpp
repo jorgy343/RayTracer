@@ -19,7 +19,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Intersects_Returns
     sphereSoa.Finalize();
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
@@ -38,7 +38,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackward
     sphereSoa.Finalize();
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
@@ -57,7 +57,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfi
     sphereSoa.Finalize();
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
@@ -76,7 +76,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZ
     sphereSoa.Finalize();
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_NEAR(result.Distance, 0, 0.01f);
@@ -111,7 +111,7 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_Ret
     Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_NEAR(result.Distance, 6, 0.01f);
@@ -146,7 +146,7 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_
     Ray ray{{2, 0, 0}, {-1, 0, 0}};
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
@@ -181,7 +181,7 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
     Ray ray{{2, 0, 0}, {0, 1, 0}};
 
     // Act
-    IntersectionResult<Sphere> result = sphereSoa.IntersectEntrance(ray);
+    IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
     EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());

@@ -1,4 +1,6 @@
 #include <cmath>
+#include <concepts>
+#include <utility>
 
 #include "Constants.h"
 
@@ -17,6 +19,7 @@ import RayTracer.PlaneSoa;
 import RayTracer.AxisAlignedBox;
 import RayTracer.AxisAlignedBoxSoa;
 import RayTracer.Geometry;
+import RayTracer.GeometrySoa;
 import RayTracer.Vector3;
 import RayTracer.Random;
 
@@ -40,7 +43,7 @@ namespace RayTracer
         Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
         {
-            
+
         }
 
         void AddLight(const DirectionalLight* directionalLight)
@@ -81,32 +84,45 @@ namespace RayTracer
         }
 
     private:
+        template <typename TArg, typename... TArgs>
+        inline static auto ClosestIntersection(TArg arg, TArgs... args)
+        {
+            if constexpr (sizeof...(args))
+            {
+                auto smallerIntersection = ClosestIntersection(args...);
+                return arg.Distance < smallerIntersection.Distance ? arg : smallerIntersection;
+            }
+            else
+            {
+                return arg;
+            }
+        }
+
         float CastRayDistance(const Ray& ray) const
         {
-            IntersectionResult<Sphere> sphereIntersectionResult = _sphereSoa.IntersectEntrance(ray);
-            IntersectionResult<Geometry> planeIntersectionResult = _planeSoa.IntersectEntrance(ray);
-            IntersectionResult<Geometry> axisAlignedBoxIntersectionResult = _axisAlignedBoxSoa.IntersectEntrance(ray);
+            auto closestIntersection = ClosestIntersection(
+                _sphereSoa.IntersectEntrance(ray),
+                _planeSoa.IntersectEntrance(ray),
+                _axisAlignedBoxSoa.IntersectEntrance(ray));
 
-            return FastMax(0.0f, FastMin(FastMin(sphereIntersectionResult.Distance, planeIntersectionResult.Distance), axisAlignedBoxIntersectionResult.Distance));
+            return Math::max(0.0f, closestIntersection.Distance);
         }
 
         Vector3 CastRayColor(const Ray& ray, int depth) const
         {
-            IntersectionResult<Geometry> sphereIntersectionResult = _sphereSoa.IntersectEntrance(ray);
-            IntersectionResult<Geometry> planeIntersectionResult = _planeSoa.IntersectEntrance(ray);
-            IntersectionResult<Geometry> axisAlignedBoxIntersectionResult = _axisAlignedBoxSoa.IntersectEntrance(ray);
+            auto closestIntersection = ClosestIntersection(
+                _sphereSoa.IntersectEntrance(ray),
+                _planeSoa.IntersectEntrance(ray),
+                _axisAlignedBoxSoa.IntersectEntrance(ray));
 
-            IntersectionResult<Geometry> intersectionResult = sphereIntersectionResult.Distance < planeIntersectionResult.Distance ? sphereIntersectionResult : planeIntersectionResult;
-            intersectionResult = intersectionResult.Distance < axisAlignedBoxIntersectionResult.Distance ? intersectionResult : axisAlignedBoxIntersectionResult;
-
-            intersectionResult.Distance = FastMax(0.0f, intersectionResult.Distance);
+            closestIntersection.Distance = Math::max(0.0f, closestIntersection.Distance);
 
             Vector3 outputColor = _backgroundColor;
 
-            if (intersectionResult.HitGeometry)
+            if (closestIntersection.HitGeometry)
             {
-                Vector3 hitPosition = ray.Position + ray.Direction * intersectionResult.Distance;
-                Vector3 hitNormal = intersectionResult.HitGeometry->CalculateNormal(ray, hitPosition);
+                Vector3 hitPosition = ray.Position + ray.Direction * closestIntersection.Distance;
+                Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * 0.01f;
 
                 Vector3 lightPower{0.0f};
@@ -125,9 +141,9 @@ namespace RayTracer
                     indirectLight = CastRayColor(Ray{hitPosition, scatterDirection}, depth + 1);
                 }
 
-                const LambertianMaterial* material = intersectionResult.HitGeometry->GetMaterial();
+                const LambertianMaterial* material = closestIntersection.HitGeometry->GetMaterial();
 
-                return material->EmissiveColor + FastReciprical(static_cast<float>(GetLightCount()) + 1) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
+                return material->EmissiveColor + Math::rcp(static_cast<float>(GetLightCount()) + 1) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
             }
 
             return outputColor;
@@ -149,7 +165,7 @@ namespace RayTracer
 
                 if (shadowDistance == std::numeric_limits<float>::infinity())
                 {
-                    lightPower += light->Color * FastMax(0.0f, hitNormal * light->ReversedDirection);
+                    lightPower += light->Color * Math::max(0.0f, hitNormal * light->ReversedDirection);
                 }
             }
 
@@ -165,7 +181,7 @@ namespace RayTracer
 
                 if (shadowDistance * shadowDistance >= distanceToLightSquared - 0.01f)
                 {
-                    lightPower += light->Color * FastMax(0.0f, hitNormal * directionToLight);
+                    lightPower += light->Color * Math::max(0.0f, hitNormal * directionToLight);
                 }
             }
 

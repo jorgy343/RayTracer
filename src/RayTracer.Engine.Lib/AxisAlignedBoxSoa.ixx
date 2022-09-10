@@ -77,18 +77,18 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult<AxisAlignedBox> IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult<AxisAlignedBox> IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult<AxisAlignedBox> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        inline IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
             Vec8f minimumX = Vec8f{}.load_a(&_minimumX[startingGeometryIndex]);
             Vec8f minimumY = Vec8f{}.load_a(&_minimumY[startingGeometryIndex]);
@@ -140,13 +140,13 @@ namespace RayTracer
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult<AxisAlignedBox> Intersect(const Ray& ray) const
+        inline IntersectionResult Intersect(const Ray& ray) const
         {
-            IntersectionResult<AxisAlignedBox> result{nullptr, std::numeric_limits<float>::infinity()};
+            IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
 
             for (int i = 0; i + 8 <= _minimumX.size(); i += 8)
             {
-                IntersectionResult<AxisAlignedBox> newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
+                IntersectionResult newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
 
                 if (newResult.Distance < result.Distance)
                 {

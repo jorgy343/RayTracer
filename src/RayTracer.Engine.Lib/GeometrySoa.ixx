@@ -14,7 +14,7 @@ namespace RayTracer
         virtual void Add(const TGeometry* geometry) = 0;
         virtual void Finalize() = 0;
 
-        virtual IntersectionResult<TGeometry> IntersectEntrance(const Ray& ray) const = 0;
-        virtual IntersectionResult<TGeometry> IntersectExit(const Ray& ray) const = 0;
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const = 0;
+        virtual IntersectionResult IntersectExit(const Ray& ray) const = 0;
     };
 }

@@ -58,9 +58,9 @@ namespace RayTracer
             float c = (v * v) - (Radius * Radius);
 
             float discriminant = (b * b) - (a * c);
-            float discriminantSqrt = FastSqrt(discriminant);
+            float discriminantSqrt = Math::sqrt(discriminant);
 
-            float reciprocalA = FastReciprical(a);
+            float reciprocalA = Math::rcp(a);
             float negativeB = -b;
 
             float exitDistance = (negativeB + discriminantSqrt) * reciprocalA;

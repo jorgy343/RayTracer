@@ -61,18 +61,18 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult<Sphere> IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult<Sphere> IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult<Sphere> PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        inline IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
             Vec8f rayPositionX{ray.Position.X};
             Vec8f rayPositionY{ray.Position.Y};
@@ -129,13 +129,13 @@ namespace RayTracer
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult<Sphere> Intersect(const Ray& ray) const
+        inline IntersectionResult Intersect(const Ray& ray) const
         {
-            IntersectionResult<Sphere> result{nullptr, std::numeric_limits<float>::infinity()};
+            IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
 
             for (int i = 0; i + 8 <= _positionX.size(); i += 8)
             {
-                IntersectionResult<Sphere> newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
+                IntersectionResult newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
 
                 if (newResult.Distance < result.Distance)
                 {

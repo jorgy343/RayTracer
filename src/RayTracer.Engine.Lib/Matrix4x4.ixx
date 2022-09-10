@@ -20,9 +20,9 @@ namespace RayTracer
             M31{0.0f}, M32{0.0f}, M33{0.0f}, M34{0.0f},
             M41{0.0f}, M42{0.0f}, M43{0.0f}, M44{0.0f};
 
-        Matrix4x4() = default;
+        inline constexpr Matrix4x4() = default;
 
-        explicit Matrix4x4(float scalar)
+        inline constexpr explicit Matrix4x4(float scalar)
             :
             M11{scalar}, M12{scalar}, M13{scalar}, M14{scalar},
             M21{scalar}, M22{scalar}, M23{scalar}, M24{scalar},
@@ -32,7 +32,7 @@ namespace RayTracer
 
         }
 
-        Matrix4x4(
+        inline constexpr Matrix4x4(
             float m11, float m12, float m13, float m14,
             float m21, float m22, float m23, float m24,
             float m31, float m32, float m33, float m34,
@@ -46,7 +46,7 @@ namespace RayTracer
 
         }
 
-        Matrix4x4(
+        inline constexpr Matrix4x4(
             const Vector4& row1,
             const Vector4& row2,
             const Vector4& row3,
@@ -60,7 +60,7 @@ namespace RayTracer
 
         }
 
-        float Determinant() const
+        constexpr float Determinant() const
         {
             return
                 (M14 * M23 * M32 * M41) - (M13 * M24 * M32 * M41) - (M14 * M22 * M33 * M41) + (M12 * M24 * M33 * M41) +
@@ -71,7 +71,7 @@ namespace RayTracer
                 (M13 * M21 * M32 * M44) - (M11 * M23 * M32 * M44) - (M12 * M21 * M33 * M44) + (M11 * M22 * M33 * M44);
         }
 
-        Matrix4x4& Invert()
+        constexpr Matrix4x4& Invert()
         {
             float b0 = (M31 * M42) - (M32 * M41);
             float b1 = (M31 * M43) - (M33 * M41);
@@ -90,7 +90,7 @@ namespace RayTracer
             // Normally you would check if the determinant is zero here and handle that case.
             // We're just going to assume it is not zero and continue as normal.
 
-            det = FastReciprical(det);
+            det = Math::rcp(det);
 
             float a0 = (M11 * M22) - (M12 * M21);
             float a1 = (M11 * M23) - (M13 * M21);
@@ -137,7 +137,7 @@ namespace RayTracer
             return *this;
         }
 
-        inline Matrix4x4& Transpose()
+        inline constexpr Matrix4x4& Transpose()
         {
             M11 = M11;
             M12 = M21;
@@ -162,7 +162,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4 operator+() const
+        inline constexpr Matrix4x4 operator+() const
         {
             return {
                 +M11,
@@ -187,7 +187,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4 operator-() const
+        inline constexpr Matrix4x4 operator-() const
         {
             return {
                 -M11,
@@ -212,7 +212,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4& operator++()
+        inline constexpr Matrix4x4& operator++()
         {
             M11 += 1.0f;
             M12 += 1.0f;
@@ -237,7 +237,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4& operator--()
+        inline constexpr Matrix4x4& operator--()
         {
             M11 -= 1.0f;
             M12 -= 1.0f;
@@ -262,7 +262,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4 operator++(int)
+        inline constexpr Matrix4x4 operator++(int)
         {
             Matrix4x4 temp = *this;
 
@@ -289,7 +289,7 @@ namespace RayTracer
             return temp;
         }
 
-        Matrix4x4 operator--(int)
+        inline constexpr Matrix4x4 operator--(int)
         {
             Matrix4x4 temp = *this;
 
@@ -316,7 +316,7 @@ namespace RayTracer
             return temp;
         }
 
-        Matrix4x4 operator+(const Matrix4x4& right) const
+        inline constexpr Matrix4x4 operator+(const Matrix4x4& right) const
         {
             return {
                 M11 + right.M11,
@@ -341,7 +341,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4 operator-(const Matrix4x4& right) const
+        inline constexpr Matrix4x4 operator-(const Matrix4x4& right) const
         {
             return {
                 M11 - right.M11,
@@ -417,7 +417,7 @@ namespace RayTracer
             return result;
         }
 
-        Matrix4x4 operator+(float right) const
+        inline constexpr Matrix4x4 operator+(float right) const
         {
             return {
                 M11 + right,
@@ -442,7 +442,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4 operator-(float right) const
+        inline constexpr Matrix4x4 operator-(float right) const
         {
             return {
                 M11 - right,
@@ -467,7 +467,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4 operator*(float right) const
+        inline constexpr Matrix4x4 operator*(float right) const
         {
             return {
                 M11 * right,
@@ -492,7 +492,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4 operator/(float right) const
+        inline constexpr Matrix4x4 operator/(float right) const
         {
             return {
                 M11 / right,
@@ -517,7 +517,7 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4& operator+=(const Matrix4x4& other)
+        inline constexpr Matrix4x4& operator+=(const Matrix4x4& other)
         {
             M11 += other.M11;
             M12 += other.M12;
@@ -542,7 +542,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4& operator-=(const Matrix4x4& other)
+        inline constexpr Matrix4x4& operator-=(const Matrix4x4& other)
         {
             M11 -= other.M11;
             M12 -= other.M12;
@@ -567,7 +567,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4& operator+=(float other)
+        inline constexpr Matrix4x4& operator+=(float other)
         {
             M11 += other;
             M12 += other;
@@ -592,7 +592,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4& operator-=(float other)
+        inline constexpr Matrix4x4& operator-=(float other)
         {
             M11 -= other;
             M12 -= other;
@@ -617,7 +617,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4& operator*=(float other)
+        inline constexpr Matrix4x4& operator*=(float other)
         {
             M11 *= other;
             M12 *= other;
@@ -642,7 +642,7 @@ namespace RayTracer
             return *this;
         }
 
-        Matrix4x4& operator/=(float other)
+        inline constexpr Matrix4x4& operator/=(float other)
         {
             M11 /= other;
             M12 /= other;
@@ -668,7 +668,7 @@ namespace RayTracer
         }
     };
 
-    export Matrix4x4 operator*(float left, const Matrix4x4& right)
+    export inline constexpr Matrix4x4 operator*(float left, const Matrix4x4& right)
     {
         return {
             left * right.M11,
@@ -693,7 +693,7 @@ namespace RayTracer
         };
     }
 
-    export Vector4 operator*(const Vector4& left, const Matrix4x4& right)
+    export inline constexpr Vector4 operator*(const Vector4& left, const Matrix4x4& right)
     {
         return {
             (left.X * right.M11) + (left.Y * right.M21) + (left.Z * right.M31) + (left.W * right.M41),
