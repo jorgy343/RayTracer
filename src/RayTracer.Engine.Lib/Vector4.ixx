@@ -324,4 +324,6 @@ namespace RayTracer
     export using Vector4 = Vector4T<float>;
     export using IntVector4 = Vector4T<int>;
     export using UIntVector4 = Vector4T<unsigned int>;
+
+    static_assert(Vector4{0, -5, 0, 0}.Abs().Normalize().Length() == 1);
 }
