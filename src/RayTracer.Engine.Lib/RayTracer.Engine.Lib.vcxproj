@@ -24,10 +24,14 @@
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
     <ClCompile Include="Light.ixx" />
+    <ClCompile Include="LightRay.ixx" />
     <ClCompile Include="Material.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
     <ClCompile Include="MonteCarlo.ixx" />
+    <ClCompile Include="Parallelogram.ixx" />
+    <ClCompile Include="ParallelogramLight.ixx" />
+    <ClCompile Include="ParallelogramSoa.ixx" />
     <ClCompile Include="PerspectiveCamera.ixx" />
     <ClCompile Include="Plane.ixx" />
     <ClCompile Include="PlaneSoa.ixx" />
@@ -40,6 +44,7 @@
     <ClCompile Include="Math.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />
+    <ClCompile Include="Vec8f3.ixx" />
     <ClCompile Include="Vector2.ixx" />
     <ClCompile Include="Vector3.ixx" />
     <ClCompile Include="Vector4.ixx" />

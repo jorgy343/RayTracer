@@ -6,6 +6,8 @@
 
 export module RayTracer.Math;
 
+import RayTracer.Vec8f3;
+
 using namespace vcl;
 
 namespace RayTracer
@@ -215,6 +217,33 @@ namespace RayTracer
         Vec8f const bZ)
     {
         return _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)));
+    }
+
+    export inline Vec8f SimdDot2(
+        Vec8f const aX,
+        Vec8f const aY,
+        Vec8f const aZ,
+        Vec8f const bX,
+        Vec8f const bY,
+        Vec8f const bZ)
+    {
+        return _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)));
+    }
+
+    export inline Vec8f3 SimdCrossProduct(
+        Vec8f const aX,
+        Vec8f const aY,
+        Vec8f const aZ,
+        Vec8f const bX,
+        Vec8f const bY,
+        Vec8f const bZ)
+    {
+        return
+        {
+            aY * bZ - aZ * bY,
+            aZ * bX - aX * bZ,
+            aX * bY - aY * bX,
+        };
     }
 
     export inline Vec4f ConvertNanToInf(Vec4f const value)

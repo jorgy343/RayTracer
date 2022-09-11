@@ -1,33 +1,40 @@
-export module RayTracer.PointLight;
+export module RayTracer.ParallelogramLight;
 
 import RayTracer.Light;
 import RayTracer.Vector3;
 import RayTracer.Ray;
+import RayTracer.Parallelogram;
+import RayTracer.Random;
 import RayTracer.LightRay;
 
 namespace RayTracer
 {
-    export class PointLight : public Light
+    export class ParallelogramLight : public Light
     {
+    private:
+        Random _random{};
+
     public:
         Vector3 Color{};
-        Vector3 Position{};
+        Parallelogram Shape{};
 
-        inline constexpr PointLight(const Vector3& color, const Vector3& position)
-            : Color{color}, Position{position}
+        inline constexpr ParallelogramLight(const Vector3& color, const Parallelogram& shape)
+            : Color{color}, Shape{shape}
         {
 
         }
 
         inline constexpr LightRay CreateShadowRaw(const Vector3& hitPosition, const Vector3& hitNormal) const override final
         {
-            Vector3 directionToLight = (Position - hitPosition).Normalize();
-            return LightRay{Ray{hitPosition, directionToLight}, Position};
+            Vector3 randomPointOnLight = Shape.Position + (Shape.Edge1 * _random.GetNormalizedFloat()) + (Shape.Edge2 * _random.GetNormalizedFloat());
+            Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
+
+            return LightRay{Ray{hitPosition, directionToLight}, randomPointOnLight};
         }
 
         inline constexpr Vector3 CalculateLightPower(const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& pointOnLight, float shadowDistance) const override final
         {
-            Vector3 directionToLight = Position - hitPosition;
+            Vector3 directionToLight = pointOnLight - hitPosition;
             float distanceToLightSquared = directionToLight.LengthSquared();
 
             directionToLight.Normalize();

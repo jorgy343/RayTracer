@@ -129,7 +129,7 @@ namespace RayTracer
                 result = exitDistance;
             }
 
-            return entranceDistance > exitDistance ? std::numeric_limits<float>::infinity() : result;
+            return entranceDistance <= exitDistance ? result : std::numeric_limits<float>::infinity();
         }
     };
 }

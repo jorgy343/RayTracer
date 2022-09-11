@@ -1,4 +1,4 @@
-#include <cmath>
+#include <limits>
 
 #include "Vcl.h"
 

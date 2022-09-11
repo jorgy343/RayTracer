@@ -122,5 +122,20 @@
     <ClCompile Include="Vector3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Parallelogram.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="ParallelogramSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec8f3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ParallelogramLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="LightRay.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

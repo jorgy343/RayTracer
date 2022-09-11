@@ -18,6 +18,8 @@ namespace RayTracer
         float Distance{0.0f};
         const LambertianMaterial* Material{nullptr};
 
+        inline constexpr Plane() = default;
+
         inline constexpr Plane(const Vector3& normal, float distance, const LambertianMaterial* material)
             : Normal{normal}, Distance{distance}, Material{material}
         {
@@ -59,7 +61,7 @@ namespace RayTracer
 
             float entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
 
-            return entranceDistance < 0.0f ? std::numeric_limits<float>::infinity() : entranceDistance;
+            return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
         }
     };
 }

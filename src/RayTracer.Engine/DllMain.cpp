@@ -4,7 +4,9 @@ import RayTracer.Scene;
 import RayTracer.Sphere;
 import RayTracer.Plane;
 import RayTracer.AxisAlignedBox;
+import RayTracer.Parallelogram;
 import RayTracer.PointLight;
+import RayTracer.ParallelogramLight;
 import RayTracer.Vector2;
 
 #include <memory>
@@ -61,8 +63,14 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     AxisAlignedBox axisAlignedBox{{-8, -2, 5}, {-6, 2, 9}, &whiteMaterial};
     scene.AddGeometry(&axisAlignedBox);
 
-    PointLight light1{{1.0f, 1.0f, 1.0f}, {-1.0f, 10.0f, 0.0f}};
-    scene.AddLight(&light1);
+    Parallelogram parallelogram1{{5.0f, 0.0f, 4.0f}, {0.0f, -3.0f, 0.3f}, {2.0f, 0.0f, 0.0f}, &whiteMaterial};
+    scene.AddGeometry(&parallelogram1);
+
+    //PointLight light1{{1.0f, 1.0f, 1.0f}, {-1.0f, 10.0f, 0.0f}};
+    ParallelogramLight light2{{1.0f, 1.0f, 1.0f}, {{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, nullptr}};
+
+    //scene.AddLight(&light1);
+    scene.AddLight(&light2);
 
     scene.Finalize();
 

@@ -7,8 +7,7 @@
 export module RayTracer.Scene;
 
 import RayTracer.Alignment;
-import RayTracer.DirectionalLight;
-import RayTracer.PointLight;
+import RayTracer.Light;
 import RayTracer.LambertianMaterial;
 import RayTracer.Math;
 import RayTracer.MonteCarlo;
@@ -18,10 +17,13 @@ import RayTracer.Plane;
 import RayTracer.PlaneSoa;
 import RayTracer.AxisAlignedBox;
 import RayTracer.AxisAlignedBoxSoa;
+import RayTracer.Parallelogram;
+import RayTracer.ParallelogramSoa;
 import RayTracer.Geometry;
 import RayTracer.GeometrySoa;
 import RayTracer.Vector3;
 import RayTracer.Random;
+import RayTracer.LightRay;
 
 namespace RayTracer
 {
@@ -30,12 +32,12 @@ namespace RayTracer
     private:
         Vector3 _backgroundColor{0.0f};
 
-        AlignedVector<const DirectionalLight*, 64> _directionalLights{};
-        AlignedVector<const PointLight*, 64> _pointLights{};
+        AlignedVector<const Light*, 64> _lights{};
 
         SphereSoa _sphereSoa{};
         PlaneSoa _planeSoa{};
         AxisAlignedBoxSoa _axisAlignedBoxSoa{};
+        ParallelogramSoa _parallelogramSoa{};
 
         Random _random{};
 
@@ -46,14 +48,9 @@ namespace RayTracer
 
         }
 
-        void AddLight(const DirectionalLight* directionalLight)
+        void AddLight(const Light* light)
         {
-            _directionalLights.push_back(directionalLight);
-        }
-
-        void AddLight(const PointLight* pointLight)
-        {
-            _pointLights.push_back(pointLight);
+            _lights.push_back(light);
         }
 
         void AddGeometry(const Sphere* sphere)
@@ -71,11 +68,17 @@ namespace RayTracer
             _axisAlignedBoxSoa.Add(axisAlignedBox);
         }
 
+        void AddGeometry(const Parallelogram* parallelogram)
+        {
+            _parallelogramSoa.Add(parallelogram);
+        }
+
         void Finalize()
         {
             _sphereSoa.Finalize();
             _planeSoa.Finalize();
             _axisAlignedBoxSoa.Finalize();
+            _parallelogramSoa.Finalize();
         }
 
         Vector3 CastRayColor(const Ray& ray) const
@@ -85,7 +88,7 @@ namespace RayTracer
 
     private:
         template <typename TArg, typename... TArgs>
-        inline static auto ClosestIntersection(TArg arg, TArgs... args)
+        static inline constexpr auto ClosestIntersection(TArg arg, TArgs... args)
         {
             if constexpr (sizeof...(args))
             {
@@ -103,7 +106,8 @@ namespace RayTracer
             auto closestIntersection = ClosestIntersection(
                 _sphereSoa.IntersectEntrance(ray),
                 _planeSoa.IntersectEntrance(ray),
-                _axisAlignedBoxSoa.IntersectEntrance(ray));
+                _axisAlignedBoxSoa.IntersectEntrance(ray),
+                _parallelogramSoa.IntersectEntrance(ray));
 
             return Math::max(0.0f, closestIntersection.Distance);
         }
@@ -113,7 +117,8 @@ namespace RayTracer
             auto closestIntersection = ClosestIntersection(
                 _sphereSoa.IntersectEntrance(ray),
                 _planeSoa.IntersectEntrance(ray),
-                _axisAlignedBoxSoa.IntersectEntrance(ray));
+                _axisAlignedBoxSoa.IntersectEntrance(ray),
+                _parallelogramSoa.IntersectEntrance(ray));
 
             closestIntersection.Distance = Math::max(0.0f, closestIntersection.Distance);
 
@@ -143,46 +148,22 @@ namespace RayTracer
 
                 const LambertianMaterial* material = closestIntersection.HitGeometry->GetMaterial();
 
-                return material->EmissiveColor + Math::rcp(static_cast<float>(GetLightCount()) + 1) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
+                return material->EmissiveColor + Math::rcp(static_cast<float>(_lights.size() + 1)) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
             }
 
             return outputColor;
         }
 
-        inline int GetLightCount() const
-        {
-            return static_cast<int>(_directionalLights.size() + _pointLights.size());
-        }
-
         Vector3 CalculateDirectionalLightPower(const Vector3& hitPosition, const Vector3& hitNormal) const
         {
-            Vector3 lightPower{0.0f};
+            Vector3 lightPower{};
 
-            for (const DirectionalLight* light : _directionalLights)
+            for (const Light* light : _lights)
             {
-                Ray shadowRay{hitPosition, light->ReversedDirection};
-                float shadowDistance = CastRayDistance(shadowRay);
+                LightRay lightRay = light->CreateShadowRaw(hitPosition, hitNormal);
+                float shadowDistance = CastRayDistance(lightRay.ShadowRay);
 
-                if (shadowDistance == std::numeric_limits<float>::infinity())
-                {
-                    lightPower += light->Color * Math::max(0.0f, hitNormal * light->ReversedDirection);
-                }
-            }
-
-            for (const PointLight* light : _pointLights)
-            {
-                Vector3 directionToLight = light->Position - hitPosition;
-                float distanceToLightSquared = directionToLight.LengthSquared();
-
-                directionToLight.Normalize();
-
-                Ray shadowRay{hitPosition, directionToLight};
-                float shadowDistance = CastRayDistance(shadowRay);
-
-                if (shadowDistance * shadowDistance >= distanceToLightSquared - 0.01f)
-                {
-                    lightPower += light->Color * Math::max(0.0f, hitNormal * directionToLight);
-                }
+                lightPower += light->CalculateLightPower(hitPosition, hitNormal, lightRay.PointOnLight, shadowDistance);
             }
 
             return lightPower;
