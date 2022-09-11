@@ -54,7 +54,7 @@ namespace RayTracer
             return *this;
         }
 
-        inline bool Compare(const Vector4T& right, T maximumAllowedErrorPerComponent)
+        inline constexpr bool Compare(const Vector4T& right, T maximumAllowedErrorPerComponent)
         {
             if constexpr (std::floating_point<T>)
             {

@@ -9,15 +9,15 @@ import RayTracer.Vector3;
 
 namespace RayTracer
 {
-    export inline Vector3 CosineWeightedSampleHemisphere(float random1, float random2)
+    export inline constexpr Vector3 CosineWeightedSampleHemisphere(float random1, float random2)
     {
         // Source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
 
         float sinTheta = Math::sqrt(1 - random1 * random1);
         float phi = TwoPi * random2;
 
-        float z = sinTheta * std::sinf(phi);
-        float x = sinTheta * std::cosf(phi);
+        float z = sinTheta * Math::sin(phi);
+        float x = sinTheta * Math::cos(phi);
 
         return Vector3{x, random1, z};
     }

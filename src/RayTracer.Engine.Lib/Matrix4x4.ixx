@@ -366,55 +366,82 @@ namespace RayTracer
             };
         }
 
-        Matrix4x4 operator*(const Matrix4x4& right) const
+        inline constexpr Matrix4x4 operator*(const Matrix4x4& right) const
         {
-            // Currently this is slower on zen 2 architecture.
-            //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
-            //Vec4f rightColumn2 = gather4f<1, 5, 9, 13>(&right.M11);
-            //Vec4f rightColumn3 = gather4f<2, 6, 10, 14>(&right.M11);
-            //Vec4f rightColumn4 = gather4f<3, 7, 11, 15>(&right.M11);
+            if (std::is_constant_evaluated())
+            {
+                return {
+                    M11 * right.M11 + M12 * right.M21 + M13 * right.M31 + M14 * right.M41,
+                    M11 * right.M12 + M12 * right.M22 + M13 * right.M32 + M14 * right.M42,
+                    M11 * right.M13 + M12 * right.M23 + M13 * right.M33 + M14 * right.M43,
+                    M11 * right.M14 + M12 * right.M24 + M13 * right.M34 + M14 * right.M44,
 
-            Vec4f rightColumn1{right.M11, right.M12, right.M13, right.M14};
-            Vec4f rightColumn2{right.M21, right.M22, right.M23, right.M24};
-            Vec4f rightColumn3{right.M31, right.M32, right.M33, right.M34};
-            Vec4f rightColumn4{right.M41, right.M42, right.M43, right.M44};
+                    M21 * right.M11 + M22 * right.M21 + M23 * right.M31 + M24 * right.M41,
+                    M21 * right.M12 + M22 * right.M22 + M23 * right.M32 + M24 * right.M42,
+                    M21 * right.M13 + M22 * right.M23 + M23 * right.M33 + M24 * right.M43,
+                    M21 * right.M14 + M22 * right.M24 + M23 * right.M34 + M24 * right.M44,
 
-            Vec4f leftRow11{M11};
-            Vec4f leftRow21{M12};
-            Vec4f leftRow31{M13};
-            Vec4f leftRow41{M14};
+                    M31 * right.M11 + M32 * right.M21 + M33 * right.M31 + M34 * right.M41,
+                    M31 * right.M12 + M32 * right.M22 + M33 * right.M32 + M34 * right.M42,
+                    M31 * right.M13 + M32 * right.M23 + M33 * right.M33 + M34 * right.M43,
+                    M31 * right.M14 + M32 * right.M24 + M33 * right.M34 + M34 * right.M44,
 
-            Vec4f resultRow1 = (leftRow11 * rightColumn1) + (leftRow21 * rightColumn2) + (leftRow31 * rightColumn3) + (leftRow41 * rightColumn4);
+                    M41 * right.M11 + M42 * right.M21 + M43 * right.M31 + M44 * right.M41,
+                    M41 * right.M12 + M42 * right.M22 + M43 * right.M32 + M44 * right.M42,
+                    M41 * right.M13 + M42 * right.M23 + M43 * right.M33 + M44 * right.M43,
+                    M41 * right.M14 + M42 * right.M24 + M43 * right.M34 + M44 * right.M44,
+                };
+            }
+            else
+            {
+                // Currently this is slower on zen 2 architecture.
+                //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
+                //Vec4f rightColumn2 = gather4f<1, 5, 9, 13>(&right.M11);
+                //Vec4f rightColumn3 = gather4f<2, 6, 10, 14>(&right.M11);
+                //Vec4f rightColumn4 = gather4f<3, 7, 11, 15>(&right.M11);
 
-            Vec4f leftRow12{M21};
-            Vec4f leftRow22{M22};
-            Vec4f leftRow32{M23};
-            Vec4f leftRow42{M24};
+                Vec4f rightColumn1{right.M11, right.M12, right.M13, right.M14};
+                Vec4f rightColumn2{right.M21, right.M22, right.M23, right.M24};
+                Vec4f rightColumn3{right.M31, right.M32, right.M33, right.M34};
+                Vec4f rightColumn4{right.M41, right.M42, right.M43, right.M44};
 
-            Vec4f resultRow2 = (leftRow12 * rightColumn1) + (leftRow22 * rightColumn2) + (leftRow32 * rightColumn3) + (leftRow42 * rightColumn4);
+                Vec4f leftRow11{M11};
+                Vec4f leftRow21{M12};
+                Vec4f leftRow31{M13};
+                Vec4f leftRow41{M14};
 
-            Vec4f leftRow13{M31};
-            Vec4f leftRow23{M32};
-            Vec4f leftRow33{M33};
-            Vec4f leftRow43{M34};
+                Vec4f resultRow1 = (leftRow11 * rightColumn1) + (leftRow21 * rightColumn2) + (leftRow31 * rightColumn3) + (leftRow41 * rightColumn4);
 
-            Vec4f resultRow3 = (leftRow13 * rightColumn1) + (leftRow23 * rightColumn2) + (leftRow33 * rightColumn3) + (leftRow43 * rightColumn4);
+                Vec4f leftRow12{M21};
+                Vec4f leftRow22{M22};
+                Vec4f leftRow32{M23};
+                Vec4f leftRow42{M24};
 
-            Vec4f leftRow14{M41};
-            Vec4f leftRow24{M42};
-            Vec4f leftRow34{M43};
-            Vec4f leftRow44{M44};
+                Vec4f resultRow2 = (leftRow12 * rightColumn1) + (leftRow22 * rightColumn2) + (leftRow32 * rightColumn3) + (leftRow42 * rightColumn4);
 
-            Vec4f resultRow4 = (leftRow14 * rightColumn1) + (leftRow24 * rightColumn2) + (leftRow34 * rightColumn3) + (leftRow44 * rightColumn4);
+                Vec4f leftRow13{M31};
+                Vec4f leftRow23{M32};
+                Vec4f leftRow33{M33};
+                Vec4f leftRow43{M34};
 
-            Matrix4x4 result;
+                Vec4f resultRow3 = (leftRow13 * rightColumn1) + (leftRow23 * rightColumn2) + (leftRow33 * rightColumn3) + (leftRow43 * rightColumn4);
 
-            resultRow1.store_a(&result.M11);
-            resultRow2.store_a(&result.M21);
-            resultRow3.store_a(&result.M31);
-            resultRow4.store_a(&result.M41);
+                Vec4f leftRow14{M41};
+                Vec4f leftRow24{M42};
+                Vec4f leftRow34{M43};
+                Vec4f leftRow44{M44};
 
-            return result;
+                Vec4f resultRow4 = (leftRow14 * rightColumn1) + (leftRow24 * rightColumn2) + (leftRow34 * rightColumn3) + (leftRow44 * rightColumn4);
+
+                Matrix4x4 result;
+
+                resultRow1.store_a(&result.M11);
+                resultRow2.store_a(&result.M21);
+                resultRow3.store_a(&result.M31);
+                resultRow4.store_a(&result.M41);
+
+                return result;
+            }
         }
 
         inline constexpr Matrix4x4 operator+(float right) const

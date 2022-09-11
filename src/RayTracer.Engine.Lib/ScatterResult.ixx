@@ -10,7 +10,7 @@ namespace RayTracer
         Ray ScatterRay;
         float ScatterPdf;
 
-        ScatterResult(const Ray& scatterRay, float scatterPdf)
+        inline constexpr ScatterResult(const Ray& scatterRay, float scatterPdf)
             : ScatterRay{scatterRay}, ScatterPdf{scatterPdf}
         {
 

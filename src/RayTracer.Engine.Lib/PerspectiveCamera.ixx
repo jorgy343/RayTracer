@@ -23,7 +23,7 @@ namespace RayTracer
 
         float FieldOfView{0.0f};
 
-        PerspectiveCamera(
+        inline constexpr PerspectiveCamera(
             const Vector3& position,
             const Vector3& lookAt,
             const Vector3& up,
@@ -37,7 +37,7 @@ namespace RayTracer
 
         }
 
-        void CreateRays(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, std::vector<Ray>& rayBuffer)
+        constexpr void CreateRays(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, std::vector<Ray>& rayBuffer)
         {
             Vector3 forward = (Position - LookAt).Normalize();
 
@@ -45,7 +45,7 @@ namespace RayTracer
             Vector3 v = (forward % u).Normalize();
 
             float aspectRatio = static_cast<float>(screenSize.X) / static_cast<float>(screenSize.Y);
-            float halfWidth = tanf(FieldOfView * 0.5f);
+            float halfWidth = Math::tan(FieldOfView * 0.5f);
 
             float viewportHeight = halfWidth * 2.0f;
             float viewportWidth = aspectRatio * viewportHeight;

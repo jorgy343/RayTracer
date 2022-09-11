@@ -40,7 +40,7 @@ namespace RayTracer
         Random _random{};
 
     public:
-        Scene(Vector3 backgroundColor)
+        explicit Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
         {
 

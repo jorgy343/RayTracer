@@ -21,20 +21,20 @@ namespace RayTracer
         Vector3 Maximum{};
         const LambertianMaterial* Material{nullptr};
 
-        AxisAlignedBox() = default;
+        inline constexpr AxisAlignedBox() = default;
 
-        AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const LambertianMaterial* material)
+        inline constexpr AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const LambertianMaterial* material)
             : Minimum{minimum}, Maximum{maximum}, Material{material}
         {
 
         }
 
-        inline const LambertianMaterial* GetMaterial() const override final
+        inline constexpr const LambertianMaterial* GetMaterial() const override final
         {
             return Material;
         }
 
-        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
+        constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
         {
             Vector3 distanceMinimum = (hitPosition - Minimum).Abs();
             Vector3 distanceMaxmimum = (hitPosition - Maximum).Abs();
@@ -80,12 +80,12 @@ namespace RayTracer
             return normal;
         }
 
-        virtual float IntersectEntrance(const Ray& ray) const override final
+        float IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        virtual float IntersectExit(const Ray& ray) const override final
+        float IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

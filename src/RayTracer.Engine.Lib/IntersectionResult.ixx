@@ -13,7 +13,7 @@ namespace RayTracer
         const Geometry* HitGeometry{nullptr};
         float Distance{0.0f};
 
-        IntersectionResult(const Geometry* hitGeometry, float distance)
+        inline constexpr IntersectionResult(const Geometry* hitGeometry, float distance)
             : HitGeometry{hitGeometry}, Distance{distance}
         {
 

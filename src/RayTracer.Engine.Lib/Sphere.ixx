@@ -19,37 +19,37 @@ namespace RayTracer
         float Radius{0.0f};
         const LambertianMaterial* Material{nullptr};
 
-        Sphere() = default;
+        inline constexpr Sphere() = default;
 
-        Sphere(const Vector3& position, float radius, const LambertianMaterial* material)
+        inline constexpr Sphere(const Vector3& position, float radius, const LambertianMaterial* material)
             : Position{position}, Radius{radius}, Material{material}
         {
 
         }
 
-        inline const LambertianMaterial* GetMaterial() const override final
+        inline constexpr const LambertianMaterial* GetMaterial() const override final
         {
             return Material;
         }
 
-        inline Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
         {
             return (hitPosition - Position).Normalize();
         }
 
-        virtual float IntersectEntrance(const Ray& ray) const override final
+        constexpr float IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        virtual float IntersectExit(const Ray& ray) const override final
+        constexpr float IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        inline float Intersect(const Ray& ray) const
+        inline constexpr float Intersect(const Ray& ray) const
         {
             Vector3 v = ray.Position - Position;
 

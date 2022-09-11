@@ -268,42 +268,61 @@ namespace RayTracer
             };
         }
 
-        Matrix3x3 operator*(const Matrix3x3& right) const
+        inline constexpr Matrix3x3 operator*(const Matrix3x3& right) const
         {
-            // Currently this is slower on zen 2 architecture.
-            //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
-            //Vec4f rightColumn2 = gather4f<1, 5, 9, 13>(&right.M11);
-            //Vec4f rightColumn3 = gather4f<2, 6, 10, 14>(&right.M11);
+            if (std::is_constant_evaluated())
+            {
+                return {
+                    M11 * right.M11 + M12 * right.M21 + M13 * right.M31,
+                    M11 * right.M12 + M12 * right.M22 + M13 * right.M32,
+                    M11 * right.M13 + M12 * right.M23 + M13 * right.M33,
 
-            Vec4f rightColumn1{right.M11, right.M12, right.M13, right.__DummyM14};
-            Vec4f rightColumn2{right.M21, right.M22, right.M23, right.__DummyM24};
-            Vec4f rightColumn3{right.M31, right.M32, right.M33, right.__DummyM34};
+                    M21 * right.M11 + M22 * right.M21 + M23 * right.M31,
+                    M21 * right.M12 + M22 * right.M22 + M23 * right.M32,
+                    M21 * right.M13 + M22 * right.M23 + M23 * right.M33,
 
-            Vec4f leftRow11{M11};
-            Vec4f leftRow21{M12};
-            Vec4f leftRow31{M13};
+                    M31 * right.M11 + M32 * right.M21 + M33 * right.M31,
+                    M31 * right.M12 + M32 * right.M22 + M33 * right.M32,
+                    M31 * right.M13 + M32 * right.M23 + M33 * right.M33,
+                };
+            }
+            else
+            {
+                // Currently this is slower on zen 2 architecture.
+                //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
+                //Vec4f rightColumn2 = gather4f<1, 5, 9, 13>(&right.M11);
+                //Vec4f rightColumn3 = gather4f<2, 6, 10, 14>(&right.M11);
 
-            Vec4f resultRow1 = (leftRow11 * rightColumn1) + (leftRow21 * rightColumn2) + (leftRow31 * rightColumn3);
+                Vec4f rightColumn1{right.M11, right.M12, right.M13, right.__DummyM14};
+                Vec4f rightColumn2{right.M21, right.M22, right.M23, right.__DummyM24};
+                Vec4f rightColumn3{right.M31, right.M32, right.M33, right.__DummyM34};
 
-            Vec4f leftRow12{M21};
-            Vec4f leftRow22{M22};
-            Vec4f leftRow32{M23};
+                Vec4f leftRow11{M11};
+                Vec4f leftRow21{M12};
+                Vec4f leftRow31{M13};
 
-            Vec4f resultRow2 = (leftRow12 * rightColumn1) + (leftRow22 * rightColumn2) + (leftRow32 * rightColumn3);
+                Vec4f resultRow1 = (leftRow11 * rightColumn1) + (leftRow21 * rightColumn2) + (leftRow31 * rightColumn3);
 
-            Vec4f leftRow13{M31};
-            Vec4f leftRow23{M32};
-            Vec4f leftRow33{M33};
+                Vec4f leftRow12{M21};
+                Vec4f leftRow22{M22};
+                Vec4f leftRow32{M23};
 
-            Vec4f resultRow3 = (leftRow13 * rightColumn1) + (leftRow23 * rightColumn2) + (leftRow33 * rightColumn3);
+                Vec4f resultRow2 = (leftRow12 * rightColumn1) + (leftRow22 * rightColumn2) + (leftRow32 * rightColumn3);
 
-            Matrix3x3 result;
+                Vec4f leftRow13{M31};
+                Vec4f leftRow23{M32};
+                Vec4f leftRow33{M33};
 
-            resultRow1.store_a(&result.M11);
-            resultRow2.store_a(&result.M21);
-            resultRow3.store_a(&result.M31);
+                Vec4f resultRow3 = (leftRow13 * rightColumn1) + (leftRow23 * rightColumn2) + (leftRow33 * rightColumn3);
 
-            return result;
+                Matrix3x3 result;
+
+                resultRow1.store_a(&result.M11);
+                resultRow2.store_a(&result.M21);
+                resultRow3.store_a(&result.M31);
+
+                return result;
+            }
         }
 
         inline constexpr Matrix3x3 operator+(float right) const

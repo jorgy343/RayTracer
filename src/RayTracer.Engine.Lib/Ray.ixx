@@ -15,9 +15,9 @@ namespace RayTracer
         Vector3 Direction{};
         Vector3 InverseDirection{};
 
-        Ray() = default;
+        inline constexpr Ray() = default;
 
-        Ray(const Vector3& position, const Vector3& direction)
+        inline constexpr Ray(const Vector3& position, const Vector3& direction)
             : Position{position}, Direction{direction}, InverseDirection{Vector3{Math::rcp(direction.X), Math::rcp(direction.Y), Math::rcp(direction.Z)}}
         {
 

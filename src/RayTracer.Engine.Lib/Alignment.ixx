@@ -16,7 +16,7 @@ namespace RayTracer
     public:
         using value_type = ElementType;
 
-        static std::align_val_t constexpr ALIGNMENT{ALIGNMENT_IN_BYTES};
+        static constexpr std::align_val_t ALIGNMENT{ALIGNMENT_IN_BYTES};
 
         constexpr AlignedAllocator() noexcept
         {

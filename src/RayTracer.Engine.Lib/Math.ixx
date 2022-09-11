@@ -126,7 +126,7 @@ namespace RayTracer
         {
             if (std::is_constant_evaluated())
             {
-                return T{1} / value;
+                return value == T{0} ? std::numeric_limits<T>::infinity() : T{1} / value;
             }
             else
             {
@@ -166,7 +166,7 @@ namespace RayTracer
             }
         }
 
-        export template <std::floating_point T, int Iterations = 20>
+        export template <std::floating_point T>
             inline constexpr T cos(T radians)
         {
             if (std::is_constant_evaluated())
@@ -179,7 +179,7 @@ namespace RayTracer
             }
         }
 
-        export template <std::floating_point T, int Iterations = 20>
+        export template <std::floating_point T>
             inline constexpr T sin(T radians)
         {
             if (std::is_constant_evaluated())
@@ -189,6 +189,19 @@ namespace RayTracer
             else
             {
                 return std::sin(radians);
+            }
+        }
+
+        export template <std::floating_point T>
+            inline constexpr T tan(T radians)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::tan(radians);
+            }
+            else
+            {
+                return std::tan(radians);
             }
         }
     }
