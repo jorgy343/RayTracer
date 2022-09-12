@@ -1,7 +1,9 @@
 #include <cmath>
 #include <concepts>
 #include <utility>
+#include <vector>
 
+#include "Vcl.h"
 #include "Constants.h"
 
 export module RayTracer.Scene;
@@ -27,61 +29,67 @@ import RayTracer.LightRay;
 
 namespace RayTracer
 {
-    export class Scene
+    export template<
+        typename TFloatAllocator = AlignedAllocator<float, 64>,
+        typename TSphereAllocator = AlignedAllocator<const Sphere*, 64>,
+        typename TPlaneAllocator = AlignedAllocator<const Plane*, 64>,
+        typename TParallelogramAllocator = AlignedAllocator<const Parallelogram*, 64>,
+        typename TLightAllocator = AlignedAllocator<const Light*, 64>>
+    class Scene
     {
     private:
         Vector3 _backgroundColor{0.0f};
 
-        AlignedVector<const Light*, 64> _lights{};
+        std::vector<const Light*, TLightAllocator> _lights{};
 
-        SphereSoa _sphereSoa{};
-        PlaneSoa _planeSoa{};
-        AxisAlignedBoxSoa _axisAlignedBoxSoa{};
-        ParallelogramSoa _parallelogramSoa{};
+        SphereSoa<TFloatAllocator, TSphereAllocator> _sphereSoa{};
+        PlaneSoa<TFloatAllocator, TPlaneAllocator> _planeSoa{};
+        //AxisAlignedBoxSoa _axisAlignedBoxSoa{};
+        ParallelogramSoa<TFloatAllocator, TParallelogramAllocator> _parallelogramSoa{};
 
         Random _random{};
 
     public:
-        explicit Scene(Vector3 backgroundColor)
+        inline constexpr explicit Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
         {
 
         }
 
-        void AddLight(const Light* light)
+        constexpr void AddLight(const Light* light)
         {
             _lights.push_back(light);
         }
 
-        void AddGeometry(const Sphere* sphere)
+        constexpr void AddGeometry(const Sphere* sphere)
         {
             _sphereSoa.Add(sphere);
         }
 
-        void AddGeometry(const Plane* plane)
+        constexpr void AddGeometry(const Plane* plane)
         {
             _planeSoa.Add(plane);
         }
 
-        void AddGeometry(const AxisAlignedBox* axisAlignedBox)
-        {
-            _axisAlignedBoxSoa.Add(axisAlignedBox);
-        }
+        //void AddGeometry(const AxisAlignedBox* axisAlignedBox)
+        //{
+        //    _axisAlignedBoxSoa.Add(axisAlignedBox);
+        //}
 
-        void AddGeometry(const Parallelogram* parallelogram)
+        constexpr void AddGeometry(const Parallelogram* parallelogram)
         {
             _parallelogramSoa.Add(parallelogram);
         }
 
-        void Finalize()
+        constexpr void Finalize()
         {
             _sphereSoa.Finalize();
             _planeSoa.Finalize();
-            _axisAlignedBoxSoa.Finalize();
+            //_axisAlignedBoxSoa.Finalize();
             _parallelogramSoa.Finalize();
         }
 
-        Vector3 CastRayColor(const Ray& ray) const
+        constexpr Vector3 CastRayColor(const Ray& ray) const
         {
             return CastRayColor(ray, 1);
         }
@@ -101,23 +109,23 @@ namespace RayTracer
             }
         }
 
-        float CastRayDistance(const Ray& ray) const
+        constexpr float CastRayDistance(const Ray& ray) const
         {
             auto closestIntersection = ClosestIntersection(
                 _sphereSoa.IntersectEntrance(ray),
                 _planeSoa.IntersectEntrance(ray),
-                _axisAlignedBoxSoa.IntersectEntrance(ray),
+                //_axisAlignedBoxSoa.IntersectEntrance(ray),
                 _parallelogramSoa.IntersectEntrance(ray));
 
             return Math::max(0.0f, closestIntersection.Distance);
         }
 
-        Vector3 CastRayColor(const Ray& ray, int depth) const
+        constexpr Vector3 CastRayColor(const Ray& ray, int depth) const
         {
             auto closestIntersection = ClosestIntersection(
                 _sphereSoa.IntersectEntrance(ray),
                 _planeSoa.IntersectEntrance(ray),
-                _axisAlignedBoxSoa.IntersectEntrance(ray),
+                //_axisAlignedBoxSoa.IntersectEntrance(ray),
                 _parallelogramSoa.IntersectEntrance(ray));
 
             closestIntersection.Distance = Math::max(0.0f, closestIntersection.Distance);
@@ -154,7 +162,7 @@ namespace RayTracer
             return outputColor;
         }
 
-        Vector3 CalculateDirectionalLightPower(const Vector3& hitPosition, const Vector3& hitNormal) const
+        constexpr Vector3 CalculateDirectionalLightPower(const Vector3& hitPosition, const Vector3& hitNormal) const
         {
             Vector3 lightPower{};
 

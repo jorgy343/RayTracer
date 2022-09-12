@@ -9,18 +9,13 @@ namespace RayTracer
     export class LambertianMaterial final : public Material
     {
     public:
-        Vector3 Color;
-        Vector3 EmissiveColor;
+        Vector3 Color{};
+        Vector3 EmissiveColor{};
 
         inline constexpr LambertianMaterial(const Vector3& color, const Vector3& emissiveColor)
             : Color{color}, EmissiveColor{emissiveColor}
         {
 
-        }
-
-        inline constexpr ScatterResult GenerateScatterRay(const Ray& incomingRay, const Vector3& hitPosition, const Vector3& hitNormal) const override final
-        {
-            return ScatterResult{Ray{}, 0.0f};
         }
     };
 }

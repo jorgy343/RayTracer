@@ -8,6 +8,7 @@ import RayTracer.Ray;
 import RayTracer.Math;
 import RayTracer.Vector3;
 import RayTracer.Geometry;
+import RayTracer.IntersectionResult;
 import RayTracer.IntersectionResultType;
 
 namespace RayTracer
@@ -37,17 +38,16 @@ namespace RayTracer
             return (hitPosition - Position).Normalize();
         }
 
-        constexpr float IntersectEntrance(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Entrance>(ray);
+            return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        constexpr float IntersectExit(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Exit>(ray);
+            return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
-    private:
         template <IntersectionResultType TIntersectionResultType>
         inline constexpr float Intersect(const Ray& ray) const
         {

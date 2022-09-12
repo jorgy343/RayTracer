@@ -1,4 +1,5 @@
 #include <cmath>
+#include <vector>
 
 #include "Vcl.h"
 
@@ -16,17 +17,18 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export class SphereSoa final : public GeometrySoa<Sphere>
+    export template<typename TFloatAllocator = AlignedAllocator<float, 64>, typename TSphereAllocator = AlignedAllocator<const Sphere*, 64>>
+    class SphereSoa final : public GeometrySoa<Sphere>
     {
     private:
-        AlignedVector<float, 64> _positionX{};
-        AlignedVector<float, 64> _positionY{};
-        AlignedVector<float, 64> _positionZ{};
-        AlignedVector<float, 64> _radius{};
-        AlignedVector<const Sphere*, 64> _geometries{};
+        std::vector<float, TFloatAllocator> _positionX{};
+        std::vector<float, TFloatAllocator> _positionY{};
+        std::vector<float, TFloatAllocator> _positionZ{};
+        std::vector<float, TFloatAllocator> _radius{};
+        std::vector<const Sphere*, TSphereAllocator> _geometries{};
         
     public:
-        SphereSoa(int initialCapacity = 32)
+        constexpr SphereSoa(int initialCapacity = 32)
         {
             _positionX.reserve(initialCapacity);
             _positionY.reserve(initialCapacity);
@@ -35,12 +37,12 @@ namespace RayTracer
             _geometries.reserve(initialCapacity);
         }
 
-        char GetCount() const override final
+        inline constexpr long long GetCount() const override final
         {
-            return static_cast<char>(_positionX.size());
+            return _positionX.size();
         }
 
-        void Add(const Sphere* geometry) override final
+        constexpr void Add(const Sphere* geometry) override final
         {
             _positionX.push_back(geometry->Position.X);
             _positionY.push_back(geometry->Position.Y);
@@ -49,7 +51,7 @@ namespace RayTracer
             _geometries.push_back(geometry);
         }
 
-        void Finalize() override final
+        constexpr void Finalize() override final
         {
             for (long long i = _positionX.size(); i % 8 != 0; i++)
             {
@@ -61,75 +63,103 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        inline constexpr IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
-            Vec8f rayPositionX{ray.Position.X};
-            Vec8f rayPositionY{ray.Position.Y};
-            Vec8f rayPositionZ{ray.Position.Z};
-
-            Vec8f spherePositionX = Vec8f{}.load_a(&_positionX[startingGeometryIndex]);
-            Vec8f spherePositionY = Vec8f{}.load_a(&_positionY[startingGeometryIndex]);
-            Vec8f spherePositionZ = Vec8f{}.load_a(&_positionZ[startingGeometryIndex]);
-
-            Vec8f vX = rayPositionX - spherePositionX;
-            Vec8f vY = rayPositionY - spherePositionY;
-            Vec8f vZ = rayPositionZ - spherePositionZ;
-
-            Vec8f rayDirectionX{ray.Direction.X};
-            Vec8f rayDirectionY{ray.Direction.Y};
-            Vec8f rayDirectionZ{ray.Direction.Z};
-
-            Vec8f sphereRadius = Vec8f{}.load_a(&_radius[startingGeometryIndex]);
-
-            Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
-            Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
-            Vec8f c = SimdDot(vX, vX, vY, vY, vZ, vZ) - (sphereRadius * sphereRadius);
-
-            Vec8f discriminant = (b * b) - (a * c);
-            Vec8f discriminantSqrt = sqrt(discriminant);
-
-            Vec8f reciprocalA = approx_recipr(a);
-            Vec8f negativeB = -b;
-
-            Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-            
-            Vec8f result;
-            if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
+            if (std::is_constant_evaluated())
             {
-                Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
-                result = entranceDistance;
+                float closestDistance = std::numeric_limits<float>::infinity();
+                const Sphere* closestGeometry = nullptr;
+
+                for (unsigned long long i = startingGeometryIndex; i < _geometries.size() && i < startingGeometryIndex + 8; i++)
+                {
+                    const Sphere* geometry = _geometries[i];
+
+                    if (geometry == nullptr)
+                    {
+                        continue;
+                    }
+
+                    float distance = geometry->Intersect<TIntersectionResultType>(ray);
+
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestGeometry = geometry;
+                    }
+                }
+
+                return IntersectionResult{closestGeometry, closestDistance};
             }
             else
             {
-                result = exitDistance;
+                Vec8f rayPositionX{ray.Position.X};
+                Vec8f rayPositionY{ray.Position.Y};
+                Vec8f rayPositionZ{ray.Position.Z};
+
+                Vec8f spherePositionX = Vec8f{}.load_a(&_positionX[startingGeometryIndex]);
+                Vec8f spherePositionY = Vec8f{}.load_a(&_positionY[startingGeometryIndex]);
+                Vec8f spherePositionZ = Vec8f{}.load_a(&_positionZ[startingGeometryIndex]);
+
+                Vec8f vX = rayPositionX - spherePositionX;
+                Vec8f vY = rayPositionY - spherePositionY;
+                Vec8f vZ = rayPositionZ - spherePositionZ;
+
+                Vec8f rayDirectionX{ray.Direction.X};
+                Vec8f rayDirectionY{ray.Direction.Y};
+                Vec8f rayDirectionZ{ray.Direction.Z};
+
+                Vec8f sphereRadius = Vec8f{}.load_a(&_radius[startingGeometryIndex]);
+
+                Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
+                Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
+                Vec8f c = SimdDot(vX, vX, vY, vY, vZ, vZ) - (sphereRadius * sphereRadius);
+
+                Vec8f discriminant = (b * b) - (a * c);
+                Vec8f discriminantSqrt = sqrt(discriminant);
+
+                Vec8f reciprocalA = approx_recipr(a);
+                Vec8f negativeB = -b;
+
+                Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
+
+                Vec8f result;
+                if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
+                {
+                    Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+                    result = entranceDistance;
+                }
+                else
+                {
+                    result = exitDistance;
+                }
+
+                // Make sure infinite8f() is second so nans are replaced with inf.
+                Vec8f clampedResult = select(exitDistance >= Vec8f(0.0f), result, infinite8f());
+
+                float minimumEntranceDistance = horizontal_min1(clampedResult);
+                int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedResult);
+
+                return {
+                    _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                    minimumEntranceDistance,
+                };
             }
-
-            // Make sure infinite8f() is second so nans are replaced with inf.
-            Vec8f clampedResult = select(exitDistance >= Vec8f(0.0f), result, infinite8f());
-
-            float minimumEntranceDistance = horizontal_min1(clampedResult);
-            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedResult);
-
-            return {
-                _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
-                minimumEntranceDistance,
-            };
         }
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult Intersect(const Ray& ray) const
+        inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
             IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
 
@@ -146,4 +176,21 @@ namespace RayTracer
             return result;
         }
     };
+
+    consteval float Test()
+    {
+        SphereSoa<std::allocator<float>, std::allocator<const Sphere*>> soa{};
+
+        Sphere sphere1{{0, 0, 0}, 5, nullptr};
+        soa.Add(&sphere1);
+
+        soa.Finalize();
+
+        Ray ray{{0, 0, -10}, {0, 0, 1}};
+        IntersectionResult result = soa.IntersectEntrance(ray);
+
+        return result.Distance;
+    }
+
+    static_assert(Test() == 5.0f);
 }

@@ -18,6 +18,8 @@ namespace RayTracer
         Vector3 Color{};
         Parallelogram Shape{};
 
+        inline constexpr ParallelogramLight() = default;
+
         inline constexpr ParallelogramLight(const Vector3& color, const Parallelogram& shape)
             : Color{color}, Shape{shape}
         {

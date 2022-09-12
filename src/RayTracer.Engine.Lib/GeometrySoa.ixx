@@ -10,7 +10,7 @@ namespace RayTracer
     class GeometrySoa
     {
     public:
-        virtual char GetCount() const = 0;
+        virtual long long GetCount() const = 0;
         virtual void Add(const TGeometry* geometry) = 0;
         virtual void Finalize() = 0;
 

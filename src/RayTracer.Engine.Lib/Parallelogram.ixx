@@ -5,6 +5,7 @@ export module RayTracer.Parallelogram;
 import RayTracer.Math;
 import RayTracer.Geometry;
 import RayTracer.Vector3;
+import RayTracer.IntersectionResult;
 import RayTracer.IntersectionResultType;
 
 namespace RayTracer
@@ -16,7 +17,7 @@ namespace RayTracer
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        float InverseArea{};
+        float InverseArea{0.0f};
         const LambertianMaterial* Material{nullptr};
 
         inline constexpr Parallelogram() = default;
@@ -37,17 +38,16 @@ namespace RayTracer
             return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
         }
 
-        constexpr float IntersectEntrance(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Entrance>(ray);
+            return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        constexpr float IntersectExit(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Exit>(ray);
+            return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
-    private:
         template <IntersectionResultType TIntersectionResultType>
         inline constexpr float Intersect(const Ray& ray) const
         {

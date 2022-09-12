@@ -43,9 +43,9 @@ namespace RayTracer
             _geometries.reserve(initialCapacity);
         }
 
-        char GetCount() const override final
+        long long GetCount() const override final
         {
-            return static_cast<char>(_minimumX.size());
+            return _minimumX.size();
         }
 
         void Add(const AxisAlignedBox* geometry) override final

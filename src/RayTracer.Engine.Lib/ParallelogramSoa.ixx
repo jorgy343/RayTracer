@@ -1,4 +1,5 @@
 #include <limits>
+#include <vector>
 
 #include "Vcl.h"
 
@@ -17,25 +18,26 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export class ParallelogramSoa final : public GeometrySoa<Parallelogram>
+    export template<typename TFloatAllocator = AlignedAllocator<float, 64>, typename TParallelogramAllocator = AlignedAllocator<const Parallelogram*, 64>>
+    class ParallelogramSoa final : public GeometrySoa<Parallelogram>
     {
     private:
-        AlignedVector<float, 64> _positionX{};
-        AlignedVector<float, 64> _positionY{};
-        AlignedVector<float, 64> _positionZ{};
+        std::vector<float, TFloatAllocator> _positionX{};
+        std::vector<float, TFloatAllocator> _positionY{};
+        std::vector<float, TFloatAllocator> _positionZ{};
 
-        AlignedVector<float, 64> _edge1X{};
-        AlignedVector<float, 64> _edge1Y{};
-        AlignedVector<float, 64> _edge1Z{};
+        std::vector<float, TFloatAllocator> _edge1X{};
+        std::vector<float, TFloatAllocator> _edge1Y{};
+        std::vector<float, TFloatAllocator> _edge1Z{};
 
-        AlignedVector<float, 64> _edge2X{};
-        AlignedVector<float, 64> _edge2Y{};
-        AlignedVector<float, 64> _edge2Z{};
+        std::vector<float, TFloatAllocator> _edge2X{};
+        std::vector<float, TFloatAllocator> _edge2Y{};
+        std::vector<float, TFloatAllocator> _edge2Z{};
 
-        AlignedVector<const Parallelogram*, 64> _geometries{};
+        std::vector<const Parallelogram*, TParallelogramAllocator> _geometries{};
 
     public:
-        ParallelogramSoa(int initialCapacity = 32)
+        constexpr ParallelogramSoa(int initialCapacity = 32)
         {
             _positionX.reserve(initialCapacity);
             _positionY.reserve(initialCapacity);
@@ -52,12 +54,12 @@ namespace RayTracer
             _geometries.reserve(initialCapacity);
         }
 
-        char GetCount() const override final
+        inline constexpr long long GetCount() const override final
         {
-            return static_cast<char>(_positionX.size());
+            return _positionX.size();
         }
 
-        void Add(const Parallelogram* geometry) override final
+        constexpr void Add(const Parallelogram* geometry) override final
         {
             _positionX.push_back(geometry->Position.X);
             _positionY.push_back(geometry->Position.Y);
@@ -74,7 +76,7 @@ namespace RayTracer
             _geometries.push_back(geometry);
         }
 
-        void Finalize() override final
+        constexpr void Finalize() override final
         {
             for (long long i = _positionX.size(); i % 8 != 0; i++)
             {
@@ -94,76 +96,104 @@ namespace RayTracer
             }
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        inline constexpr IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
         {
-            Vec8f rayDirectionX{ray.Direction.X};
-            Vec8f rayDirectionY{ray.Direction.Y};
-            Vec8f rayDirectionZ{ray.Direction.Z};
+            if (std::is_constant_evaluated())
+            {
+                float closestDistance = std::numeric_limits<float>::infinity();
+                const Parallelogram* closestGeometry = nullptr;
 
-            Vec8f edge2X = Vec8f{}.load_a(&_edge2X[startingGeometryIndex]);
-            Vec8f edge2Y = Vec8f{}.load_a(&_edge2Y[startingGeometryIndex]);
-            Vec8f edge2Z = Vec8f{}.load_a(&_edge2Z[startingGeometryIndex]);
+                for (unsigned long long i = startingGeometryIndex; i < _geometries.size() && i < startingGeometryIndex + 8; i++)
+                {
+                    const Parallelogram* geometry = _geometries[i];
 
-            Vec8f3 p = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
+                    if (geometry == nullptr)
+                    {
+                        continue;
+                    }
 
-            Vec8f edge1X = Vec8f{}.load_a(&_edge1X[startingGeometryIndex]);
-            Vec8f edge1Y = Vec8f{}.load_a(&_edge1Y[startingGeometryIndex]);
-            Vec8f edge1Z = Vec8f{}.load_a(&_edge1Z[startingGeometryIndex]);
+                    float distance = geometry->Intersect<TIntersectionResultType>(ray);
 
-            Vec8f determinant = SimdDot2(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
-            Vec8f invDeterminant = approx_recipr(determinant);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestGeometry = geometry;
+                    }
+                }
 
-            Vec8f rayPositionX{ray.Position.X};
-            Vec8f rayPositionY{ray.Position.Y};
-            Vec8f rayPositionZ{ray.Position.Z};
+                return IntersectionResult{closestGeometry, closestDistance};
+            }
+            else
+            {
+                Vec8f rayDirectionX{ray.Direction.X};
+                Vec8f rayDirectionY{ray.Direction.Y};
+                Vec8f rayDirectionZ{ray.Direction.Z};
 
-            Vec8f positionX = Vec8f{}.load_a(&_positionX[startingGeometryIndex]);
-            Vec8f positionY = Vec8f{}.load_a(&_positionY[startingGeometryIndex]);
-            Vec8f positionZ = Vec8f{}.load_a(&_positionZ[startingGeometryIndex]);
+                Vec8f edge2X = Vec8f{}.load_a(&_edge2X[startingGeometryIndex]);
+                Vec8f edge2Y = Vec8f{}.load_a(&_edge2Y[startingGeometryIndex]);
+                Vec8f edge2Z = Vec8f{}.load_a(&_edge2Z[startingGeometryIndex]);
 
-            Vec8f tX = rayPositionX - positionX;
-            Vec8f tY = rayPositionY - positionY;
-            Vec8f tZ = rayPositionZ - positionZ;
+                Vec8f3 p = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
 
-            Vec8f a = SimdDot2(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
-            Vec8f3 q = SimdCrossProduct(tX, tY, tZ, edge1X, edge1Y, edge1Z);
-            Vec8f b = SimdDot2(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
+                Vec8f edge1X = Vec8f{}.load_a(&_edge1X[startingGeometryIndex]);
+                Vec8f edge1Y = Vec8f{}.load_a(&_edge1Y[startingGeometryIndex]);
+                Vec8f edge1Z = Vec8f{}.load_a(&_edge1Z[startingGeometryIndex]);
 
-            Vec8f entranceDistance = SimdDot2(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
+                Vec8f determinant = SimdDot2(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
+                Vec8f invDeterminant = approx_recipr(determinant);
 
-            Vec8fb comparison =
-                entranceDistance >= Vec8f(0.0f) &&
-                a >= Vec8f(0.0f) &&
-                a <= Vec8f(1.0f) &&
-                b >= Vec8f(0.0f) &&
-                b <= Vec8f(1.0f);
+                Vec8f rayPositionX{ray.Position.X};
+                Vec8f rayPositionY{ray.Position.Y};
+                Vec8f rayPositionZ{ray.Position.Z};
 
-            // Make sure infinite8f() is second so nans are replaced with inf.
-            Vec8f clampedEntranceDistance = select(comparison, entranceDistance, infinite8f());
+                Vec8f positionX = Vec8f{}.load_a(&_positionX[startingGeometryIndex]);
+                Vec8f positionY = Vec8f{}.load_a(&_positionY[startingGeometryIndex]);
+                Vec8f positionZ = Vec8f{}.load_a(&_positionZ[startingGeometryIndex]);
 
-            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+                Vec8f tX = rayPositionX - positionX;
+                Vec8f tY = rayPositionY - positionY;
+                Vec8f tZ = rayPositionZ - positionZ;
 
-            return {
-                _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
-                minimumEntranceDistance,
-            };
+                Vec8f a = SimdDot2(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
+                Vec8f3 q = SimdCrossProduct(tX, tY, tZ, edge1X, edge1Y, edge1Z);
+                Vec8f b = SimdDot2(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
+
+                Vec8f entranceDistance = SimdDot2(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
+
+                Vec8fb comparison =
+                    entranceDistance >= Vec8f(0.0f) &&
+                    a >= Vec8f(0.0f) &&
+                    a <= Vec8f(1.0f) &&
+                    b >= Vec8f(0.0f) &&
+                    b <= Vec8f(1.0f);
+
+                // Make sure infinite8f() is second so nans are replaced with inf.
+                Vec8f clampedEntranceDistance = select(comparison, entranceDistance, infinite8f());
+
+                float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+                int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+
+                return {
+                    _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                    minimumEntranceDistance,
+                };
+            }
         }
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult Intersect(const Ray& ray) const
+        inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
             IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
 

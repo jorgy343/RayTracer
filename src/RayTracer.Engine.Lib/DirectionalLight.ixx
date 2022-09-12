@@ -17,6 +17,8 @@ namespace RayTracer
         Vector3 Direction{};
         Vector3 ReversedDirection{};
 
+        inline constexpr DirectionalLight() = default;
+
         inline constexpr DirectionalLight(const Vector3& color, const Vector3& direction)
             : Color{color}, Direction{direction}, ReversedDirection{-direction}
         {

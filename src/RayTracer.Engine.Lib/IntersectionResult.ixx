@@ -2,11 +2,12 @@
 
 export module RayTracer.IntersectionResult;
 
-import RayTracer.Geometry;
 import RayTracer.Vector3;
 
 namespace RayTracer
 {
+    export class Geometry;
+
     export class IntersectionResult
     {
     public:

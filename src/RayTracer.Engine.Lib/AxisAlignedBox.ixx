@@ -8,6 +8,7 @@ export module RayTracer.AxisAlignedBox;
 import RayTracer.Math;
 import RayTracer.Geometry;
 import RayTracer.Vector3;
+import RayTracer.IntersectionResult;
 import RayTracer.IntersectionResultType;
 
 using namespace vcl;
@@ -80,17 +81,16 @@ namespace RayTracer
             return normal;
         }
 
-        float IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Entrance>(ray);
+            return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        float IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Exit>(ray);
+            return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
-    private:
         template <IntersectionResultType TIntersectionResultType>
         inline float Intersect(const Ray& ray) const
         {
