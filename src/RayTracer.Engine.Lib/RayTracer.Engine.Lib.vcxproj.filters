@@ -137,5 +137,8 @@
     <ClCompile Include="LightRay.ixx">
       <Filter>Modules\Lights</Filter>
     </ClCompile>
+    <ClCompile Include="IntersectableGeometry.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
     <ClCompile Include="Geometry.ixx" />
     <ClCompile Include="GeometrySoa.ixx" />
+    <ClCompile Include="IntersectableGeometry.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />

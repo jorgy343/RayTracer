@@ -26,6 +26,7 @@ import RayTracer.GeometrySoa;
 import RayTracer.Vector3;
 import RayTracer.Random;
 import RayTracer.LightRay;
+import RayTracer.IntersectableGeometry;
 
 namespace RayTracer
 {
@@ -34,13 +35,15 @@ namespace RayTracer
         typename TSphereAllocator = AlignedAllocator<const Sphere*, 64>,
         typename TPlaneAllocator = AlignedAllocator<const Plane*, 64>,
         typename TParallelogramAllocator = AlignedAllocator<const Parallelogram*, 64>,
-        typename TLightAllocator = AlignedAllocator<const Light*, 64>>
+        typename TLightAllocator = AlignedAllocator<const Light*, 64>,
+        typename TIntersectableGeometryAllocator = AlignedAllocator<const IntersectableGeometry*, 64>>
     class Scene
     {
     private:
         Vector3 _backgroundColor{0.0f};
 
         std::vector<const Light*, TLightAllocator> _lights{};
+        std::vector<const IntersectableGeometry*, TIntersectableGeometryAllocator> _geometries{};
 
         SphereSoa<TFloatAllocator, TSphereAllocator> _sphereSoa{};
         PlaneSoa<TFloatAllocator, TPlaneAllocator> _planeSoa{};
@@ -59,6 +62,11 @@ namespace RayTracer
         constexpr void AddLight(const Light* light)
         {
             _lights.push_back(light);
+        }
+
+        constexpr void AddGeometry(const IntersectableGeometry* geometry)
+        {
+            _geometries.push_back(geometry);
         }
 
         constexpr void AddGeometry(const Sphere* sphere)
