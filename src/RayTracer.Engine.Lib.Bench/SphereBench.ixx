@@ -1,3 +1,5 @@
+module;
+
 #include "nanobench.h"
 #include "Vcl.h"
 

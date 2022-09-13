@@ -1,3 +1,5 @@
+module;
+
 #include <cmath>
 
 export module RayTracer.Vector4;

@@ -1,3 +1,5 @@
+module;
+
 #include <cmath>
 #include <concepts>
 

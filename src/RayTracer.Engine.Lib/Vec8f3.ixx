@@ -1,3 +1,5 @@
+module;
+
 #include "Vcl.h"
 
 export module RayTracer.Vec8f3;

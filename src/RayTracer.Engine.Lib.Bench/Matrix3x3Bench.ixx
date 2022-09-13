@@ -1,3 +1,5 @@
+module;
+
 #include "nanobench.h"
 
 export module RayTracer.Bench.Matrix3x3Bench;

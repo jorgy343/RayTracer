@@ -1,3 +1,5 @@
+module;
+
 #include <cstdint>
 #include <random>
 

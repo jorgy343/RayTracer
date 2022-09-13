@@ -1,3 +1,5 @@
+module;
+
 #include <limits>
 
 export module RayTracer.Plane;

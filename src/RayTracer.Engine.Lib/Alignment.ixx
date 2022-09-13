@@ -1,3 +1,5 @@
+module;
+
 #include <vector>
 
 export module RayTracer.Alignment;
