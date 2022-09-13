@@ -24,11 +24,11 @@ TEST_P(PlaneIntersectionTests, Intersects_ReturnsNearestIntersection)
     // Assert
     if (expectedResult == std::numeric_limits<float>::infinity())
     {
-        EXPECT_EQ(result.Distance, expectedResult);
+        EXPECT_EQ(result.HitDistance, expectedResult);
     }
     else
     {
-        EXPECT_NEAR(result.Distance, expectedResult, 0.01f);
+        EXPECT_NEAR(result.HitDistance, expectedResult, 0.01f);
     }
 }
 

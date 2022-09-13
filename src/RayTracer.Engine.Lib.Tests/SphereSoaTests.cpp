@@ -20,7 +20,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Intersects_Returns
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_NEAR(result.Distance, 6, 0.01f);
+    EXPECT_NEAR(result.HitDistance, 6, 0.01f);
     EXPECT_EQ(result.HitGeometry, &sphere1);
 }
 
@@ -37,7 +37,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackward
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
     EXPECT_EQ(result.HitGeometry, nullptr);
 }
 
@@ -54,7 +54,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfi
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
     EXPECT_EQ(result.HitGeometry, nullptr);
 }
 
@@ -71,7 +71,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZ
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_NEAR(result.Distance, 0, 0.01f);
+    EXPECT_NEAR(result.HitDistance, 0, 0.01f);
     EXPECT_EQ(result.HitGeometry, &sphere1);
 }
 
@@ -106,7 +106,7 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_Ret
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_NEAR(result.Distance, 6, 0.01f);
+    EXPECT_NEAR(result.HitDistance, 6, 0.01f);
     EXPECT_EQ(result.HitGeometry, &sphere1);
 }
 
@@ -141,7 +141,7 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
     EXPECT_EQ(result.HitGeometry, nullptr);
 }
 
@@ -176,6 +176,6 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
     EXPECT_EQ(result.HitGeometry, nullptr);
 }

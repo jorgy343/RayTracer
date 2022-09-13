@@ -65,7 +65,7 @@ namespace RayTracer
             float closestIntersection = std::numeric_limits<float>::infinity();
             for (const IntersectableGeometry* geometry : _geometries)
             {
-                float distance = geometry->IntersectEntrance(ray).Distance;
+                float distance = geometry->IntersectEntrance(ray).HitDistance;
 
                 if (distance < closestIntersection)
                 {
@@ -83,13 +83,13 @@ namespace RayTracer
             {
                 IntersectionResult intersection = geometry->IntersectEntrance(ray);
 
-                if (intersection.Distance < closestIntersection.Distance)
+                if (intersection.HitDistance < closestIntersection.HitDistance)
                 {
                     closestIntersection = intersection;
                 }
             }
 
-            closestIntersection.Distance = Math::max(0.0f, closestIntersection.Distance);
+            closestIntersection.HitDistance = Math::max(0.0f, closestIntersection.HitDistance);
 
             Vector3 outputColor = _backgroundColor;
 
@@ -102,7 +102,7 @@ namespace RayTracer
                 //    return material->Color.ComponentwiseMultiply(material->EmissiveColor);
                 //}
 
-                Vector3 hitPosition = ray.Position + ray.Direction * closestIntersection.Distance;
+                Vector3 hitPosition = ray.Position + ray.Direction * closestIntersection.HitDistance;
                 Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * 0.01f;
 

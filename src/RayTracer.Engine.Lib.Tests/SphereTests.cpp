@@ -16,7 +16,7 @@ TEST(SphereIntersectionTests, RayOutsideGeometry_Intersects_ReturnsNearestInters
     IntersectionResult result = sphere.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_NEAR(result.Distance, 6, 0.01f);
+    EXPECT_NEAR(result.HitDistance, 6, 0.01f);
 }
 
 TEST(SphereIntersectionTests, RayOutsideGeometryAndPointingBackwards_Misses_ReturnsInfinity)
@@ -29,7 +29,7 @@ TEST(SphereIntersectionTests, RayOutsideGeometryAndPointingBackwards_Misses_Retu
     IntersectionResult result = sphere.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
 }
 
 TEST(SphereIntersectionTests, RayOutsideGeometry_Misses_ReturnsInfinity)
@@ -42,7 +42,7 @@ TEST(SphereIntersectionTests, RayOutsideGeometry_Misses_ReturnsInfinity)
     IntersectionResult result = sphere.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
 }
 
 TEST(SphereIntersectionTests, RayInsideGeometry_Intersects_ReturnsZero)
@@ -55,7 +55,7 @@ TEST(SphereIntersectionTests, RayInsideGeometry_Intersects_ReturnsZero)
     IntersectionResult result = sphere.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_NEAR(result.Distance, 0, 0.01f);
+    EXPECT_NEAR(result.HitDistance, 0, 0.01f);
 }
 
 TEST(SphereIntersectionTests, InfiniteSphere_Misses_ReturnsInfinity)
@@ -68,5 +68,5 @@ TEST(SphereIntersectionTests, InfiniteSphere_Misses_ReturnsInfinity)
     IntersectionResult result = sphere.IntersectEntrance(ray);
 
     // Assert
-    EXPECT_EQ(result.Distance, std::numeric_limits<float>::infinity());
+    EXPECT_EQ(result.HitDistance, std::numeric_limits<float>::infinity());
 }
