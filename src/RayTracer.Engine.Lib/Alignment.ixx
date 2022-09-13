@@ -1,8 +1,8 @@
 module;
 
-#include <vector>
+export module Alignment;
 
-export module RayTracer.Alignment;
+import <vector>;
 
 namespace RayTracer
 {

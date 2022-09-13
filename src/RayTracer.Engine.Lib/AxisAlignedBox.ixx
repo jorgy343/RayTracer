@@ -1,17 +1,17 @@
 module;
 
-#include <limits>
-#include <cmath>
-
 #include "Vcl.h"
 
-export module RayTracer.AxisAlignedBox;
+export module AxisAlignedBox;
 
-import RayTracer.Math;
-import RayTracer.Geometry;
-import RayTracer.Vector3;
-import RayTracer.IntersectionResult;
-import RayTracer.IntersectionResultType;
+import <limits>;
+import <cmath>;
+
+import Math;
+import Geometry;
+import Vector3;
+import IntersectionResult;
+import IntersectionResultType;
 
 using namespace vcl;
 

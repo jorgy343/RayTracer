@@ -1,12 +1,12 @@
 module;
 
-#include <cmath>
-#include <limits>
+export module Ray;
 
-export module RayTracer.Ray;
+import <cmath>;
+import <limits>;
 
-import RayTracer.Math;
-import RayTracer.Vector3;
+import Math;
+import Vector3;
 
 namespace RayTracer
 {

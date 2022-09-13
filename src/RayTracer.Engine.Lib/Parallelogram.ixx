@@ -1,14 +1,14 @@
 module;
 
-#include <limits>
+export module Parallelogram;
 
-export module RayTracer.Parallelogram;
+import <limits>;
 
-import RayTracer.Math;
-import RayTracer.Geometry;
-import RayTracer.Vector3;
-import RayTracer.IntersectionResult;
-import RayTracer.IntersectionResultType;
+import Math;
+import Geometry;
+import Vector3;
+import IntersectionResult;
+import IntersectionResultType;
 
 namespace RayTracer
 {

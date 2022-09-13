@@ -1,14 +1,14 @@
 module;
 
-#include <limits>
+export module DirectionalLight;
 
-export module RayTracer.DirectionalLight;
+import <limits>;
 
-import RayTracer.Light;
-import RayTracer.Vector3;
-import RayTracer.Ray;
-import RayTracer.Math;
-import RayTracer.LightRay;
+import Light;
+import Vector3;
+import Ray;
+import Math;
+import LightRay;
 
 namespace RayTracer
 {

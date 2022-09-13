@@ -1,17 +1,16 @@
 module;
 
-#include <immintrin.h>
-#include <limits>
+export module Sphere;
 
-export module RayTracer.Sphere;
+import <limits>;
 
-import RayTracer.LambertianMaterial;
-import RayTracer.Ray;
-import RayTracer.Math;
-import RayTracer.Vector3;
-import RayTracer.Geometry;
-import RayTracer.IntersectionResult;
-import RayTracer.IntersectionResultType;
+import LambertianMaterial;
+import Ray;
+import Math;
+import Vector3;
+import Geometry;
+import IntersectionResult;
+import IntersectionResultType;
 
 namespace RayTracer
 {

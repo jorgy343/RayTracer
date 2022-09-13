@@ -1,13 +1,13 @@
 module;
 
-#include <cmath>
+export module MonteCarlo;
 
-#include "Constants.h"
+import <cmath>;
 
-export module RayTracer.MonteCarlo;
+import "Constants.h";
 
-import RayTracer.Math;
-import RayTracer.Vector3;
+import Math;
+import Vector3;
 
 namespace RayTracer
 {

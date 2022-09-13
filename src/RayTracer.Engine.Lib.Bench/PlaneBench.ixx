@@ -3,12 +3,12 @@ module;
 #include "nanobench.h"
 #include "Vcl.h"
 
-export module RayTracer.Bench.PlaneBench;
+export module Bench.PlaneBench;
 
-import RayTracer.Bench.Config;
-import RayTracer.Plane;
-import RayTracer.PlaneSoa;
-import RayTracer.IntersectionResultType;
+import Bench.Config;
+import Plane;
+import PlaneSoa;
+import IntersectionResultType;
 
 namespace RayTracer::Bench
 {

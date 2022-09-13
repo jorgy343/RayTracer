@@ -1,14 +1,14 @@
 module;
 
-#include <cmath>
-
 #include "Vcl.h"
 
-export module RayTracer.Matrix4x4;
+export module Matrix4x4;
 
-import RayTracer.Math;
-import RayTracer.Vector3;
-import RayTracer.Vector4;
+import <cmath>;
+
+import Math;
+import Vector3;
+import Vector4;
 
 using namespace vcl;
 

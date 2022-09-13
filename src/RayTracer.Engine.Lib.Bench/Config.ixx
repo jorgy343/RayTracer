@@ -1,4 +1,4 @@
-export module RayTracer.Bench.Config;
+export module Bench.Config;
 
 namespace RayTracer::Bench
 {

@@ -1,15 +1,15 @@
-import RayTracer.LambertianMaterial;
-import RayTracer.PerspectiveCamera;
-import RayTracer.Scene;
-import RayTracer.Sphere;
-import RayTracer.Plane;
-import RayTracer.AxisAlignedBox;
-import RayTracer.Parallelogram;
-import RayTracer.PointLight;
-import RayTracer.ParallelogramLight;
-import RayTracer.Vector2;
-import RayTracer.SphereSoa;
-import RayTracer.PlaneSoa;
+import LambertianMaterial;
+import PerspectiveCamera;
+import Scene;
+import Sphere;
+import Plane;
+import AxisAlignedBox;
+import Parallelogram;
+import PointLight;
+import ParallelogramLight;
+import Vector2;
+import SphereSoa;
+import PlaneSoa;
 
 #include <memory>
 #include <vector>

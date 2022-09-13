@@ -2,7 +2,7 @@ module;
 
 #include "Vcl.h"
 
-export module RayTracer.Vec8f3;
+export module Vec8f3;
 
 using namespace vcl;
 

@@ -1,10 +1,10 @@
 module;
 
-#include <concepts>
+export module IntersectionResult;
 
-export module RayTracer.IntersectionResult;
+import <concepts>;
 
-import RayTracer.Vector3;
+import Vector3;
 
 namespace RayTracer
 {

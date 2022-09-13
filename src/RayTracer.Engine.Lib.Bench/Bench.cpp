@@ -2,11 +2,11 @@
 #include "nanobench.h"
 #include "Vcl.h"
 
-import RayTracer.Bench.SphereBench;
-import RayTracer.Bench.PlaneBench;
-import RayTracer.Bench.AxisAlignedBoxBench;
-import RayTracer.Bench.Matrix3x3Bench;
-import RayTracer.Bench.Matrix4x4Bench;
+import Bench.SphereBench;
+import Bench.PlaneBench;
+import Bench.AxisAlignedBoxBench;
+import Bench.Matrix3x3Bench;
+import Bench.Matrix4x4Bench;
 
 using namespace RayTracer::Bench;
 

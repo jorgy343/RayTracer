@@ -1,27 +1,28 @@
 module;
 
-#include <cmath>
-#include <concepts>
-#include <utility>
-#include <vector>
-
 #include "Vcl.h"
-#include "Constants.h"
 
-export module RayTracer.Scene;
+export module Scene;
 
-import RayTracer.Alignment;
-import RayTracer.Light;
-import RayTracer.LambertianMaterial;
-import RayTracer.Math;
-import RayTracer.MonteCarlo;
-import RayTracer.Vector3;
-import RayTracer.Random;
-import RayTracer.LightRay;
-import RayTracer.Geometry;
-import RayTracer.IntersectableGeometry;
-import RayTracer.Ray;
-import RayTracer.Sphere;
+import <cmath>;
+import <concepts>;
+import <utility>;
+import <vector>;
+
+import "Constants.h";
+
+import Alignment;
+import Light;
+import LambertianMaterial;
+import Math;
+import MonteCarlo;
+import Vector3;
+import Random;
+import LightRay;
+import Geometry;
+import IntersectableGeometry;
+import Ray;
+import Sphere;
 
 namespace RayTracer
 {

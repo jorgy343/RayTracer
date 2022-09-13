@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include <limits>
+import <limits>;
 
-import RayTracer.Plane;
+import Plane;
 
 using namespace RayTracer;
 

@@ -1,4 +1,4 @@
-export module RayTracer.IntersectionResultType;
+export module IntersectionResultType;
 
 namespace RayTracer
 {

@@ -1,6 +1,6 @@
-export module RayTracer.ScatterResult;
+export module ScatterResult;
 
-import RayTracer.Ray;
+import Ray;
 
 namespace RayTracer
 {

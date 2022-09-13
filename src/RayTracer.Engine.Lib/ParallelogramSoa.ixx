@@ -1,21 +1,22 @@
 module;
 
-#include <limits>
-#include <cassert>
-
-#include "Common.h"
 #include "Vcl.h"
 
-export module RayTracer.ParallelogramSoa;
+export module ParallelogramSoa;
 
-import RayTracer.Alignment;
-import RayTracer.IntersectionResult;
-import RayTracer.Ray;
-import RayTracer.Math;
-import RayTracer.Parallelogram;
-import RayTracer.GeometrySoa;
-import RayTracer.IntersectionResultType;
-import RayTracer.Vec8f3;
+import <limits>;
+import <cassert>;
+
+import "Common.h";
+
+import Alignment;
+import IntersectionResult;
+import Ray;
+import Math;
+import Parallelogram;
+import GeometrySoa;
+import IntersectionResultType;
+import Vec8f3;
 
 using namespace vcl;
 

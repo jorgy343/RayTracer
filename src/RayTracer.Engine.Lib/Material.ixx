@@ -1,8 +1,8 @@
-export module RayTracer.Material;
+export module Material;
 
-import RayTracer.Ray;
-import RayTracer.Vector3;
-import RayTracer.ScatterResult;
+import Ray;
+import Vector3;
+import ScatterResult;
 
 namespace RayTracer
 {

@@ -1,9 +1,9 @@
 module;
 
-#include <cstdint>
-#include <random>
+export module Random;
 
-export module RayTracer.Random;
+import <cstdint>;
+import <random>;
 
 namespace RayTracer
 {

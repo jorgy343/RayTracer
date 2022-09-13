@@ -1,13 +1,13 @@
 module;
 
-#include <concepts>
+export module Geometry;
 
-export module RayTracer.Geometry;
+import <concepts>;
 
-import RayTracer.LambertianMaterial;
-import RayTracer.Vector3;
-import RayTracer.Ray;
-import RayTracer.IntersectableGeometry;
+import LambertianMaterial;
+import Vector3;
+import Ray;
+import IntersectableGeometry;
 
 namespace RayTracer
 {

@@ -1,7 +1,7 @@
-export module RayTracer.TransformedGeometry;
+export module TransformedGeometry;
 
-import RayTracer.IntersectableGeometry;
-import RayTracer.Matrix4x4;
+import IntersectableGeometry;
+import Matrix4x4;
 
 namespace RayTracer
 {

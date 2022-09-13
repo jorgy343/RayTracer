@@ -1,11 +1,11 @@
-export module RayTracer.ParallelogramLight;
+export module ParallelogramLight;
 
-import RayTracer.Light;
-import RayTracer.Vector3;
-import RayTracer.Ray;
-import RayTracer.Parallelogram;
-import RayTracer.Random;
-import RayTracer.LightRay;
+import Light;
+import Vector3;
+import Ray;
+import Parallelogram;
+import Random;
+import LightRay;
 
 namespace RayTracer
 {

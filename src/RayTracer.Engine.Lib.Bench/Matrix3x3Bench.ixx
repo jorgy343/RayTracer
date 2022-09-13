@@ -2,10 +2,10 @@ module;
 
 #include "nanobench.h"
 
-export module RayTracer.Bench.Matrix3x3Bench;
+export module Bench.Matrix3x3Bench;
 
-import RayTracer.Bench.Config;
-import RayTracer.Matrix3x3;
+import Bench.Config;
+import Matrix3x3;
 
 namespace RayTracer::Bench
 {

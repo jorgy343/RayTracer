@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include <limits>
+import <limits>;
 
-import RayTracer.Matrix4x4;
+import Matrix4x4;
 
 using namespace RayTracer;
 
@@ -26,7 +26,7 @@ TEST_P(Matrix4x4DeterminantTests, Matrix4x4DeterminantTests)
     // Assert
     if (std::isnan(expectedResult))
     {
-        EXPECT_TRUE(result, std::isnan(result));
+        EXPECT_TRUE(std::isnan(result));
     }
     else if (std::isinf(expectedResult))
     {

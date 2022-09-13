@@ -1,14 +1,14 @@
 module;
 
-#include <concepts>
-#include <cmath>
-
 #include "Vcl.h"
 #include "gcem.hpp"
 
-export module RayTracer.Math;
+export module Math;
 
-import RayTracer.Vec8f3;
+import <concepts>;
+import <cmath>;
+
+import Vec8f3;
 
 using namespace vcl;
 

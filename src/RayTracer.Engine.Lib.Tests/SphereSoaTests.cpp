@@ -1,9 +1,9 @@
 #include "pch.h"
 
-import RayTracer.IntersectionResult;
-import RayTracer.Sphere;
-import RayTracer.SphereSoa;
-import RayTracer.Vector3;
+import IntersectionResult;
+import Sphere;
+import SphereSoa;
+import Vector3;
 
 using namespace RayTracer;
 

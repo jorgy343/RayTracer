@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include <limits>
+import <limits>;
 
-import RayTracer.Sphere;
+import Sphere;
 
 using namespace RayTracer;
 

@@ -1,16 +1,16 @@
 module;
 
-#include <limits>
+export module Plane;
 
-export module RayTracer.Plane;
+import <limits>;
 
-import RayTracer.LambertianMaterial;
-import RayTracer.Math;
-import RayTracer.Ray;
-import RayTracer.Vector3;
-import RayTracer.Geometry;
-import RayTracer.IntersectionResult;
-import RayTracer.IntersectionResultType;
+import LambertianMaterial;
+import Math;
+import Ray;
+import Vector3;
+import Geometry;
+import IntersectionResult;
+import IntersectionResultType;
 
 namespace RayTracer
 {

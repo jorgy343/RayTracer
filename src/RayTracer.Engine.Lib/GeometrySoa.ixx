@@ -1,9 +1,9 @@
-export module RayTracer.GeometrySoa;
+export module GeometrySoa;
 
-import RayTracer.Ray;
-import RayTracer.Geometry;
-import RayTracer.IntersectableGeometry;
-import RayTracer.IntersectionResult;
+import Ray;
+import Geometry;
+import IntersectableGeometry;
+import IntersectionResult;
 
 namespace RayTracer
 {

@@ -1,7 +1,7 @@
-export module RayTracer.IntersectableGeometry;
+export module IntersectableGeometry;
 
-import RayTracer.Ray;
-import RayTracer.IntersectionResult;
+import Ray;
+import IntersectionResult;
 
 namespace RayTracer
 {

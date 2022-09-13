@@ -1,15 +1,15 @@
 module;
 
-#include <cmath>
-#include <vector>
+export module PerspectiveCamera;
 
-export module RayTracer.PerspectiveCamera;
+import <cmath>;
+import <vector>;
 
-import RayTracer.Math;
-import RayTracer.Vector2;
-import RayTracer.Vector3;
-import RayTracer.Ray;
-import RayTracer.Random;
+import Math;
+import Vector2;
+import Vector3;
+import Ray;
+import Random;
 
 namespace RayTracer
 {

@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#include <limits>
+import <limits>;
 
-import RayTracer.Vector3;
+import Vector3;
 
 using namespace RayTracer;
 
@@ -27,7 +27,7 @@ TEST_P(Vector3DotProductTests, Vector3DotProductTests)
     // Assert
     if (std::isnan(expectedResult))
     {
-        EXPECT_TRUE(result, std::isnan(result));
+        EXPECT_TRUE(std::isnan(result));
     }
     else if (std::isinf(expectedResult))
     {

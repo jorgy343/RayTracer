@@ -1,8 +1,8 @@
-export module RayTracer.LambertianMaterial;
+export module LambertianMaterial;
 
-import RayTracer.Material;
-import RayTracer.Vector3;
-import RayTracer.ScatterResult;
+import Material;
+import Vector3;
+import ScatterResult;
 
 namespace RayTracer
 {

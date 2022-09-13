@@ -1,20 +1,21 @@
 module;
 
-#include <cmath>
-#include <cassert>
-
-#include "Common.h"
 #include "Vcl.h"
 
-export module RayTracer.AxisAlignedBoxSoa;
+export module AxisAlignedBoxSoa;
 
-import RayTracer.Alignment;
-import RayTracer.IntersectionResult;
-import RayTracer.Ray;
-import RayTracer.Math;
-import RayTracer.AxisAlignedBox;
-import RayTracer.GeometrySoa;
-import RayTracer.IntersectionResultType;
+import <cmath>;
+import <cassert>;
+
+import "Common.h";
+
+import Alignment;
+import IntersectionResult;
+import Ray;
+import Math;
+import AxisAlignedBox;
+import GeometrySoa;
+import IntersectionResultType;
 
 using namespace vcl;
 

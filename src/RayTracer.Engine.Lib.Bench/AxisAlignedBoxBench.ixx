@@ -3,12 +3,12 @@ module;
 #include "nanobench.h"
 #include "Vcl.h"
 
-export module RayTracer.Bench.AxisAlignedBoxBench;
+export module Bench.AxisAlignedBoxBench;
 
-import RayTracer.Bench.Config;
-import RayTracer.AxisAlignedBox;
-import RayTracer.AxisAlignedBoxSoa;
-import RayTracer.IntersectionResultType;
+import Bench.Config;
+import AxisAlignedBox;
+import AxisAlignedBoxSoa;
+import IntersectionResultType;
 
 namespace RayTracer::Bench
 {
