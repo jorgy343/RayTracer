@@ -94,6 +94,13 @@ namespace RayTracer
 
             if (closestIntersection.HitGeometry)
             {
+                const LambertianMaterial* material = closestIntersection.HitGeometry->GetMaterial();
+
+                //if (material->EmissiveColor.LengthSquared() > 0.01f)
+                //{
+                //    return material->Color.ComponentwiseMultiply(material->EmissiveColor);
+                //}
+
                 Vector3 hitPosition = ray.Position + ray.Direction * closestIntersection.Distance;
                 Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * 0.01f;
@@ -113,8 +120,6 @@ namespace RayTracer
 
                     indirectLight = CastRayColor(Ray{hitPosition, scatterDirection}, depth + 1);
                 }
-
-                const LambertianMaterial* material = closestIntersection.HitGeometry->GetMaterial();
 
                 return material->EmissiveColor + Math::rcp(static_cast<float>(_lights.size() + 1)) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
             }

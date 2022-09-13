@@ -5,10 +5,10 @@ using System.Numerics;
 using RayTracer.ConsoleClient;
 using System.Diagnostics;
 
-const int screenWidth = 800;
-const int screenHeight = 600;
-const int subpixelCount = 4;
-const int iterations = 8;
+const int screenWidth = 1920;
+const int screenHeight = 1080;
+const int subpixelCount = 2;
+const int iterations = 2;
 
 var stopwatch = new Stopwatch();
 stopwatch.Start();
