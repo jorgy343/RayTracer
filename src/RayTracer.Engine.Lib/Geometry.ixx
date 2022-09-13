@@ -4,10 +4,10 @@ export module Geometry;
 
 import <concepts>;
 
-import LambertianMaterial;
-import Vector3;
-import Ray;
 import IntersectableGeometry;
+import LambertianMaterial;
+import Ray;
+import Vector3;
 
 namespace RayTracer
 {

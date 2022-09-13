@@ -1,8 +1,8 @@
 export module Material;
 
 import Ray;
-import Vector3;
 import ScatterResult;
+import Vector3;
 
 namespace RayTracer
 {

@@ -6,10 +6,10 @@ import <cmath>;
 import <vector>;
 
 import Math;
+import Random;
+import Ray;
 import Vector2;
 import Vector3;
-import Ray;
-import Random;
 
 namespace RayTracer
 {

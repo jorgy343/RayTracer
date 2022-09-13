@@ -4,18 +4,18 @@ module;
 
 export module PlaneSoa;
 
-import <limits>;
 import <cassert>;
+import <limits>;
 
 import "Common.h";
 
 import Alignment;
+import GeometrySoa;
 import IntersectionResult;
-import Ray;
+import IntersectionResultType;
 import Math;
 import Plane;
-import GeometrySoa;
-import IntersectionResultType;
+import Ray;
 
 using namespace vcl;
 

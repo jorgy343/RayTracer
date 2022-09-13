@@ -5,10 +5,10 @@ export module DirectionalLight;
 import <limits>;
 
 import Light;
-import Vector3;
-import Ray;
-import Math;
 import LightRay;
+import Math;
+import Ray;
+import Vector3;
 
 namespace RayTracer
 {

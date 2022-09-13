@@ -1,7 +1,7 @@
 export module LightRay;
 
-import Vector3;
 import Ray;
+import Vector3;
 
 namespace RayTracer
 {

@@ -4,14 +4,14 @@ module;
 
 export module AxisAlignedBox;
 
-import <limits>;
 import <cmath>;
+import <limits>;
 
-import Math;
 import Geometry;
-import Vector3;
 import IntersectionResult;
 import IntersectionResultType;
+import Math;
+import Vector3;
 
 using namespace vcl;
 

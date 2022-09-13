@@ -1,9 +1,9 @@
 export module PointLight;
 
 import Light;
-import Vector3;
-import Ray;
 import LightRay;
+import Ray;
+import Vector3;
 
 namespace RayTracer
 {

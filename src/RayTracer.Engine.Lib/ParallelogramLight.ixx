@@ -1,11 +1,11 @@
 export module ParallelogramLight;
 
 import Light;
-import Vector3;
-import Ray;
+import LightRay;
 import Parallelogram;
 import Random;
-import LightRay;
+import Ray;
+import Vector3;
 
 namespace RayTracer
 {

@@ -4,13 +4,13 @@ export module Plane;
 
 import <limits>;
 
+import Geometry;
+import IntersectionResult;
+import IntersectionResultType;
 import LambertianMaterial;
 import Math;
 import Ray;
 import Vector3;
-import Geometry;
-import IntersectionResult;
-import IntersectionResultType;
 
 namespace RayTracer
 {

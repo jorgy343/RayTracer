@@ -4,13 +4,13 @@ export module Sphere;
 
 import <limits>;
 
-import LambertianMaterial;
-import Ray;
-import Math;
-import Vector3;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
+import LambertianMaterial;
+import Math;
+import Ray;
+import Vector3;
 
 namespace RayTracer
 {

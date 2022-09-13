@@ -4,18 +4,18 @@ module;
 
 export module ParallelogramSoa;
 
-import <limits>;
 import <cassert>;
+import <limits>;
 
 import "Common.h";
 
 import Alignment;
+import GeometrySoa;
 import IntersectionResult;
-import Ray;
+import IntersectionResultType;
 import Math;
 import Parallelogram;
-import GeometrySoa;
-import IntersectionResultType;
+import Ray;
 import Vec8f3;
 
 using namespace vcl;

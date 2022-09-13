@@ -4,18 +4,18 @@ module;
 
 export module AxisAlignedBoxSoa;
 
-import <cmath>;
 import <cassert>;
+import <cmath>;
 
 import "Common.h";
 
 import Alignment;
-import IntersectionResult;
-import Ray;
-import Math;
 import AxisAlignedBox;
 import GeometrySoa;
+import IntersectionResult;
 import IntersectionResultType;
+import Math;
+import Ray;
 
 using namespace vcl;
 

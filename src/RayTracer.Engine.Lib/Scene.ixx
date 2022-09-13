@@ -12,17 +12,17 @@ import <vector>;
 import "Constants.h";
 
 import Alignment;
-import Light;
-import LambertianMaterial;
-import Math;
-import MonteCarlo;
-import Vector3;
-import Random;
-import LightRay;
 import Geometry;
 import IntersectableGeometry;
+import LambertianMaterial;
+import Light;
+import LightRay;
+import Math;
+import MonteCarlo;
+import Random;
 import Ray;
 import Sphere;
+import Vector3;
 
 namespace RayTracer
 {

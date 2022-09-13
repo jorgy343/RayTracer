@@ -1,8 +1,8 @@
 export module LambertianMaterial;
 
 import Material;
-import Vector3;
 import ScatterResult;
+import Vector3;
 
 namespace RayTracer
 {

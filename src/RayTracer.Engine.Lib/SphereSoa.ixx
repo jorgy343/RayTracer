@@ -4,18 +4,18 @@ module;
 
 export module SphereSoa;
 
-import <cmath>;
 import <cassert>;
+import <cmath>;
 
 import "Common.h";
 
 import Alignment;
-import IntersectionResult;
-import Ray;
-import Math;
-import Sphere;
 import GeometrySoa;
+import IntersectionResult;
 import IntersectionResultType;
+import Math;
+import Ray;
+import Sphere;
 
 using namespace vcl;
 
