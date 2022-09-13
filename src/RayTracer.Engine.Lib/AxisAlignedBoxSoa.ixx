@@ -1,5 +1,7 @@
 #include <cmath>
+#include <cassert>
 
+#include "Common.h"
 #include "Vcl.h"
 
 export module RayTracer.AxisAlignedBoxSoa;
@@ -16,65 +18,47 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export class AxisAlignedBoxSoa final : public GeometrySoa<AxisAlignedBox>
+    export class alignas(64) AxisAlignedBoxSoa final : public GeometrySoa<AxisAlignedBox>
     {
     private:
-        AlignedVector<float, 64> _minimumX{};
-        AlignedVector<float, 64> _minimumY{};
-        AlignedVector<float, 64> _minimumZ{};
+        alignas(16) float _minimumX[8];
+        alignas(16) float _minimumY[8];
+        alignas(16) float _minimumZ[8];
 
-        AlignedVector<float, 64> _maximumX{};
-        AlignedVector<float, 64> _maximumY{};
-        AlignedVector<float, 64> _maximumZ{};
+        alignas(16) float _maximumX[8];
+        alignas(16) float _maximumY[8];
+        alignas(16) float _maximumZ[8];
 
-        AlignedVector<const AxisAlignedBox*, 64> _geometries{};
+        alignas(16) const AxisAlignedBox* _geometries[8];
 
     public:
-        AxisAlignedBoxSoa(int initialCapacity = 32)
+        AxisAlignedBoxSoa()
         {
-            _minimumX.reserve(initialCapacity);
-            _minimumY.reserve(initialCapacity);
-            _minimumZ.reserve(initialCapacity);
-
-            _maximumX.reserve(initialCapacity);
-            _maximumY.reserve(initialCapacity);
-            _maximumZ.reserve(initialCapacity);
-
-            _geometries.reserve(initialCapacity);
-        }
-
-        long long GetCount() const override final
-        {
-            return _minimumX.size();
-        }
-
-        void Add(const AxisAlignedBox* geometry) override final
-        {
-            _minimumX.push_back(geometry->Minimum.X);
-            _minimumY.push_back(geometry->Minimum.Y);
-            _minimumZ.push_back(geometry->Minimum.Z);
-
-            _maximumX.push_back(geometry->Maximum.X);
-            _maximumY.push_back(geometry->Maximum.Y);
-            _maximumZ.push_back(geometry->Maximum.Z);
-
-            _geometries.push_back(geometry);
-        }
-
-        void Finalize() override final
-        {
-            for (long long i = _minimumX.size(); i % 8 != 0; i++)
+            for (int i = 0; i < 8; i++)
             {
-                _minimumX.push_back(std::numeric_limits<float>::infinity());
-                _minimumY.push_back(std::numeric_limits<float>::infinity());
-                _minimumZ.push_back(std::numeric_limits<float>::infinity());
+                _minimumX[i] = std::numeric_limits<float>::infinity();
+                _minimumY[i] = std::numeric_limits<float>::infinity();
+                _minimumZ[i] = std::numeric_limits<float>::infinity();
 
-                _maximumX.push_back(std::numeric_limits<float>::infinity());
-                _maximumY.push_back(std::numeric_limits<float>::infinity());
-                _maximumZ.push_back(std::numeric_limits<float>::infinity());
+                _maximumX[i] = std::numeric_limits<float>::infinity();
+                _maximumY[i] = std::numeric_limits<float>::infinity();
+                _maximumZ[i] = std::numeric_limits<float>::infinity();
 
-                _geometries.push_back(nullptr);
+                _geometries[i] = nullptr;
             }
+        }
+
+        void Insert(int index, const AxisAlignedBox* geometry) override final
+        {
+            _minimumX[index] = geometry->Minimum.X;
+            _minimumY[index] = geometry->Minimum.Y;
+            _minimumZ[index] = geometry->Minimum.Z;
+
+            _maximumX[index] = geometry->Maximum.X;
+            _maximumY[index] = geometry->Maximum.Y;
+            _maximumZ[index] = geometry->Maximum.Z;
+
+            _geometries[index] = geometry;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override final
@@ -87,12 +71,13 @@ namespace RayTracer
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
+    private:
         template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            Vec8f minimumX = Vec8f{}.load_a(&_minimumX[startingGeometryIndex]);
-            Vec8f minimumY = Vec8f{}.load_a(&_minimumY[startingGeometryIndex]);
-            Vec8f minimumZ = Vec8f{}.load_a(&_minimumZ[startingGeometryIndex]);
+            Vec8f minimumX = Vec8f{}.load_a(_minimumX);
+            Vec8f minimumY = Vec8f{}.load_a(_minimumY);
+            Vec8f minimumZ = Vec8f{}.load_a(_minimumZ);
 
             Vec8f rayPositionX{ray.Position.X};
             Vec8f rayPositionY{ray.Position.Y};
@@ -106,9 +91,9 @@ namespace RayTracer
             Vec8f minY = ConvertNanToInf((minimumY - rayPositionY) * rayInverseDirectionY);
             Vec8f minZ = ConvertNanToInf((minimumZ - rayPositionZ) * rayInverseDirectionZ);
 
-            Vec8f maximumX = Vec8f{}.load_a(&_maximumX[startingGeometryIndex]);
-            Vec8f maximumY = Vec8f{}.load_a(&_maximumY[startingGeometryIndex]);
-            Vec8f maximumZ = Vec8f{}.load_a(&_maximumZ[startingGeometryIndex]);
+            Vec8f maximumX = Vec8f{}.load_a(_maximumX);
+            Vec8f maximumY = Vec8f{}.load_a(_maximumY);
+            Vec8f maximumZ = Vec8f{}.load_a(_maximumZ);
 
             Vec8f maxX = ConvertNanToInf((maximumX - rayPositionX) * rayInverseDirectionX);
             Vec8f maxY = ConvertNanToInf((maximumY - rayPositionY) * rayInverseDirectionY);
@@ -133,28 +118,9 @@ namespace RayTracer
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {
-                _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                _geometries[minimumIndex == -1 ? 0 : minimumIndex],
                 minimumEntranceDistance,
             };
-        }
-
-    private:
-        template <IntersectionResultType TIntersectionResultType>
-        inline IntersectionResult Intersect(const Ray& ray) const
-        {
-            IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
-
-            for (int i = 0; i + 8 <= _minimumX.size(); i += 8)
-            {
-                IntersectionResult newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
-
-                if (newResult.Distance < result.Distance)
-                {
-                    result = newResult;
-                }
-            }
-
-            return result;
         }
     };
 }

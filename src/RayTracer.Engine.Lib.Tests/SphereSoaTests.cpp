@@ -14,9 +14,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Intersects_Returns
     Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     SphereSoa sphereSoa{};
-
-    sphereSoa.Add(&sphere1);
-    sphereSoa.Finalize();
+    sphereSoa.Insert(0, &sphere1);
 
     // Act
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
@@ -33,9 +31,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometryAndPointingBackward
     Ray ray{{2, 0, 0}, {-1, 0, 0}};
 
     SphereSoa sphereSoa{};
-
-    sphereSoa.Add(&sphere1);
-    sphereSoa.Finalize();
+    sphereSoa.Insert(0, &sphere1);
 
     // Act
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
@@ -52,9 +48,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayOutsideGeometry_Misses_ReturnsInfi
     Ray ray{{2, 0, 0}, {0, 1, 0}};
 
     SphereSoa sphereSoa{};
-
-    sphereSoa.Add(&sphere1);
-    sphereSoa.Finalize();
+    sphereSoa.Insert(0, &sphere1);
 
     // Act
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
@@ -71,9 +65,7 @@ TEST(SphereSoaIntersectionTests, OneSphere_RayInsideGeometry_Intersects_ReturnsZ
     Ray ray{{2, 0, 0}, {1, 0, 0}};
 
     SphereSoa sphereSoa{};
-
-    sphereSoa.Add(&sphere1);
-    sphereSoa.Finalize();
+    sphereSoa.Insert(0, &sphere1);
 
     // Act
     IntersectionResult result = sphereSoa.IntersectEntrance(ray);
@@ -97,16 +89,16 @@ TEST(SphereSoaIntersectionTests, EightSpheres_RayOutsideGeometrys_Intersects_Ret
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.Add(&sphere2);
-    sphereSoa.Add(&sphere3);
-    sphereSoa.Add(&sphere4);
-    sphereSoa.Add(&sphere5);
-    sphereSoa.Add(&sphere6);
-    sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
-    sphereSoa.Add(&sphere7);
-    sphereSoa.Add(&sphere8);
+    int i = 0;
 
-    sphereSoa.Finalize();
+    sphereSoa.Insert(i++, &sphere2);
+    sphereSoa.Insert(i++, &sphere3);
+    sphereSoa.Insert(i++, &sphere4);
+    sphereSoa.Insert(i++, &sphere5);
+    sphereSoa.Insert(i++, &sphere6);
+    sphereSoa.Insert(i++, &sphere1); // This is the sphere that will be hit.
+    sphereSoa.Insert(i++, &sphere7);
+    sphereSoa.Insert(i++, &sphere8);
 
     Ray ray{{2, 0, 0}, {1, 0, 0}};
 
@@ -132,16 +124,16 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrysAndPointingBackwards_Misses_
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.Add(&sphere2);
-    sphereSoa.Add(&sphere3);
-    sphereSoa.Add(&sphere4);
-    sphereSoa.Add(&sphere5);
-    sphereSoa.Add(&sphere6);
-    sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
-    sphereSoa.Add(&sphere7);
-    sphereSoa.Add(&sphere8);
+    int i = 0;
 
-    sphereSoa.Finalize();
+    sphereSoa.Insert(i++, &sphere2);
+    sphereSoa.Insert(i++, &sphere3);
+    sphereSoa.Insert(i++, &sphere4);
+    sphereSoa.Insert(i++, &sphere5);
+    sphereSoa.Insert(i++, &sphere6);
+    sphereSoa.Insert(i++, &sphere1); // This is the sphere that will be hit.
+    sphereSoa.Insert(i++, &sphere7);
+    sphereSoa.Insert(i++, &sphere8);
 
     Ray ray{{2, 0, 0}, {-1, 0, 0}};
 
@@ -167,16 +159,16 @@ TEST(SphereSoaIntersectionTests, RayOutsideGeometrys_Misses_ReturnsInfinity)
 
     SphereSoa sphereSoa{};
 
-    sphereSoa.Add(&sphere2);
-    sphereSoa.Add(&sphere3);
-    sphereSoa.Add(&sphere4);
-    sphereSoa.Add(&sphere5);
-    sphereSoa.Add(&sphere6);
-    sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
-    sphereSoa.Add(&sphere7);
-    sphereSoa.Add(&sphere8);
+    int i = 0;
 
-    sphereSoa.Finalize();
+    sphereSoa.Insert(i++, &sphere2);
+    sphereSoa.Insert(i++, &sphere3);
+    sphereSoa.Insert(i++, &sphere4);
+    sphereSoa.Insert(i++, &sphere5);
+    sphereSoa.Insert(i++, &sphere6);
+    sphereSoa.Insert(i++, &sphere1); // This is the sphere that will be hit.
+    sphereSoa.Insert(i++, &sphere7);
+    sphereSoa.Insert(i++, &sphere8);
 
     Ray ray{{2, 0, 0}, {0, 1, 0}};
 

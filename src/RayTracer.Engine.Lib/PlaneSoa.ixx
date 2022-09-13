@@ -1,6 +1,7 @@
 #include <limits>
-#include <vector>
+#include <cassert>
 
+#include "Common.h"
 #include "Vcl.h"
 
 export module RayTracer.PlaneSoa;
@@ -17,50 +18,37 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export template<typename TFloatAllocator = AlignedAllocator<float, 64>, typename TSphereAllocator = AlignedAllocator<const Plane*, 64>>
-    class PlaneSoa final : public GeometrySoa<Plane>
+    export class alignas(64) PlaneSoa final : public GeometrySoa<Plane>
     {
     private:
-        std::vector<float, TFloatAllocator> _normalX{};
-        std::vector<float, TFloatAllocator> _normalY{};
-        std::vector<float, TFloatAllocator> _normalZ{};
-        std::vector<float, TFloatAllocator> _distance{};
-        std::vector<const Plane*, TSphereAllocator> _geometries{};
+        alignas(16) float _normalX[8];
+        alignas(16) float _normalY[8];
+        alignas(16) float _normalZ[8];
+        alignas(16) float _distance[8];
+        alignas(16) const Plane* _geometries[8];
 
     public:
-        constexpr PlaneSoa(int initialCapacity = 32)
+        constexpr PlaneSoa()
         {
-            _normalX.reserve(initialCapacity);
-            _normalY.reserve(initialCapacity);
-            _normalZ.reserve(initialCapacity);
-            _distance.reserve(initialCapacity);
-            _geometries.reserve(initialCapacity);
-        }
-
-        inline constexpr long long GetCount() const override final
-        {
-            return _normalX.size();
-        }
-
-        constexpr void Add(const Plane* geometry) override final
-        {
-            _normalX.push_back(geometry->Normal.X);
-            _normalY.push_back(geometry->Normal.Y);
-            _normalZ.push_back(geometry->Normal.Z);
-            _distance.push_back(geometry->Distance);
-            _geometries.push_back(geometry);
-        }
-
-        constexpr void Finalize() override final
-        {
-            for (long long i = _normalX.size(); i % 8 != 0; i++)
+            for (int i = 0; i < 8; i++)
             {
-                _normalX.push_back(std::numeric_limits<float>::infinity());
-                _normalY.push_back(std::numeric_limits<float>::infinity());
-                _normalZ.push_back(std::numeric_limits<float>::infinity());
-                _distance.push_back(std::numeric_limits<float>::infinity());
-                _geometries.push_back(nullptr);
+                _normalX[i] = std::numeric_limits<float>::infinity();
+                _normalY[i] = std::numeric_limits<float>::infinity();
+                _normalZ[i] = std::numeric_limits<float>::infinity();
+                _distance[i] = std::numeric_limits<float>::infinity();
+                _geometries[i] = nullptr;
             }
+        }
+
+        constexpr void Insert(int index, const Plane* geometry) override final
+        {
+            assert(index >= 0 && index < 8);
+
+            _normalX[index] = geometry->Normal.X;
+            _normalY[index] = geometry->Normal.Y;
+            _normalZ[index] = geometry->Normal.Z;
+            _distance[index] = geometry->Distance;
+            _geometries[index] = geometry;
         }
 
         constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
@@ -73,15 +61,16 @@ namespace RayTracer
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
+    private:
         template <IntersectionResultType TIntersectionResultType>
-        inline constexpr IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
             if (std::is_constant_evaluated())
             {
                 float closestDistance = std::numeric_limits<float>::infinity();
                 const Plane* closestGeometry = nullptr;
 
-                for (unsigned long long i = startingGeometryIndex; i < _geometries.size() && i < startingGeometryIndex + 8; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     const Plane* geometry = _geometries[i];
 
@@ -107,9 +96,9 @@ namespace RayTracer
                 Vec8f rayDirectionY{ray.Direction.Y};
                 Vec8f rayDirectionZ{ray.Direction.Z};
 
-                Vec8f normalX = Vec8f{}.load_a(&_normalX[startingGeometryIndex]);
-                Vec8f normalY = Vec8f{}.load_a(&_normalY[startingGeometryIndex]);
-                Vec8f normalZ = Vec8f{}.load_a(&_normalZ[startingGeometryIndex]);
+                Vec8f normalX = Vec8f{}.load_a(_normalX);
+                Vec8f normalY = Vec8f{}.load_a(_normalY);
+                Vec8f normalZ = Vec8f{}.load_a(_normalZ);
 
                 Vec8f normalDotDirection = SimdDot(normalX, rayDirectionX, normalY, rayDirectionY, normalZ, rayDirectionZ);
 
@@ -119,7 +108,7 @@ namespace RayTracer
 
                 Vec8f normalDotRayPosition = SimdDot(normalX, rayPositionX, normalY, rayPositionY, normalZ, rayPositionZ);
 
-                Vec8f distance = Vec8f{}.load_a(&_distance[startingGeometryIndex]);
+                Vec8f distance = Vec8f{}.load_a(_distance);
                 Vec8f entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
 
                 // Make sure infinite8f() is second so nans are replaced with inf.
@@ -129,29 +118,10 @@ namespace RayTracer
                 int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
                 return {
-                    _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
                     minimumEntranceDistance,
                 };
             }
-        }
-
-    private:
-        template <IntersectionResultType TIntersectionResultType>
-        inline constexpr IntersectionResult Intersect(const Ray& ray) const
-        {
-            IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
-
-            for (int i = 0; i + 8 <= _normalX.size(); i += 8)
-            {
-                IntersectionResult newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
-
-                if (newResult.Distance < result.Distance)
-                {
-                    result = newResult;
-                }
-            }
-
-            return result;
         }
     };
 }

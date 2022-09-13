@@ -11,8 +11,6 @@ namespace RayTracer
     class GeometrySoa : public IntersectableGeometry
     {
     public:
-        virtual constexpr long long GetCount() const = 0;
-        virtual constexpr void Add(const TGeometry* geometry) = 0;
-        virtual constexpr void Finalize() = 0;
+        virtual constexpr void Insert(int index, const TGeometry* geometry) = 0;
     };
 }

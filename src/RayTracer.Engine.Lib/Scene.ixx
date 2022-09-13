@@ -13,42 +13,23 @@ import RayTracer.Light;
 import RayTracer.LambertianMaterial;
 import RayTracer.Math;
 import RayTracer.MonteCarlo;
-import RayTracer.Sphere;
-import RayTracer.SphereSoa;
-import RayTracer.Plane;
-import RayTracer.PlaneSoa;
-import RayTracer.AxisAlignedBox;
-import RayTracer.AxisAlignedBoxSoa;
-import RayTracer.Parallelogram;
-import RayTracer.ParallelogramSoa;
-import RayTracer.Geometry;
-import RayTracer.GeometrySoa;
 import RayTracer.Vector3;
 import RayTracer.Random;
 import RayTracer.LightRay;
+import RayTracer.Geometry;
 import RayTracer.IntersectableGeometry;
+import RayTracer.Ray;
+import RayTracer.Sphere;
 
 namespace RayTracer
 {
-    export template<
-        typename TFloatAllocator = AlignedAllocator<float, 64>,
-        typename TSphereAllocator = AlignedAllocator<const Sphere*, 64>,
-        typename TPlaneAllocator = AlignedAllocator<const Plane*, 64>,
-        typename TParallelogramAllocator = AlignedAllocator<const Parallelogram*, 64>,
-        typename TLightAllocator = AlignedAllocator<const Light*, 64>,
-        typename TIntersectableGeometryAllocator = AlignedAllocator<const IntersectableGeometry*, 64>>
-    class Scene
+    export class Scene
     {
     private:
         Vector3 _backgroundColor{0.0f};
 
-        std::vector<const Light*, TLightAllocator> _lights{};
-        std::vector<const IntersectableGeometry*, TIntersectableGeometryAllocator> _geometries{};
-
-        SphereSoa<TFloatAllocator, TSphereAllocator> _sphereSoa{};
-        PlaneSoa<TFloatAllocator, TPlaneAllocator> _planeSoa{};
-        //AxisAlignedBoxSoa _axisAlignedBoxSoa{};
-        ParallelogramSoa<TFloatAllocator, TParallelogramAllocator> _parallelogramSoa{};
+        std::vector<const Light*> _lights{};
+        std::vector<const IntersectableGeometry*> _geometries{};
 
         Random _random{};
 
@@ -56,7 +37,8 @@ namespace RayTracer
         inline constexpr explicit Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
         {
-
+            // TODO: This seems to fix some weird module linker bug.
+            Sphere sphere{};
         }
 
         constexpr void AddLight(const Light* light)
@@ -69,72 +51,40 @@ namespace RayTracer
             _geometries.push_back(geometry);
         }
 
-        constexpr void AddGeometry(const Sphere* sphere)
-        {
-            _sphereSoa.Add(sphere);
-        }
-
-        constexpr void AddGeometry(const Plane* plane)
-        {
-            _planeSoa.Add(plane);
-        }
-
-        //void AddGeometry(const AxisAlignedBox* axisAlignedBox)
-        //{
-        //    _axisAlignedBoxSoa.Add(axisAlignedBox);
-        //}
-
-        constexpr void AddGeometry(const Parallelogram* parallelogram)
-        {
-            _parallelogramSoa.Add(parallelogram);
-        }
-
-        constexpr void Finalize()
-        {
-            _sphereSoa.Finalize();
-            _planeSoa.Finalize();
-            //_axisAlignedBoxSoa.Finalize();
-            _parallelogramSoa.Finalize();
-        }
-
         constexpr Vector3 CastRayColor(const Ray& ray) const
         {
             return CastRayColor(ray, 1);
         }
 
     private:
-        template <typename TArg, typename... TArgs>
-        static inline constexpr auto ClosestIntersection(TArg arg, TArgs... args)
-        {
-            if constexpr (sizeof...(args))
-            {
-                auto smallerIntersection = ClosestIntersection(args...);
-                return arg.Distance < smallerIntersection.Distance ? arg : smallerIntersection;
-            }
-            else
-            {
-                return arg;
-            }
-        }
-
         constexpr float CastRayDistance(const Ray& ray) const
         {
-            auto closestIntersection = ClosestIntersection(
-                _sphereSoa.IntersectEntrance(ray),
-                _planeSoa.IntersectEntrance(ray),
-                //_axisAlignedBoxSoa.IntersectEntrance(ray),
-                _parallelogramSoa.IntersectEntrance(ray));
+            float closestIntersection = std::numeric_limits<float>::infinity();
+            for (const IntersectableGeometry* geometry : _geometries)
+            {
+                float distance = geometry->IntersectEntrance(ray).Distance;
 
-            return Math::max(0.0f, closestIntersection.Distance);
+                if (distance < closestIntersection)
+                {
+                    closestIntersection = distance;
+                }
+            }
+
+            return Math::max(0.0f, closestIntersection);
         }
 
         constexpr Vector3 CastRayColor(const Ray& ray, int depth) const
         {
-            auto closestIntersection = ClosestIntersection(
-                _sphereSoa.IntersectEntrance(ray),
-                _planeSoa.IntersectEntrance(ray),
-                //_axisAlignedBoxSoa.IntersectEntrance(ray),
-                _parallelogramSoa.IntersectEntrance(ray));
+            IntersectionResult closestIntersection{nullptr, std::numeric_limits<float>::infinity()};
+            for (const IntersectableGeometry* geometry : _geometries)
+            {
+                IntersectionResult intersection = geometry->IntersectEntrance(ray);
+
+                if (intersection.Distance < closestIntersection.Distance)
+                {
+                    closestIntersection = intersection;
+                }
+            }
 
             closestIntersection.Distance = Math::max(0.0f, closestIntersection.Distance);
 

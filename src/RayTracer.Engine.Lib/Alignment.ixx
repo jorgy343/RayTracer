@@ -59,6 +59,9 @@ namespace RayTracer
         }
     };
 
+    export template<typename T, std::size_t ALIGNMENT_IN_BYTES>
+    using ConstexprAwareAllocator = std::conditional<std::is_constant_evaluated(), std::allocator<T>, AlignedAllocator<T, ALIGNMENT_IN_BYTES>>;
+
     export template<typename ElementType, std::size_t ALIGNMENT_IN_BYTES>
-    using AlignedVector = std::vector<ElementType, AlignedAllocator<ElementType, ALIGNMENT_IN_BYTES>>;
+    using AlignedVector = std::vector<ElementType, ConstexprAwareAllocator<ElementType, ALIGNMENT_IN_BYTES>>;
 }

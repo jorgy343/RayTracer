@@ -26,16 +26,16 @@ namespace RayTracer::Bench
 
     export void RunSphereBench()
     {
-        sphereSoa.Add(&sphere2);
-        sphereSoa.Add(&sphere3);
-        sphereSoa.Add(&sphere4);
-        sphereSoa.Add(&sphere5);
-        sphereSoa.Add(&sphere6);
-        sphereSoa.Add(&sphere1); // This is the sphere that will be hit.
-        sphereSoa.Add(&sphere7);
-        sphereSoa.Add(&sphere8);
+        int i = 0;
 
-        sphereSoa.Finalize();
+        sphereSoa.Insert(i++, &sphere2);
+        sphereSoa.Insert(i++, &sphere3);
+        sphereSoa.Insert(i++, &sphere4);
+        sphereSoa.Insert(i++, &sphere5);
+        sphereSoa.Insert(i++, &sphere6);
+        sphereSoa.Insert(i++, &sphere1); // This is the sphere that will be hit.
+        sphereSoa.Insert(i++, &sphere7);
+        sphereSoa.Insert(i++, &sphere8);
 
         ankerl::nanobench::Bench()
             .epochIterations(DefaultEpochIterations)
@@ -52,10 +52,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("SphereSoa.Intersect(Ray)", [&]
                 {
-                    auto result1 = sphereSoa.PrivateIntersectSoa<IntersectionResultType::Entrance>(rayMiss, 0);
+                    auto result1 = sphereSoa.IntersectEntrance(rayMiss);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = sphereSoa.PrivateIntersectSoa<IntersectionResultType::Entrance>(rayHit, 0);
+                    auto result2 = sphereSoa.IntersectEntrance(rayHit);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
     }

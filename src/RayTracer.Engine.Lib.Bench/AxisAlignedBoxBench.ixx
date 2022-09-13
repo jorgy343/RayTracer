@@ -26,16 +26,16 @@ namespace RayTracer::Bench
 
     export void RunAxisAlignedBoxBench()
     {
-        axisAlignedBoxSoa.Add(&box2);
-        axisAlignedBoxSoa.Add(&box3);
-        axisAlignedBoxSoa.Add(&box4);
-        axisAlignedBoxSoa.Add(&box5);
-        axisAlignedBoxSoa.Add(&box6);
-        axisAlignedBoxSoa.Add(&box1); // This is the sphere that will be hit.
-        axisAlignedBoxSoa.Add(&box7);
-        axisAlignedBoxSoa.Add(&box8);
+        int i = 0;
 
-        axisAlignedBoxSoa.Finalize();
+        axisAlignedBoxSoa.Insert(i++, &box2);
+        axisAlignedBoxSoa.Insert(i++, &box3);
+        axisAlignedBoxSoa.Insert(i++, &box4);
+        axisAlignedBoxSoa.Insert(i++, &box5);
+        axisAlignedBoxSoa.Insert(i++, &box6);
+        axisAlignedBoxSoa.Insert(i++, &box1); // This is the sphere that will be hit.
+        axisAlignedBoxSoa.Insert(i++, &box7);
+        axisAlignedBoxSoa.Insert(i++, &box8);
 
         ankerl::nanobench::Bench()
             .epochIterations(DefaultEpochIterations)
@@ -52,10 +52,10 @@ namespace RayTracer::Bench
             .epochIterations(DefaultEpochIterations)
             .run("AxisAlignedBoxSoa.Intersect(Ray)", [&]
                 {
-                    auto result1 = axisAlignedBoxSoa.PrivateIntersectSoa<IntersectionResultType::Entrance>(rayMiss, 0);
+                    auto result1 = axisAlignedBoxSoa.IntersectEntrance(rayMiss);
                     ankerl::nanobench::doNotOptimizeAway(result1);
 
-                    auto result2 = axisAlignedBoxSoa.PrivateIntersectSoa<IntersectionResultType::Exit>(rayHit, 0);
+                    auto result2 = axisAlignedBoxSoa.IntersectEntrance(rayHit);
                     ankerl::nanobench::doNotOptimizeAway(result2);
                 });
     }

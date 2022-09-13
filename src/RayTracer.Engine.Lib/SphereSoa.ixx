@@ -1,6 +1,7 @@
 #include <cmath>
-#include <vector>
+#include <cassert>
 
+#include "Common.h"
 #include "Vcl.h"
 
 export module RayTracer.SphereSoa;
@@ -17,50 +18,37 @@ using namespace vcl;
 
 namespace RayTracer
 {
-    export template<typename TFloatAllocator = AlignedAllocator<float, 64>, typename TSphereAllocator = AlignedAllocator<const Sphere*, 64>>
-    class SphereSoa final : public GeometrySoa<Sphere>
+    export class alignas(64) SphereSoa final : public GeometrySoa<Sphere>
     {
     private:
-        std::vector<float, TFloatAllocator> _positionX{};
-        std::vector<float, TFloatAllocator> _positionY{};
-        std::vector<float, TFloatAllocator> _positionZ{};
-        std::vector<float, TFloatAllocator> _radius{};
-        std::vector<const Sphere*, TSphereAllocator> _geometries{};
-        
+        alignas(16) float _positionX[8];
+        alignas(16) float _positionY[8];
+        alignas(16) float _positionZ[8];
+        alignas(16) float _radius[8];
+        alignas(16) const Sphere* _geometries[8];
+
     public:
-        constexpr SphereSoa(int initialCapacity = 32)
+        constexpr SphereSoa()
         {
-            _positionX.reserve(initialCapacity);
-            _positionY.reserve(initialCapacity);
-            _positionZ.reserve(initialCapacity);
-            _radius.reserve(initialCapacity);
-            _geometries.reserve(initialCapacity);
-        }
-
-        inline constexpr long long GetCount() const override final
-        {
-            return _positionX.size();
-        }
-
-        constexpr void Add(const Sphere* geometry) override final
-        {
-            _positionX.push_back(geometry->Position.X);
-            _positionY.push_back(geometry->Position.Y);
-            _positionZ.push_back(geometry->Position.Z);
-            _radius.push_back(geometry->Radius);
-            _geometries.push_back(geometry);
-        }
-
-        constexpr void Finalize() override final
-        {
-            for (long long i = _positionX.size(); i % 8 != 0; i++)
+            for (int i = 0; i < 8; i++)
             {
-                _positionX.push_back(std::numeric_limits<float>::infinity());
-                _positionY.push_back(std::numeric_limits<float>::infinity());
-                _positionZ.push_back(std::numeric_limits<float>::infinity());
-                _radius.push_back(std::numeric_limits<float>::infinity());
-                _geometries.push_back(nullptr);
+                _positionX[i] = std::numeric_limits<float>::infinity();
+                _positionY[i] = std::numeric_limits<float>::infinity();
+                _positionZ[i] = std::numeric_limits<float>::infinity();
+                _radius[i] = std::numeric_limits<float>::infinity();
+                _geometries[i] = nullptr;
             }
+        }
+
+        constexpr void Insert(int index, const Sphere* geometry) override final
+        {
+            assert(index >= 0 && index < 8);
+
+            _positionX[index] = geometry->Position.X;
+            _positionY[index] = geometry->Position.Y;
+            _positionZ[index] = geometry->Position.Z;
+            _radius[index] = geometry->Radius;
+            _geometries[index] = geometry;
         }
 
         constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
@@ -73,15 +61,16 @@ namespace RayTracer
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
+    private:
         template <IntersectionResultType TIntersectionResultType>
-        inline constexpr IntersectionResult PrivateIntersectSoa(const Ray& ray, int startingGeometryIndex) const
+        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
             if (std::is_constant_evaluated())
             {
                 float closestDistance = std::numeric_limits<float>::infinity();
                 const Sphere* closestGeometry = nullptr;
 
-                for (unsigned long long i = startingGeometryIndex; i < _geometries.size() && i < startingGeometryIndex + 8; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     const Sphere* geometry = _geometries[i];
 
@@ -107,9 +96,9 @@ namespace RayTracer
                 Vec8f rayPositionY{ray.Position.Y};
                 Vec8f rayPositionZ{ray.Position.Z};
 
-                Vec8f spherePositionX = Vec8f{}.load_a(&_positionX[startingGeometryIndex]);
-                Vec8f spherePositionY = Vec8f{}.load_a(&_positionY[startingGeometryIndex]);
-                Vec8f spherePositionZ = Vec8f{}.load_a(&_positionZ[startingGeometryIndex]);
+                Vec8f spherePositionX = Vec8f{}.load_a(_positionX);
+                Vec8f spherePositionY = Vec8f{}.load_a(_positionY);
+                Vec8f spherePositionZ = Vec8f{}.load_a(_positionZ);
 
                 Vec8f vX = rayPositionX - spherePositionX;
                 Vec8f vY = rayPositionY - spherePositionY;
@@ -119,7 +108,7 @@ namespace RayTracer
                 Vec8f rayDirectionY{ray.Direction.Y};
                 Vec8f rayDirectionZ{ray.Direction.Z};
 
-                Vec8f sphereRadius = Vec8f{}.load_a(&_radius[startingGeometryIndex]);
+                Vec8f sphereRadius = Vec8f{}.load_a(_radius);
 
                 Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
                 Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
@@ -151,46 +140,10 @@ namespace RayTracer
                 int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedResult);
 
                 return {
-                    _geometries[startingGeometryIndex + (minimumIndex == -1 ? 0 : minimumIndex)],
+                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
                     minimumEntranceDistance,
                 };
             }
         }
-
-    private:
-        template <IntersectionResultType TIntersectionResultType>
-        inline constexpr IntersectionResult Intersect(const Ray& ray) const
-        {
-            IntersectionResult result{nullptr, std::numeric_limits<float>::infinity()};
-
-            for (int i = 0; i + 8 <= _positionX.size(); i += 8)
-            {
-                IntersectionResult newResult = PrivateIntersectSoa<TIntersectionResultType>(ray, i);
-
-                if (newResult.Distance < result.Distance)
-                {
-                    result = newResult;
-                }
-            }
-
-            return result;
-        }
     };
-
-    consteval float Test()
-    {
-        SphereSoa<std::allocator<float>, std::allocator<const Sphere*>> soa{};
-
-        Sphere sphere1{{0, 0, 0}, 5, nullptr};
-        soa.Add(&sphere1);
-
-        soa.Finalize();
-
-        Ray ray{{0, 0, -10}, {0, 0, 1}};
-        IntersectionResult result = soa.IntersectEntrance(ray);
-
-        return result.Distance;
-    }
-
-    static_assert(Test() == 5.0f);
 }
