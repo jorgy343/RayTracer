@@ -43,17 +43,17 @@ namespace RayTracer
             Sphere sphere{};
         }
 
-        constexpr void AddLight(const Light* light)
+        inline constexpr void AddLight(const Light* light)
         {
             _lights.push_back(light);
         }
 
-        constexpr void AddGeometry(const IntersectableGeometry* geometry)
+        inline constexpr void AddGeometry(const IntersectableGeometry* geometry)
         {
             _geometries.push_back(geometry);
         }
 
-        constexpr Vector3 CastRayColor(const Ray& ray) const
+        inline constexpr Vector3 CastRayColor(const Ray& ray) const
         {
             return CastRayColor(ray, 1);
         }

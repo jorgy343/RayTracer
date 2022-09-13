@@ -7,6 +7,7 @@ module;
 export module RayTracer.Matrix4x4;
 
 import RayTracer.Math;
+import RayTracer.Vector3;
 import RayTracer.Vector4;
 
 using namespace vcl;
@@ -60,6 +61,59 @@ namespace RayTracer
             M41{row4.X}, M42{row4.Y}, M43{row4.Z}, M44{row4.Z}
         {
 
+        }
+
+        inline constexpr static Matrix4x4 CreateIdentity()
+        {
+            return
+            {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            };
+        }
+
+        inline constexpr static Matrix4x4 CreateScale(Vector3 vector)
+        {
+            return CreateScale(vector.X, vector.Y, vector.Z);
+        }
+
+        inline constexpr static Matrix4x4 CreateScale(float scalar)
+        {
+            return CreateScale(scalar, scalar, scalar);
+        }
+
+        inline constexpr static Matrix4x4 CreateScale(float x, float y, float z)
+        {
+            return
+            {
+                x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1,
+            };
+        }
+
+        inline constexpr static Matrix4x4 CreateTranslation(Vector3 vector)
+        {
+            return CreateTranslation(vector.X, vector.Y, vector.Z);
+        }
+
+        inline constexpr static Matrix4x4 CreateTranslation(float scalar)
+        {
+            return CreateTranslation(scalar, scalar, scalar);
+        }
+
+        inline constexpr static Matrix4x4 CreateTranslation(float x, float y, float z)
+        {
+            return
+            {
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                x, y, z, 1,
+            };
         }
 
         constexpr float Determinant() const
@@ -139,6 +193,14 @@ namespace RayTracer
             return *this;
         }
 
+        constexpr Matrix4x4 InvertConst() const
+        {
+            Matrix4x4 result = *this;
+            result.Invert();
+
+            return result;
+        }
+
         inline constexpr Matrix4x4& Transpose()
         {
             M11 = M11;
@@ -162,6 +224,14 @@ namespace RayTracer
             M44 = M44;
 
             return *this;
+        }
+
+        inline constexpr Matrix4x4 TransposeConst() const
+        {
+            Matrix4x4 result = *this;
+            result.Transpose();
+
+            return result;
         }
 
         inline constexpr Matrix4x4 operator+() const

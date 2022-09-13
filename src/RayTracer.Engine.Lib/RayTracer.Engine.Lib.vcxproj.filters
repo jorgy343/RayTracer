@@ -143,5 +143,8 @@
     <ClCompile Include="IntersectableGeometry.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
+    <ClCompile Include="TransformedGeometry.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
