@@ -2,16 +2,9 @@ module;
 
 export module IntersectionResult;
 
-import <concepts>;
-
-import Vector3;
-
 namespace RayTracer
 {
     export class Geometry;
-    export class IntersectionResult;
-
-    IntersectionResult Test();
 
     export class IntersectionResult
     {
@@ -22,7 +15,7 @@ namespace RayTracer
         inline constexpr IntersectionResult(const Geometry* hitGeometry, float hitDistance)
             : HitGeometry{hitGeometry}, HitDistance{hitDistance}
         {
-
+            
         }
     };
 }

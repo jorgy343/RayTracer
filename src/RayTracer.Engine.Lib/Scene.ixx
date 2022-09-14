@@ -40,7 +40,7 @@ namespace RayTracer
         inline constexpr explicit Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
         {
-            // TODO: This seems to fix some weird module linker bug.
+            // TODO: This seems to fix some weird module linker issue/bug.
             Sphere sphere{};
         }
 
@@ -89,22 +89,20 @@ namespace RayTracer
                 }
             }
 
-            closestIntersection.HitDistance = Math::max(0.0f, closestIntersection.HitDistance);
-
             Vector3 outputColor = _backgroundColor;
 
             if (closestIntersection.HitGeometry)
             {
                 const LambertianMaterial* material = closestIntersection.HitGeometry->GetMaterial();
 
+                Vector3 hitPosition = ray.Position + closestIntersection.HitDistance * ray.Direction;
+                Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
+                hitPosition += hitNormal * 0.01f;
+
                 //if (material->EmissiveColor.LengthSquared() > 0.01f)
                 //{
                 //    return material->Color.ComponentwiseMultiply(material->EmissiveColor);
                 //}
-
-                Vector3 hitPosition = ray.Position + ray.Direction * closestIntersection.HitDistance;
-                Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
-                hitPosition += hitNormal * 0.01f;
 
                 Vector3 lightPower{0.0f};
                 lightPower += CalculateDirectionalLightPower(hitPosition, hitNormal);

@@ -1,15 +1,16 @@
+import AxisAlignedBox;
 import LambertianMaterial;
+import Parallelogram;
+import ParallelogramLight;
 import PerspectiveCamera;
+import Plane;
+import PlaneSoa;
+import PointLight;
 import Scene;
 import Sphere;
-import Plane;
-import AxisAlignedBox;
-import Parallelogram;
-import PointLight;
-import ParallelogramLight;
-import Vector2;
 import SphereSoa;
-import PlaneSoa;
+import TransformedGeometry;
+import Vector2;
 
 #include <memory>
 #include <vector>
@@ -48,11 +49,14 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
     SphereSoa sphereSoa1{};
 
-    sphereSoa1.Insert(0, &sphere1);
+    //sphereSoa1.Insert(0, &sphere1);
     sphereSoa1.Insert(1, &sphere2);
     sphereSoa1.Insert(2, &sphere3);
 
     scene.AddGeometry(&sphereSoa1);
+
+    TransformedGeometry transformedGeometry1{&sphere1, Matrix4x4::CreateScale(1.0f, 3.5f, 1.0f)};
+    scene.AddGeometry(&transformedGeometry1);
 
     Plane plane1{Vector3{0.0f, 0.0f, -1.0f}.Normalize(), {0.0f, 0.0f, 20.0f}, &redMaterial};
     Plane plane2{Vector3{0.0f, 0.0f, 1.0f}.Normalize(), {0.0f, 0.0f, -20.0f}, &greenMaterial};

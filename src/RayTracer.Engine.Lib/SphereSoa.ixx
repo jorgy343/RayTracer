@@ -91,7 +91,7 @@ namespace RayTracer
                     }
                 }
 
-                return IntersectionResult{closestGeometry, closestDistance};
+                return {closestGeometry, closestDistance};
             }
             else
             {
