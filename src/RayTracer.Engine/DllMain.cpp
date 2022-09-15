@@ -1,5 +1,6 @@
 import AxisAlignedBox;
 import LambertianMaterial;
+import MirrorMaterial;
 import Parallelogram;
 import ParallelogramLight;
 import PerspectiveCamera;
@@ -35,17 +36,19 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    LambertianMaterial whiteMaterial{{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}};
-    LambertianMaterial redMaterial{{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}};
-    LambertianMaterial greenMaterial{{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}};
-    LambertianMaterial blueMaterial{{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}};
-    LambertianMaterial orangeMaterial{{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}};
-    LambertianMaterial pinkMaterial{{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}};
-    LambertianMaterial yellowMaterial{{0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}};
+    MirrorMaterial mirrorMaterial{};
+
+    LambertianMaterial whiteMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}};
+    LambertianMaterial redMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}};
+    LambertianMaterial greenMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}};
+    LambertianMaterial blueMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}};
+    LambertianMaterial orangeMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}};
+    LambertianMaterial pinkMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}};
+    LambertianMaterial yellowMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 1.0f}};
 
     Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
     Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
-    Sphere sphere3{{2, 0, 5}, 2, &whiteMaterial};
+    Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
 
     SphereSoa sphereSoa1{};
 

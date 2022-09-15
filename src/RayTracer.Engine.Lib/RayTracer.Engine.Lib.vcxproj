@@ -30,6 +30,7 @@
     <ClCompile Include="Material.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
+    <ClCompile Include="MirrorMaterial.ixx" />
     <ClCompile Include="MonteCarlo.ixx" />
     <ClCompile Include="Parallelogram.ixx" />
     <ClCompile Include="ParallelogramLight.ixx" />

@@ -8,10 +8,11 @@ namespace RayTracer
     {
     public:
         Ray ScatterRay{};
-        float ScatterPdf{0.0f};
+        float Brdf{0.0f};
+        float Pdf{0.0f};
 
-        inline constexpr ScatterResult(const Ray& scatterRay, float scatterPdf)
-            : ScatterRay{scatterRay}, ScatterPdf{scatterPdf}
+        inline constexpr ScatterResult(const Ray& scatterRay, float brdf, float pdf)
+            : ScatterRay{scatterRay}, Brdf{brdf}, Pdf{pdf}
         {
 
         }

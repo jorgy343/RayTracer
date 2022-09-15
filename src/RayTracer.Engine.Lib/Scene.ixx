@@ -17,6 +17,7 @@ import IntersectableGeometry;
 import LambertianMaterial;
 import Light;
 import LightRay;
+import Material;
 import Math;
 import MonteCarlo;
 import Random;
@@ -93,7 +94,7 @@ namespace RayTracer
 
             if (closestIntersection.HitGeometry)
             {
-                const LambertianMaterial* material = closestIntersection.HitGeometry->GetMaterial();
+                const Material* material = closestIntersection.HitGeometry->GetMaterial();
 
                 Vector3 hitPosition = ray.Position + closestIntersection.HitDistance * ray.Direction;
                 Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
@@ -108,24 +109,30 @@ namespace RayTracer
 
                 if (depth <= 5)
                 {
-                    Vector3 indirectLightDirection = material->CalculateIndirectLightDirection(_random, hitPosition, hitNormal);
+                    ScatterResult scatterResult = material->CalculateScatterData(_random, hitPosition, hitNormal, ray.Direction);
+                    float inverseIndirectLightPdf = scatterResult.Pdf == 0.0f ? 0.0f : Math::rcp(scatterResult.Pdf);
 
-                    float indirectLightPdf = material->CalculatePdf(_random, hitPosition, hitNormal, indirectLightDirection);
-                    float inverseIndirectLightPdf = indirectLightPdf == 0.0f ? 0.0f : Math::rcp(indirectLightPdf);
-
-                    indirectLightColor = CastRayColor(Ray{hitPosition, indirectLightDirection}, depth + 1) * inverseIndirectLightPdf * Math::max(0.0f, hitNormal * indirectLightDirection);
+                    indirectLightColor = CastRayColor(scatterResult.ScatterRay, depth + 1) * scatterResult.Brdf * inverseIndirectLightPdf * Math::max(0.0f, hitNormal * scatterResult.ScatterRay.Direction);
                 }
 
-                // The calculated light power will already include the PDF for the light as well as the cos(theta) term.
-                Vector3 lightPower = CalculateDirectionalLightPower(hitPosition, hitNormal);
+                Vector3 lightPower{};
+                float lightCountReciprical{1.0f};
 
-                return material->EmissiveColor + Math::rcp(static_cast<float>(_lights.size() + 1)) * OneOverPi * material->Color.ComponentwiseMultiply(lightPower + indirectLightColor);
+                if (!material->SkipLighting)
+                {
+                    // The calculated light power will already include the PDF for the light as well as the cos(theta) term.
+                    lightPower = CalculateDirectionalLightPower(material, hitPosition, hitNormal);
+
+                    lightCountReciprical = Math::rcp(static_cast<float>(_lights.size() + 1));
+                }
+
+                return material->EmissiveColor + lightCountReciprical * material->Color.ComponentwiseMultiply(lightPower + indirectLightColor);
             }
 
             return outputColor;
         }
 
-        constexpr Vector3 CalculateDirectionalLightPower(const Vector3& hitPosition, const Vector3& hitNormal) const
+        constexpr Vector3 CalculateDirectionalLightPower(const Material* material, const Vector3& hitPosition, const Vector3& hitNormal) const
         {
             Vector3 lightPower{};
 
@@ -134,7 +141,9 @@ namespace RayTracer
                 LightRay lightRay = light->CreateShadowRaw(hitPosition, hitNormal);
                 float shadowDistance = CastRayDistance(lightRay.ShadowRay);
 
-                lightPower += light->CalculateLightPower(hitPosition, hitNormal, lightRay.PointOnLight, shadowDistance);
+                float brdf = material->CalculateBrdf(_random, hitPosition, hitNormal, lightRay.ShadowRay.Direction);
+
+                lightPower += light->CalculateLightPower(hitPosition, hitNormal, lightRay.PointOnLight, shadowDistance) * brdf;
             }
 
             return lightPower;

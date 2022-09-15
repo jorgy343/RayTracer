@@ -7,7 +7,7 @@ import <limits>;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
-import LambertianMaterial;
+import Material;
 import Math;
 import Ray;
 import Vector3;
@@ -19,19 +19,19 @@ namespace RayTracer
     public:
         Vector3 Position{};
         float Radius{0.0f};
-        const LambertianMaterial* Material{nullptr};
+        const Material* AppliedMaterial{nullptr};
 
         inline constexpr Sphere() = default;
 
-        inline constexpr Sphere(const Vector3& position, float radius, const LambertianMaterial* material)
-            : Position{position}, Radius{radius}, Material{material}
+        inline constexpr Sphere(const Vector3& position, float radius, const Material* appliedMaterial)
+            : Position{position}, Radius{radius}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const LambertianMaterial* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return Material;
+            return AppliedMaterial;
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final

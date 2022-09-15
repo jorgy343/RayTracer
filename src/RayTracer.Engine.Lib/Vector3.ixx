@@ -163,6 +163,12 @@ namespace RayTracer
             return result.Normalize();
         }
 
+        inline constexpr Vector3T Reflect(const Vector3T& normal) const
+        {
+            float twoDot = (*this * normal) * 2.0f;
+            return (*this - normal) * twoDot;
+        }
+
         inline constexpr Vector3T operator+() const
         {
             return {+X, +Y, +Z};

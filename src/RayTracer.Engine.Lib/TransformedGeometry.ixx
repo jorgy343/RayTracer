@@ -4,6 +4,7 @@ import "Common.h";
 
 import Geometry;
 import IntersectionResultType;
+import Material;
 import Matrix4x4;
 import Ray;
 import Vector3;
@@ -24,7 +25,7 @@ namespace RayTracer
 
         }
 
-        constexpr const LambertianMaterial* GetMaterial() const override final
+        constexpr const Material* GetMaterial() const override final
         {
             return ChildGeometry->GetMaterial();
         }

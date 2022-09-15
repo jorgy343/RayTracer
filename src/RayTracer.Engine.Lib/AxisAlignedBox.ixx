@@ -10,6 +10,7 @@ import <limits>;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
+import Material;
 import Math;
 import Vector3;
 
@@ -22,19 +23,19 @@ namespace RayTracer
     public:
         Vector3 Minimum{};
         Vector3 Maximum{};
-        const LambertianMaterial* Material{nullptr};
+        const Material* AppliedMaterial{nullptr};
 
         inline constexpr AxisAlignedBox() = default;
 
-        inline constexpr AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const LambertianMaterial* material)
-            : Minimum{minimum}, Maximum{maximum}, Material{material}
+        inline constexpr AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
+            : Minimum{minimum}, Maximum{maximum}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const LambertianMaterial* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return Material;
+            return AppliedMaterial;
         }
 
         constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final

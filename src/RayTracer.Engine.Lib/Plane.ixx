@@ -7,7 +7,7 @@ import <limits>;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
-import LambertianMaterial;
+import Material;
 import Math;
 import Ray;
 import Vector3;
@@ -19,25 +19,25 @@ namespace RayTracer
     public:
         Vector3 Normal{};
         float Distance{0.0f};
-        const LambertianMaterial* Material{nullptr};
+        const Material* AppliedMaterial{nullptr};
 
         inline constexpr Plane() = default;
 
-        inline constexpr Plane(const Vector3& normal, float distance, const LambertianMaterial* material)
-            : Normal{normal}, Distance{distance}, Material{material}
+        inline constexpr Plane(const Vector3& normal, float distance, const Material* appliedMaterial)
+            : Normal{normal}, Distance{distance}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr Plane(const Vector3& normal, const Vector3& point, const LambertianMaterial* material)
-            : Normal{normal}, Distance{-(normal * point)}, Material{material}
+        inline constexpr Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
+            : Normal{normal}, Distance{-(normal * point)}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const LambertianMaterial* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return Material;
+            return AppliedMaterial;
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final

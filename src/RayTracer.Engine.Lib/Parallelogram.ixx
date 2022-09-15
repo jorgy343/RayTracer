@@ -4,11 +4,12 @@ export module Parallelogram;
 
 import <limits>;
 
-import Math;
 import Geometry;
-import Vector3;
 import IntersectionResult;
 import IntersectionResultType;
+import Material;
+import Math;
+import Vector3;
 
 namespace RayTracer
 {
@@ -20,19 +21,19 @@ namespace RayTracer
         Vector3 Edge2{};
         Vector3 Normal{};
         float Area{0.0f};
-        const LambertianMaterial* Material{nullptr};
+        const Material* AppliedMaterial{nullptr};
 
         inline constexpr Parallelogram() = default;
 
-        inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const LambertianMaterial* material)
-            : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, Area{(edge1 % edge2).Length()}, Material{material}
+        inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const Material* appliedMaterial)
+            : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, Area{(edge1 % edge2).Length()}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const LambertianMaterial* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return Material;
+            return AppliedMaterial;
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
