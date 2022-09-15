@@ -19,13 +19,13 @@ namespace RayTracer
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        float InverseArea{0.0f};
+        float Area{0.0f};
         const LambertianMaterial* Material{nullptr};
 
         inline constexpr Parallelogram() = default;
 
         inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const LambertianMaterial* material)
-            : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, InverseArea{Math::rcp(edge1.Length() * edge2.Length())}, Material{material}
+            : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, Area{(edge1 % edge2).Length()}, Material{material}
         {
 
         }

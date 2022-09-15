@@ -74,6 +74,48 @@ namespace RayTracer
             };
         }
 
+        inline constexpr static Matrix4x4 CreateRotationX(float radians)
+        {
+            float cosine = Math::cos(radians);
+            float sine = Math::sin(radians);
+
+            return
+            {
+                1, 0, 0, 0,
+                0, cosine, -sine, 0,
+                0, sine, cosine, 0,
+                0, 0, 0, 1,
+            };
+        }
+
+        inline constexpr static Matrix4x4 CreateRotationY(float radians)
+        {
+            float cosine = Math::cos(radians);
+            float sine = Math::sin(radians);
+
+            return
+            {
+                cosine, 0, sine, 0,
+                0, 1, 0, 0,
+                -sine, 0, cosine, 0,
+                0, 0, 0, 1,
+            };
+        }
+
+        inline constexpr static Matrix4x4 CreateRotationZ(float radians)
+        {
+            float cosine = Math::cos(radians);
+            float sine = Math::sin(radians);
+
+            return
+            {
+                cosine, -sine, 0, 0,
+                sine, cosine, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            };
+        }
+
         inline constexpr static Matrix4x4 CreateScale(Vector3 vector)
         {
             return CreateScale(vector.X, vector.Y, vector.Z);

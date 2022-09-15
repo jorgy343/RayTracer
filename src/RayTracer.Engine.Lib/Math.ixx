@@ -8,6 +8,8 @@ export module Math;
 import <cmath>;
 import <concepts>;
 
+import "Constants.h";
+
 import Vec8f3;
 
 using namespace vcl;
@@ -207,6 +209,18 @@ namespace RayTracer
             {
                 return std::tan(radians);
             }
+        }
+
+        export template<number T>
+            inline constexpr T deg_to_rad(T degrees)
+        {
+            return degrees * (Pi / T{180});
+        }
+
+        export template<number T>
+            inline constexpr T rad_to_deg(T radians)
+        {
+            return radians * (T{180} / Pi);
         }
     }
 

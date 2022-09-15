@@ -104,23 +104,22 @@ namespace RayTracer
                 //    return material->Color.ComponentwiseMultiply(material->EmissiveColor);
                 //}
 
-                Vector3 lightPower{0.0f};
-                lightPower += CalculateDirectionalLightPower(hitPosition, hitNormal);
-
-                Vector3 indirectLight{0.0f};
+                Vector3 indirectLightColor{0.0f};
 
                 if (depth <= 5)
                 {
-                    float random1 = _random.GetNormalizedFloat();
-                    float random2 = _random.GetNormalizedFloat();
+                    Vector3 indirectLightDirection = material->CalculateIndirectLightDirection(_random, hitPosition, hitNormal);
 
-                    Vector3 randomHemisphereVector = CosineWeightedSampleHemisphere(random1, random2);
-                    Vector3 scatterDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);
+                    float indirectLightPdf = material->CalculatePdf(_random, hitPosition, hitNormal, indirectLightDirection);
+                    float inverseIndirectLightPdf = indirectLightPdf == 0.0f ? 0.0f : Math::rcp(indirectLightPdf);
 
-                    indirectLight = CastRayColor(Ray{hitPosition, scatterDirection}, depth + 1);
+                    indirectLightColor = CastRayColor(Ray{hitPosition, indirectLightDirection}, depth + 1) * inverseIndirectLightPdf * Math::max(0.0f, hitNormal * indirectLightDirection);
                 }
 
-                return material->EmissiveColor + Math::rcp(static_cast<float>(_lights.size() + 1)) * material->Color.ComponentwiseMultiply(lightPower + indirectLight);
+                // The calculated light power will already include the PDF for the light as well as the cos(theta) term.
+                Vector3 lightPower = CalculateDirectionalLightPower(hitPosition, hitNormal);
+
+                return material->EmissiveColor + Math::rcp(static_cast<float>(_lights.size() + 1)) * OneOverPi * material->Color.ComponentwiseMultiply(lightPower + indirectLightColor);
             }
 
             return outputColor;

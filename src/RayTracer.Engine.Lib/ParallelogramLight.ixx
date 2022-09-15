@@ -43,7 +43,8 @@ namespace RayTracer
 
             if (shadowDistance * shadowDistance >= distanceToLightSquared - 0.01f)
             {
-                return Color * Math::max(0.0f, hitNormal * directionToLight);
+                // The PDF is 1/area so when we divide by the PDF it is actually multiplying by the area.
+                return Color * Math::max(0.0f, hitNormal * directionToLight) * Shape.Area;
             }
 
             return Vector3{};
