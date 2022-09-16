@@ -1,0 +1,335 @@
+module;
+
+export module Vector3;
+
+import <cmath>;
+
+import Math;
+import Vector2;
+
+namespace Yart
+{
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    class alignas(sizeof(T) * 4) Vector3T
+    {
+    public:
+        T X{0};
+        T Y{0};
+        T Z{0};
+
+    private:
+        T __DummyW{0};
+
+    public:
+        inline constexpr Vector3T() = default;
+
+        inline constexpr explicit Vector3T(T scalar)
+            : X{scalar}, Y{scalar}, Z{scalar}
+        {
+
+        }
+
+        inline constexpr Vector3T(T x, T y, T z)
+            : X{x}, Y{y}, Z{z}
+        {
+
+        }
+
+        inline constexpr Vector3T(const Vector2T<T>& vector2, T z)
+            : X{vector2.X}, Y{vector2.Y}, Z{z}
+        {
+
+        }
+
+        inline constexpr Vector3T& Abs()
+        {
+            X = Math::abs(X);
+            Y = Math::abs(Y);
+            Z = Math::abs(Z);
+
+            return *this;
+        }
+
+        inline constexpr bool Compare(const Vector3T& right, T maximumAllowedErrorPerComponent)
+        {
+            if constexpr (std::floating_point<T>)
+            {
+                bool areNansBad =
+                    Math::isnan(X) ^ Math::isnan(right.X) ||
+                    Math::isnan(Y) ^ Math::isnan(right.Y) ||
+                    Math::isnan(Z) ^ Math::isnan(right.Z);
+
+                if (areNansBad)
+                {
+                    return false;
+                }
+
+                bool areInfinitiesBad =
+                    Math::isinf(X) ^ Math::isinf(right.X) ||
+                    Math::isinf(Y) ^ Math::isinf(right.Y) ||
+                    Math::isinf(Z) ^ Math::isinf(right.Z);
+
+                if (areInfinitiesBad)
+                {
+                    return false;
+                }
+
+                return
+                    (!Math::isfinite(X) || !Math::isfinite(right.X) || Math::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(Y) || !Math::isfinite(right.Y) || Math::abs(Y - right.Y) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(Z) || !Math::isfinite(right.Z) || Math::abs(Z - right.Z) < maximumAllowedErrorPerComponent);
+            }
+            else
+            {
+                return
+                    X == right.X &&
+                    Y == right.Y &&
+                    Z == right.Z;
+            }
+        }
+
+        inline constexpr Vector3T ComponentwiseMultiply(const Vector3T& right) const
+        {
+            return Vector3T
+            {
+                X * right.X,
+                Y * right.Y,
+                Z * right.Z,
+            };
+        }
+
+        inline constexpr Vector3T CrossProduct(const Vector3T& right) const
+        {
+            return Vector3T
+            {
+                Y * right.Z - Z * right.Y,
+                Z * right.X - X * right.Z,
+                X * right.Y - Y * right.X
+            };
+        }
+
+        inline constexpr T Distance(const Vector3T& right)
+        {
+            return Math::sqrt(DistanceSquared(right));
+        }
+
+        inline constexpr T DistanceSquared(const Vector3T& right)
+        {
+            T x = X - right.X;
+            T y = Y - right.Y;
+            T z = Z - right.Z;
+
+            return x * x + y * y + z * z;
+        }
+
+        inline constexpr T Dot(const Vector3T& right) const
+        {
+            return (X * right.X) + (Y * right.Y) + (Z * right.Z);
+        }
+
+        inline constexpr T Length() const
+        {
+            return Math::sqrt(LengthSquared());
+        }
+
+        inline constexpr T LengthSquared() const
+        {
+            return (X * X) + (Y * Y) + (Z * Z);
+        }
+
+        inline constexpr Vector3T& Normalize()
+        {
+            T inverseLength;
+            if constexpr (std::same_as<float, T>)
+            {
+                inverseLength = Math::inv_sqrt(LengthSquared());
+            }
+            else
+            {
+                inverseLength = T{1} / Length();
+            }
+
+            X *= inverseLength;
+            Y *= inverseLength;
+            Z *= inverseLength;
+
+            return *this;
+        }
+
+        inline constexpr Vector3T NormalizeNondestructive() const
+        {
+            Vector3T result = *this;
+            return result.Normalize();
+        }
+
+        inline constexpr Vector3T Reflect(const Vector3T& normal) const
+        {
+            return *this - 2.0f * (*this * normal) * normal;
+        }
+
+        inline constexpr Vector3T operator+() const
+        {
+            return {+X, +Y, +Z};
+        }
+
+        inline constexpr Vector3T operator-() const
+        {
+            return {-X, -Y, -Z};
+        }
+
+        inline constexpr Vector3T& operator++()
+        {
+            X += T{1};
+            Y += T{1};
+            Z += T{1};
+
+            return *this;
+        }
+
+        inline constexpr Vector3T& operator--()
+        {
+            X -= T{1};
+            Y -= T{1};
+            Z -= T{1};
+
+            return *this;
+        }
+
+        inline constexpr Vector3T operator++(int)
+        {
+            Vector3T temp = *this;
+
+            X += T{1};
+            Y += T{1};
+            Z += T{1};
+
+            return temp;
+        }
+
+        inline constexpr Vector3T operator--(int)
+        {
+            Vector3T temp = *this;
+
+            X -= T{1};
+            Y -= T{1};
+            Z -= T{1};
+
+            return temp;
+        }
+
+        inline constexpr Vector3T operator+(const Vector3T& right) const
+        {
+            return Vector3T{X + right.X, Y + right.Y, Z + right.Z};
+        }
+
+        inline constexpr Vector3T operator-(const Vector3T& right) const
+        {
+            return Vector3T{X - right.X, Y - right.Y, Z - right.Z};
+        }
+
+        inline constexpr T operator*(const Vector3T& right) const
+        {
+            return Dot(right);
+        }
+
+        inline constexpr Vector3T operator%(const Vector3T& right) const
+        {
+            return CrossProduct(right);
+        }
+
+        inline constexpr Vector3T operator+(T right) const
+        {
+            return Vector3T{X + right, Y + right, Z + right};
+        }
+
+        inline constexpr Vector3T operator-(T right) const
+        {
+            return Vector3T{X - right, Y - right, Z - right};
+        }
+
+        inline constexpr Vector3T operator*(T right) const
+        {
+            return Vector3T{X * right, Y * right, Z * right};
+        }
+
+        inline constexpr Vector3T operator/(T right) const
+        {
+            return Vector3T{X / right, Y / right, Z / right};
+        }
+
+        inline constexpr Vector3T& operator+=(const Vector3T& other)
+        {
+            X += other.X;
+            Y += other.Y;
+            Z += other.Z;
+
+            return *this;
+        }
+
+        inline constexpr Vector3T& operator-=(const Vector3T& other)
+        {
+            X -= other.X;
+            Y -= other.Y;
+            Z -= other.Z;
+
+            return *this;
+        }
+
+        inline constexpr Vector3T& operator+=(T other)
+        {
+            X += other;
+            Y += other;
+            Z += other;
+
+            return *this;
+        }
+
+        inline constexpr Vector3T& operator-=(T other)
+        {
+            X -= other;
+            Y -= other;
+            Z -= other;
+
+            return *this;
+        }
+
+        inline constexpr Vector3T& operator*=(T other)
+        {
+            X *= other;
+            Y *= other;
+            Z *= other;
+
+            return *this;
+        }
+
+        inline constexpr Vector3T& operator/=(T other)
+        {
+            X /= other;
+            Y /= other;
+            Z /= other;
+
+            return *this;
+        }
+    };
+
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    inline constexpr Vector3T<T> operator+(T left, const Vector3T<T>&right)
+    {
+        return {left + right.X, left + right.Y, left + right.Z};
+    }
+
+    export template <typename T>
+        requires std::integral<T> || std::floating_point<T>
+    inline constexpr Vector3T<T> operator*(T left, const Vector3T<T>&right)
+    {
+        return {left * right.X, left * right.Y, left * right.Z};
+    }
+
+    export using Vector3 = Vector3T<float>;
+    export using IntVector3 = Vector3T<int>;
+    export using UIntVector3 = Vector3T<unsigned int>;
+
+    static_assert(Vector3{0, -5, 0}.Abs().Normalize().Length() == 1);
+}

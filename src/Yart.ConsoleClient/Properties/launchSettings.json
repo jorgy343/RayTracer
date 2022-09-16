@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Yart.ConsoleClient": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
