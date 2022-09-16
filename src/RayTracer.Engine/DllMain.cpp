@@ -2,11 +2,9 @@ import AxisAlignedBox;
 import LambertianMaterial;
 import MirrorMaterial;
 import Parallelogram;
-import ParallelogramLight;
 import PerspectiveCamera;
 import Plane;
 import PlaneSoa;
-import PointLight;
 import Scene;
 import Sphere;
 import SphereSoa;
@@ -29,10 +27,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
         {0, 0, 0},
         {0, 0, 1},
         {0, 1, 0},
+        subpixelCount,
+        screenSize,
         90.0f};
-
-    std::vector<Ray> rayBuffer{};
-    rayBuffer.reserve((inclusiveEndingPoint.X - inclusiveStartingPoint.X + 1) * (inclusiveEndingPoint.Y - inclusiveStartingPoint.Y + 1) * subpixelCountSquared);
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
@@ -93,28 +90,19 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     Parallelogram parallelogram1{{5.0f, 0.0f, 4.0f}, {0.0f, -3.0f, 0.3f}, {2.0f, 0.4f, 0.2f}, &greenMaterial};
     scene.AddGeometry(&parallelogram1);
 
-    //PointLight light1{{1.0f, 1.0f, 1.0f}, {-1.0f, 10.0f, 0.0f}};
-    //ParallelogramLight light2{Vector3{0.4f}, {{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, nullptr}};
-
-    //scene.AddLight(&light1);
-    //scene.AddLight(&light2);
-
     for (int count = 0; count < iterations; count++)
     {
-        perspectiveCamera.CreateRays(screenSize, inclusiveStartingPoint, inclusiveEndingPoint, subpixelCount, rayBuffer);
-        int rayBufferIndex = 0;
-
         for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
         {
             for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
             {
                 Vector3 color{};
 
-                for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
+                for (unsigned int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
                 {
-                    for (int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
+                    for (unsigned int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
                     {
-                        Ray& ray = rayBuffer[rayBufferIndex++];
+                        Ray ray = perspectiveCamera.CreateRay({x, y}, {subpixelX, subpixelY});
                         color += scene.CastRayColor(ray);
                     }
                 }

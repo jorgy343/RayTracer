@@ -22,9 +22,6 @@
     <Filter Include="Modules\Geometries">
       <UniqueIdentifier>{756f9817-26d7-41c1-844f-86e471b0a97a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Modules\Lights">
-      <UniqueIdentifier>{906e228a-ba1e-4f90-a847-a2bae8c6863e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Modules\Cameras">
       <UniqueIdentifier>{625fcd53-d8f4-42f9-9471-f3ab59f96128}</UniqueIdentifier>
     </Filter>
@@ -92,14 +89,8 @@
     <ClCompile Include="Material.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionalLight.ixx">
-      <Filter>Modules\Lights</Filter>
-    </ClCompile>
     <ClCompile Include="LambertianMaterial.ixx">
       <Filter>Modules\Materials</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.ixx">
-      <Filter>Modules\Lights</Filter>
     </ClCompile>
     <ClCompile Include="ScatterResult.ixx">
       <Filter>Modules\Materials</Filter>
@@ -113,9 +104,6 @@
     <ClCompile Include="Random.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="PointLight.ixx">
-      <Filter>Modules\Lights</Filter>
-    </ClCompile>
     <ClCompile Include="Vector3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -127,12 +115,6 @@
     </ClCompile>
     <ClCompile Include="Vec8f3.ixx">
       <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ParallelogramLight.ixx">
-      <Filter>Modules\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="LightRay.ixx">
-      <Filter>Modules\Lights</Filter>
     </ClCompile>
     <ClCompile Include="IntersectableGeometry.ixx">
       <Filter>Modules\Geometries</Filter>
@@ -150,7 +132,7 @@
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
     <ClCompile Include="AreaLight.ixx">
-      <Filter>Modules\Lights</Filter>
+      <Filter>Modules\Geometries</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

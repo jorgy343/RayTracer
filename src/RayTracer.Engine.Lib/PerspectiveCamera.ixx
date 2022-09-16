@@ -18,78 +18,86 @@ namespace RayTracer
     private:
         Random _random{};
 
+        float _recipricalWidth{};
+        float _recipricalHeight{};
+
+        float _subpixelSizeX{};
+        float _subpixelSizeY{};
+
+        Vector3 _du{};
+        Vector3 _dv{};
+
+        Vector3 _upperLeftCorner{};
+
     public:
         Vector3 Position{};
         Vector3 LookAt{};
         Vector3 Up{};
 
+        int SubpixelCount{};
+        UIntVector2 ScreenSize{};
         float FieldOfView{0.0f};
 
         inline constexpr PerspectiveCamera(
             const Vector3& position,
             const Vector3& lookAt,
             const Vector3& up,
+            int subpixelCount,
+            const UIntVector2& screenSize,
             float fieldOfView)
             :
             Position{position},
             LookAt{lookAt},
             Up{up},
+            SubpixelCount{subpixelCount},
+            ScreenSize{screenSize},
             FieldOfView{fieldOfView}
-        {
-
-        }
-
-        constexpr void CreateRays(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, std::vector<Ray>& rayBuffer)
         {
             Vector3 forward = (Position - LookAt).Normalize();
 
             Vector3 u = (Up % forward).Normalize();
             Vector3 v = (forward % u).Normalize();
 
-            float aspectRatio = static_cast<float>(screenSize.X) / static_cast<float>(screenSize.Y);
+            float aspectRatio = static_cast<float>(ScreenSize.X) / static_cast<float>(ScreenSize.Y);
             float halfWidth = Math::tan(FieldOfView * 0.5f);
 
             float viewportHeight = halfWidth * 2.0f;
             float viewportWidth = aspectRatio * viewportHeight;
 
-            Vector3 du = viewportWidth * u;
-            Vector3 dv = viewportHeight * v;
+            _du = viewportWidth * u;
+            _dv = viewportHeight * v;
 
-            Vector3 upperLeftCorner = Position - du * 0.5f + dv * 0.5f - forward;
+            _upperLeftCorner = Position - _du * 0.5f + _dv * 0.5f - forward;
 
-            float recipricalWidth = Math::rcp(static_cast<float>(screenSize.X));
-            float recipricalHeight = Math::rcp(static_cast<float>(screenSize.Y));
+            _recipricalWidth = Math::rcp(static_cast<float>(ScreenSize.X));
+            _recipricalHeight = Math::rcp(static_cast<float>(ScreenSize.Y));
 
-            float subpixelSizeX = Math::rcp(static_cast<float>(subpixelCount)) * recipricalWidth;
-            float subpixelSizeY = Math::rcp(static_cast<float>(subpixelCount)) * recipricalHeight;
+            _subpixelSizeX = Math::rcp(static_cast<float>(subpixelCount)) * _recipricalWidth;
+            _subpixelSizeY = Math::rcp(static_cast<float>(subpixelCount)) * _recipricalHeight;
+        }
 
-            for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
-            {
-                for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
-                {
-                    for (int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
-                    {
-                        for (int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
-                        {
-                            float normalizedX = x * recipricalWidth;
-                            float normalizedY = y * recipricalHeight;
+        constexpr Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel)
+        {
+            float recipricalWidth = Math::rcp(static_cast<float>(ScreenSize.X));
+            float recipricalHeight = Math::rcp(static_cast<float>(ScreenSize.Y));
 
-                            normalizedX += static_cast<float>(subpixelX) * subpixelSizeX;
-                            normalizedY += static_cast<float>(subpixelY) * subpixelSizeY;
+            float subpixelSizeX = Math::rcp(static_cast<float>(SubpixelCount)) * recipricalWidth;
+            float subpixelSizeY = Math::rcp(static_cast<float>(SubpixelCount)) * recipricalHeight;
 
-                            float r1 = _random.GetNormalizedFloat();
-                            float r2 = _random.GetNormalizedFloat();
+            float normalizedX = pixel.X * recipricalWidth;
+            float normalizedY = pixel.Y * recipricalHeight;
 
-                            normalizedX += _random.GetNormalizedFloat() * subpixelSizeX;
-                            normalizedY += _random.GetNormalizedFloat() * subpixelSizeY;
+            normalizedX += static_cast<float>(subpixel.X) * subpixelSizeX;
+            normalizedY += static_cast<float>(subpixel.Y) * subpixelSizeY;
 
-                            Vector3 rayDirection = upperLeftCorner + (normalizedX * du) - (normalizedY * dv) - Position;
+            float r1 = _random.GetNormalizedFloat();
+            float r2 = _random.GetNormalizedFloat();
 
-                            rayBuffer.push_back(Ray{Position, rayDirection.Normalize()});
-                        }
-                    }
-                }
-            }
+            normalizedX += _random.GetNormalizedFloat() * subpixelSizeX;
+            normalizedY += _random.GetNormalizedFloat() * subpixelSizeY;
+
+            Vector3 rayDirection = _upperLeftCorner + (normalizedX * _du) - (normalizedY * _dv) - Position;
+            return {Position, rayDirection.Normalize()};
         }
     };
 }
