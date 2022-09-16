@@ -165,8 +165,7 @@ namespace RayTracer
 
         inline constexpr Vector3T Reflect(const Vector3T& normal) const
         {
-            float twoDot = (*this * normal) * 2.0f;
-            return (*this - normal) * twoDot;
+            return *this - 2.0f * (*this * normal) * normal;
         }
 
         inline constexpr Vector3T operator+() const

@@ -115,34 +115,46 @@ namespace RayTracer
 
 
 
-
-                int indexOfLightToSample = _random.GetInteger() % _lights.size();
-                const AreaLight* light = _lights[indexOfLightToSample];
-
                 Vector3 outgoingDirection;
+                float inversePdf;
+                float cosineTheta;
 
-                float whereToShootRay = _random.GetNormalizedFloat();
-                if (whereToShootRay > 0.5f)
+                if (material->IgnoreLighting)
                 {
                     // Indirect light sample according to material.
                     outgoingDirection = material->GenerateRandomDirection(_random, hitPosition, hitNormal, ray.Direction);
+                    inversePdf = material->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction);
+                    cosineTheta = 1.0f;
                 }
                 else
                 {
-                    // Direct light sample to a random light.
-                    outgoingDirection = light->GenerateRandomDirectionTowardsLight(_random, hitPosition, hitNormal);
+                    int indexOfLightToSample = _random.GetInteger() % _lights.size();
+                    const AreaLight* light = _lights[indexOfLightToSample];
+
+                    float whereToShootRay = _random.GetNormalizedFloat();
+                    if (whereToShootRay > 0.5f)
+                    {
+                        // Indirect light sample according to material.
+                        outgoingDirection = material->GenerateRandomDirection(_random, hitPosition, hitNormal, ray.Direction);
+                    }
+                    else
+                    {
+                        // Direct light sample to a random light.
+                        outgoingDirection = light->GenerateRandomDirectionTowardsLight(_random, hitPosition, hitNormal);
+                    }
+
+                    float materialInversePdf = material->CalculateInversePdf(_random, hitPosition, hitNormal, outgoingDirection);
+                    float lightInversePdf = light->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction, outgoingDirection);
+
+                    inversePdf = 0.5f * lightInversePdf * _lights.size() + 0.5f * materialInversePdf;
+
+                    cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
                 }
-
-                float materialInversePdf = material->CalculateInversePdf(_random, hitPosition, hitNormal, outgoingDirection);
-                float lightInversePdf = light->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction, outgoingDirection);
-
-                float inversePdf = 0.5f * lightInversePdf * _lights.size() + 0.5f * materialInversePdf;
 
                 Ray outgoingRay = Ray{hitPosition, outgoingDirection};
                 Vector3 indirectColorSample = CastRayColor(outgoingRay, depth + 1);
 
                 float brdf = material->CalculateBrdf(_random, hitPosition, hitNormal, outgoingDirection);
-                float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
 
                 outputColor = brdf * material->Color.ComponentwiseMultiply(indirectColorSample) * inversePdf * cosineTheta;
 

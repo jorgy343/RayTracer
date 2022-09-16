@@ -10,9 +10,10 @@ namespace RayTracer
     public:
         Vector3 EmissiveColor{};
         Vector3 Color{};
+        bool IgnoreLighting{false};
 
-        inline constexpr Material(const Vector3& emissiveColor, const Vector3& color)
-            : EmissiveColor{emissiveColor}, Color{color}
+        inline constexpr Material(const Vector3& emissiveColor, const Vector3& color, bool ignoreLighting)
+            : EmissiveColor{emissiveColor}, Color{color}, IgnoreLighting{ignoreLighting}
         {
 
         }

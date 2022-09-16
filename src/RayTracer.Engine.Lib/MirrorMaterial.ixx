@@ -9,11 +9,11 @@ import Vector3;
 
 namespace RayTracer
 {
-    export class MirrorMaterial final : public Material
+    export class MirrorMaterial : public Material
     {
     public:
         inline constexpr MirrorMaterial()
-            : Material{Vector3{0.0f}, Vector3{1.0f}}
+            : Material{Vector3{0.0f}, Vector3{1.0f}, true}
         {
 
         }

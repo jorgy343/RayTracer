@@ -53,7 +53,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
     Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
     Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
-    Sphere sphere3{{2, 0, 5}, 2, &whiteMaterial};
+    Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
 
     SphereSoa sphereSoa1{};
 

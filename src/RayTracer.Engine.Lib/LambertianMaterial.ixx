@@ -9,11 +9,11 @@ import Vector3;
 
 namespace RayTracer
 {
-    export class LambertianMaterial final : public Material
+    export class LambertianMaterial : public Material
     {
     public:
         inline constexpr LambertianMaterial(const Vector3& emissiveColor, const Vector3& color)
-            : Material{emissiveColor, color}
+            : Material{emissiveColor, color, false}
         {
 
         }
