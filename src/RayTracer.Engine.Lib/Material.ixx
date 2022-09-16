@@ -22,6 +22,6 @@ namespace RayTracer
         virtual constexpr ScatterResult CalculateScatterData(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const = 0;
 
         virtual constexpr float CalculateBrdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const = 0;
-        virtual constexpr float CalculatePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const = 0;
+        virtual constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const = 0;
     };
 }

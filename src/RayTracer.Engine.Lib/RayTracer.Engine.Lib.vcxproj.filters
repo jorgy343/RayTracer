@@ -149,5 +149,8 @@
     <ClCompile Include="IntersectionResult.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
+    <ClCompile Include="AreaLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

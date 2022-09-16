@@ -25,12 +25,11 @@ namespace RayTracer
             float random2 = random.GetNormalizedFloat();
 
             Vector3 randomHemisphereVector = CosineWeightedSampleHemisphere(random1, random2);
-            Vector3 scatterDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);
+            Vector3 outgoingDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);
 
-            float brdf = CalculateBrdf(random, hitPosition, hitNormal, scatterDirection);
-            float pdf = CalculatePdf(random, hitPosition, hitNormal, scatterDirection);
+            float inversePdf = CalculateInversePdf(random, hitPosition, hitNormal, outgoingDirection);
 
-            return {{hitPosition, scatterDirection}, brdf, pdf};
+            return {outgoingDirection, inversePdf};
         }
 
         inline constexpr float CalculateBrdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
@@ -38,9 +37,12 @@ namespace RayTracer
             return OneOverPi;
         }
 
-        inline constexpr float CalculatePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
+        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
         {
-            return Math::max(0.0f, hitNormal * outgoingDirection) * OneOverPi;
+            float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
+            float inverseCosineTheta = cosineTheta == 0.0f ? 0.0f : Math::rcp(cosineTheta);
+
+            return Pi * inverseCosineTheta;
         }
     };
 }

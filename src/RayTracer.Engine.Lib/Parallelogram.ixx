@@ -4,6 +4,7 @@ export module Parallelogram;
 
 import <limits>;
 
+import AreaLight;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
@@ -13,20 +14,21 @@ import Vector3;
 
 namespace RayTracer
 {
-    export class alignas(16) Parallelogram : public Geometry
+    export class alignas(16) Parallelogram : public Geometry, public AreaLight
     {
     public:
         Vector3 Position{};
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        float Area{0.0f};
         const Material* AppliedMaterial{nullptr};
+        float Area{};
 
+    public:
         inline constexpr Parallelogram() = default;
 
         inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const Material* appliedMaterial)
-            : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, Area{(edge1 % edge2).Length()}, AppliedMaterial{appliedMaterial}
+            : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, AppliedMaterial{appliedMaterial}, Area{(edge1 % edge2).Length()}
         {
 
         }
@@ -82,6 +84,19 @@ namespace RayTracer
 
             float entranceDistance = (Edge2 * q) * invDeterminant;
             return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+        }
+
+        inline constexpr Vector3 GenerateRandomDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        {
+            Vector3 randomPointOnLight = Position + (Edge1 * random.GetNormalizedFloat()) + (Edge2 * random.GetNormalizedFloat());
+            Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
+
+            return directionToLight;
+        }
+
+        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
+        {
+            return Area;
         }
     };
 }

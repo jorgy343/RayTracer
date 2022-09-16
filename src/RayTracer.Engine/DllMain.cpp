@@ -36,19 +36,27 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
+    LambertianMaterial lightMaterial{Vector3{1.0f}, Vector3{0.0f}};
+    Parallelogram parallelogramLight{{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, &lightMaterial};
+
+    scene.AddLight(&parallelogramLight);
+    scene.AddGeometry(&parallelogramLight);
+
     MirrorMaterial mirrorMaterial{};
 
-    LambertianMaterial whiteMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}};
-    LambertianMaterial redMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}};
-    LambertianMaterial greenMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}};
-    LambertianMaterial blueMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}};
-    LambertianMaterial orangeMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}};
-    LambertianMaterial pinkMaterial{{0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}};
-    LambertianMaterial yellowMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 1.0f}};
+    constexpr float intensity = 0.65f;
+
+    LambertianMaterial whiteMaterial{{0.0f, 0.0f, 0.0f}, {intensity, intensity, intensity}};
+    LambertianMaterial redMaterial{{0.0f, 0.0f, 0.0f}, {intensity, 0.0f, 0.0f}};
+    LambertianMaterial greenMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, intensity, 0.0f}};
+    LambertianMaterial blueMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, intensity}};
+    LambertianMaterial orangeMaterial{{0.0f, 0.0f, 0.0f}, {intensity, intensity, 0.0f}};
+    LambertianMaterial pinkMaterial{{0.0f, 0.0f, 0.0f}, {intensity, 0.0f, intensity}};
+    LambertianMaterial yellowMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, intensity, intensity}};
 
     Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
     Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
-    Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
+    Sphere sphere3{{2, 0, 5}, 2, &whiteMaterial};
 
     SphereSoa sphereSoa1{};
 
@@ -86,10 +94,10 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     scene.AddGeometry(&parallelogram1);
 
     //PointLight light1{{1.0f, 1.0f, 1.0f}, {-1.0f, 10.0f, 0.0f}};
-    ParallelogramLight light2{Vector3{0.4f}, {{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, nullptr}};
+    //ParallelogramLight light2{Vector3{0.4f}, {{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, nullptr}};
 
     //scene.AddLight(&light1);
-    scene.AddLight(&light2);
+    //scene.AddLight(&light2);
 
     for (int count = 0; count < iterations; count++)
     {

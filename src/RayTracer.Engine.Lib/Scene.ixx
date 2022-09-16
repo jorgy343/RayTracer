@@ -12,11 +12,10 @@ import <vector>;
 import "Constants.h";
 
 import Alignment;
+import AreaLight;
 import Geometry;
 import IntersectableGeometry;
 import LambertianMaterial;
-import Light;
-import LightRay;
 import Material;
 import Math;
 import MonteCarlo;
@@ -32,7 +31,8 @@ namespace RayTracer
     private:
         Vector3 _backgroundColor{0.0f};
 
-        std::vector<const Light*> _lights{};
+        //std::vector<const Light*> _lights{};
+        std::vector<const AreaLight*> _lights{};
         std::vector<const IntersectableGeometry*> _geometries{};
 
         Random _random{};
@@ -45,7 +45,12 @@ namespace RayTracer
             Sphere sphere{};
         }
 
-        inline constexpr void AddLight(const Light* light)
+        //inline constexpr void AddLight(const Light* light)
+        //{
+        //    _lights.push_back(light);
+        //}
+
+        inline constexpr void AddLight(const AreaLight* light)
         {
             _lights.push_back(light);
         }
@@ -79,6 +84,11 @@ namespace RayTracer
 
         constexpr Vector3 CastRayColor(const Ray& ray, int depth) const
         {
+            if (depth > 5)
+            {
+                return Vector3{};
+            }
+
             IntersectionResult closestIntersection{nullptr, std::numeric_limits<float>::infinity()};
             for (const IntersectableGeometry* geometry : _geometries)
             {
@@ -96,57 +106,95 @@ namespace RayTracer
             {
                 const Material* material = closestIntersection.HitGeometry->GetMaterial();
 
+                if (material->EmissiveColor.LengthSquared() > 0.01f)
+                {
+                    return material->EmissiveColor;
+                }
+
                 Vector3 hitPosition = ray.Position + closestIntersection.HitDistance * ray.Direction;
                 Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * 0.01f;
 
-                //if (material->EmissiveColor.LengthSquared() > 0.01f)
+
+
+
+
+
+
+
+                int indexOfLightToSample = _random.GetInteger() % _lights.size();
+                const AreaLight* light = _lights[indexOfLightToSample];
+
+                Vector3 outgoingDirection;
+
+                float whereToShootRay = _random.GetNormalizedFloat();
+                if (whereToShootRay > 0.5f)
+                {
+                    // Indirect light sample according to material.
+                    ScatterResult scatterResult = material->CalculateScatterData(_random, hitPosition, hitNormal, ray.Direction);
+
+                    outgoingDirection = scatterResult.OutgoingDirection;
+                    //inversePdf = scatterResult.InversePdf;
+                }
+                else
+                {
+                    // Direct light sample to a random light.
+                    outgoingDirection = light->GenerateRandomDirectionTowardsLight(_random, hitPosition, hitNormal);
+                    //inversePdf = light->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction, outgoingDirection) * _lights.size();
+                }
+
+                float materialInversePdf = material->CalculateInversePdf(_random, hitPosition, hitNormal, outgoingDirection);
+                float lightInversePdf = light->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction, outgoingDirection);
+
+                float inversePdf = 0.5f * lightInversePdf * _lights.size() + 0.5f * materialInversePdf;
+
+                Ray outgoingRay = Ray{hitPosition, outgoingDirection};
+                Vector3 indirectColorSample = CastRayColor(outgoingRay, depth + 1);
+
+                float brdf = material->CalculateBrdf(_random, hitPosition, hitNormal, outgoingDirection);
+                float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
+
+                outputColor = brdf * material->Color.ComponentwiseMultiply(indirectColorSample) * inversePdf * cosineTheta;
+
+
+
+
+
+
+
+
+                //Vector3 outgoingDirection;
+                //float inversePdf;
+
+                //float whereToShootRay = _random.GetNormalizedFloat();
+                //if (whereToShootRay > 0.5f)
                 //{
-                //    return material->Color.ComponentwiseMultiply(material->EmissiveColor);
+                //    // Indirect light sample according to material.
+                //    ScatterResult scatterResult = material->CalculateScatterData(_random, hitPosition, hitNormal, ray.Direction);
+
+                //    outgoingDirection = scatterResult.OutgoingDirection;
+                //    inversePdf = scatterResult.InversePdf;
+                //}
+                //else
+                //{
+                //    // Direct light sample to a random light.
+                //    int indexOfLightToSample = _random.GetInteger() % _lights.size();
+                //    const AreaLight* light = _lights[indexOfLightToSample];
+
+                //    outgoingDirection = light->GenerateRandomDirectionTowardsLight(_random, hitPosition, hitNormal);
+                //    inversePdf = light->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction, outgoingDirection) * _lights.size();
                 //}
 
-                Vector3 indirectLightColor{0.0f};
+                //Ray outgoingRay = Ray{hitPosition, outgoingDirection};
+                //Vector3 indirectColorSample = CastRayColor(outgoingRay, depth + 1);
 
-                if (depth <= 5)
-                {
-                    ScatterResult scatterResult = material->CalculateScatterData(_random, hitPosition, hitNormal, ray.Direction);
-                    float inverseIndirectLightPdf = scatterResult.Pdf == 0.0f ? 0.0f : Math::rcp(scatterResult.Pdf);
+                //float brdf = material->CalculateBrdf(_random, hitPosition, hitNormal, outgoingDirection);
+                //float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
 
-                    indirectLightColor = CastRayColor(scatterResult.ScatterRay, depth + 1) * scatterResult.Brdf * inverseIndirectLightPdf * Math::max(0.0f, hitNormal * scatterResult.ScatterRay.Direction);
-                }
-
-                Vector3 lightPower{};
-                float lightCountReciprical{1.0f};
-
-                if (!material->SkipLighting)
-                {
-                    // The calculated light power will already include the PDF for the light as well as the cos(theta) term.
-                    lightPower = CalculateDirectionalLightPower(material, hitPosition, hitNormal);
-
-                    lightCountReciprical = Math::rcp(static_cast<float>(_lights.size() + 1));
-                }
-
-                return material->EmissiveColor + lightCountReciprical * material->Color.ComponentwiseMultiply(lightPower + indirectLightColor);
+                //outputColor = brdf * material->Color.ComponentwiseMultiply(indirectColorSample) * inversePdf * cosineTheta;
             }
 
             return outputColor;
-        }
-
-        constexpr Vector3 CalculateDirectionalLightPower(const Material* material, const Vector3& hitPosition, const Vector3& hitNormal) const
-        {
-            Vector3 lightPower{};
-
-            for (const Light* light : _lights)
-            {
-                LightRay lightRay = light->CreateShadowRaw(hitPosition, hitNormal);
-                float shadowDistance = CastRayDistance(lightRay.ShadowRay);
-
-                float brdf = material->CalculateBrdf(_random, hitPosition, hitNormal, lightRay.ShadowRay.Direction);
-
-                lightPower += light->CalculateLightPower(hitPosition, hitNormal, lightRay.PointOnLight, shadowDistance) * brdf;
-            }
-
-            return lightPower;
         }
     };
 }

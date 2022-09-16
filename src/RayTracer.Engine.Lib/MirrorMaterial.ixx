@@ -23,7 +23,7 @@ namespace RayTracer
         {
             Vector3 reflectedDirection = incomingDirection.Reflect(hitNormal).Normalize();
 
-            return {{hitPosition, reflectedDirection}, 1.0f, 1.0f};
+            return {reflectedDirection, 1.0f};
         }
 
         inline constexpr float CalculateBrdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
@@ -31,7 +31,7 @@ namespace RayTracer
             return 1.0f;
         }
 
-        inline constexpr float CalculatePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
+        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
         {
             return 1.0f;
         }

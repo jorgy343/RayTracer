@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alignment.ixx" />
+    <ClCompile Include="AreaLight.ixx" />
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
     <ClCompile Include="Geometry.ixx" />

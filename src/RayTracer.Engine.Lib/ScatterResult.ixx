@@ -1,18 +1,17 @@
 export module ScatterResult;
 
-import Ray;
+import Vector3;
 
 namespace RayTracer
 {
     export class ScatterResult
     {
     public:
-        Ray ScatterRay{};
-        float Brdf{0.0f};
-        float Pdf{0.0f};
+        Vector3 OutgoingDirection{};
+        float InversePdf{0.0f};
 
-        inline constexpr ScatterResult(const Ray& scatterRay, float brdf, float pdf)
-            : ScatterRay{scatterRay}, Brdf{brdf}, Pdf{pdf}
+        inline constexpr ScatterResult(const Vector3& outgoingDirection, float inversePdf)
+            : OutgoingDirection{outgoingDirection}, InversePdf{inversePdf}
         {
 
         }
