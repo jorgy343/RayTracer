@@ -15,7 +15,6 @@ import Alignment;
 import AreaLight;
 import Geometry;
 import IntersectableGeometry;
-import LambertianMaterial;
 import Material;
 import Math;
 import MonteCarlo;
@@ -57,23 +56,6 @@ namespace Yart
         inline constexpr Vector3 CastRayColor(const Ray& ray) const
         {
             return CastRayColor(ray, 1);
-        }
-
-    private:
-        constexpr float CastRayDistance(const Ray& ray) const
-        {
-            float closestIntersection = std::numeric_limits<float>::infinity();
-            for (const IntersectableGeometry* geometry : _geometries)
-            {
-                float distance = geometry->IntersectEntrance(ray).HitDistance;
-
-                if (distance < closestIntersection)
-                {
-                    closestIntersection = distance;
-                }
-            }
-
-            return Math::max(0.0f, closestIntersection);
         }
 
         constexpr Vector3 CastRayColor(const Ray& ray, int depth) const
@@ -197,6 +179,22 @@ namespace Yart
             }
 
             return outputColor;
+        }
+
+        constexpr float CastRayDistance(const Ray& ray) const
+        {
+            float closestIntersection = std::numeric_limits<float>::infinity();
+            for (const IntersectableGeometry* geometry : _geometries)
+            {
+                float distance = geometry->IntersectEntrance(ray).HitDistance;
+
+                if (distance < closestIntersection)
+                {
+                    closestIntersection = distance;
+                }
+            }
+
+            return Math::max(0.0f, closestIntersection);
         }
     };
 }
