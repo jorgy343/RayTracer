@@ -143,5 +143,8 @@
     <ClCompile Include="PointLight.ixx">
       <Filter>Modules\Lights</Filter>
     </ClCompile>
+    <ClCompile Include="EmissiveMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

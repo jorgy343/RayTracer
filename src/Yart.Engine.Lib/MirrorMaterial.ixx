@@ -3,8 +3,8 @@ export module MirrorMaterial;
 import "Constants.h";
 
 import Material;
-import MonteCarlo;
-import Random;
+import Ray;
+import Scene;
 import Vector3;
 
 namespace Yart
@@ -13,25 +13,17 @@ namespace Yart
     {
     public:
         inline constexpr MirrorMaterial()
-            : Material{Vector3{0.0f}, Vector3{1.0f}, true}
         {
 
         }
 
-        constexpr Vector3 GenerateRandomDirection(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+        inline constexpr Vector3 CalculateRenderingEquation(const Scene& scene, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
         {
             Vector3 reflectedDirection = incomingDirection.Reflect(hitNormal).Normalize();
-            return reflectedDirection;
-        }
+            Ray outgoingRay = Ray{hitPosition, reflectedDirection};
 
-        inline constexpr float CalculateBrdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
-        {
-            return 1.0f;
-        }
-
-        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override
-        {
-            return 1.0f;
+            Vector3 outputColor = scene.CastRayColor(outgoingRay, currentDepth + 1);
+            return outputColor;
         }
     };
 }

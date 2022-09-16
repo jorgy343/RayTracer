@@ -1,4 +1,5 @@
 import AxisAlignedBox;
+import EmissiveMaterial;
 import LambertianMaterial;
 import MirrorMaterial;
 import Parallelogram;
@@ -10,6 +11,7 @@ import Sphere;
 import SphereSoa;
 import TransformedGeometry;
 import Vector2;
+import Vector3;
 
 #include <memory>
 #include <vector>
@@ -33,23 +35,23 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    LambertianMaterial lightMaterial{Vector3{1.0f}, Vector3{0.0f}};
+    EmissiveMaterial lightMaterial{Vector3{1.0f}};
     Parallelogram parallelogramLight{{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, &lightMaterial};
 
-    scene.AddLight(&parallelogramLight);
+    scene.AddAreaLight(&parallelogramLight);
     scene.AddGeometry(&parallelogramLight);
 
     MirrorMaterial mirrorMaterial{};
 
     constexpr float intensity = 0.65f;
 
-    LambertianMaterial whiteMaterial{{0.0f, 0.0f, 0.0f}, {intensity, intensity, intensity}};
-    LambertianMaterial redMaterial{{0.0f, 0.0f, 0.0f}, {intensity, 0.0f, 0.0f}};
-    LambertianMaterial greenMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, intensity, 0.0f}};
-    LambertianMaterial blueMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, intensity}};
-    LambertianMaterial orangeMaterial{{0.0f, 0.0f, 0.0f}, {intensity, intensity, 0.0f}};
-    LambertianMaterial pinkMaterial{{0.0f, 0.0f, 0.0f}, {intensity, 0.0f, intensity}};
-    LambertianMaterial yellowMaterial{{0.0f, 0.0f, 0.0f}, {0.0f, intensity, intensity}};
+    LambertianMaterial whiteMaterial{{intensity, intensity, intensity}};
+    LambertianMaterial redMaterial{{intensity, 0.0f, 0.0f}};
+    LambertianMaterial greenMaterial{{0.0f, intensity, 0.0f}};
+    LambertianMaterial blueMaterial{{0.0f, 0.0f, intensity}};
+    LambertianMaterial orangeMaterial{{intensity, intensity, 0.0f}};
+    LambertianMaterial pinkMaterial{{intensity, 0.0f, intensity}};
+    LambertianMaterial yellowMaterial{{0.0f, intensity, intensity}};
 
     Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
     Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};

@@ -21,6 +21,7 @@
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
+    <ClCompile Include="EmissiveMaterial.ixx" />
     <ClCompile Include="Geometry.ixx" />
     <ClCompile Include="GeometrySoa.ixx" />
     <ClCompile Include="IntersectableGeometry.ixx" />
