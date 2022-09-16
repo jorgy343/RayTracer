@@ -7,8 +7,8 @@ using System.Diagnostics;
 
 const int screenWidth = 1920;
 const int screenHeight = 1080;
-const int subpixelCount = 16;
-const int iterations = 16;
+const int subpixelCount = 4;
+const int iterations = 8;
 
 var stopwatch = new Stopwatch();
 stopwatch.Start();
