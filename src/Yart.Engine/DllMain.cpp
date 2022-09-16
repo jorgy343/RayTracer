@@ -44,14 +44,15 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     MirrorMaterial mirrorMaterial{};
 
     constexpr float intensity = 0.65f;
+    constexpr bool enableRoulette = false;
 
-    LambertianMaterial whiteMaterial{{intensity, intensity, intensity}};
-    LambertianMaterial redMaterial{{intensity, 0.0f, 0.0f}};
-    LambertianMaterial greenMaterial{{0.0f, intensity, 0.0f}};
-    LambertianMaterial blueMaterial{{0.0f, 0.0f, intensity}};
-    LambertianMaterial orangeMaterial{{intensity, intensity, 0.0f}};
-    LambertianMaterial pinkMaterial{{intensity, 0.0f, intensity}};
-    LambertianMaterial yellowMaterial{{0.0f, intensity, intensity}};
+    LambertianMaterial<enableRoulette> whiteMaterial{{intensity, intensity, intensity}};
+    LambertianMaterial<enableRoulette> redMaterial{{intensity, 0.0f, 0.0f}};
+    LambertianMaterial<enableRoulette> greenMaterial{{0.0f, intensity, 0.0f}};
+    LambertianMaterial<enableRoulette> blueMaterial{{0.0f, 0.0f, intensity}};
+    LambertianMaterial<enableRoulette> orangeMaterial{{intensity, intensity, 0.0f}};
+    LambertianMaterial<enableRoulette> pinkMaterial{{intensity, 0.0f, intensity}};
+    LambertianMaterial<enableRoulette> yellowMaterial{{0.0f, intensity, intensity}};
 
     Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
     Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};

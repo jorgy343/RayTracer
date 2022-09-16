@@ -67,7 +67,7 @@ namespace Yart
 
         constexpr Vector3 CastRayColor(const Ray& ray, int depth) const
         {
-            if (depth > 5)
+            if (depth > 7)
             {
                 return Vector3{};
             }
