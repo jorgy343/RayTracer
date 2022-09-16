@@ -34,7 +34,7 @@ namespace RayTracer
         Vector3 LookAt{};
         Vector3 Up{};
 
-        int SubpixelCount{};
+        unsigned int SubpixelCount{};
         UIntVector2 ScreenSize{};
         float FieldOfView{0.0f};
 
@@ -42,7 +42,7 @@ namespace RayTracer
             const Vector3& position,
             const Vector3& lookAt,
             const Vector3& up,
-            int subpixelCount,
+            unsigned int subpixelCount,
             const UIntVector2& screenSize,
             float fieldOfView)
             :

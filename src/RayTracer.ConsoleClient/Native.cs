@@ -5,7 +5,7 @@ namespace RayTracer.ConsoleClient;
 public static unsafe class Native
 {
     [DllImport("RayTracer.Engine", CallingConvention = CallingConvention.Cdecl)]
-    public static extern int TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, int iterations, float* pixelBuffer);
+    public static extern int TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, uint subpixelCount, uint iterations, float* pixelBuffer);
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]

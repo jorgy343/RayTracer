@@ -20,11 +20,13 @@
     <ClCompile Include="AreaLight.ixx" />
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
+    <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="Geometry.ixx" />
     <ClCompile Include="GeometrySoa.ixx" />
     <ClCompile Include="IntersectableGeometry.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
+    <ClCompile Include="Light.ixx" />
     <ClCompile Include="Material.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
@@ -35,6 +37,7 @@
     <ClCompile Include="PerspectiveCamera.ixx" />
     <ClCompile Include="Plane.ixx" />
     <ClCompile Include="PlaneSoa.ixx" />
+    <ClCompile Include="PointLight.ixx" />
     <ClCompile Include="Random.ixx" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="IntersectionResultType.ixx" />

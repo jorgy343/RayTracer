@@ -19,7 +19,7 @@ import Vector2;
 
 using namespace RayTracer;
 
-extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, int subpixelCount, int iterations, float* pixelBuffer)
+extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, unsigned int subpixelCount, unsigned int iterations, float* pixelBuffer)
 {
     int subpixelCountSquared = subpixelCount * subpixelCount;
 
@@ -90,7 +90,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     Parallelogram parallelogram1{{5.0f, 0.0f, 4.0f}, {0.0f, -3.0f, 0.3f}, {2.0f, 0.4f, 0.2f}, &greenMaterial};
     scene.AddGeometry(&parallelogram1);
 
-    for (int count = 0; count < iterations; count++)
+    for (unsigned int count = 0; count < iterations; count++)
     {
         for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
         {

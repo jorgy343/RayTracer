@@ -25,6 +25,9 @@
     <Filter Include="Modules\Cameras">
       <UniqueIdentifier>{625fcd53-d8f4-42f9-9471-f3ab59f96128}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Lights">
+      <UniqueIdentifier>{28e2cde5-a6b9-4ecb-a93a-40220ca2f956}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vcl.h">
@@ -130,6 +133,15 @@
     </ClCompile>
     <ClCompile Include="AreaLight.ixx">
       <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.ixx">
+      <Filter>Modules\Lights</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
