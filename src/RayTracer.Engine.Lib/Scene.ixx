@@ -31,7 +31,6 @@ namespace RayTracer
     private:
         Vector3 _backgroundColor{0.0f};
 
-        //std::vector<const Light*> _lights{};
         std::vector<const AreaLight*> _lights{};
         std::vector<const IntersectableGeometry*> _geometries{};
 
@@ -44,11 +43,6 @@ namespace RayTracer
             // TODO: This seems to fix some weird module linker issue/bug.
             Sphere sphere{};
         }
-
-        //inline constexpr void AddLight(const Light* light)
-        //{
-        //    _lights.push_back(light);
-        //}
 
         inline constexpr void AddLight(const AreaLight* light)
         {
@@ -131,16 +125,12 @@ namespace RayTracer
                 if (whereToShootRay > 0.5f)
                 {
                     // Indirect light sample according to material.
-                    ScatterResult scatterResult = material->CalculateScatterData(_random, hitPosition, hitNormal, ray.Direction);
-
-                    outgoingDirection = scatterResult.OutgoingDirection;
-                    //inversePdf = scatterResult.InversePdf;
+                    outgoingDirection = material->GenerateRandomDirection(_random, hitPosition, hitNormal, ray.Direction);
                 }
                 else
                 {
                     // Direct light sample to a random light.
                     outgoingDirection = light->GenerateRandomDirectionTowardsLight(_random, hitPosition, hitNormal);
-                    //inversePdf = light->CalculateInversePdf(_random, hitPosition, hitNormal, ray.Direction, outgoingDirection) * _lights.size();
                 }
 
                 float materialInversePdf = material->CalculateInversePdf(_random, hitPosition, hitNormal, outgoingDirection);

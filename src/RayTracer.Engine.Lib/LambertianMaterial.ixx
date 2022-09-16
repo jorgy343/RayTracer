@@ -5,7 +5,6 @@ import "Constants.h";
 import Material;
 import MonteCarlo;
 import Random;
-import ScatterResult;
 import Vector3;
 
 namespace RayTracer
@@ -14,12 +13,12 @@ namespace RayTracer
     {
     public:
         inline constexpr LambertianMaterial(const Vector3& emissiveColor, const Vector3& color)
-            : Material{emissiveColor, color, false}
+            : Material{emissiveColor, color}
         {
 
         }
 
-        constexpr ScatterResult CalculateScatterData(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+        constexpr Vector3 GenerateRandomDirection(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
         {
             float random1 = random.GetNormalizedFloat();
             float random2 = random.GetNormalizedFloat();
@@ -27,9 +26,7 @@ namespace RayTracer
             Vector3 randomHemisphereVector = CosineWeightedSampleHemisphere(random1, random2);
             Vector3 outgoingDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);
 
-            float inversePdf = CalculateInversePdf(random, hitPosition, hitNormal, outgoingDirection);
-
-            return {outgoingDirection, inversePdf};
+            return outgoingDirection;
         }
 
         inline constexpr float CalculateBrdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& outgoingDirection) const override

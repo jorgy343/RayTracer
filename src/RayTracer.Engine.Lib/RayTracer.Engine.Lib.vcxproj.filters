@@ -92,9 +92,6 @@
     <ClCompile Include="LambertianMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
-    <ClCompile Include="ScatterResult.ixx">
-      <Filter>Modules\Materials</Filter>
-    </ClCompile>
     <ClCompile Include="MonteCarlo.ixx">
       <Filter>Modules</Filter>
     </ClCompile>

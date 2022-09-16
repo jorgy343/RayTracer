@@ -38,7 +38,6 @@
     <ClCompile Include="Random.ixx" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="IntersectionResultType.ixx" />
-    <ClCompile Include="ScatterResult.ixx" />
     <ClCompile Include="Scene.ixx" />
     <ClCompile Include="Math.ixx" />
     <ClCompile Include="Sphere.ixx" />
