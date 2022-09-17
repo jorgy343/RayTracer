@@ -152,5 +152,8 @@
     <ClCompile Include="DiffuseMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="LambertianMaterial2.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

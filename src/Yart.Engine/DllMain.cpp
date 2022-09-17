@@ -2,6 +2,7 @@ import AxisAlignedBox;
 import EmissiveMaterial;
 import GgxMaterial;
 import LambertianMaterial;
+import LambertianMaterial2;
 import MirrorMaterial;
 import Parallelogram;
 import PerspectiveCamera;
@@ -37,22 +38,22 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 	Scene scene{{0.0f, 0.0f, 0.0f}};
 
 	// Materials
-	constexpr float intensity = 0.65f;
+	constexpr float intensity = 1.0f;
 	constexpr bool enableRoulette = false;
 
-	LambertianMaterial<enableRoulette> whiteMaterial{{intensity, intensity, intensity}};
-	LambertianMaterial<enableRoulette> redMaterial{{intensity, 0.0f, 0.0f}};
-	LambertianMaterial<enableRoulette> greenMaterial{{0.0f, intensity, 0.0f}};
-	LambertianMaterial<enableRoulette> blueMaterial{{0.0f, 0.0f, intensity}};
-	LambertianMaterial<enableRoulette> orangeMaterial{{intensity, intensity, 0.0f}};
-	LambertianMaterial<enableRoulette> pinkMaterial{{intensity, 0.0f, intensity}};
-	LambertianMaterial<enableRoulette> yellowMaterial{{0.0f, intensity, intensity}};
+	LambertianMaterial2<enableRoulette> whiteMaterial{{intensity, intensity, intensity}};
+	LambertianMaterial2<enableRoulette> redMaterial{{intensity, 0.0f, 0.0f}};
+	LambertianMaterial2<enableRoulette> greenMaterial{{0.0f, intensity, 0.0f}};
+	LambertianMaterial2<enableRoulette> blueMaterial{{0.0f, 0.0f, intensity}};
+	LambertianMaterial2<enableRoulette> orangeMaterial{{intensity, intensity, 0.0f}};
+	LambertianMaterial2<enableRoulette> pinkMaterial{{intensity, 0.0f, intensity}};
+	LambertianMaterial2<enableRoulette> yellowMaterial{{0.0f, intensity, intensity}};
 
 	MirrorMaterial mirrorMaterial{};
 	EmissiveMaterial whiteLightMaterial{Vector3{1.0f}};
 
 	// Lights
-	Parallelogram parallelogramLight{{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, &whiteLightMaterial};
+	Parallelogram parallelogramLight{{0, 19.9f, -6}, {-1.2f, 0, 0}, {0, 0, 1.2f}, &whiteLightMaterial};
 
 	scene.AddAreaLight(&parallelogramLight);
 	scene.AddGeometry(&parallelogramLight);
@@ -60,9 +61,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 	// Geometry
 	GgxMaterial metalMaterial{Vector3{1.0f}, Vector3{0.4f}, 0.07f};
 
-	Sphere sphere1{{-2, 0, 5}, 2, &metalMaterial};
+	Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
 	Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
-	Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
+	Sphere sphere3{{2, 0, 5}, 2, &whiteMaterial};
 
 	SphereSoa sphereSoa1{};
 

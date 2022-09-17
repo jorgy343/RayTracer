@@ -29,6 +29,7 @@
     <ClCompile Include="IntersectableGeometry.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
+    <ClCompile Include="LambertianMaterial2.ixx" />
     <ClCompile Include="Light.ixx" />
     <ClCompile Include="Material.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
