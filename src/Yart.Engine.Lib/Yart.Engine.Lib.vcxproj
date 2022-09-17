@@ -24,6 +24,7 @@
     <ClCompile Include="EmissiveMaterial.ixx" />
     <ClCompile Include="Geometry.ixx" />
     <ClCompile Include="GeometrySoa.ixx" />
+    <ClCompile Include="GgxMaterial.ixx" />
     <ClCompile Include="IntersectableGeometry.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />

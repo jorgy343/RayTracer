@@ -51,6 +51,26 @@ namespace Yart
             return *this;
         }
 
+        inline constexpr Vector3T AbsConst() const
+        {
+            Vector3T result = *this;
+            result.Abs();
+
+            return result;
+        }
+
+        inline constexpr Vector3T BuildPerpendicularVector() const
+        {
+            // From Efficient Construction of Perpendicular Vectors Without Branching.
+            Vector3T a = this->AbsConst();
+
+            unsigned int xm = ((a.X - a.Y) < 0 && (a.X - a.Z) < 0) ? 1 : 0;
+            unsigned int ym = (a.Y - a.Z) < 0 ? (1 ^ xm) : 0;
+            unsigned int zm = 1 ^ (xm | ym);
+
+            return *this % Vector3T(static_cast<T>(xm), static_cast<T>(ym), static_cast<T>(zm));
+        }
+
         inline constexpr bool Compare(const Vector3T& right, T maximumAllowedErrorPerComponent)
         {
             if constexpr (std::floating_point<T>)

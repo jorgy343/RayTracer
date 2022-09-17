@@ -1,5 +1,6 @@
 import AxisAlignedBox;
 import EmissiveMaterial;
+import GgxMaterial;
 import LambertianMaterial;
 import MirrorMaterial;
 import Parallelogram;
@@ -54,7 +55,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     LambertianMaterial<enableRoulette> pinkMaterial{{intensity, 0.0f, intensity}};
     LambertianMaterial<enableRoulette> yellowMaterial{{0.0f, intensity, intensity}};
 
-    Sphere sphere1{{-2, 0, 5}, 2, &whiteMaterial};
+    GgxMaterial metalMaterial{Vector3{1.0f}, Vector3{0.4f}, 0.07f};
+
+    Sphere sphere1{{-2, 0, 5}, 2, &metalMaterial};
     Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
     Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
 
@@ -66,7 +69,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
     scene.AddGeometry(&sphereSoa1);
 
-    TransformedGeometry transformedGeometry1{&sphere1, Matrix4x4::CreateScale(1.0f, 3.5f, 1.0f)};
+    TransformedGeometry transformedGeometry1{&sphere1, Matrix4x4::CreateScale(1.0f, 1.0f, 1.0f)};
     scene.AddGeometry(&transformedGeometry1);
 
     Plane plane1{Vector3{0.0f, 0.0f, -1.0f}.Normalize(), {0.0f, 0.0f, 20.0f}, &redMaterial};

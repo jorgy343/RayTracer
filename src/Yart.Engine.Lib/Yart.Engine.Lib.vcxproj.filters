@@ -146,5 +146,8 @@
     <ClCompile Include="EmissiveMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="GgxMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
