@@ -149,5 +149,8 @@
     <ClCompile Include="GgxMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="DiffuseMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

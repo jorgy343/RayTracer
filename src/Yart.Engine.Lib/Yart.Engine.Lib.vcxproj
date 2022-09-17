@@ -20,6 +20,7 @@
     <ClCompile Include="AreaLight.ixx" />
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
+    <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="EmissiveMaterial.ixx" />
     <ClCompile Include="Geometry.ixx" />

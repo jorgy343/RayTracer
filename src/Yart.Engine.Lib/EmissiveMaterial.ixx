@@ -9,9 +9,10 @@ namespace Yart
 {
     export class EmissiveMaterial : public Material
     {
-    public:
-        Vector3 EmissiveColor;
+	protected:
+		Vector3 EmissiveColor{};
 
+    public:
         EmissiveMaterial(const Vector3& emissiveColor)
             : EmissiveColor{emissiveColor}
         {

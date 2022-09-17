@@ -24,115 +24,118 @@ using namespace Yart;
 
 extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, unsigned int subpixelCount, unsigned int iterations, float* pixelBuffer)
 {
-    int subpixelCountSquared = subpixelCount * subpixelCount;
+	int subpixelCountSquared = subpixelCount * subpixelCount;
 
-    PerspectiveCamera perspectiveCamera{
-        {0, 0, 0},
-        {0, 0, 1},
-        {0, 1, 0},
-        subpixelCount,
-        screenSize,
-        90.0f};
+	PerspectiveCamera perspectiveCamera{
+		{0, 0, 0},
+		{0, 0, 1},
+		{0, 1, 0},
+		subpixelCount,
+		screenSize,
+		90.0f};
 
-    Scene scene{{0.0f, 0.0f, 0.0f}};
+	Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    EmissiveMaterial lightMaterial{Vector3{1.0f}};
-    Parallelogram parallelogramLight{{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, &lightMaterial};
+	// Materials
+	constexpr float intensity = 0.65f;
+	constexpr bool enableRoulette = false;
 
-    scene.AddAreaLight(&parallelogramLight);
-    scene.AddGeometry(&parallelogramLight);
+	LambertianMaterial<enableRoulette> whiteMaterial{{intensity, intensity, intensity}};
+	LambertianMaterial<enableRoulette> redMaterial{{intensity, 0.0f, 0.0f}};
+	LambertianMaterial<enableRoulette> greenMaterial{{0.0f, intensity, 0.0f}};
+	LambertianMaterial<enableRoulette> blueMaterial{{0.0f, 0.0f, intensity}};
+	LambertianMaterial<enableRoulette> orangeMaterial{{intensity, intensity, 0.0f}};
+	LambertianMaterial<enableRoulette> pinkMaterial{{intensity, 0.0f, intensity}};
+	LambertianMaterial<enableRoulette> yellowMaterial{{0.0f, intensity, intensity}};
 
-    MirrorMaterial mirrorMaterial{};
+	MirrorMaterial mirrorMaterial{};
+	EmissiveMaterial whiteLightMaterial{Vector3{1.0f}};
 
-    constexpr float intensity = 0.65f;
-    constexpr bool enableRoulette = false;
+	// Lights
+	Parallelogram parallelogramLight{{0, 19.9f, -6}, {-3, 0, 0}, {0, 0, 3}, &whiteLightMaterial};
 
-    LambertianMaterial<enableRoulette> whiteMaterial{{intensity, intensity, intensity}};
-    LambertianMaterial<enableRoulette> redMaterial{{intensity, 0.0f, 0.0f}};
-    LambertianMaterial<enableRoulette> greenMaterial{{0.0f, intensity, 0.0f}};
-    LambertianMaterial<enableRoulette> blueMaterial{{0.0f, 0.0f, intensity}};
-    LambertianMaterial<enableRoulette> orangeMaterial{{intensity, intensity, 0.0f}};
-    LambertianMaterial<enableRoulette> pinkMaterial{{intensity, 0.0f, intensity}};
-    LambertianMaterial<enableRoulette> yellowMaterial{{0.0f, intensity, intensity}};
+	scene.AddAreaLight(&parallelogramLight);
+	scene.AddGeometry(&parallelogramLight);
 
-    GgxMaterial metalMaterial{Vector3{1.0f}, Vector3{0.4f}, 0.07f};
+	// Geometry
+	GgxMaterial metalMaterial{Vector3{1.0f}, Vector3{0.4f}, 0.07f};
 
-    Sphere sphere1{{-2, 0, 5}, 2, &metalMaterial};
-    Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
-    Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
+	Sphere sphere1{{-2, 0, 5}, 2, &metalMaterial};
+	Sphere sphere2{{0, 0, 7}, 2, &whiteMaterial};
+	Sphere sphere3{{2, 0, 5}, 2, &mirrorMaterial};
 
-    SphereSoa sphereSoa1{};
+	SphereSoa sphereSoa1{};
 
-    //sphereSoa1.Insert(0, &sphere1);
-    sphereSoa1.Insert(1, &sphere2);
-    sphereSoa1.Insert(2, &sphere3);
+	//sphereSoa1.Insert(0, &sphere1);
+	sphereSoa1.Insert(1, &sphere2);
+	sphereSoa1.Insert(2, &sphere3);
 
-    scene.AddGeometry(&sphereSoa1);
+	scene.AddGeometry(&sphereSoa1);
 
-    TransformedGeometry transformedGeometry1{&sphere1, Matrix4x4::CreateScale(1.0f, 1.0f, 1.0f)};
-    scene.AddGeometry(&transformedGeometry1);
+	TransformedGeometry transformedGeometry1{&sphere1, Matrix4x4::CreateScale(1.0f, 1.0f, 1.0f)};
+	scene.AddGeometry(&transformedGeometry1);
 
-    Plane plane1{Vector3{0.0f, 0.0f, -1.0f}.Normalize(), {0.0f, 0.0f, 20.0f}, &redMaterial};
-    Plane plane2{Vector3{0.0f, 0.0f, 1.0f}.Normalize(), {0.0f, 0.0f, -20.0f}, &greenMaterial};
-    Plane plane3{Vector3{0.0f, -1.0f, 0.0f}.Normalize(), {0.0f, 20.0f, 0.0f}, &blueMaterial};
-    Plane plane4{Vector3{0.0f, 1.0f, 0.0f}.Normalize(), {0.0f, -20.0f, 0.0f}, &orangeMaterial};
-    Plane plane5{Vector3{-1.0f, 0.0f, 0.0f}.Normalize(), {20.0f, 0.0f, 0.0f}, &pinkMaterial};
-    Plane plane6{Vector3{1.0f, 0.0f, 0.0f}.Normalize(), {-20.0f, 0.0f, 0.0f}, &yellowMaterial};
+	Plane plane1{Vector3{0.0f, 0.0f, -1.0f}.Normalize(), {0.0f, 0.0f, 20.0f}, &redMaterial};
+	Plane plane2{Vector3{0.0f, 0.0f, 1.0f}.Normalize(), {0.0f, 0.0f, -20.0f}, &greenMaterial};
+	Plane plane3{Vector3{0.0f, -1.0f, 0.0f}.Normalize(), {0.0f, 20.0f, 0.0f}, &blueMaterial};
+	Plane plane4{Vector3{0.0f, 1.0f, 0.0f}.Normalize(), {0.0f, -20.0f, 0.0f}, &orangeMaterial};
+	Plane plane5{Vector3{-1.0f, 0.0f, 0.0f}.Normalize(), {20.0f, 0.0f, 0.0f}, &pinkMaterial};
+	Plane plane6{Vector3{1.0f, 0.0f, 0.0f}.Normalize(), {-20.0f, 0.0f, 0.0f}, &yellowMaterial};
 
-    PlaneSoa planeSoa1{};
+	PlaneSoa planeSoa1{};
 
-    planeSoa1.Insert(0, &plane1);
-    planeSoa1.Insert(1, &plane2);
-    planeSoa1.Insert(2, &plane3);
-    planeSoa1.Insert(3, &plane4);
-    planeSoa1.Insert(4, &plane5);
-    planeSoa1.Insert(5, &plane6);
+	planeSoa1.Insert(0, &plane1);
+	planeSoa1.Insert(1, &plane2);
+	planeSoa1.Insert(2, &plane3);
+	planeSoa1.Insert(3, &plane4);
+	planeSoa1.Insert(4, &plane5);
+	planeSoa1.Insert(5, &plane6);
 
-    scene.AddGeometry(&planeSoa1);
+	scene.AddGeometry(&planeSoa1);
 
-    AxisAlignedBox axisAlignedBox{{-8, -2, 5}, {-6, 2, 9}, &whiteMaterial};
-    scene.AddGeometry(&axisAlignedBox);
+	AxisAlignedBox axisAlignedBox{{-8, -2, 5}, {-6, 2, 9}, &whiteMaterial};
+	scene.AddGeometry(&axisAlignedBox);
 
-    Parallelogram parallelogram1{{5.0f, 0.0f, 4.0f}, {0.0f, -3.0f, 0.3f}, {2.0f, 0.4f, 0.2f}, &greenMaterial};
-    scene.AddGeometry(&parallelogram1);
+	Parallelogram parallelogram1{{5.0f, 0.0f, 4.0f}, {0.0f, -3.0f, 0.3f}, {2.0f, 0.4f, 0.2f}, &greenMaterial};
+	scene.AddGeometry(&parallelogram1);
 
-    for (unsigned int count = 0; count < iterations; count++)
-    {
-        for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
-        {
-            for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
-            {
-                Vector3 color{};
+	for (unsigned int count = 0; count < iterations; count++)
+	{
+		for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
+		{
+			for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
+			{
+				Vector3 color{};
 
-                for (unsigned int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
-                {
-                    for (unsigned int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
-                    {
-                        Ray ray = perspectiveCamera.CreateRay({x, y}, {subpixelX, subpixelY});
-                        color += scene.CastRayColor(ray);
-                    }
-                }
+				for (unsigned int subpixelY = 0; subpixelY < subpixelCount; subpixelY++)
+				{
+					for (unsigned int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
+					{
+						Ray ray = perspectiveCamera.CreateRay({x, y}, {subpixelX, subpixelY});
+						color += scene.CastRayColor(ray);
+					}
+				}
 
-                color /= static_cast<float>(subpixelCountSquared);
+				color /= static_cast<float>(subpixelCountSquared);
 
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += color.X;
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += color.Y;
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += color.Z;
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 3] += 0.0f;
-            }
-        }
-    }
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += color.X;
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += color.Y;
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += color.Z;
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 3] += 0.0f;
+			}
+		}
+	}
 
-    for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
-    {
-        for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
-        {
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= static_cast<float>(iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= static_cast<float>(iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= static_cast<float>(iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= static_cast<float>(iterations);
-        }
-    }
+	for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
+	{
+		for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
+		{
+			pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= static_cast<float>(iterations);
+			pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= static_cast<float>(iterations);
+			pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= static_cast<float>(iterations);
+			pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= static_cast<float>(iterations);
+		}
+	}
 }
 
 //consteval bool Test()

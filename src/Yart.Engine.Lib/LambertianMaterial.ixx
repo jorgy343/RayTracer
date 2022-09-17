@@ -3,8 +3,7 @@ export module LambertianMaterial;
 import "Constants.h";
 
 import AreaLight;
-import Material;
-import MonteCarlo;
+import DiffuseMaterial;
 import Random;
 import Ray;
 import Scene;
@@ -13,13 +12,11 @@ import Vector3;
 namespace Yart
 {
     export template <bool EnableRoulette = false>
-    class LambertianMaterial : public Material
+    class LambertianMaterial : public DiffuseMaterial
     {
     public:
-        Vector3 Color;
-
-        inline constexpr LambertianMaterial(const Vector3& color)
-            : Color{color}
+        inline constexpr LambertianMaterial(const Vector3& diffuseColor)
+            : DiffuseMaterial{diffuseColor}
         {
 
         }
@@ -54,7 +51,7 @@ namespace Yart
             if (whereToShootRay > 0.5f)
             {
                 // Indirect light sample according to material.
-                outgoingDirection = GenerateRandomDirection(scene.Rng, hitNormal);
+                outgoingDirection = GenerateCosineWeightedHemisphereSample(scene.Rng, hitNormal);
             }
             else
             {
@@ -72,19 +69,8 @@ namespace Yart
             float brdf = OneOverPi;
             float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
 
-            Vector3 outputColor = brdf * Color.ComponentwiseMultiply(indirectColorSample) * inversePdf * cosineTheta * roulettePower;
+            Vector3 outputColor = brdf * DiffuseColor.ComponentwiseMultiply(indirectColorSample) * inversePdf * cosineTheta * roulettePower;
             return outputColor;
-        }
-
-        inline constexpr Vector3 GenerateRandomDirection(const Random& random, const Vector3& hitNormal) const
-        {
-            float random1 = random.GetNormalizedFloat();
-            float random2 = random.GetNormalizedFloat();
-
-            Vector3 randomHemisphereVector = CosineWeightedSampleHemisphere(random1, random2);
-            Vector3 outgoingDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);
-
-            return outgoingDirection;
         }
 
         inline constexpr float CalculateInversePdf(const Vector3& hitNormal, const Vector3& outgoingDirection) const
