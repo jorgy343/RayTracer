@@ -166,15 +166,21 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 					for (unsigned int subpixelX = 0; subpixelX < subpixelCount; subpixelX++)
 					{
 						Ray ray = perspectiveCamera.CreateRay({x, y}, {subpixelX, subpixelY});
-						color += scene.CastRayColor(ray);
+						Vector3 sampledColor = scene.CastRayColor(ray);
+
+						sampledColor.X = std::isnan(sampledColor.X) ? 0.0f : sampledColor.X;
+						sampledColor.Y = std::isnan(sampledColor.Y) ? 0.0f : sampledColor.Y;
+						sampledColor.Z = std::isnan(sampledColor.Z) ? 0.0f : sampledColor.Z;
+
+						color += sampledColor;
 					}
 				}
 
 				color /= static_cast<float>(subpixelCountSquared);
 
-				pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += std::isnan(color.X) ? 0.0f : color.X;
-				pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += std::isnan(color.Y) ? 0.0f : color.Y;
-				pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += std::isnan(color.Z) ? 0.0f : color.Z;
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += color.X;
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += color.Y;
+				pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += color.Z;
 				pixelBuffer[((y * screenSize.X) + x) * 4 + 3] += 0.0f;
 			}
 		}

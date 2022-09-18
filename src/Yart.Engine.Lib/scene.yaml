@@ -1,0 +1,33 @@
+config:
+    screenSize: [1920, 1080]
+    subpixelCount: 4
+    iterations: 8
+camera:
+    perspectiveCamera:
+        position: [0, 0, -39]
+        lookup: [0, 0, 1]
+        up: [0, 1, 0]
+        fov: 45
+materials:
+    - emissiveMaterial:
+        name: "White Light"
+        emissiveColor: [1, 1, 1]
+    - lambertianMaterial2:
+        name: "White"
+        diffuseColor: [1, 1, 1]
+scene:
+    areaLights:
+        - parallelogramLight:
+            material: "White Light"
+            position: [0, 19.9, -6]
+            edge1: [-1.2, 0, 0]
+            edge2: [0, 0, 1.2]
+    geometries:
+        - plane:
+            material: "White"
+            normal: [0, 0, -1]
+            point: [0, 0, 20]
+        - sphere:
+            material: "White"
+            position: [-16, -16, +18]
+            radius: 3

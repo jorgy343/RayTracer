@@ -159,4 +159,9 @@
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="scene.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
