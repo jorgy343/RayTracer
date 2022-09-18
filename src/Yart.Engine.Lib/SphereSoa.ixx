@@ -5,6 +5,7 @@ module;
 export module SphereSoa;
 
 import <cassert>;
+import <initializer_list>;
 import <cmath>;
 
 import "Common.h";
@@ -42,6 +43,22 @@ namespace Yart
                 _geometries[i] = nullptr;
             }
         }
+
+		constexpr SphereSoa(std::initializer_list<const Sphere*> list)
+			: SphereSoa{}
+		{
+			size_t index = 0;
+
+			for (auto geometry : list)
+			{
+				if (index >= 8)
+				{
+					break;
+				}
+
+				Insert(index++, geometry);
+			}
+		}
 
         constexpr void Insert(int index, const Sphere* geometry) override final
         {

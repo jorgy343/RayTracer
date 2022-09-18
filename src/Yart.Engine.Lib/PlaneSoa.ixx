@@ -5,6 +5,7 @@ module;
 export module PlaneSoa;
 
 import <cassert>;
+import <initializer_list>;
 import <limits>;
 
 import "Common.h";
@@ -43,6 +44,22 @@ namespace Yart
                 _geometries[i] = nullptr;
             }
         }
+
+		constexpr PlaneSoa(std::initializer_list<const Plane*> list)
+			: PlaneSoa{}
+		{
+			size_t index = 0;
+
+			for (auto geometry : list)
+			{
+				if (index >= Count)
+				{
+					break;
+				}
+
+				Insert(index++, geometry);
+			}
+		}
 
         constexpr void Insert(int index, const Plane* geometry) override final
         {

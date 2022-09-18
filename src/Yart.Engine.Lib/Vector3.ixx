@@ -177,11 +177,28 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Vector3T NormalizeNondestructive() const
+        inline constexpr Vector3T NormalizeConst() const
         {
             Vector3T result = *this;
             return result.Normalize();
         }
+
+		inline constexpr Vector3T& Reciprical()
+		{
+			X = Math::rcp(X);
+			Y = Math::rcp(Y);
+			Z = Math::rcp(Z);
+
+			return *this;
+		}
+
+		inline constexpr Vector3T RecipricalConst() const
+		{
+			Vector3T result = *this;
+			result.Reciprical();
+
+			return result;
+		}
 
         inline constexpr Vector3T Reflect(const Vector3T& normal) const
         {

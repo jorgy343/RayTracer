@@ -5,6 +5,7 @@ module;
 export module ParallelogramSoa;
 
 import <cassert>;
+import <initializer_list>;
 import <limits>;
 
 import "Common.h";
@@ -59,6 +60,22 @@ namespace Yart
                 _geometries[i] = nullptr;
             }
         }
+
+		constexpr ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
+			: ParallelogramSoa{}
+		{
+			size_t index = 0;
+
+			for (auto geometry : list)
+			{
+				if (index >= 8)
+				{
+					break;
+				}
+
+				Insert(index++, geometry);
+			}
+		}
 
         constexpr void Insert(int index, const Parallelogram* geometry) override final
         {

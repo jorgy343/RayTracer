@@ -5,6 +5,7 @@ module;
 export module AxisAlignedBoxSoa;
 
 import <cassert>;
+import <initializer_list>;
 import <cmath>;
 
 import "Common.h";
@@ -51,8 +52,26 @@ namespace Yart
             }
         }
 
+		AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
+			: AxisAlignedBoxSoa{}
+		{
+			size_t index = 0;
+
+			for (auto geometry : list)
+			{
+				if (index >= 8)
+				{
+					break;
+				}
+
+				Insert(index++, geometry);
+			}
+		}
+
         void Insert(int index, const AxisAlignedBox* geometry) override final
         {
+			assert(index >= 0 && index < 8);
+
             _minimumX[index] = geometry->Minimum.X;
             _minimumY[index] = geometry->Minimum.Y;
             _minimumZ[index] = geometry->Minimum.Z;

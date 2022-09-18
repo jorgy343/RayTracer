@@ -91,7 +91,7 @@ namespace Yart
 
                 Vector3 hitPosition = ray.Position + closestIntersection.HitDistance * ray.Direction;
                 Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
-                hitPosition += hitNormal * 0.01f;
+                hitPosition += hitNormal * NormalBump;
 
                 outputColor = material->CalculateRenderingEquation(*this, depth, hitPosition, hitNormal, ray.Direction);
             }

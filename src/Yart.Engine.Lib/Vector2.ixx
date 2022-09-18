@@ -127,6 +127,28 @@ namespace Yart
             return *this;
         }
 
+		inline constexpr Vector2T NormalizeConst() const
+		{
+			Vector2T result = *this;
+			return result.Normalize();
+		}
+
+		inline constexpr Vector2T& Reciprical()
+		{
+			X = Math::rcp(X);
+			Y = Math::rcp(Y);
+
+			return *this;
+		}
+
+		inline constexpr Vector2T RecipricalConst() const
+		{
+			Vector2T result = *this;
+			result.Reciprical();
+
+			return result;
+		}
+
         inline constexpr Vector2T operator+() const
         {
             return {+X, +Y};
