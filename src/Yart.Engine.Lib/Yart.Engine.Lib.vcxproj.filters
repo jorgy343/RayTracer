@@ -155,5 +155,8 @@
     <ClCompile Include="LambertianMaterial2.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryCollection.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 import AxisAlignedBox;
 import EmissiveMaterial;
+import GeometryCollection;
 import GgxMaterial;
 import LambertianMaterial;
 import LambertianMaterial2;
