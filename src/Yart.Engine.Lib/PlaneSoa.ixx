@@ -22,20 +22,19 @@ using namespace vcl;
 
 namespace Yart
 {
-    export template <std::size_t Count = 8>
-    class alignas(64) PlaneSoa final : public GeometrySoa<Plane>
+    export class alignas(64) PlaneSoa final : public GeometrySoa<Plane>
     {
     private:
-        alignas(16) float _normalX[Count];
-        alignas(16) float _normalY[Count];
-        alignas(16) float _normalZ[Count];
-        alignas(16) float _distance[Count];
-        alignas(16) const Plane* _geometries[Count];
+        alignas(16) float _normalX[8];
+        alignas(16) float _normalY[8];
+        alignas(16) float _normalZ[8];
+        alignas(16) float _distance[8];
+        alignas(16) const Plane* _geometries[8];
 
     public:
         constexpr PlaneSoa()
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < 8; i++)
             {
                 _normalX[i] = std::numeric_limits<float>::infinity();
                 _normalY[i] = std::numeric_limits<float>::infinity();
@@ -52,7 +51,7 @@ namespace Yart
 
 			for (auto geometry : list)
 			{
-				if (index >= Count)
+				if (index >= 8)
 				{
 					break;
 				}
@@ -63,7 +62,7 @@ namespace Yart
 
         constexpr void Insert(int index, const Plane* geometry) override final
         {
-            assert(index >= 0 && index < Count);
+            assert(index >= 0 && index < 8);
 
             _normalX[index] = geometry->Normal.X;
             _normalY[index] = geometry->Normal.Y;
@@ -86,12 +85,12 @@ namespace Yart
         template <IntersectionResultType TIntersectionResultType>
         force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
-            if (std::is_constant_evaluated() || Count != 8)
+            if (std::is_constant_evaluated())
             {
                 float closestDistance = std::numeric_limits<float>::infinity();
                 const Plane* closestGeometry = nullptr;
 
-                for (int i = 0; i < Count; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     const Plane* geometry = _geometries[i];
 
