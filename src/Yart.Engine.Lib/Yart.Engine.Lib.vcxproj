@@ -55,6 +55,9 @@
     <ClCompile Include="Vector2.ixx" />
     <ClCompile Include="Vector3.ixx" />
     <ClCompile Include="Vector4.ixx" />
+    <ClCompile Include="YamlNodes-Config.ixx" />
+    <ClCompile Include="YamlNodes.ixx" />
+    <ClCompile Include="YamlTest.ixx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scene.yaml">
@@ -97,6 +100,12 @@
     <Import Project="..\NativeReleaseProperties.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -107,6 +116,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <ProjectReference />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

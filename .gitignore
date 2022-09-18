@@ -1,3 +1,5 @@
+vcpkg_installed/
+
 # Intel V-Tune
 /src/GPUCache
 VTune Profiler Results/

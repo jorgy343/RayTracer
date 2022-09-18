@@ -17,6 +17,9 @@ import TransformedGeometry;
 import Vector2;
 import Vector3;
 
+//import YamlTest;
+//import YamlNodes;
+
 #include <memory>
 #include <vector>
 #include <cmath>
@@ -27,6 +30,10 @@ using namespace Yart;
 
 extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, unsigned int subpixelCount, unsigned int iterations, float* pixelBuffer)
 {
+	//Yaml::Config config = Yaml::Test();
+
+
+
 	int subpixelCountSquared = subpixelCount * subpixelCount;
 
 	PerspectiveCamera perspectiveCamera{

@@ -28,6 +28,9 @@
     <Filter Include="Modules\Lights">
       <UniqueIdentifier>{28e2cde5-a6b9-4ecb-a93a-40220ca2f956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Yaml">
+      <UniqueIdentifier>{24c01686-9855-4dd1-a323-aaf66c3f5cc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vcl.h">
@@ -157,6 +160,15 @@
     </ClCompile>
     <ClCompile Include="GeometryCollection.ixx">
       <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlTest.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes-Config.ixx">
+      <Filter>Modules\Yaml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
