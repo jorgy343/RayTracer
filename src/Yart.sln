@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yart.Client", "Yart.Client\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yart.Engine.Bench", "Yart.Engine.Bench\Yart.Engine.Bench.vcxproj", "{FC5D2F52-F41F-402C-A4A7-00697E650219}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yart.Engine.Lib.Tests", "Yart.Engine.Lib.Tests\Yart.Engine.Lib.Tests.vcxproj", "{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yart.Engine.Tests", "Yart.Engine.Tests\Yart.Engine.Tests.vcxproj", "{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yart.ConsoleClient", "Yart.ConsoleClient\Yart.ConsoleClient.csproj", "{9DBE7567-317D-4068-8803-411FC5369D09}"
 	ProjectSection(ProjectDependencies) = postProject
