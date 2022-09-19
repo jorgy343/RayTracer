@@ -14,7 +14,7 @@ import Vector3;
 
 namespace Yart
 {
-    export class alignas(16) Sphere final : public Geometry
+    export class __declspec(dllexport) alignas(16) Sphere final : public Geometry
     {
     public:
         Vector3 Position{};

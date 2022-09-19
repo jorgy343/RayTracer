@@ -47,38 +47,92 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\Yart.Engine.Lib;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\Yart.Engine.Lib;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    <VcpkgTriplet>x64-windows-static</VcpkgTriplet>
+    <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgTriplet>x64-windows-static</VcpkgTriplet>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalOptions>/constexpr:depth9999999 /constexpr:steps99999999 %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>YAML_CPP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>YAML_CPP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Alignment.ixx" />
+    <ClCompile Include="AreaLight.ixx" />
+    <ClCompile Include="AxisAlignedBox.ixx" />
+    <ClCompile Include="AxisAlignedBoxSoa.ixx" />
+    <ClCompile Include="DiffuseMaterial.ixx" />
+    <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="DllMain.cpp" />
+    <ClCompile Include="EmissiveMaterial.ixx" />
+    <ClCompile Include="Geometry.ixx" />
+    <ClCompile Include="GeometryCollection.ixx" />
+    <ClCompile Include="GeometrySoa.ixx" />
+    <ClCompile Include="GgxMaterial.ixx" />
+    <ClCompile Include="IntersectableGeometry.ixx" />
+    <ClCompile Include="IntersectionResult.ixx" />
+    <ClCompile Include="IntersectionResultType.ixx" />
+    <ClCompile Include="LambertianMaterial.ixx" />
+    <ClCompile Include="LambertianMaterial2.ixx" />
+    <ClCompile Include="Light.ixx" />
+    <ClCompile Include="Material.ixx" />
+    <ClCompile Include="Math.ixx" />
+    <ClCompile Include="Matrix3x3.ixx" />
+    <ClCompile Include="Matrix4x4.ixx" />
+    <ClCompile Include="MirrorMaterial.ixx" />
+    <ClCompile Include="MonteCarlo.ixx" />
+    <ClCompile Include="Parallelogram.ixx" />
+    <ClCompile Include="ParallelogramSoa.ixx" />
+    <ClCompile Include="PerspectiveCamera.ixx" />
+    <ClCompile Include="Plane.ixx" />
+    <ClCompile Include="PlaneSoa.ixx" />
+    <ClCompile Include="PointLight.ixx" />
+    <ClCompile Include="Random.ixx" />
+    <ClCompile Include="Ray.ixx" />
+    <ClCompile Include="Scene.ixx" />
+    <ClCompile Include="Sphere.ixx" />
+    <ClCompile Include="SphereSoa.ixx" />
+    <ClCompile Include="TransformedGeometry.ixx" />
+    <ClCompile Include="Vec8f3.ixx" />
+    <ClCompile Include="Vector2.ixx" />
+    <ClCompile Include="Vector3.ixx" />
+    <ClCompile Include="Vector4.ixx" />
+    <ClCompile Include="YamlNodes-Config.ixx" />
+    <ClCompile Include="YamlNodes.ixx" />
+    <ClCompile Include="YamlTest.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Yart.Engine.Lib\Yart.Engine.Lib.vcxproj">
-      <Project>{df50a480-e9da-4fe8-b592-526eb00b96a9}</Project>
-    </ProjectReference>
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Vcl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scene.yaml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,7 +22,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) SphereSoa final : public GeometrySoa<Sphere>
+    export class __declspec(dllexport) alignas(64) SphereSoa final : public GeometrySoa<Sphere>
     {
     private:
         alignas(16) float _positionX[8];

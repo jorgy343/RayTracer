@@ -17,8 +17,8 @@ import TransformedGeometry;
 import Vector2;
 import Vector3;
 
-//import YamlTest;
-//import YamlNodes;
+import YamlTest;
+import YamlNodes;
 
 #include <memory>
 #include <vector>

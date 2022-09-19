@@ -14,7 +14,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) Matrix4x4
+    export class __declspec(dllexport) alignas(64) Matrix4x4
     {
     public:
         float

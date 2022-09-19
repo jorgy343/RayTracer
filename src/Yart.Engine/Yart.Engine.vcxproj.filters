@@ -13,10 +13,170 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Modules">
+      <UniqueIdentifier>{45cfc4fc-1354-4c7d-8468-45b844687764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Cameras">
+      <UniqueIdentifier>{5b7637a2-ffcd-49f8-a28d-5a2f401d20ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Materials">
+      <UniqueIdentifier>{cf8c4efe-5bad-4c13-ade4-7661e9cdf85f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Yaml">
+      <UniqueIdentifier>{ed534d7e-f352-41c0-bce9-0792e8d32dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Lights">
+      <UniqueIdentifier>{94e96c97-96c2-4f3e-b2ae-7503a3b708e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\Geometries">
+      <UniqueIdentifier>{fb0fbc07-42cb-47dd-a1ce-512dfb298b46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Alignment.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3x3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="MonteCarlo.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Vec8f3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes-Config.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlTest.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="AreaLight.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedBox.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisAlignedBoxSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryCollection.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometrySoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="IntersectableGeometry.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="IntersectionResult.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="IntersectionResultType.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffuseMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="EmissiveMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="GgxMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="LambertianMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="LambertianMaterial2.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="MirrorMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Parallelogram.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="ParallelogramSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="PerspectiveCamera.ixx">
+      <Filter>Modules\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.ixx">
+      <Filter>Modules\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformedGeometry.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vcl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scene.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

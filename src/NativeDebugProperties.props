@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>../ThirdParty/VCL2;../ThirdParty/gcem/include;$(IncludePath)</IncludePath>
+    <IncludePath>../Yart.Engine;../ThirdParty/VCL2;../ThirdParty/gcem/include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

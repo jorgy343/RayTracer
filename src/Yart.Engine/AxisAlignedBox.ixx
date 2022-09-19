@@ -18,7 +18,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(16) AxisAlignedBox final : public Geometry
+    export class __declspec(dllexport) alignas(16) AxisAlignedBox final : public Geometry
     {
     public:
         Vector3 Minimum{};

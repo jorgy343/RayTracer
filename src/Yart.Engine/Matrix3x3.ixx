@@ -13,7 +13,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) Matrix3x3
+    export class __declspec(dllexport) alignas(64) Matrix3x3
     {
     public:
         float M11{0.0f}, M12{0.0f}, M13{0.0f};

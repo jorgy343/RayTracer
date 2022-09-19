@@ -22,7 +22,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) AxisAlignedBoxSoa final : public GeometrySoa<AxisAlignedBox>
+    export class __declspec(dllexport) alignas(64) AxisAlignedBoxSoa final : public GeometrySoa<AxisAlignedBox>
     {
     private:
         alignas(16) float _minimumX[8];

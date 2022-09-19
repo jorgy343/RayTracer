@@ -22,7 +22,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) PlaneSoa final : public GeometrySoa<Plane>
+    export class __declspec(dllexport) alignas(64) PlaneSoa final : public GeometrySoa<Plane>
     {
     private:
         alignas(16) float _normalX[8];

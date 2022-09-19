@@ -47,10 +47,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\Yart.Engine.Lib;$(IncludePath)</IncludePath>
+    <IncludePath>..\Yart.Engine;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\Yart.Engine.Lib;$(IncludePath)</IncludePath>
+    <IncludePath>..\Yart.Engine;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -58,10 +58,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -72,7 +74,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,12 +93,12 @@
     <ClCompile Include="SphereBench.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Yart.Engine.Lib\Yart.Engine.Lib.vcxproj">
-      <Project>{df50a480-e9da-4fe8-b592-526eb00b96a9}</Project>
-    </ProjectReference>
+    <ClInclude Include="nanobench.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="nanobench.h" />
+    <ProjectReference Include="..\Yart.Engine\Yart.Engine.vcxproj">
+      <Project>{21784b46-0789-43fe-af2f-3d2d6bf64a1b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
