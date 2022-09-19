@@ -14,9 +14,9 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{fc5d2f52-f41f-402c-a4a7-00697e650219}</ProjectGuid>
-    <RootNamespace>YartEngineLibBench</RootNamespace>
+    <RootNamespace>YartEngineBench</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Yart.Engine.Lib.Bench</ProjectName>
+    <ProjectName>Yart.Engine.Bench</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

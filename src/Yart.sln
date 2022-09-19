@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yart.Client", "Yart.Client\
 		{21784B46-0789-43FE-AF2F-3D2D6BF64A1B} = {21784B46-0789-43FE-AF2F-3D2D6BF64A1B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yart.Engine.Lib.Bench", "Yart.Engine.Lib.Bench\Yart.Engine.Lib.Bench.vcxproj", "{FC5D2F52-F41F-402C-A4A7-00697E650219}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yart.Engine.Bench", "Yart.Engine.Bench\Yart.Engine.Bench.vcxproj", "{FC5D2F52-F41F-402C-A4A7-00697E650219}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yart.Engine.Lib.Tests", "Yart.Engine.Lib.Tests\Yart.Engine.Lib.Tests.vcxproj", "{00A3A57C-9139-4E58-9F77-7F6EB04DC06D}"
 EndProject
