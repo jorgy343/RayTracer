@@ -12,7 +12,7 @@ namespace Yart
 {
     export template <typename T>
         requires std::integral<T> || std::floating_point<T>
-    class alignas(sizeof(T) * 4) Vector4T
+    class __declspec(dllexport) alignas(sizeof(T) * 4) Vector4T
     {
     public:
         T X{0};

@@ -53,12 +53,12 @@
     <ClCompile Include="Vector4Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Yart.Engine.Lib\Yart.Engine.Lib.vcxproj">
-      <Project>{df50a480-e9da-4fe8-b592-526eb00b96a9}</Project>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Yart.Engine\Yart.Engine.vcxproj">
+      <Project>{21784b46-0789-43fe-af2f-3d2d6bf64a1b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

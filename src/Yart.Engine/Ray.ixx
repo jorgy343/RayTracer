@@ -10,7 +10,7 @@ import Vector3;
 
 namespace Yart
 {
-    export class alignas(16) Ray
+    export class __declspec(dllexport) alignas(16) Ray
     {
     public:
         Vector3 Position{};
