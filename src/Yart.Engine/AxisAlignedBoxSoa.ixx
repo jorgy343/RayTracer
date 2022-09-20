@@ -52,7 +52,7 @@ namespace Yart
             }
         }
 
-		AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
+		explicit AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
 			: AxisAlignedBoxSoa{}
 		{
 			size_t index = 0;

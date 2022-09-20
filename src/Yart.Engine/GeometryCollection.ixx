@@ -19,7 +19,7 @@ namespace Yart
 		std::vector<const IntersectableGeometry*> ChildGeometries{};
 
 	public:
-		inline constexpr GeometryCollection(std::initializer_list<const IntersectableGeometry*> childGeometries)
+		inline constexpr explicit GeometryCollection(std::initializer_list<const IntersectableGeometry*> childGeometries)
 			: ChildGeometries{childGeometries}
 		{
 

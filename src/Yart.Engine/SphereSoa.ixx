@@ -44,7 +44,7 @@ namespace Yart
             }
         }
 
-		constexpr SphereSoa(std::initializer_list<const Sphere*> list)
+		constexpr explicit SphereSoa(std::initializer_list<const Sphere*> list)
 			: SphereSoa{}
 		{
 			size_t index = 0;

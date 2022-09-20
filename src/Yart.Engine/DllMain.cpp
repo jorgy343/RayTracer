@@ -17,7 +17,7 @@ import TransformedGeometry;
 import Vector2;
 import Vector3;
 
-import YamlTest;
+import YamlLoader;
 import YamlNodes;
 
 #include <memory>
@@ -30,7 +30,7 @@ using namespace Yart;
 
 extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, unsigned int subpixelCount, unsigned int iterations, float* pixelBuffer)
 {
-	//Yaml::Config config = Yaml::Test();
+	Yaml::Config config = Yaml::LoadYaml();
 
 
 

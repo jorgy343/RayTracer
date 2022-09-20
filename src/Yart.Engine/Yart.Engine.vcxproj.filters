@@ -75,7 +75,7 @@
     <ClCompile Include="YamlNodes-Config.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
-    <ClCompile Include="YamlTest.ixx">
+    <ClCompile Include="YamlLoader.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
     <ClCompile Include="AreaLight.ixx">
@@ -161,6 +161,21 @@
     </ClCompile>
     <ClCompile Include="Sphere.ixx">
       <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes-Vectors.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes-Cameras.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.ixx">
+      <Filter>Modules\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes-Materials.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlNodes-Scene.ixx">
+      <Filter>Modules\Yaml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

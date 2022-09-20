@@ -44,7 +44,7 @@ namespace Yart
             }
         }
 
-		constexpr PlaneSoa(std::initializer_list<const Plane*> list)
+		constexpr explicit PlaneSoa(std::initializer_list<const Plane*> list)
 			: PlaneSoa{}
 		{
 			size_t index = 0;

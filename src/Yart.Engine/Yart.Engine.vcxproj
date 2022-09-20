@@ -62,30 +62,28 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
     <VcpkgTriplet>x64-windows-static</VcpkgTriplet>
+    <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalOptions>/constexpr:depth9999999 /constexpr:steps99999999 %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
+    <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
+    <Link />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Alignment.ixx" />
     <ClCompile Include="AreaLight.ixx" />
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
+    <ClCompile Include="Camera.ixx" />
     <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="DllMain.cpp" />
@@ -122,9 +120,13 @@
     <ClCompile Include="Vector2.ixx" />
     <ClCompile Include="Vector3.ixx" />
     <ClCompile Include="Vector4.ixx" />
+    <ClCompile Include="YamlNodes-Cameras.ixx" />
     <ClCompile Include="YamlNodes-Config.ixx" />
+    <ClCompile Include="YamlNodes-Materials.ixx" />
+    <ClCompile Include="YamlNodes-Scene.ixx" />
+    <ClCompile Include="YamlNodes-Vectors.ixx" />
     <ClCompile Include="YamlNodes.ixx" />
-    <ClCompile Include="YamlTest.ixx" />
+    <ClCompile Include="YamlLoader.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />

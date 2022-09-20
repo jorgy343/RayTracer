@@ -61,7 +61,7 @@ namespace Yart
             }
         }
 
-		constexpr ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
+		constexpr explicit ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
 			: ParallelogramSoa{}
 		{
 			size_t index = 0;

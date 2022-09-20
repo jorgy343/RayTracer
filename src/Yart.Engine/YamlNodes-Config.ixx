@@ -4,38 +4,22 @@ module;
 
 export module YamlNodes:Config;
 
-import Vector2;
+using namespace YAML;
 
 namespace Yart::Yaml
 {
 	export class Config
 	{
 	public:
-		UIntVector2 ScreenSize{};
-		unsigned int SubpixelCount{};
 		unsigned int Iterations{};
 	};
-}
 
-using namespace Yart::Yaml;
+    export Config ParseConfigNode(const Node& node)
+    {
+        Config config{};
 
-namespace YAML
-{
-	export template<>
-	struct convert<Config>
-	{
-		static Node encode(const Config& rhs)
-		{
-			return {};
-		}
+        config.Iterations = node["iterations"].as<int>();
 
-		static bool decode(const Node& node, Config& rhs)
-		{
-			rhs.ScreenSize = {5, 10};
-			rhs.SubpixelCount = 4;
-			rhs.Iterations = 8;
-
-			return true;
-		}
-	};
+        return config;
+    }
 }
