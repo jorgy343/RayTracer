@@ -24,19 +24,19 @@ namespace Yart
     public:
         Vector3 Minimum{};
         Vector3 Maximum{};
-        std::shared_ptr<const Material> AppliedMaterial{nullptr};
+        const Material* AppliedMaterial{nullptr};
 
         inline constexpr AxisAlignedBox() = default;
 
-        inline AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, std::shared_ptr<const Material> appliedMaterial)
+        inline constexpr AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
             : Minimum{minimum}, Maximum{maximum}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline const Material* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return AppliedMaterial.get();
+            return AppliedMaterial;
         }
 
         constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final

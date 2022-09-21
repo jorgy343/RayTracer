@@ -3,7 +3,6 @@ module;
 export module Sphere;
 
 import <limits>;
-import <memory>;
 
 import Geometry;
 import IntersectionResult;
@@ -20,19 +19,19 @@ namespace Yart
     public:
         Vector3 Position{};
         float Radius{0.0f};
-        std::shared_ptr<const Material> AppliedMaterial{nullptr};
+        const Material* AppliedMaterial{nullptr};
 
         inline constexpr Sphere() = default;
 
-        inline Sphere(const Vector3& position, float radius, std::shared_ptr<const Material> appliedMaterial)
+        inline constexpr Sphere(const Vector3& position, float radius, const Material* appliedMaterial)
             : Position{position}, Radius{radius}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline const Material* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return AppliedMaterial.get();
+            return AppliedMaterial;
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
@@ -51,7 +50,7 @@ namespace Yart
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline float Intersect(const Ray& ray) const
+        inline constexpr float Intersect(const Ray& ray) const
         {
             Vector3 v = ray.Position - Position;
 

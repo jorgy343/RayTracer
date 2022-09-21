@@ -3,6 +3,7 @@ import Camera;
 import EmissiveMaterial;
 import GeometryCollection;
 import GgxMaterial;
+import IntersectableGeometry;
 import LambertianMaterial;
 import LambertianMaterial2;
 import Math;
@@ -34,12 +35,27 @@ using namespace Yart;
 class SceneData
 {
 public:
-    Yaml::Config SavedConfig{};
-    std::unique_ptr<Scene> SavedScene{};
-    std::unique_ptr<Camera> SavedCamera{};
+    std::shared_ptr<Yaml::Config> SavedConfig{};
+    std::shared_ptr<Yaml::SceneConfig> SavedSceneConfig{};
+    std::shared_ptr<Yaml::MaterialMap> SavedMaterialMap{};
+    std::shared_ptr<Scene> SavedScene{};
+    std::shared_ptr<Camera> SavedCamera{};
+    std::shared_ptr<std::vector<std::shared_ptr<const IntersectableGeometry>>> SoaGeometries{};
 
-    SceneData(Yaml::Config savedConfig, std::unique_ptr<Scene> savedScene, std::unique_ptr<Camera> savedCamera)
-        : SavedConfig{savedConfig}, SavedScene{std::move(savedScene)}, SavedCamera{std::move(savedCamera)}
+    SceneData(
+        std::shared_ptr<Yaml::Config> savedConfig,
+        std::shared_ptr<Yaml::SceneConfig> savedSceneConfig,
+        std::shared_ptr<Yaml::MaterialMap> savedMaterialMap,
+        std::shared_ptr<Scene> savedScene,
+        std::shared_ptr<Camera> savedCamera,
+        std::shared_ptr<std::vector<std::shared_ptr<const IntersectableGeometry>>> soaGeometries)
+        :
+        SavedConfig{savedConfig},
+        SavedSceneConfig{savedSceneConfig},
+        SavedMaterialMap{savedMaterialMap},
+        SavedScene{savedScene},
+        SavedCamera{savedCamera},
+        SoaGeometries{soaGeometries}
     {
 
     }
@@ -47,34 +63,37 @@ public:
 
 extern "C" __declspec(dllexport) void* __cdecl CreateScene()
 {
-    auto [config, camera, sceneConfig] = Yaml::LoadYaml();
-    int subpixelCountSquared = config.SubpixelCount * config.SubpixelCount;
+    auto [config, camera, sceneConfig, materialMap] = Yaml::LoadYaml();
+    int subpixelCountSquared = config->SubpixelCount * config->SubpixelCount;
 
     Scene scene{{0.0f, 0.0f, 0.0f}};
 
-    for (const auto& areaLight : sceneConfig->AreaLights)
+    for (auto areaLight : sceneConfig->AreaLights)
     {
         scene.AddAreaLight(areaLight);
     }
+
+    auto soaGeometries = std::shared_ptr<std::vector<std::shared_ptr<const IntersectableGeometry>>>{new std::vector<std::shared_ptr<const IntersectableGeometry>>{}};
 
     auto chunkedSpheres = sceneConfig->Spheres | ranges::views::chunk(8);
     for (const auto& chunkedSphere : chunkedSpheres)
     {
         if (chunkedSphere.size() == 1)
         {
-            scene.AddGeometry(chunkedSphere[0]);
+            scene.AddGeometry(chunkedSphere[0].get());
         }
         else
         {
             auto soa = std::shared_ptr<SphereSoa>{new SphereSoa{}};
+            soaGeometries->push_back(soa);
 
             int index = 0;
             for (const auto& sphere : chunkedSphere)
             {
-                soa->Insert(index++, sphere);
+                soa->Insert(index++, sphere.get());
             }
 
-            scene.AddGeometry(soa);
+            scene.AddGeometry(soa.get());
         }
     }
 
@@ -83,19 +102,20 @@ extern "C" __declspec(dllexport) void* __cdecl CreateScene()
     {
         if (chunkedPlane.size() == 1)
         {
-            scene.AddGeometry(chunkedPlane[0]);
+            scene.AddGeometry(chunkedPlane[0].get());
         }
         else
         {
             auto soa = std::shared_ptr<PlaneSoa>{new PlaneSoa{}};
+            soaGeometries->push_back(soa);
 
             int index = 0;
             for (const auto& plane : chunkedPlane)
             {
-                soa->Insert(index++, plane);
+                soa->Insert(index++, plane.get());
             }
 
-            scene.AddGeometry(soa);
+            scene.AddGeometry(soa.get());
         }
     }
 
@@ -104,39 +124,48 @@ extern "C" __declspec(dllexport) void* __cdecl CreateScene()
     {
         if (chunkedParallelogram.size() == 1)
         {
-            scene.AddGeometry(chunkedParallelogram[0]);
+            scene.AddGeometry(chunkedParallelogram[0].get());
         }
         else
         {
             auto soa = std::shared_ptr<ParallelogramSoa>{new ParallelogramSoa{}};
+            soaGeometries->push_back(soa);
 
             int index = 0;
             for (const auto& parallelogram : chunkedParallelogram)
             {
-                soa->Insert(index++, parallelogram);
+                soa->Insert(index++, parallelogram.get());
             }
 
-            scene.AddGeometry(soa);
+            scene.AddGeometry(soa.get());
         }
     }
 
-    auto sceneData = new SceneData{config, std::make_unique<Scene>(scene), std::move(camera)};
+    auto sceneData = new SceneData{
+        config,
+        sceneConfig,
+        materialMap,
+        std::make_shared<Scene>(scene),
+        camera,
+        soaGeometries};
+
     return sceneData;
 }
 
-extern "C" __declspec(dllexport) void __cdecl DeleteScene(SceneData* sceneData)
+extern "C" __declspec(dllexport) void __cdecl DeleteScene(SceneData * sceneData)
 {
     delete sceneData;
 }
 
-extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, const SceneData* sceneData, float* pixelBuffer)
+extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, const SceneData * sceneData, float* pixelBuffer)
 {
-    int subpixelCountSquared = sceneData->SavedConfig.SubpixelCount * sceneData->SavedConfig.SubpixelCount;
+    int subpixelCountSquared = sceneData->SavedConfig->SubpixelCount * sceneData->SavedConfig->SubpixelCount;
 
     Random random{};
+    Camera& camera = *sceneData->SavedCamera;
 
     // Execute ray tracing.
-    for (unsigned int count = 0; count < sceneData->SavedConfig.Iterations; count++)
+    for (unsigned int count = 0; count < sceneData->SavedConfig->Iterations; count++)
     {
         for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
         {
@@ -144,11 +173,11 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
             {
                 Vector3 color{};
 
-                for (unsigned int subpixelY = 0; subpixelY < sceneData->SavedConfig.SubpixelCount; subpixelY++)
+                for (unsigned int subpixelY = 0; subpixelY < sceneData->SavedConfig->SubpixelCount; subpixelY++)
                 {
-                    for (unsigned int subpixelX = 0; subpixelX < sceneData->SavedConfig.SubpixelCount; subpixelX++)
+                    for (unsigned int subpixelX = 0; subpixelX < sceneData->SavedConfig->SubpixelCount; subpixelX++)
                     {
-                        Ray ray = sceneData->SavedCamera->CreateRay({x, y}, {subpixelX, subpixelY});
+                        Ray ray = camera.CreateRay({x, y}, {subpixelX, subpixelY}, random);
                         Vector3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);
 
                         sampledColor.X = std::isnan(sampledColor.X) ? 0.0f : sampledColor.X;
@@ -173,10 +202,10 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     {
         for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
         {
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= static_cast<float>(sceneData->SavedConfig.Iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= static_cast<float>(sceneData->SavedConfig.Iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= static_cast<float>(sceneData->SavedConfig.Iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= static_cast<float>(sceneData->SavedConfig.Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= static_cast<float>(sceneData->SavedConfig->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= static_cast<float>(sceneData->SavedConfig->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= static_cast<float>(sceneData->SavedConfig->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= static_cast<float>(sceneData->SavedConfig->Iterations);
         }
     }
 }

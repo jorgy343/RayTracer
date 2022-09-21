@@ -10,13 +10,14 @@ import :Vectors;
 import Camera;
 import Math;
 import PerspectiveCamera;
+import Vector2;
 import Vector3;
 
 using namespace YAML;
 
 namespace Yart::Yaml
 {
-	std::unique_ptr<PerspectiveCamera> ParsePerspectiveCamera(const Node& node)
+	std::shared_ptr<PerspectiveCamera> ParsePerspectiveCamera(const Node& node)
 	{
 		Vector3 position = node["position"].as<Vector3>();
 		Vector3 lookAt = node["lookAt"].as<Vector3>();
@@ -28,15 +29,15 @@ namespace Yart::Yaml
 		return std::make_unique<PerspectiveCamera>(position, lookAt, up, subpixelCount, screenSize, fov);
 	}
 
-	export std::unique_ptr<Camera> ParseCameraNode(const Node& node)
+	export std::shared_ptr<Camera> ParseCameraNode(const Node& node)
 	{
 		auto perspectiveCameraNode = node["perspectiveCamera"];
 
 		if (perspectiveCameraNode)
 		{
-			return std::move(ParsePerspectiveCamera(perspectiveCameraNode));
+			return ParsePerspectiveCamera(perspectiveCameraNode);
 		}
 
-        return std::unique_ptr<Camera>{};
+        return std::shared_ptr<Camera>{};
 	}
 }

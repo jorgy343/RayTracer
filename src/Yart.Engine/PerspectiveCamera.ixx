@@ -17,8 +17,6 @@ namespace Yart
     export class PerspectiveCamera : public Camera
     {
     private:
-        Random _random{};
-
         float _recipricalWidth{};
         float _recipricalHeight{};
 
@@ -77,7 +75,7 @@ namespace Yart
             _subpixelSizeY = Math::rcp(static_cast<float>(subpixelCount)) * _recipricalHeight;
         }
 
-        constexpr Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel) const override
+        constexpr Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel, const Random& random) const override
         {
             float recipricalWidth = Math::rcp(static_cast<float>(ScreenSize.X));
             float recipricalHeight = Math::rcp(static_cast<float>(ScreenSize.Y));
@@ -91,11 +89,11 @@ namespace Yart
             normalizedX += static_cast<float>(subpixel.X) * subpixelSizeX;
             normalizedY += static_cast<float>(subpixel.Y) * subpixelSizeY;
 
-            float r1 = _random.GetNormalizedFloat();
-            float r2 = _random.GetNormalizedFloat();
+            float r1 = random.GetNormalizedFloat();
+            float r2 = random.GetNormalizedFloat();
 
-            normalizedX += _random.GetNormalizedFloat() * subpixelSizeX;
-            normalizedY += _random.GetNormalizedFloat() * subpixelSizeY;
+            normalizedX += random.GetNormalizedFloat() * subpixelSizeX;
+            normalizedY += random.GetNormalizedFloat() * subpixelSizeY;
 
             Vector3 rayDirection = _upperLeftCorner + (normalizedX * _du) - (normalizedY * _dv) - Position;
             return {Position, rayDirection.Normalize()};

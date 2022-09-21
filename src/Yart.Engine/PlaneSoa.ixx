@@ -7,7 +7,6 @@ export module PlaneSoa;
 import <cassert>;
 import <initializer_list>;
 import <limits>;
-import <memory>;
 
 import "Common.h";
 
@@ -30,7 +29,7 @@ namespace Yart
         alignas(16) float _normalY[8];
         alignas(16) float _normalZ[8];
         alignas(16) float _distance[8];
-        alignas(16) std::shared_ptr<const Plane> _geometries[8];
+        alignas(16) const Plane* _geometries[8];
 
     public:
         constexpr PlaneSoa()
@@ -45,7 +44,7 @@ namespace Yart
             }
         }
 
-		explicit PlaneSoa(std::initializer_list<std::shared_ptr<const Plane>> list)
+        constexpr explicit PlaneSoa(std::initializer_list<const Plane*> list)
 			: PlaneSoa{}
 		{
 			size_t index = 0;
@@ -61,7 +60,7 @@ namespace Yart
 			}
 		}
 
-        void Insert(int index, std::shared_ptr<const Plane> geometry) override final
+        constexpr void Insert(int index, const Plane* geometry) override final
         {
             assert(index >= 0 && index < 8);
 
@@ -72,24 +71,24 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        force_inline IntersectionResult Intersect(const Ray& ray) const
+        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
             if (std::is_constant_evaluated())
             {
                 float closestDistance = std::numeric_limits<float>::infinity();
-                std::shared_ptr<const Plane> closestGeometry = nullptr;
+                const Plane* closestGeometry = nullptr;
 
                 for (int i = 0; i < 8; i++)
                 {
@@ -109,7 +108,7 @@ namespace Yart
                     }
                 }
 
-                return {closestGeometry.get(), closestDistance};
+                return {closestGeometry, closestDistance};
             }
             else
             {
@@ -139,7 +138,7 @@ namespace Yart
                 int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
                 return {
-                    _geometries[minimumIndex == -1 ? 0 : minimumIndex].get(),
+                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
                     minimumEntranceDistance,
                 };
             }

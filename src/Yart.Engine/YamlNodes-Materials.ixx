@@ -100,9 +100,9 @@ namespace Yart::Yaml
 		}
 	}
 
-	export MaterialMap ParseMaterialsNode(const Node& node)
+	export std::shared_ptr<MaterialMap> ParseMaterialsNode(const Node& node)
 	{
-        MaterialMap materialMap{};
+        auto materialMap = std::shared_ptr<MaterialMap>{new MaterialMap{}};
 
         if (!node.IsSequence())
         {
@@ -111,7 +111,7 @@ namespace Yart::Yaml
 
         for (const Node& childNode : node)
         {
-            ParseMaterialNode(childNode, materialMap);
+            ParseMaterialNode(childNode, *materialMap);
         }
 
         return materialMap;

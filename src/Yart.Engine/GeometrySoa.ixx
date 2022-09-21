@@ -13,6 +13,6 @@ namespace Yart
     class GeometrySoa : public IntersectableGeometry
     {
     public:
-        virtual void Insert(int index, std::shared_ptr<const TGeometry> geometry) = 0;
+        virtual constexpr void Insert(int index, const TGeometry* geometry) = 0;
     };
 }

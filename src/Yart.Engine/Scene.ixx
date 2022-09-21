@@ -31,11 +31,11 @@ namespace Yart
     private:
         Vector3 _backgroundColor{0.0f};
 
-        std::vector<std::shared_ptr<const IntersectableGeometry>> _geometries{};
+        std::vector<const IntersectableGeometry*> _geometries{};
 
     public:
         std::vector<const Light*> Lights{};
-        std::vector<std::shared_ptr<const AreaLight>> AreaLights{};
+        std::vector<const AreaLight*> AreaLights{};
 
         inline constexpr explicit Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
@@ -49,12 +49,12 @@ namespace Yart
             Lights.push_back(light);
         }
 
-        inline void AddAreaLight(std::shared_ptr<const AreaLight> areaLight)
+        inline void AddAreaLight(const AreaLight* areaLight)
         {
             AreaLights.push_back(areaLight);
         }
 
-        inline void AddGeometry(std::shared_ptr<const IntersectableGeometry> geometry)
+        inline void AddGeometry(const IntersectableGeometry* geometry)
         {
             _geometries.push_back(geometry);
         }

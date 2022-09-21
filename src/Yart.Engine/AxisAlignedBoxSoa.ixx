@@ -34,10 +34,10 @@ namespace Yart
         alignas(16) float _maximumY[8];
         alignas(16) float _maximumZ[8];
 
-        alignas(16) std::shared_ptr<const AxisAlignedBox> _geometries[8];
+        alignas(16) const AxisAlignedBox* _geometries[8];
 
     public:
-        AxisAlignedBoxSoa()
+        constexpr AxisAlignedBoxSoa()
         {
             for (int i = 0; i < 8; i++)
             {
@@ -53,7 +53,7 @@ namespace Yart
             }
         }
 
-		explicit AxisAlignedBoxSoa(std::initializer_list<std::shared_ptr<const AxisAlignedBox>> list)
+		constexpr explicit AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
 			: AxisAlignedBoxSoa{}
 		{
 			size_t index = 0;
@@ -69,7 +69,7 @@ namespace Yart
 			}
 		}
 
-        void Insert(int index, std::shared_ptr<const AxisAlignedBox> geometry) override final
+        constexpr void Insert(int index, const AxisAlignedBox* geometry) override final
         {
 			assert(index >= 0 && index < 8);
 
@@ -141,7 +141,7 @@ namespace Yart
             int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {
-                _geometries[minimumIndex == -1 ? 0 : minimumIndex].get(),
+                _geometries[minimumIndex == -1 ? 0 : minimumIndex],
                 minimumEntranceDistance,
             };
         }

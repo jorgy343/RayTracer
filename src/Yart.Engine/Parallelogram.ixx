@@ -3,7 +3,6 @@ module;
 export module Parallelogram;
 
 import <limits>;
-import <memory>;
 
 import AreaLight;
 import IntersectionResult;
@@ -21,21 +20,21 @@ namespace Yart
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        std::shared_ptr<const Material> AppliedMaterial{nullptr};
+        const Material* AppliedMaterial{nullptr};
         float Area{};
 
     public:
         inline constexpr Parallelogram() = default;
 
-        inline Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, std::shared_ptr<const Material> appliedMaterial)
+        inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const Material* appliedMaterial)
             : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, AppliedMaterial{appliedMaterial}, Area{(edge1 % edge2).Length()}
         {
 
         }
 
-        inline const Material* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override final
         {
-            return AppliedMaterial.get();
+            return AppliedMaterial;
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
@@ -54,7 +53,7 @@ namespace Yart
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline float Intersect(const Ray& ray) const
+        inline constexpr float Intersect(const Ray& ray) const
         {
             Vector3 p = ray.Direction % Edge2;
             float determinant = Edge1 * p;

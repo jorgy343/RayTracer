@@ -4,6 +4,8 @@ module;
 
 export module YamlNodes:Config;
 
+import <memory>;
+
 using namespace YAML;
 
 namespace Yart::Yaml
@@ -15,12 +17,12 @@ namespace Yart::Yaml
         unsigned int SubpixelCount{};
 	};
 
-    export Config ParseConfigNode(const Node& node)
+    export std::shared_ptr<Config> ParseConfigNode(const Node& node)
     {
-        Config config{};
+        auto config = std::shared_ptr<Config>{new Config{}};
 
-        config.Iterations = node["iterations"].as<unsigned int>();
-        config.SubpixelCount = node["subpixelCount"].as<unsigned int>();
+        config->Iterations = node["iterations"].as<unsigned int>();
+        config->SubpixelCount = node["subpixelCount"].as<unsigned int>();
 
         return config;
     }
