@@ -1,6 +1,6 @@
 config:
-    iterations: 24
-    subpixelCount: 16
+    iterations: 8
+    subpixelCount: 4
 camera:
     perspectiveCamera:
         position: [0, 0, -39]
@@ -8,7 +8,7 @@ camera:
         up: [0, 1, 0]
         fov: 45
         screenSize: [1920, 1080]
-        subpixelCount: 16
+        subpixelCount: 4
 materials:
     - emissiveMaterial:
         name: "White Light"
