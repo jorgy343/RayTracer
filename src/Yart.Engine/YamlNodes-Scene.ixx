@@ -10,6 +10,7 @@ import <unordered_map>;
 import :Materials;
 import :Vectors;
 import AreaLight;
+import AxisAlignedBox;
 import IntersectableGeometry;
 import Material;
 import Parallelogram;
@@ -29,6 +30,7 @@ namespace Yart::Yaml
         std::vector<std::shared_ptr<const Sphere>> Spheres{};
         std::vector<std::shared_ptr<const Plane>> Planes{};
         std::vector<std::shared_ptr<const Parallelogram>> Parallelograms{};
+        std::vector<std::shared_ptr<const AxisAlignedBox>> AxisAlignedBoxes{};
 	};
 
 	std::shared_ptr<const Sphere> ParseSphereNode(const Node& node, const MaterialMap& materialMap)
@@ -65,6 +67,17 @@ namespace Yart::Yaml
 		return std::make_shared<const Parallelogram>(position, edge1, edge2, material);
 	}
 
+    std::shared_ptr<const AxisAlignedBox> ParseAxisAlignedBoxNode(const Node& node, const MaterialMap& materialMap)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto minimum = node["minimum"].as<Vector3>();
+        auto maximum = node["maximum"].as<Vector3>();
+
+        return std::make_shared<const AxisAlignedBox>(minimum, maximum, material);
+    }
+
 	void ParseAreaLightNode(const Node& node, SceneConfig& sceneConfig, const MaterialMap& materialMap)
 	{
 		auto parallelogramNode = node["parallelogram"];
@@ -83,6 +96,7 @@ namespace Yart::Yaml
 		auto sphereNode = node["sphere"];
 		auto planeNode = node["plane"];
 		auto parallelogramNode = node["parallelogram"];
+		auto axisAlignedBoxNode = node["axisAlignedBox"];
 
 		if (sphereNode)
 		{
@@ -99,6 +113,11 @@ namespace Yart::Yaml
             auto geometry = ParseParallelogramNode(parallelogramNode, materialMap);
             sceneConfig.Parallelograms.push_back(geometry);
 		}
+        else if (axisAlignedBoxNode)
+        {
+            auto geometry = ParseAxisAlignedBoxNode(axisAlignedBoxNode, materialMap);
+            sceneConfig.AxisAlignedBoxes.push_back(geometry);
+        }
 	}
 
 	export std::shared_ptr<SceneConfig> ParseSceneNode(const Node& node, const MaterialMap& materialMap)

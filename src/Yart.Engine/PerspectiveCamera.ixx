@@ -77,23 +77,14 @@ namespace Yart
 
         constexpr Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel, const Random& random) const override
         {
-            float recipricalWidth = Math::rcp(static_cast<float>(ScreenSize.X));
-            float recipricalHeight = Math::rcp(static_cast<float>(ScreenSize.Y));
+            float normalizedX = static_cast<float>(ScreenSize.X - pixel.X - 1) * _recipricalWidth;
+            float normalizedY = static_cast<float>(pixel.Y) * _recipricalHeight;
 
-            float subpixelSizeX = Math::rcp(static_cast<float>(SubpixelCount)) * recipricalWidth;
-            float subpixelSizeY = Math::rcp(static_cast<float>(SubpixelCount)) * recipricalHeight;
+            normalizedX += static_cast<float>(subpixel.X) * _subpixelSizeX;
+            normalizedY += static_cast<float>(subpixel.Y) * _subpixelSizeY;
 
-            float normalizedX = pixel.X * recipricalWidth;
-            float normalizedY = pixel.Y * recipricalHeight;
-
-            normalizedX += static_cast<float>(subpixel.X) * subpixelSizeX;
-            normalizedY += static_cast<float>(subpixel.Y) * subpixelSizeY;
-
-            float r1 = random.GetNormalizedFloat();
-            float r2 = random.GetNormalizedFloat();
-
-            normalizedX += random.GetNormalizedFloat() * subpixelSizeX;
-            normalizedY += random.GetNormalizedFloat() * subpixelSizeY;
+            normalizedX += random.GetNormalizedFloat() * _subpixelSizeX;
+            normalizedY += random.GetNormalizedFloat() * _subpixelSizeY;
 
             Vector3 rayDirection = _upperLeftCorner + (normalizedX * _du) - (normalizedY * _dv) - Position;
             return {Position, rayDirection.Normalize()};

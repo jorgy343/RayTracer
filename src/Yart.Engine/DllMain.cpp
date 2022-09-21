@@ -1,4 +1,5 @@
 import AxisAlignedBox;
+import AxisAlignedBoxSoa;
 import Camera;
 import EmissiveMaterial;
 import GeometryCollection;
@@ -135,6 +136,28 @@ extern "C" __declspec(dllexport) void* __cdecl CreateScene()
             for (const auto& parallelogram : chunkedParallelogram)
             {
                 soa->Insert(index++, parallelogram.get());
+            }
+
+            scene.AddGeometry(soa.get());
+        }
+    }
+
+    auto chunkedAxisAlignedBoxes = sceneConfig->AxisAlignedBoxes | ranges::views::chunk(8);
+    for (const auto& chunkedAxisAlignedBox : chunkedAxisAlignedBoxes)
+    {
+        if (chunkedAxisAlignedBox.size() == 1)
+        {
+            scene.AddGeometry(chunkedAxisAlignedBox[0].get());
+        }
+        else
+        {
+            auto soa = std::shared_ptr<AxisAlignedBoxSoa>{new AxisAlignedBoxSoa{}};
+            soaGeometries->push_back(soa);
+
+            int index = 0;
+            for (const auto& axisAlignedBox : chunkedAxisAlignedBox)
+            {
+                soa->Insert(index++, axisAlignedBox.get());
             }
 
             scene.AddGeometry(soa.get());
