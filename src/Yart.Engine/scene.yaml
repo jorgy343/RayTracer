@@ -1,5 +1,6 @@
 config:
-    iterations: 8
+    iterations: 24
+    subpixelCount: 16
 camera:
     perspectiveCamera:
         position: [0, 0, -39]
@@ -7,22 +8,43 @@ camera:
         up: [0, 1, 0]
         fov: 45
         screenSize: [1920, 1080]
-        subpixelCount: 4
+        subpixelCount: 16
 materials:
     - emissiveMaterial:
         name: "White Light"
         emissiveColor: [1, 1, 1]
-    - lambertianMaterial:
+
+    - lambertianMaterial2:
         name: "White"
         diffuseColor: [1, 1, 1]
     - lambertianMaterial2:
         name: "Black"
         diffuseColor: [0, 0, 0]
+    - lambertianMaterial2:
+        name: "Red"
+        diffuseColor: [1, 0, 0]
+    - lambertianMaterial2:
+        name: "Green"
+        diffuseColor: [0, 1, 0]
+    - lambertianMaterial2:
+        name: "Blue"
+        diffuseColor: [0, 0, 1]
+    - lambertianMaterial2:
+        name: "Orange"
+        diffuseColor: [1, 1, 0]
+    - lambertianMaterial2:
+        name: "Pink"
+        diffuseColor: [1, 0, 1]
+    - lambertianMaterial2:
+        name: "Yellow"
+        diffuseColor: [0, 1, 1]
+
     - ggxMaterial:
         name: "GGX"
-        diffuseColor: [0.5, 0.5, 0.5]
-        specularColor: [0.9, 0.9, 0.9]
+        diffuseColor: [1, 1, 1]
+        specularColor: [0.4, 0.4, 0.4]
         roughness: 0.07
+
     - mirrorMaterial:
         name: "Mirror"
 scene:
@@ -34,21 +56,131 @@ scene:
             edge2: [0, 0, 1.2]
     geometries:
         - plane:
-            material: "White"
+            material: "Red"
             normal: [0, 0, -1]
             point: [0, 0, 20]
+        - plane:
+            material: "Green"
+            normal: [0, 0, 1]
+            point: [0, 0, -40]
+        - plane:
+            material: "Blue"
+            normal: [0, -1, 0]
+            point: [0, 20, 0]
+        - plane:
+            material: "Orange"
+            normal: [0, 1, 0]
+            point: [0, -20, 0]
+        - plane:
+            material: "Pink"
+            normal: [-1, 0, 0]
+            point: [20, 0, 0]
+        - plane:
+            material: "Yellow"
+            normal: [1, 0, 0]
+            point: [-20, 0, 0]
+
         - sphere:
             material: "White"
             position: [-16, -16, +18]
             radius: 3
-        - transformedGeometry:
-            transform: [
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1]
-            childGeometry:
-                sphere:
-                    material: "Mirror"
-                    position: [0, 0, 0]
-                    radius: 5
+        - sphere:
+            material: "White"
+            position: [-8, -16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [0, -16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [8, -16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [16, -16, +18]
+            radius: 3
+
+        - sphere:
+            material: "Mirror"
+            position: [-16, -8, +18]
+            radius: 3
+        - sphere:
+            material: "Mirror"
+            position: [-8, -8, +18]
+            radius: 3
+        - sphere:
+            material: "Mirror"
+            position: [0, -8, +18]
+            radius: 3
+        - sphere:
+            material: "Mirror"
+            position: [8, -8, +18]
+            radius: 3
+        - sphere:
+            material: "Mirror"
+            position: [16, -8, +18]
+            radius: 3
+
+        - sphere:
+            material: "White"
+            position: [-16, 0, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [-8, 0, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [0, 0, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [8, 0, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [16, 0, +18]
+            radius: 3
+
+        - sphere:
+            material: "GGX"
+            position: [-16, 8, +18]
+            radius: 3
+        - sphere:
+            material: "GGX"
+            position: [-8, 8, +18]
+            radius: 3
+        - sphere:
+            material: "GGX"
+            position: [0, 8, +18]
+            radius: 3
+        - sphere:
+            material: "GGX"
+            position: [8, 8, +18]
+            radius: 3
+        - sphere:
+            material: "GGX"
+            position: [16, 8, +18]
+            radius: 3
+
+        - sphere:
+            material: "White"
+            position: [-16, 16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [-8, 16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [0, 16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [8, 16, +18]
+            radius: 3
+        - sphere:
+            material: "White"
+            position: [16, 16, +18]
+            radius: 3

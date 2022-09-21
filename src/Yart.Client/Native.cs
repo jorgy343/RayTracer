@@ -5,7 +5,13 @@ namespace Yart.Client;
 public static unsafe class Native
 {
     [DllImport("Yart.Engine", CallingConvention = CallingConvention.Cdecl)]
-    public static extern int TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, uint subpixelCount, uint iterations, float* pixelBuffer);
+    public static extern void* CreateScene();
+
+    [DllImport("Yart.Engine", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void DeleteScene(void* sceneData);
+
+    [DllImport("Yart.Engine", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, void* sceneData, float* pixelBuffer);
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]

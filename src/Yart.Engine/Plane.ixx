@@ -3,6 +3,7 @@ module;
 export module Plane;
 
 import <limits>;
+import <memory>;
 
 import Geometry;
 import IntersectionResult;
@@ -19,25 +20,25 @@ namespace Yart
     public:
         Vector3 Normal{};
         float Distance{0.0f};
-        const Material* AppliedMaterial{nullptr};
+        std::shared_ptr<const Material> AppliedMaterial{nullptr};
 
         inline constexpr Plane() = default;
 
-        inline constexpr Plane(const Vector3& normal, float distance, const Material* appliedMaterial)
+        inline Plane(const Vector3& normal, float distance, std::shared_ptr<const Material> appliedMaterial)
             : Normal{normal}, Distance{distance}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
+        inline Plane(const Vector3& normal, const Vector3& point, std::shared_ptr<const Material> appliedMaterial)
             : Normal{normal}, Distance{-(normal * point)}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const Material* GetMaterial() const override final
+        inline const Material* GetMaterial() const override final
         {
-            return AppliedMaterial;
+            return AppliedMaterial.get();
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
@@ -45,18 +46,18 @@ namespace Yart
             return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline constexpr float Intersect(const Ray& ray) const
+        inline float Intersect(const Ray& ray) const
         {
             float normalDotDirection = Normal * ray.Direction;
             float normalDotRayPosition = Normal * ray.Position;

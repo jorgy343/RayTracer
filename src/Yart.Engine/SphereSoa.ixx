@@ -5,8 +5,9 @@ module;
 export module SphereSoa;
 
 import <cassert>;
-import <initializer_list>;
 import <cmath>;
+import <initializer_list>;
+import <memory>;
 
 import "Common.h";
 
@@ -29,7 +30,7 @@ namespace Yart
         alignas(16) float _positionY[8];
         alignas(16) float _positionZ[8];
         alignas(16) float _radius[8];
-        alignas(16) const Sphere* _geometries[8];
+        alignas(16) std::shared_ptr<const Sphere> _geometries[8];
 
     public:
         constexpr SphereSoa()
@@ -44,7 +45,7 @@ namespace Yart
             }
         }
 
-		constexpr explicit SphereSoa(std::initializer_list<const Sphere*> list)
+		explicit SphereSoa(std::initializer_list<std::shared_ptr<const Sphere>> list)
 			: SphereSoa{}
 		{
 			size_t index = 0;
@@ -60,7 +61,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(int index, const Sphere* geometry) override final
+        void Insert(int index, std::shared_ptr<const Sphere> geometry) override final
         {
             assert(index >= 0 && index < 8);
 
@@ -71,28 +72,28 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
+        force_inline IntersectionResult Intersect(const Ray& ray) const
         {
             if (std::is_constant_evaluated())
             {
                 float closestDistance = std::numeric_limits<float>::infinity();
-                const Sphere* closestGeometry = nullptr;
+                std::shared_ptr<const Sphere> closestGeometry = nullptr;
 
                 for (int i = 0; i < 8; i++)
                 {
-                    const Sphere* geometry = _geometries[i];
+                    auto geometry = _geometries[i];
 
                     if (geometry == nullptr)
                     {
@@ -108,7 +109,7 @@ namespace Yart
                     }
                 }
 
-                return {closestGeometry, closestDistance};
+                return {closestGeometry.get(), closestDistance};
             }
             else
             {
@@ -160,7 +161,7 @@ namespace Yart
                 int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedResult);
 
                 return {
-                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
+                    _geometries[minimumIndex == -1 ? 0 : minimumIndex].get(),
                     minimumEntranceDistance,
                 };
             }

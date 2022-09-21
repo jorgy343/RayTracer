@@ -1,5 +1,7 @@
 export module GeometrySoa;
 
+import <memory>;
+
 import Geometry;
 import IntersectableGeometry;
 import IntersectionResult;
@@ -11,6 +13,6 @@ namespace Yart
     class GeometrySoa : public IntersectableGeometry
     {
     public:
-        virtual constexpr void Insert(int index, const TGeometry* geometry) = 0;
+        virtual void Insert(int index, std::shared_ptr<const TGeometry> geometry) = 0;
     };
 }

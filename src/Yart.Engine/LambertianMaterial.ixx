@@ -21,7 +21,7 @@ namespace Yart
 
         }
 
-        constexpr Vector3 CalculateRenderingEquation(const Scene& scene, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+        constexpr Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
         {
             float roulettePower{1.0f};
             if constexpr (EnableRoulette)
@@ -30,7 +30,7 @@ namespace Yart
                 {
                     constexpr float stoppingCutoff = 0.7f;
 
-                    float stoppingProbability = scene.Rng.GetNormalizedFloat();
+                    float stoppingProbability = random.GetNormalizedFloat();
                     if (stoppingProbability > stoppingCutoff)
                     {
                         return {};
@@ -42,29 +42,29 @@ namespace Yart
                 }
             }
 
-            int indexOfLightToSample = scene.Rng.GetInteger() % scene.AreaLights.size();
-            const AreaLight* light = scene.AreaLights[indexOfLightToSample];
+            int indexOfLightToSample = random.GetInteger() % scene.AreaLights.size();
+            auto light = scene.AreaLights[indexOfLightToSample];
 
-            float whereToShootRay = scene.Rng.GetNormalizedFloat();
+            float whereToShootRay = random.GetNormalizedFloat();
 
             Vector3 outgoingDirection;
             if (whereToShootRay > 0.5f)
             {
                 // Indirect light sample according to material.
-                outgoingDirection = GenerateCosineWeightedHemisphereSample(scene.Rng, hitNormal);
+                outgoingDirection = GenerateCosineWeightedHemisphereSample(random, hitNormal);
             }
             else
             {
                 // Direct light sample to a random light.
-                outgoingDirection = light->GenerateRandomDirectionTowardsLight(scene.Rng, hitPosition, hitNormal);
+                outgoingDirection = light->GenerateRandomDirectionTowardsLight(random, hitPosition, hitNormal);
             }
 
             float materialInversePdf = CalculateInversePdf(hitNormal, outgoingDirection);
-            float lightInversePdf = light->CalculateInversePdf(scene.Rng, hitPosition, hitNormal, incomingDirection, outgoingDirection);
+            float lightInversePdf = light->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, outgoingDirection);
             float inversePdf = 0.5f * lightInversePdf * scene.AreaLights.size() + 0.5f * materialInversePdf;
 
             Ray outgoingRay = Ray{hitPosition, outgoingDirection};
-            Vector3 indirectColorSample = scene.CastRayColor(outgoingRay, currentDepth + 1);
+            Vector3 indirectColorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
 
             float brdf = OneOverPi;
             float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);

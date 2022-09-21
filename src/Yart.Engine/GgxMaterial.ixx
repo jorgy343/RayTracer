@@ -34,7 +34,7 @@ namespace Yart
 
 		}
 
-		inline constexpr Vector3 CalculateRenderingEquation(const Scene& scene, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+		inline constexpr Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
 		{
 			Vector3 V = -incomingDirection;
 			float NdotV = hitNormal * V;
@@ -46,13 +46,13 @@ namespace Yart
 
 
 			float probDiffuse = ProbabilityToSampleDiffuse();
-			bool chooseDiffuse = scene.Rng.GetNormalizedFloat() < probDiffuse;
+			bool chooseDiffuse = random.GetNormalizedFloat() < probDiffuse;
 
 			if (chooseDiffuse)
 			{
 				// Shoot a randomly selected cosine-sampled diffuse ray.
-				Vector3 L = GenerateCosineWeightedHemisphereSample(scene.Rng, hitNormal);
-				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1);
+				Vector3 L = GenerateCosineWeightedHemisphereSample(random, hitNormal);
+				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
 
 				// Accumulate the color: (NdotL * incomingLight * dif / pi)
 				// Probability of sampling this ray:  (NdotL / pi) * probDiffuse
@@ -61,13 +61,13 @@ namespace Yart
 			}
 			else
 			{
-				Vector3 H = GetGgxMicrofacet(scene.Rng, hitNormal);
+				Vector3 H = GetGgxMicrofacet(random, hitNormal);
 
 				// Compute outgoing direction based on this (perfectly reflective) facet
 				Vector3 L = (2.0f * (V * H) * H - V).Normalize();
 
 				// Compute our color by tracing a ray in this direction
-				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1);
+				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
 
 				// Compute some dot products needed for shading
 				float NdotL = Math::max(0.0f, hitNormal * L);

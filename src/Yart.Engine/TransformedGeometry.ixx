@@ -43,18 +43,18 @@ namespace Yart
 			return Vector3{transformedHitNormal.X, transformedHitNormal.Y, transformedHitNormal.Z}.Normalize();
 		}
 
-		inline constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override
+		inline IntersectionResult IntersectEntrance(const Ray& ray) const override
 		{
 			return {this, Intersect<IntersectionResultType::Entrance>(ray)};
 		}
 
-		inline constexpr IntersectionResult IntersectExit(const Ray& ray) const override
+		inline IntersectionResult IntersectExit(const Ray& ray) const override
 		{
 			return {this, Intersect<IntersectionResultType::Exit>(ray)};
 		}
 
 		template <IntersectionResultType TIntersectionResultType>
-		force_inline constexpr float Intersect(const Ray& ray) const
+		force_inline float Intersect(const Ray& ray) const
 		{
 			Vector4 transformedPosition = Vector4{ray.Position, 1.0f} *InversedTransform;
 			Vector4 transformedDirection = Vector4{ray.Direction, 0.0f} *InversedTransform;

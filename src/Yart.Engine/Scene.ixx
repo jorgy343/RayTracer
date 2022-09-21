@@ -6,6 +6,7 @@ export module Scene;
 
 import <cmath>;
 import <concepts>;
+import <memory>;
 import <utility>;
 import <vector>;
 
@@ -30,13 +31,11 @@ namespace Yart
     private:
         Vector3 _backgroundColor{0.0f};
 
-        std::vector<const IntersectableGeometry*> _geometries{};
+        std::vector<std::shared_ptr<const IntersectableGeometry>> _geometries{};
 
     public:
-        Random Rng{};
-
         std::vector<const Light*> Lights{};
-        std::vector<const AreaLight*> AreaLights{};
+        std::vector<std::shared_ptr<const AreaLight>> AreaLights{};
 
         inline constexpr explicit Scene(Vector3 backgroundColor)
             : _backgroundColor{backgroundColor}
@@ -50,22 +49,22 @@ namespace Yart
             Lights.push_back(light);
         }
 
-        inline constexpr void AddAreaLight(const AreaLight* areaLight)
+        inline void AddAreaLight(std::shared_ptr<const AreaLight> areaLight)
         {
             AreaLights.push_back(areaLight);
         }
 
-        inline constexpr void AddGeometry(const IntersectableGeometry* geometry)
+        inline void AddGeometry(std::shared_ptr<const IntersectableGeometry> geometry)
         {
             _geometries.push_back(geometry);
         }
 
-        inline constexpr Vector3 CastRayColor(const Ray& ray) const
+        inline Vector3 CastRayColor(const Ray& ray, const Random& random) const
         {
-            return CastRayColor(ray, 1);
+            return CastRayColor(ray, 1, random);
         }
 
-        constexpr Vector3 CastRayColor(const Ray& ray, int depth) const
+        Vector3 CastRayColor(const Ray& ray, int depth, const Random& random) const
         {
             if (depth > 7)
             {
@@ -73,7 +72,7 @@ namespace Yart
             }
 
             IntersectionResult closestIntersection{nullptr, std::numeric_limits<float>::infinity()};
-            for (const IntersectableGeometry* geometry : _geometries)
+            for (const auto& geometry : _geometries)
             {
                 IntersectionResult intersection = geometry->IntersectEntrance(ray);
 
@@ -93,16 +92,16 @@ namespace Yart
                 Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * NormalBump;
 
-                outputColor = material->CalculateRenderingEquation(*this, depth, hitPosition, hitNormal, ray.Direction);
+                outputColor = material->CalculateRenderingEquation(*this, random, depth, hitPosition, hitNormal, ray.Direction);
             }
 
             return outputColor;
         }
 
-        constexpr float CastRayDistance(const Ray& ray) const
+        float CastRayDistance(const Ray& ray) const
         {
             float closestIntersection = std::numeric_limits<float>::infinity();
-            for (const IntersectableGeometry* geometry : _geometries)
+            for (auto geometry : _geometries)
             {
                 float distance = geometry->IntersectEntrance(ray).HitDistance;
 

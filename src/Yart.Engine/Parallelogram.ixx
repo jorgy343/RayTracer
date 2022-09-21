@@ -3,9 +3,9 @@ module;
 export module Parallelogram;
 
 import <limits>;
+import <memory>;
 
 import AreaLight;
-import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
 import Material;
@@ -14,28 +14,28 @@ import Vector3;
 
 namespace Yart
 {
-    export class alignas(16) Parallelogram : public Geometry, public AreaLight
+    export class alignas(16) Parallelogram : public AreaLight
     {
     public:
         Vector3 Position{};
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        const Material* AppliedMaterial{nullptr};
+        std::shared_ptr<const Material> AppliedMaterial{nullptr};
         float Area{};
 
     public:
         inline constexpr Parallelogram() = default;
 
-        inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const Material* appliedMaterial)
+        inline Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, std::shared_ptr<const Material> appliedMaterial)
             : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, AppliedMaterial{appliedMaterial}, Area{(edge1 % edge2).Length()}
         {
 
         }
 
-        inline constexpr const Material* GetMaterial() const override final
+        inline const Material* GetMaterial() const override final
         {
-            return AppliedMaterial;
+            return AppliedMaterial.get();
         }
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
@@ -43,18 +43,18 @@ namespace Yart
             return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline constexpr float Intersect(const Ray& ray) const
+        inline float Intersect(const Ray& ray) const
         {
             Vector3 p = ray.Direction % Edge2;
             float determinant = Edge1 * p;

@@ -6,6 +6,7 @@ export module AxisAlignedBox;
 
 import <cmath>;
 import <limits>;
+import <memory>;
 
 import Geometry;
 import IntersectionResult;
@@ -23,19 +24,19 @@ namespace Yart
     public:
         Vector3 Minimum{};
         Vector3 Maximum{};
-        const Material* AppliedMaterial{nullptr};
+        std::shared_ptr<const Material> AppliedMaterial{nullptr};
 
         inline constexpr AxisAlignedBox() = default;
 
-        inline constexpr AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
+        inline AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, std::shared_ptr<const Material> appliedMaterial)
             : Minimum{minimum}, Maximum{maximum}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const Material* GetMaterial() const override final
+        inline const Material* GetMaterial() const override final
         {
-            return AppliedMaterial;
+            return AppliedMaterial.get();
         }
 
         constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final

@@ -1,5 +1,7 @@
 module;
 
+import <memory>;
+
 export module IntersectionResult;
 
 namespace Yart
@@ -14,7 +16,7 @@ namespace Yart
 
 		inline constexpr IntersectionResult() = default;
 
-        inline constexpr IntersectionResult(const Geometry* hitGeometry, float hitDistance)
+        inline IntersectionResult(const Geometry* hitGeometry, float hitDistance)
             : HitGeometry{hitGeometry}, HitDistance{hitDistance}
         {
             

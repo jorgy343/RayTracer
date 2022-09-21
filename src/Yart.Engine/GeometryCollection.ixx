@@ -25,19 +25,19 @@ namespace Yart
 
 		}
 
-		inline constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override
+		inline IntersectionResult IntersectEntrance(const Ray& ray) const override
 		{
 			return Intersect<IntersectionResultType::Entrance>(ray);
 		}
 
-		inline constexpr IntersectionResult IntersectExit(const Ray& ray) const override
+		inline IntersectionResult IntersectExit(const Ray& ray) const override
 		{
 			return Intersect<IntersectionResultType::Exit>(ray);
 		}
 
 	private:
 		template <IntersectionResultType TIntersectionResultType>
-		force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
+		force_inline IntersectionResult Intersect(const Ray& ray) const
 		{
 			IntersectionResult closestResult{nullptr, std::numeric_limits<float>::infinity()};
 

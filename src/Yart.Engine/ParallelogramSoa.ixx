@@ -7,6 +7,7 @@ export module ParallelogramSoa;
 import <cassert>;
 import <initializer_list>;
 import <limits>;
+import <memory>;
 
 import "Common.h";
 
@@ -38,12 +39,12 @@ namespace Yart
         alignas(16) float _edge2Y[8];
         alignas(16) float _edge2Z[8];
 
-        alignas(16) const Parallelogram* _geometries[8];
+        alignas(16) std::shared_ptr<const Parallelogram> _geometries[8];
 
     public:
         constexpr ParallelogramSoa()
         {
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 8; i++)
             {
                 _positionX[i] = std::numeric_limits<float>::infinity();
                 _positionY[i] = std::numeric_limits<float>::infinity();
@@ -61,7 +62,7 @@ namespace Yart
             }
         }
 
-		constexpr explicit ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
+		explicit ParallelogramSoa(std::initializer_list<std::shared_ptr<const Parallelogram>> list)
 			: ParallelogramSoa{}
 		{
 			size_t index = 0;
@@ -77,7 +78,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(int index, const Parallelogram* geometry) override final
+        void Insert(int index, std::shared_ptr<const Parallelogram> geometry) override final
         {
             assert(index >= 0 && index < 8);
 
@@ -96,28 +97,28 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }
 
     private:
         template <IntersectionResultType TIntersectionResultType>
-        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
+        force_inline IntersectionResult Intersect(const Ray& ray) const
         {
             if (std::is_constant_evaluated())
             {
                 float closestDistance = std::numeric_limits<float>::infinity();
-                const Parallelogram* closestGeometry = nullptr;
+                std::shared_ptr<const Parallelogram> closestGeometry = nullptr;
 
                 for (int i = 0; i < 8; i++)
                 {
-                    const Parallelogram* geometry = _geometries[i];
+                    auto geometry = _geometries[i];
 
                     if (geometry == nullptr)
                     {
@@ -133,7 +134,7 @@ namespace Yart
                     }
                 }
 
-                return {closestGeometry, closestDistance};
+                return {closestGeometry.get(), closestDistance};
             }
             else
             {
@@ -186,7 +187,7 @@ namespace Yart
                 int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
                 return {
-                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
+                    _geometries[minimumIndex == -1 ? 0 : minimumIndex].get(),
                     minimumEntranceDistance,
                 };
             }

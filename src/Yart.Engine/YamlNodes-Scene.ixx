@@ -24,11 +24,14 @@ namespace Yart::Yaml
 	export class SceneConfig
 	{
 	public:
-		std::vector<std::unique_ptr<AreaLight>> AreaLights{};
-		std::vector<std::shared_ptr<IntersectableGeometry>> Geometries{};
+		std::vector<std::shared_ptr<const AreaLight>> AreaLights{};
+
+        std::vector<std::shared_ptr<const Sphere>> Spheres{};
+        std::vector<std::shared_ptr<const Plane>> Planes{};
+        std::vector<std::shared_ptr<const Parallelogram>> Parallelograms{};
 	};
 
-	std::unique_ptr<Sphere> ParseSphereNode(const Node& node, const MaterialMap& materialMap)
+	std::shared_ptr<const Sphere> ParseSphereNode(const Node& node, const MaterialMap& materialMap)
 	{
 		auto materialName = node["material"].as<std::string>();
 		auto material = materialMap.find(materialName)->second;
@@ -36,10 +39,10 @@ namespace Yart::Yaml
 		auto position = node["position"].as<Vector3>();
 		auto radius = node["radius"].as<float>();
 
-		return std::make_unique<Sphere>(position, radius, material.get());
+		return std::make_shared<const Sphere>(position, radius, material);
 	}
 
-	std::unique_ptr<Plane> ParsePlaneNode(const Node& node, const MaterialMap& materialMap)
+	std::shared_ptr<const Plane> ParsePlaneNode(const Node& node, const MaterialMap& materialMap)
 	{
 		auto materialName = node["material"].as<std::string>();
 		auto material = materialMap.find(materialName)->second;
@@ -47,10 +50,10 @@ namespace Yart::Yaml
 		auto normal = node["normal"].as<Vector3>();
 		auto point = node["point"].as<Vector3>();
 
-		return std::make_unique<Plane>(normal, point, material.get());
+		return std::make_shared<const Plane>(normal, point, material);
 	}
 
-	std::unique_ptr<Parallelogram> ParseParallelogramNode(const Node& node, const MaterialMap& materialMap)
+	std::shared_ptr<const Parallelogram> ParseParallelogramNode(const Node& node, const MaterialMap& materialMap)
 	{
 		auto materialName = node["material"].as<std::string>();
 		auto material = materialMap.find(materialName)->second;
@@ -59,24 +62,27 @@ namespace Yart::Yaml
 		auto edge1 = node["edge1"].as<Vector3>();
 		auto edge2 = node["edge2"].as<Vector3>();
 
-		return std::make_unique<Parallelogram>(position, edge1, edge2, material.get());
+		return std::make_shared<const Parallelogram>(position, edge1, edge2, material);
 	}
 
-	std::unique_ptr<AreaLight> ParseAreaLightNode(const Node& node, const MaterialMap& materialMap)
+	std::shared_ptr<const AreaLight> ParseAreaLightNode(const Node& node, SceneConfig& sceneConfig, const MaterialMap& materialMap)
 	{
 		auto parallelogramNode = node["parallelogram"];
 
 		if (parallelogramNode)
 		{
-			return std::move(ParseParallelogramNode(parallelogramNode, materialMap));
+            auto geometry = ParseParallelogramNode(parallelogramNode, materialMap);
+            sceneConfig.Parallelograms.push_back(geometry);
+
+			return geometry;
 		}
         else
         {
-            return std::unique_ptr<AreaLight>{};
+            return std::shared_ptr<const AreaLight>{};
 		}
 	}
 
-	std::unique_ptr<IntersectableGeometry> ParseGeometryNode(const Node& node, const MaterialMap& materialMap)
+	std::shared_ptr<const IntersectableGeometry> ParseGeometryNode(const Node& node, SceneConfig& sceneConfig, const MaterialMap& materialMap)
 	{
 		auto sphereNode = node["sphere"];
 		auto planeNode = node["plane"];
@@ -84,36 +90,44 @@ namespace Yart::Yaml
 
 		if (sphereNode)
 		{
-			return std::move(ParseSphereNode(sphereNode, materialMap));
+            auto geometry = ParseSphereNode(sphereNode, materialMap);
+            sceneConfig.Spheres.push_back(geometry);
+
+            return geometry;
 		}
 		else if (planeNode)
 		{
-			return std::move(ParseParallelogramNode(planeNode, materialMap));
+            auto geometry = ParsePlaneNode(planeNode, materialMap);
+            sceneConfig.Planes.push_back(geometry);
+
+            return geometry;
 		}
 		else if (parallelogramNode)
 		{
-			return std::move(ParseParallelogramNode(parallelogramNode, materialMap));
+            auto geometry = ParseParallelogramNode(parallelogramNode, materialMap);
+            sceneConfig.Parallelograms.push_back(geometry);
+
+            return geometry;
 		}
 		else
 		{
-            return std::unique_ptr<IntersectableGeometry>{};
+            return std::shared_ptr<const IntersectableGeometry>{};
 		}
 	}
 
-	export SceneConfig ParseSceneNode(const Node& node, const MaterialMap& materialMap)
+	export std::unique_ptr<SceneConfig> ParseSceneNode(const Node& node, const MaterialMap& materialMap)
 	{
-		SceneConfig config{};
+        auto config = std::unique_ptr<SceneConfig>(new SceneConfig{});
 
 		for (const Node& childNode : node["areaLights"])
 		{
-			auto areaLight = ParseAreaLightNode(childNode, materialMap);
-			config.AreaLights.push_back(std::move(areaLight));
+			auto areaLight = ParseAreaLightNode(childNode, *config, materialMap);
+			config->AreaLights.push_back(areaLight);
 		}
 
 		for (const Node& childNode : node["geometries"])
 		{
-			auto geometry = ParseGeometryNode(childNode, materialMap);
-			config.Geometries.push_back(std::move(geometry));
+			auto geometry = ParseGeometryNode(childNode, *config, materialMap);
 		}
 
 		return config;
