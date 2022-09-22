@@ -177,6 +177,9 @@
     <ClCompile Include="YamlNodes-Scene.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
+    <ClCompile Include="BoundingGeometry.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
