@@ -1,6 +1,5 @@
 config:
-  iterations: 4
-  subpixelCount: 8
+  iterations: 16
 
 camera:
   perspectiveCamera:
@@ -9,35 +8,35 @@ camera:
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 4
+    subpixelCount: 24
 
 materials:
   - emissiveMaterial:
       name: "White Light"
       emissiveColor: [1, 1, 1]
 
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "White"
       diffuseColor: [1, 1, 1]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Black"
       diffuseColor: [0, 0, 0]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Red"
       diffuseColor: [1, 0, 0]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Green"
       diffuseColor: [0, 1, 0]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Blue"
       diffuseColor: [0, 0, 1]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Orange"
       diffuseColor: [1, 1, 0]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Pink"
       diffuseColor: [1, 0, 1]
-  - lambertianMaterial2:
+  - lambertianMaterial:
       name: "Yellow"
       diffuseColor: [0, 1, 1]
 

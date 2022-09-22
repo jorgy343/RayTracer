@@ -97,7 +97,6 @@
     <ClCompile Include="IntersectionResult.ixx" />
     <ClCompile Include="IntersectionResultType.ixx" />
     <ClCompile Include="LambertianMaterial.ixx" />
-    <ClCompile Include="LambertianMaterial2.ixx" />
     <ClCompile Include="Light.ixx" />
     <ClCompile Include="Material.ixx" />
     <ClCompile Include="Math.ixx" />

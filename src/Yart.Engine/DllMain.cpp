@@ -6,7 +6,7 @@ import GeometryCollection;
 import GgxMaterial;
 import IntersectableGeometry;
 import LambertianMaterial;
-import LambertianMaterial2;
+import LambertianMaterial;
 import Math;
 import MirrorMaterial;
 import Parallelogram;
@@ -62,7 +62,6 @@ public:
 extern "C" __declspec(dllexport) void* __cdecl CreateScene()
 {
     auto [config, camera, sceneConfig, materialMap] = Yaml::LoadYaml();
-    int subpixelCountSquared = config->SubpixelCount * config->SubpixelCount;
 
     auto scene = std::make_shared<Scene>(sceneConfig->Geometry, Vector3{0.0f, 0.0f, 0.0f});
 
@@ -88,10 +87,10 @@ extern "C" __declspec(dllexport) void __cdecl DeleteScene(SceneData * sceneData)
 
 extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, const SceneData * sceneData, float* pixelBuffer)
 {
-    int subpixelCountSquared = sceneData->SavedConfig->SubpixelCount * sceneData->SavedConfig->SubpixelCount;
-
     Random random{};
     Camera& camera = *sceneData->SavedCamera;
+
+    int subpixelCountSquared = camera.SubpixelCount * camera.SubpixelCount;
 
     // Execute ray tracing.
     for (unsigned int count = 0; count < sceneData->SavedConfig->Iterations; count++)
@@ -102,9 +101,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
             {
                 Vector3 color{};
 
-                for (unsigned int subpixelY = 0; subpixelY < sceneData->SavedConfig->SubpixelCount; subpixelY++)
+                for (unsigned int subpixelY = 0; subpixelY < camera.SubpixelCount; subpixelY++)
                 {
-                    for (unsigned int subpixelX = 0; subpixelX < sceneData->SavedConfig->SubpixelCount; subpixelX++)
+                    for (unsigned int subpixelX = 0; subpixelX < camera.SubpixelCount; subpixelX++)
                     {
                         Ray ray = camera.CreateRay({x, y}, {subpixelX, subpixelY}, random);
                         Vector3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);

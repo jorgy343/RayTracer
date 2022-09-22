@@ -12,7 +12,7 @@ import :Vectors;
 import EmissiveMaterial;
 import GgxMaterial;
 import LambertianMaterial;
-import LambertianMaterial2;
+import LambertianMaterial;
 import Material;
 import Math;
 import MirrorMaterial;
@@ -42,15 +42,6 @@ namespace Yart::Yaml
         materialMap[name] = material;
     }
 
-    void ParseLambertianMaterial2(const Node& node, MaterialMap& materialMap)
-    {
-        auto name = node["name"].as<std::string>();
-        auto diffuseColor = node["diffuseColor"].as<Vector3>();
-
-        auto material = std::make_shared<LambertianMaterial2<false>>(diffuseColor);
-        materialMap[name] = material;
-    }
-
     void ParseGgxMaterial(const Node& node, MaterialMap& materialMap)
     {
         auto name = node["name"].as<std::string>();
@@ -74,7 +65,6 @@ namespace Yart::Yaml
 	{
 		auto emissiveMaterialNode = node["emissiveMaterial"];
 		auto lambertianMaterialNode = node["lambertianMaterial"];
-		auto lambertianMaterial2Node = node["lambertianMaterial2"];
 		auto ggxMaterialNode = node["ggxMaterial"];
 		auto mirrorMaterialNode = node["mirrorMaterial"];
 
@@ -85,10 +75,6 @@ namespace Yart::Yaml
 		else if (lambertianMaterialNode)
 		{
             ParseLambertianMaterial(lambertianMaterialNode, materialMap);
-		}
-		else if (lambertianMaterial2Node)
-		{
-            ParseLambertianMaterial2(lambertianMaterial2Node, materialMap);
 		}
 		else if (ggxMaterialNode)
 		{

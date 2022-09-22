@@ -33,7 +33,6 @@ namespace Yart
         Vector3 LookAt{};
         Vector3 Up{};
 
-        unsigned int SubpixelCount{};
         UIntVector2 ScreenSize{};
         float FieldOfView{0.0f};
 
@@ -45,10 +44,10 @@ namespace Yart
             const UIntVector2& screenSize,
             float fieldOfView)
             :
+            Camera{subpixelCount},
             Position{position},
             LookAt{lookAt},
             Up{up},
-            SubpixelCount{subpixelCount},
             ScreenSize{screenSize},
             FieldOfView{fieldOfView}
         {

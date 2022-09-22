@@ -117,9 +117,6 @@
     <ClCompile Include="LambertianMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
-    <ClCompile Include="LambertianMaterial2.ixx">
-      <Filter>Modules\Materials</Filter>
-    </ClCompile>
     <ClCompile Include="Material.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
