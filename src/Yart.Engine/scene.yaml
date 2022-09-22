@@ -1,5 +1,5 @@
 config:
-  iterations: 16
+  iterations: 8
 
 camera:
   perspectiveCamera:
@@ -8,7 +8,7 @@ camera:
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 16
+    subpixelCount: 4
 
 materials:
   - emissiveMaterial:

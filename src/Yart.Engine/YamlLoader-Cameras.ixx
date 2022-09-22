@@ -2,7 +2,7 @@ module;
 
 #include "yaml-cpp/yaml.h"
 
-export module YamlNodes:Cameras;
+export module YamlLoader:Cameras;
 
 import <memory>;
 

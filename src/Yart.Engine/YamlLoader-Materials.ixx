@@ -2,7 +2,7 @@ module;
 
 #include "yaml-cpp/yaml.h"
 
-export module YamlNodes:Materials;
+export module YamlLoader:Materials;
 
 import <memory>;
 import <string>;

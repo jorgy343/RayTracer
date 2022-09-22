@@ -21,7 +21,6 @@ import TransformedGeometry;
 import Vector2;
 import Vector3;
 import YamlLoader;
-import YamlNodes;
 
 #include <cmath>
 #include <memory>

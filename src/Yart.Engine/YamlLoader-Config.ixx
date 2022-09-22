@@ -2,7 +2,7 @@ module;
 
 #include "yaml-cpp/yaml.h"
 
-export module YamlNodes:Config;
+export module YamlLoader:Config;
 
 import <memory>;
 

@@ -121,12 +121,12 @@
     <ClCompile Include="Vector2.ixx" />
     <ClCompile Include="Vector3.ixx" />
     <ClCompile Include="Vector4.ixx" />
-    <ClCompile Include="YamlNodes-Cameras.ixx" />
-    <ClCompile Include="YamlNodes-Config.ixx" />
-    <ClCompile Include="YamlNodes-Materials.ixx" />
-    <ClCompile Include="YamlNodes-Scene.ixx" />
-    <ClCompile Include="YamlNodes-Vectors.ixx" />
-    <ClCompile Include="YamlNodes.ixx" />
+    <ClCompile Include="YamlLoader-Cameras.ixx" />
+    <ClCompile Include="YamlLoader-Config.ixx" />
+    <ClCompile Include="YamlLoader-Loader.ixx" />
+    <ClCompile Include="YamlLoader-Materials.ixx" />
+    <ClCompile Include="YamlLoader-Scene.ixx" />
+    <ClCompile Include="YamlLoader-Vectors.ixx" />
     <ClCompile Include="YamlLoader.ixx" />
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@ module;
 
 #include "yaml-cpp/yaml.h"
 
-export module YamlNodes:Vectors;
+export module YamlLoader:Vectors;
 
 import Vector2;
 import Vector3;

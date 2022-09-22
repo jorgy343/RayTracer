@@ -4,7 +4,7 @@ module;
 
 #include "yaml-cpp/yaml.h"
 
-export module YamlNodes:Scene;
+export module YamlLoader:Scene;
 
 import <memory>;
 import <tuple>;
