@@ -31,14 +31,14 @@ namespace Yart
     private:
         Vector3 _backgroundColor{0.0f};
 
-        std::vector<const IntersectableGeometry*> _geometries{};
+        const IntersectableGeometry* _rootGeometry{};
 
     public:
         std::vector<const Light*> Lights{};
         std::vector<const AreaLight*> AreaLights{};
 
-        inline constexpr explicit Scene(Vector3 backgroundColor)
-            : _backgroundColor{backgroundColor}
+        inline constexpr Scene(const IntersectableGeometry* rootGeometry, Vector3 backgroundColor)
+            : _rootGeometry{rootGeometry}, _backgroundColor { backgroundColor }
         {
             // TODO: This seems to fix some weird module linker issue/bug.
             Sphere sphere{};
@@ -54,11 +54,6 @@ namespace Yart
             AreaLights.push_back(areaLight);
         }
 
-        inline void AddGeometry(const IntersectableGeometry* geometry)
-        {
-            _geometries.push_back(geometry);
-        }
-
         inline Vector3 CastRayColor(const Ray& ray, const Random& random) const
         {
             return CastRayColor(ray, 1, random);
@@ -71,25 +66,15 @@ namespace Yart
                 return Vector3{};
             }
 
-            IntersectionResult closestIntersection{nullptr, std::numeric_limits<float>::infinity()};
-            for (const auto& geometry : _geometries)
-            {
-                IntersectionResult intersection = geometry->IntersectEntrance(ray);
-
-                if (intersection.HitDistance < closestIntersection.HitDistance)
-                {
-                    closestIntersection = intersection;
-                }
-            }
-
+            IntersectionResult intersection = _rootGeometry->IntersectEntrance(ray);
             Vector3 outputColor = _backgroundColor;
 
-            if (closestIntersection.HitGeometry)
+            if (intersection.HitGeometry)
             {
-                const Material* material = closestIntersection.HitGeometry->GetMaterial();
+                const Material* material = intersection.HitGeometry->GetMaterial();
 
-                Vector3 hitPosition = ray.Position + closestIntersection.HitDistance * ray.Direction;
-                Vector3 hitNormal = closestIntersection.HitGeometry->CalculateNormal(ray, hitPosition);
+                Vector3 hitPosition = ray.Position + intersection.HitDistance * ray.Direction;
+                Vector3 hitNormal = intersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * NormalBump;
 
                 outputColor = material->CalculateRenderingEquation(*this, random, depth, hitPosition, hitNormal, ray.Direction);
@@ -100,18 +85,8 @@ namespace Yart
 
         float CastRayDistance(const Ray& ray) const
         {
-            float closestIntersection = std::numeric_limits<float>::infinity();
-            for (auto geometry : _geometries)
-            {
-                float distance = geometry->IntersectEntrance(ray).HitDistance;
-
-                if (distance < closestIntersection)
-                {
-                    closestIntersection = distance;
-                }
-            }
-
-            return Math::max(0.0f, closestIntersection);
+            IntersectionResult intersection = _rootGeometry->IntersectEntrance(ray);
+            return Math::max(0.0f, intersection.HitDistance);
         }
     };
 }

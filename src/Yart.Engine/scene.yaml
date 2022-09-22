@@ -1,6 +1,6 @@
 config:
-    iterations: 24
-    subpixelCount: 16
+    iterations: 4
+    subpixelCount: 8
 camera:
     perspectiveCamera:
         position: [0, 0, -39]
@@ -8,7 +8,7 @@ camera:
         up: [0, 1, 0]
         fov: 45
         screenSize: [1920, 1080]
-        subpixelCount: 16
+        subpixelCount: 4
 materials:
     - emissiveMaterial:
         name: "White Light"
@@ -48,144 +48,147 @@ materials:
     - mirrorMaterial:
         name: "Mirror"
 scene:
-    areaLights:
-        - parallelogram:
-            material: "White Light"
-            position: [0, 19.9, -6]
-            edge1: [-1.2, 0, 0]
-            edge2: [0, 0, 1.2]
-    geometries:
-        - axisAlignedBox:
-            material: "GGX"
-            minimum: [14, 8, 6]
-            maximum: [16, 10, 8]
+    geometry:
+        geometryCollection:
+            children:
+                - parallelogram:
+                    areaLight: true
+                    material: "White Light"
+                    position: [0, 19.9, -6]
+                    edge1: [-1.2, 0, 0]
+                    edge2: [0, 0, 1.2]
 
-        - plane:
-            material: "Red"
-            normal: [0, 0, -1]
-            point: [0, 0, 20]
-        - plane:
-            material: "Green"
-            normal: [0, 0, 1]
-            point: [0, 0, -40]
-        - plane:
-            material: "Blue"
-            normal: [0, -1, 0]
-            point: [0, 20, 0]
-        - plane:
-            material: "Orange"
-            normal: [0, 1, 0]
-            point: [0, -20, 0]
-        - plane:
-            material: "Pink"
-            normal: [-1, 0, 0]
-            point: [20, 0, 0]
-        - plane:
-            material: "Yellow"
-            normal: [1, 0, 0]
-            point: [-20, 0, 0]
+                - axisAlignedBox:
+                    material: "GGX"
+                    minimum: [14, 8, 6]
+                    maximum: [16, 10, 8]
 
-        - sphere:
-            material: "White"
-            position: [-16, 16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [-8, 16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [0, 16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [8, 16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [16, 16, +18]
-            radius: 3
+                - plane:
+                    material: "Red"
+                    normal: [0, 0, -1]
+                    point: [0, 0, 20]
+                - plane:
+                    material: "Green"
+                    normal: [0, 0, 1]
+                    point: [0, 0, -40]
+                - plane:
+                    material: "Blue"
+                    normal: [0, -1, 0]
+                    point: [0, 20, 0]
+                - plane:
+                    material: "Orange"
+                    normal: [0, 1, 0]
+                    point: [0, -20, 0]
+                - plane:
+                    material: "Pink"
+                    normal: [-1, 0, 0]
+                    point: [20, 0, 0]
+                - plane:
+                    material: "Yellow"
+                    normal: [1, 0, 0]
+                    point: [-20, 0, 0]
 
-        - sphere:
-            material: "GGX"
-            position: [-16, 8, +18]
-            radius: 3
-        - sphere:
-            material: "GGX"
-            position: [-8, 8, +18]
-            radius: 3
-        - sphere:
-            material: "GGX"
-            position: [0, 8, +18]
-            radius: 3
-        - sphere:
-            material: "GGX"
-            position: [8, 8, +18]
-            radius: 3
-        - sphere:
-            material: "GGX"
-            position: [16, 8, +18]
-            radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-16, 16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, 16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, 16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, 16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, 16, +18]
+                    radius: 3
 
-        - sphere:
-            material: "White"
-            position: [-16, 0, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [-8, 0, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [0, 0, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [8, 0, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [16, 0, +18]
-            radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [-16, 8, +18]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [-8, 8, +18]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [0, 8, +18]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [8, 8, +18]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [16, 8, +18]
+                    radius: 3
 
-        - sphere:
-            material: "Mirror"
-            position: [-16, -8, +18]
-            radius: 3
-        - sphere:
-            material: "Mirror"
-            position: [-8, -8, +18]
-            radius: 3
-        - sphere:
-            material: "Mirror"
-            position: [0, -8, +18]
-            radius: 3
-        - sphere:
-            material: "Mirror"
-            position: [8, -8, +18]
-            radius: 3
-        - sphere:
-            material: "Mirror"
-            position: [16, -8, +18]
-            radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-16, 0, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, 0, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, 0, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, 0, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, 0, +18]
+                    radius: 3
 
-        - sphere:
-            material: "White"
-            position: [-16, -16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [-8, -16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [0, -16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [8, -16, +18]
-            radius: 3
-        - sphere:
-            material: "White"
-            position: [16, -16, +18]
-            radius: 3
+                - sphere:
+                    material: "Mirror"
+                    position: [-16, -8, +18]
+                    radius: 3
+                - sphere:
+                    material: "Mirror"
+                    position: [-8, -8, +18]
+                    radius: 3
+                - sphere:
+                    material: "Mirror"
+                    position: [0, -8, +18]
+                    radius: 3
+                - sphere:
+                    material: "Mirror"
+                    position: [8, -8, +18]
+                    radius: 3
+                - sphere:
+                    material: "Mirror"
+                    position: [16, -8, +18]
+                    radius: 3
+
+                - sphere:
+                    material: "White"
+                    position: [-16, -16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, -16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, -16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, -16, +18]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, -16, +18]
+                    radius: 3

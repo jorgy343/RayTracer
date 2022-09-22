@@ -25,6 +25,12 @@ namespace Yart
 
 		}
 
+        inline constexpr explicit GeometryCollection(std::vector<const IntersectableGeometry*> childGeometries)
+            : ChildGeometries{childGeometries}
+        {
+
+        }
+
 		inline IntersectionResult IntersectEntrance(const Ray& ray) const override
 		{
 			return Intersect<IntersectionResultType::Entrance>(ray);

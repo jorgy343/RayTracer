@@ -41,22 +41,19 @@ public:
     std::shared_ptr<Yaml::MaterialMap> SavedMaterialMap{};
     std::shared_ptr<Scene> SavedScene{};
     std::shared_ptr<Camera> SavedCamera{};
-    std::shared_ptr<std::vector<std::shared_ptr<const IntersectableGeometry>>> SoaGeometries{};
 
     SceneData(
         std::shared_ptr<Yaml::Config> savedConfig,
         std::shared_ptr<Yaml::SceneConfig> savedSceneConfig,
         std::shared_ptr<Yaml::MaterialMap> savedMaterialMap,
         std::shared_ptr<Scene> savedScene,
-        std::shared_ptr<Camera> savedCamera,
-        std::shared_ptr<std::vector<std::shared_ptr<const IntersectableGeometry>>> soaGeometries)
+        std::shared_ptr<Camera> savedCamera)
         :
         SavedConfig{savedConfig},
         SavedSceneConfig{savedSceneConfig},
         SavedMaterialMap{savedMaterialMap},
         SavedScene{savedScene},
-        SavedCamera{savedCamera},
-        SoaGeometries{soaGeometries}
+        SavedCamera{savedCamera}
     {
 
     }
@@ -67,110 +64,19 @@ extern "C" __declspec(dllexport) void* __cdecl CreateScene()
     auto [config, camera, sceneConfig, materialMap] = Yaml::LoadYaml();
     int subpixelCountSquared = config->SubpixelCount * config->SubpixelCount;
 
-    Scene scene{{0.0f, 0.0f, 0.0f}};
+    auto scene = std::make_shared<Scene>(sceneConfig->Geometry, Vector3{0.0f, 0.0f, 0.0f});
 
     for (auto areaLight : sceneConfig->AreaLights)
     {
-        scene.AddAreaLight(areaLight);
-    }
-
-    auto soaGeometries = std::shared_ptr<std::vector<std::shared_ptr<const IntersectableGeometry>>>{new std::vector<std::shared_ptr<const IntersectableGeometry>>{}};
-
-    auto chunkedSpheres = sceneConfig->Spheres | ranges::views::chunk(8);
-    for (const auto& chunkedSphere : chunkedSpheres)
-    {
-        if (chunkedSphere.size() == 1)
-        {
-            scene.AddGeometry(chunkedSphere[0].get());
-        }
-        else
-        {
-            auto soa = std::shared_ptr<SphereSoa>{new SphereSoa{}};
-            soaGeometries->push_back(soa);
-
-            int index = 0;
-            for (const auto& sphere : chunkedSphere)
-            {
-                soa->Insert(index++, sphere.get());
-            }
-
-            scene.AddGeometry(soa.get());
-        }
-    }
-
-    auto chunkedPlanes = sceneConfig->Planes | ranges::views::chunk(8);
-    for (const auto& chunkedPlane : chunkedPlanes)
-    {
-        if (chunkedPlane.size() == 1)
-        {
-            scene.AddGeometry(chunkedPlane[0].get());
-        }
-        else
-        {
-            auto soa = std::shared_ptr<PlaneSoa>{new PlaneSoa{}};
-            soaGeometries->push_back(soa);
-
-            int index = 0;
-            for (const auto& plane : chunkedPlane)
-            {
-                soa->Insert(index++, plane.get());
-            }
-
-            scene.AddGeometry(soa.get());
-        }
-    }
-
-    auto chunkedParallelograms = sceneConfig->Parallelograms | ranges::views::chunk(8);
-    for (const auto& chunkedParallelogram : chunkedParallelograms)
-    {
-        if (chunkedParallelogram.size() == 1)
-        {
-            scene.AddGeometry(chunkedParallelogram[0].get());
-        }
-        else
-        {
-            auto soa = std::shared_ptr<ParallelogramSoa>{new ParallelogramSoa{}};
-            soaGeometries->push_back(soa);
-
-            int index = 0;
-            for (const auto& parallelogram : chunkedParallelogram)
-            {
-                soa->Insert(index++, parallelogram.get());
-            }
-
-            scene.AddGeometry(soa.get());
-        }
-    }
-
-    auto chunkedAxisAlignedBoxes = sceneConfig->AxisAlignedBoxes | ranges::views::chunk(8);
-    for (const auto& chunkedAxisAlignedBox : chunkedAxisAlignedBoxes)
-    {
-        if (chunkedAxisAlignedBox.size() == 1)
-        {
-            scene.AddGeometry(chunkedAxisAlignedBox[0].get());
-        }
-        else
-        {
-            auto soa = std::shared_ptr<AxisAlignedBoxSoa>{new AxisAlignedBoxSoa{}};
-            soaGeometries->push_back(soa);
-
-            int index = 0;
-            for (const auto& axisAlignedBox : chunkedAxisAlignedBox)
-            {
-                soa->Insert(index++, axisAlignedBox.get());
-            }
-
-            scene.AddGeometry(soa.get());
-        }
+        scene->AddAreaLight(areaLight);
     }
 
     auto sceneData = new SceneData{
         config,
         sceneConfig,
         materialMap,
-        std::make_shared<Scene>(scene),
-        camera,
-        soaGeometries};
+        scene,
+        camera};
 
     return sceneData;
 }
