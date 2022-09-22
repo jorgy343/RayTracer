@@ -26,6 +26,7 @@ import Plane;
 import PlaneSoa;
 import Sphere;
 import SphereSoa;
+import Triangle;
 import Vector3;
 
 using namespace YAML;
@@ -103,6 +104,31 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
+    const Triangle* ParseTriangleNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto vertex0 = node["vertex0"].as<Vector3>();
+        auto vertex1 = node["vertex1"].as<Vector3>();
+        auto vertex2 = node["vertex2"].as<Vector3>();
+
+        std::shared_ptr<const Triangle> geometry;
+
+        if (node["normal"])
+        {
+            auto normal = node["normal"].as<Vector3>();
+            geometry = std::make_shared<const Triangle>(vertex0, vertex1, vertex2, normal, material);
+        }
+        else
+        {
+            geometry = std::make_shared<const Triangle>(vertex0, vertex1, vertex2, material);
+        }
+
+        sceneConfig.Geometries.push_back(geometry);
+        return geometry.get();
+    }
+
     const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
     {
         auto materialName = node["material"].as<std::string>();
@@ -143,6 +169,7 @@ namespace Yart::Yaml
         auto sphereNode = node["sphere"];
         auto planeNode = node["plane"];
         auto parallelogramNode = node["parallelogram"];
+        auto triangleNode = node["triangle"];
         auto axisAlignedBoxNode = node["axisAlignedBox"];
         auto geometryCollectionNode = node["geometryCollection"];
         auto boundingGeometryNode = node["boundingGeometry"];
@@ -179,6 +206,11 @@ namespace Yart::Yaml
             }
 
             return std::make_tuple(geometry, false);
+        }
+        else if (triangleNode)
+        {
+            auto geometry = ParseTriangleNode(triangleNode, materialMap, sceneConfig);
+            return std::make_tuple(geometry, true);
         }
         else if (axisAlignedBoxNode)
         {
