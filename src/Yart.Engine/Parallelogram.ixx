@@ -20,8 +20,8 @@ namespace Yart
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        const Material* AppliedMaterial{nullptr};
         float Area{};
+        const Material* AppliedMaterial{nullptr};
 
     public:
         inline constexpr Parallelogram() = default;

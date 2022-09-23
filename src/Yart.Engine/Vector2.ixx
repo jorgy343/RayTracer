@@ -81,12 +81,12 @@ namespace Yart
 			};
 		}
 
-		inline constexpr T Distance(const Vector2T& right)
+		inline constexpr T Distance(const Vector2T& right) const
 		{
 			return Math::sqrt(DistanceSquared(right));
 		}
 
-		inline constexpr T DistanceSquared(const Vector2T& right)
+		inline constexpr T DistanceSquared(const Vector2T& right) const
 		{
 			T x = X - right.X;
 			T y = Y - right.Y;

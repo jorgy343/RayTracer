@@ -4,7 +4,9 @@ export module Disc;
 
 import <limits>;
 
-import Geometry;
+import "Constants.h";
+
+import AreaLight;
 import IntersectionResult;
 import IntersectionResultType;
 import Material;
@@ -14,14 +16,15 @@ import Vector3;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Disc final : public Geometry
+    export class __declspec(dllexport) alignas(16) Disc final : public AreaLight
     {
     public:
         Vector3 Position{};
         Vector3 Normal{};
         float Distance{};
+        float Radius{};
         float RadiusSquared{};
-
+        float Area{};
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Disc() = default;
@@ -35,7 +38,9 @@ namespace Yart
             Position{position},
             Normal{normal},
             Distance{-(normal * position)},
+            Radius{radius},
             RadiusSquared{radius * radius},
+            Area{Pi * radius * radius},
             AppliedMaterial{appliedMaterial}
         {
 
@@ -77,6 +82,28 @@ namespace Yart
             float distanceToCenterSquared = hitPosition.DistanceSquared(Position);
 
             return distanceToCenterSquared <= RadiusSquared ? entranceDistance : std::numeric_limits<float>::infinity();
+        }
+
+        inline Vector3 GenerateRandomDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        {
+            float distanceFromCenter = Radius * Math::sqrt(random.GetNormalizedFloat());
+            float theta = random.GetNormalizedFloat() * TwoPi;
+
+            float dx = distanceFromCenter * Math::cos(theta);
+            float dy = distanceFromCenter * Math::sin(theta);
+
+            Vector3 xDirection = Normal.BuildPerpendicularVector();
+            Vector3 yDirection = Normal % xDirection;
+
+            Vector3 randomPointOnLight = Position + xDirection * dx + yDirection * dy;
+            Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
+
+            return directionToLight;
+        }
+
+        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
+        {
+            return Area;
         }
     };
 }

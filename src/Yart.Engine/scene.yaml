@@ -14,6 +14,9 @@ materials:
   - emissiveMaterial:
       name: "White Light"
       emissiveColor: [1, 1, 1]
+  - emissiveMaterial:
+      name: "Soft White Light"
+      emissiveColor: [0.01, 0.01, 0.01]
 
   - lambertianMaterial:
       name: "White"
@@ -63,6 +66,13 @@ scene:
             position: [0, 19.9, -6]
             edge1: [-1.2, 0, 0]
             edge2: [0, 0, 1.2]
+
+        #- disc:
+        #    areaLight: true
+        #    material: "White Light"
+        #    position: [0, 19.9, -6]
+        #    normal: [0, -1, 0]
+        #    radius: 0.65
 
         - triangle:
             material: "White"

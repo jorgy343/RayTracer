@@ -132,6 +132,8 @@ namespace Yart::Yaml
 
     const Disc* ParseDiscNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
     {
+        auto areaLight = node["areaLight"].as<bool>(false);
+
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
@@ -141,6 +143,11 @@ namespace Yart::Yaml
 
         auto geometry = std::make_shared<const Disc>(position, normal, radius, material);
         sceneConfig.Geometries.push_back(geometry);
+
+        if (areaLight)
+        {
+            sceneConfig.AreaLights.push_back(geometry.get());
+        }
 
         return geometry.get();
     }
