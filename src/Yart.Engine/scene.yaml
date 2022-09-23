@@ -91,6 +91,13 @@ scene:
             minimum: [14, 8, 6]
             maximum: [16, 10, 8]
 
+        #- cylinder:
+        #    material: "Light Blue"
+        #    position: [-14, 8, 6]
+        #    direction: [0, 1, 0]
+        #    height: 3
+        #    radius: 1
+
         - plane:
             material: "Red"
             normal: [0, 0, -1]

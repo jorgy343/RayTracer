@@ -16,6 +16,7 @@ import AreaLight;
 import AxisAlignedBox;
 import AxisAlignedBoxSoa;
 import BoundingGeometry;
+import Cylinder;
 import Disc;
 import GeometryCollection;
 import GeometrySoa;
@@ -166,6 +167,22 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
+    const Cylinder* ParseCylinderNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto position = node["position"].as<Vector3>();
+        auto direction = node["direction"].as<Vector3>();
+        auto height = node["height"].as<float>();
+        auto radius = node["radius"].as<float>();
+
+        auto geometry = std::make_shared<const Cylinder>(position, direction, height, radius, material);
+        sceneConfig.Geometries.push_back(geometry);
+
+        return geometry.get();
+    }
+
     const GeometryCollection* ParseGeometryCollectionNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
     {
         auto children = ParseGeometrySequenceNode(node["children"], materialMap, sceneConfig);
@@ -195,6 +212,7 @@ namespace Yart::Yaml
         auto triangleNode = node["triangle"];
         auto discNode = node["disc"];
         auto axisAlignedBoxNode = node["axisAlignedBox"];
+        auto cylinderNode = node["cylinder"];
         auto geometryCollectionNode = node["geometryCollection"];
         auto boundingGeometryNode = node["boundingGeometry"];
 
@@ -250,6 +268,11 @@ namespace Yart::Yaml
                 sequenceVectors->AsixAlignedBoxes.push_back(geometry);
             }
 
+            return std::make_tuple(geometry, false);
+        }
+        else if (cylinderNode)
+        {
+            auto geometry = ParseCylinderNode(cylinderNode, materialMap, sceneConfig);
             return std::make_tuple(geometry, false);
         }
         else if (geometryCollectionNode)

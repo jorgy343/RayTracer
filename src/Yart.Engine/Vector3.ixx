@@ -183,6 +183,11 @@ namespace Yart
             return result.Normalize();
         }
 
+        inline constexpr Vector3T ProjectOnto(const Vector3T& vector2) const
+        {
+            return vector2 * ((*this * vector2) / (vector2 * vector2));
+        }
+
 		inline constexpr Vector3T& Reciprical()
 		{
 			X = Math::rcp(X);

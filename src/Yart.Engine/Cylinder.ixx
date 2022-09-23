@@ -13,8 +13,7 @@ import Vector3;
 
 namespace Yart
 {
-    export template <bool IncludeCaps = true>
-    class alignas(16) Cylinder : public Geometry
+    export class alignas(16) Cylinder : public Geometry
     {
     public:
         Vector3 Position{};
@@ -48,115 +47,78 @@ namespace Yart
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
         {
-            return Vector3{};
+            Vector3 axisLine = Position + Direction * Height;
+            Vector3 v1 = hitPosition - Position;
+            Vector3 v2 = v1.ProjectOnto(Direction) + Position;
+
+            Vector3 normal = (v1 - v2).Normalize();
+            return normal;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
-            return {this, Intersect(ray)};
+            return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
         IntersectionResult IntersectExit(const Ray& ray) const override
         {
-            return {this, Intersect(ray)};
+            return {this, Intersect< IntersectionResultType::Exit>(ray)};
         }
 
+        template <IntersectionResultType TIntersectionResultType>
         force_inline constexpr float Intersect(const Ray& ray) const
         {
-            return std::numeric_limits<float>::infinity();
-        //    Vector3 rayPosition = ray.Position - (Direction * ray.Position) * Direction;
-        //    Vector3 rayDirection = ray.Direction - (Direction * ray.Direction) * Direction;
+            Vector3 rayPosition = ray.Position - (Direction * ray.Position) * Direction;
+            Vector3 rayDirection = ray.Direction - (Direction * ray.Direction) * Direction;
 
-        //    Vector3 cylinderPosition = Position - (Direction * Position) * Direction;
+            Vector3 cylinderPosition = Position - (Direction * Position) * Direction;
 
-        //    float a = rayDirection * rayDirection;
-        //    float b = 2 * ((rayPosition * rayDirection) - (cylinderPosition * rayDirection));
-        //    float c = -2 * (rayPosition * cylinderPosition) + (rayPosition * rayPosition) + (cylinderPosition * cylinderPosition) - Radius * Radius;
+            float a = rayDirection * rayDirection;
+            float b = 2 * ((rayPosition * rayDirection) - (cylinderPosition * rayDirection));
+            float c = -2 * (rayPosition * cylinderPosition) + (rayPosition * rayPosition) + (cylinderPosition * cylinderPosition) - Radius * Radius;
 
-        //    float tMin = std::numeric_limits<float>::infinity();
-        //    float tMax = std::numeric_limits<float>::infinity();
+            Vector3 point;
+            Vector3 positionToPoint;
+            Vector3 pointProjectedOntoDirection;
 
-        //    bool isValid = true;
+            float radicand = b * b - 4 * a * c;
+            if (radicand < 0.0f)
+            {
+                return std::numeric_limits<float>::infinity();
+            }
 
-        //    Vector3 point;
-        //    Vector3 positionToPoint;
-        //    Vector3 pointProjectedOntoDirection;
+            float denominator = 2 * a;
+            float negativeB = -b;
 
-        //    float radicand = b * b - 4 * a * c;
-        //    if (radicand < 0.0f)
-        //    {
-        //        isValid = false;
-        //        goto checkCaps;
-        //    }
+            float tMin = (negativeB - Math::sqrt(radicand)) / denominator;
+            float tMax = (negativeB + Math::sqrt(radicand)) / denominator;
 
-        //    float denominator = 2 * a;
-        //    float negativeB = -b;
+            if (tMax < 0.0f)
+            {
+                return std::numeric_limits<float>::infinity();
+            }
 
-        //    tMin = (negativeB - Math::sqrt(radicand)) / denominator;
-        //    tMax = (negativeB + Math::sqrt(radicand)) / denominator;
+            point = ray.Position + tMin * ray.Direction;
+            positionToPoint = point - Position;
+            pointProjectedOntoDirection = positionToPoint.ProjectOnto(Direction);
 
-        //    if (tMax < 0.0f)
-        //    {
-        //        isValid = false;
-        //        goto checkCaps;
-        //    }
+            float cosAngle = (positionToPoint * Direction) / (positionToPoint.Length() * Direction.Length());
+            if (positionToPoint * Direction <= 0.0f || pointProjectedOntoDirection.Length() > Height)
+            {
+                return std::numeric_limits<float>::infinity();
+            }
 
-        //    point = ray.Position + tMin * ray.Direction;
-        //    positionToPoint = point - Position;
-        //    pointProjectedOntoDirection = Vector3::Project(positionToPoint, Direction);
+            float result;
+            if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
+            {
+                result = tMin;
+            }
+            else
+            {
+                result = tMax;
+            }
 
-        //    float cosAngle = Vector3::Dot(positionToPoint, Direction) / (positionToPoint.GetLength() * Direction.GetLength());
-        //    if (Vector3::Dot(positionToPoint, Direction) <= 0.0f || pointProjectedOntoDirection.GetLength() > Height)
-        //    {
-        //        isValid = false;
-        //        goto checkCaps;
-        //    }
-
-        //checkCaps:
-        //    bool intersectionDataSet = false;
-
-        //    IntersectionData bottomCapIntersectionData;
-        //    if (IntersectBottomCap(ray, &bottomCapIntersectionData))
-        //    {
-        //        *intersectionData = bottomCapIntersectionData;
-        //        intersectionDataSet = true;
-        //    }
-
-        //    IntersectionData topCapIntersectionData;
-        //    if (IntersectTopCap(ray, &topCapIntersectionData) && (!intersectionDataSet || topCapIntersectionData.GetDistance() < intersectionData->GetDistance()))
-        //    {
-        //        *intersectionData = topCapIntersectionData;
-        //        intersectionDataSet = true;
-        //    }
-
-        //    // Determine the point and normal of intersection.
-        //    if (isValid && (!intersectionDataSet || tMin < intersectionData->GetDistance()))
-        //    {
-        //        Vector3 axisLine = Position + Direction * Height;
-        //        Vector3 v1 = point - Position;
-        //        Vector3 v2 = Vector3::Project(v1, Direction) + Position;
-
-        //        Vector3 normal = (v1 - v2).Normalize();
-
-        //        *intersectionData = IntersectionData(tMin, point, normal, this, this);
-        //        intersectionDataSet = true;
-        //    }
-
-        //    if (intersectionDataSet)
-        //    {
-        //        return this;
-        //    }
-
-        //    return nullptr;
-
-
-
-
-
-
-
-
-        //    return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+            return result;
         }
     };
 }
