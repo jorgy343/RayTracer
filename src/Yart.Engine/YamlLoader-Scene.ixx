@@ -16,6 +16,7 @@ import AreaLight;
 import AxisAlignedBox;
 import AxisAlignedBoxSoa;
 import BoundingGeometry;
+import Disc;
 import GeometryCollection;
 import GeometrySoa;
 import IntersectableGeometry;
@@ -129,6 +130,21 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
+    const Disc* ParseDiscNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto position = node["position"].as<Vector3>();
+        auto normal = node["normal"].as<Vector3>();
+        auto radius = node["radius"].as<float>();
+
+        auto geometry = std::make_shared<const Disc>(position, normal, radius, material);
+        sceneConfig.Geometries.push_back(geometry);
+
+        return geometry.get();
+    }
+
     const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
     {
         auto materialName = node["material"].as<std::string>();
@@ -170,6 +186,7 @@ namespace Yart::Yaml
         auto planeNode = node["plane"];
         auto parallelogramNode = node["parallelogram"];
         auto triangleNode = node["triangle"];
+        auto discNode = node["disc"];
         auto axisAlignedBoxNode = node["axisAlignedBox"];
         auto geometryCollectionNode = node["geometryCollection"];
         auto boundingGeometryNode = node["boundingGeometry"];
@@ -210,6 +227,11 @@ namespace Yart::Yaml
         else if (triangleNode)
         {
             auto geometry = ParseTriangleNode(triangleNode, materialMap, sceneConfig);
+            return std::make_tuple(geometry, true);
+        }
+        else if (discNode)
+        {
+            auto geometry = ParseDiscNode(discNode, materialMap, sceneConfig);
             return std::make_tuple(geometry, true);
         }
         else if (axisAlignedBoxNode)

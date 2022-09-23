@@ -4,3 +4,4 @@
 #define MAX_VECTOR_SIZE 256
 
 #include "vectorclass.h"
+#include "ranvec1.h"

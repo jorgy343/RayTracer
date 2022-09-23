@@ -85,8 +85,10 @@
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="Cylinder.ixx" />
     <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
+    <ClCompile Include="Disc.ixx" />
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="EmissiveMaterial.ixx" />
     <ClCompile Include="Geometry.ixx" />
@@ -107,10 +109,12 @@
     <ClCompile Include="Parallelogram.ixx" />
     <ClCompile Include="ParallelogramSoa.ixx" />
     <ClCompile Include="PerspectiveCamera.ixx" />
+    <ClCompile Include="physseed.cpp" />
     <ClCompile Include="Plane.ixx" />
     <ClCompile Include="PlaneSoa.ixx" />
     <ClCompile Include="PointLight.ixx" />
     <ClCompile Include="Random.ixx" />
+    <ClCompile Include="ranvec1.cpp" />
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="Scene.ixx" />
     <ClCompile Include="Sphere.ixx" />
@@ -132,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="ranvec1.h" />
     <ClInclude Include="Vcl.h" />
   </ItemGroup>
   <ItemGroup>

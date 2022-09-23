@@ -57,7 +57,7 @@ namespace Yart
 			}
 			else
 			{
-				int indexOfLightToSample = random.GetInteger() % scene.AreaLights.size();
+				int indexOfLightToSample = random.GetInteger(0, scene.AreaLights.size() - 1);
 				auto& light = scene.AreaLights[indexOfLightToSample];
 
 				// Direct light sample to a random light.

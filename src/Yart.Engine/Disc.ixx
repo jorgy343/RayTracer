@@ -1,6 +1,6 @@
 module;
 
-export module Plane;
+export module Disc;
 
 import <limits>;
 
@@ -14,23 +14,29 @@ import Vector3;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Plane final : public Geometry
+    export class __declspec(dllexport) alignas(16) Disc final : public Geometry
     {
     public:
+        Vector3 Position{};
         Vector3 Normal{};
         float Distance{};
+        float RadiusSquared{};
+
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr Plane() = default;
+        inline constexpr Disc() = default;
 
-        inline constexpr Plane(const Vector3& normal, float distance, const Material* appliedMaterial)
-            : Normal{normal}, Distance{distance}, AppliedMaterial{appliedMaterial}
-        {
-
-        }
-
-        inline constexpr Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
-            : Normal{normal}, Distance{-(normal * point)}, AppliedMaterial{appliedMaterial}
+        inline constexpr Disc(
+            const Vector3& position,
+            const Vector3& normal,
+            const float radius,
+            const Material* appliedMaterial)
+            :
+            Position{position},
+            Normal{normal},
+            Distance{-(normal * position)},
+            RadiusSquared{radius * radius},
+            AppliedMaterial{appliedMaterial}
         {
 
         }
@@ -62,7 +68,15 @@ namespace Yart
 
             float entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
 
-            return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+            if (entranceDistance < 0.0f)
+            {
+                return std::numeric_limits<float>::infinity();
+            }
+
+            Vector3 hitPosition = ray.Position + entranceDistance * ray.Direction;
+            float distanceToCenterSquared = hitPosition.DistanceSquared(Position);
+
+            return distanceToCenterSquared <= RadiusSquared ? entranceDistance : std::numeric_limits<float>::infinity();
         }
     };
 }

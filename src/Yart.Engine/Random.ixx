@@ -1,9 +1,13 @@
 module;
 
+#include "Vcl.h"
+
 export module Random;
 
 import <cstdint>;
 import <random>;
+
+using namespace vcl;
 
 namespace Yart
 {
@@ -11,43 +15,23 @@ namespace Yart
     {
     private:
         mutable uint32_t _state{};
+        mutable Ranvec1 _ranvec{3};
 
     public:
-        inline constexpr Random()
+        Random()
         {
-            if (std::is_constant_evaluated())
-            {
-                _state = 7910260;
-            }
-            else
-            {
-                std::random_device randomDevice{};
-                _state = randomDevice();
-            }
+            std::random_device randomDevice{};
+            _ranvec.init(physicalSeed(), randomDevice());
         }
 
-        inline constexpr explicit Random(uint32_t seed)
-            : _state{seed}
+        inline int GetInteger(int inclusiveMin, int inclusiveMax) const
         {
-
+            return _ranvec.random1i(inclusiveMin, inclusiveMax);
         }
 
-        inline constexpr uint32_t GetInteger() const
+        inline float GetNormalizedFloat() const
         {
-            uint32_t x = _state;
-            x ^= x << 13;
-            x ^= x >> 17;
-            x ^= x << 5;
-
-            _state = x;
-
-            return _state;
-        }
-
-        inline constexpr float GetNormalizedFloat() const
-        {
-            uint32_t x = GetInteger();
-            return static_cast<float>(x) / static_cast<float>(4294967295);
+            return _ranvec.random1f();
         }
     };
 }

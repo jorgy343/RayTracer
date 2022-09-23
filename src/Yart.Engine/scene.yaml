@@ -40,6 +40,10 @@ materials:
       name: "Yellow"
       diffuseColor: [0, 1, 1]
 
+  - lambertianMaterial:
+      name: "Light Blue"
+      diffuseColor: [0.7, 0.7, 1]
+
   - ggxMaterial:
       name: "GGX"
       diffuseColor: [1, 1, 1]
@@ -65,6 +69,12 @@ scene:
             vertex0: [-4, 0, 10]
             vertex1: [0, 4, 10]
             vertex2: [4, 0, 10]
+
+        - disc:
+            material: "Light Blue"
+            position: [-14, 2, 10]
+            normal: [0, 0, -1]
+            radius: 3
 
         - axisAlignedBox:
             material: "GGX"

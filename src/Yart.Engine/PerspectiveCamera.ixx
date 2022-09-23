@@ -74,7 +74,7 @@ namespace Yart
             _subpixelSizeY = Math::rcp(static_cast<float>(subpixelCount)) * _recipricalHeight;
         }
 
-        constexpr Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel, const Random& random) const override
+        Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel, const Random& random) const override
         {
             float normalizedX = static_cast<float>(ScreenSize.X - pixel.X - 1) * _recipricalWidth;
             float normalizedY = static_cast<float>(pixel.Y) * _recipricalHeight;

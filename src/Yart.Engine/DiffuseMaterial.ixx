@@ -18,7 +18,7 @@ namespace Yart
 
 		}
 
-		inline constexpr Vector3 GenerateCosineWeightedHemisphereSample(const Random& random, const Vector3& hitNormal) const
+		inline Vector3 GenerateCosineWeightedHemisphereSample(const Random& random, const Vector3& hitNormal) const
 		{
 			float random1 = random.GetNormalizedFloat();
 			float random2 = random.GetNormalizedFloat();

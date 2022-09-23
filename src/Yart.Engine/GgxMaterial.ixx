@@ -34,7 +34,7 @@ namespace Yart
 
 		}
 
-		inline constexpr Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+		inline Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
 		{
 			Vector3 V = -incomingDirection;
 			float NdotV = hitNormal * V;
@@ -112,7 +112,7 @@ namespace Yart
 			return f0 + (Vector3{1.0f} - f0) * x * x * x * x * x;
 		}
 
-		inline constexpr Vector3 GetGgxMicrofacet(const Random& random, const Vector3& hitNormal) const
+		inline Vector3 GetGgxMicrofacet(const Random& random, const Vector3& hitNormal) const
 		{
 			float rand1 = random.GetNormalizedFloat();
 			float rand2 = random.GetNormalizedFloat();

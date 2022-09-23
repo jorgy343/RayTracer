@@ -99,7 +99,7 @@ namespace Yart
                         continue;
                     }
 
-                    float distance = geometry->Intersect<TIntersectionResultType>(ray);
+                    float distance = geometry->Intersect(ray);
 
                     if (distance < closestDistance)
                     {
