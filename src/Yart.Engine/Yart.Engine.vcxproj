@@ -130,6 +130,7 @@
     <ClCompile Include="YamlLoader-Config.ixx" />
     <ClCompile Include="YamlLoader-Loader.ixx" />
     <ClCompile Include="YamlLoader-Materials.ixx" />
+    <ClCompile Include="YamlLoader-Matrices.ixx" />
     <ClCompile Include="YamlLoader-Scene.ixx" />
     <ClCompile Include="YamlLoader-Vectors.ixx" />
     <ClCompile Include="YamlLoader.ixx" />

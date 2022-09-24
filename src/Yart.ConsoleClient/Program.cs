@@ -19,6 +19,11 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
     {
         void* sceneData = Native.CreateScene();
 
+        //fixed (float* pixelBufferPointer = pixelBuffer)
+        //{
+        //    Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(566, 284), new UIntVector2(566, 284), sceneData, pixelBufferPointer);
+        //}
+
         Parallel.For(0, screenHeight - 1, y =>
         //for (int y = 0; y < screenHeight; y++)
         {

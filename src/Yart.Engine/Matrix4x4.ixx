@@ -74,6 +74,16 @@ namespace Yart
             };
         }
 
+        inline constexpr static Matrix4x4 CreateRotation(Vector3 radians)
+        {
+            return CreateRotation(radians.X, radians.Y, radians.Z);
+        }
+
+        inline constexpr static Matrix4x4 CreateRotation(float radiansX, float radiansY, float radiansZ)
+        {
+            return CreateRotationX(radiansX) * CreateRotationY(radiansY) * CreateRotationZ(radiansZ);
+        }
+
         inline constexpr static Matrix4x4 CreateRotationX(float radians)
         {
             float cosine = Math::cos(radians);
@@ -705,6 +715,12 @@ namespace Yart
             M43 -= other.M43;
             M44 -= other.M44;
 
+            return *this;
+        }
+
+        inline constexpr Matrix4x4& operator*=(const Matrix4x4& other)
+        {
+            *this = *this * other;
             return *this;
         }
 

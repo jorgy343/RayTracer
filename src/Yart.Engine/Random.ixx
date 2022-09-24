@@ -14,7 +14,6 @@ namespace Yart
     export class Random
     {
     private:
-        mutable uint32_t _state{};
         mutable Ranvec1 _ranvec{3};
 
     public:

@@ -4,6 +4,7 @@ module;
 
 export module YamlLoader:Materials;
 
+import <functional>;
 import <memory>;
 import <string>;
 import <tuple>;
@@ -73,7 +74,7 @@ namespace Yart::Yaml
         materialMap[name] = material;
     }
 
-    static std::vector<std::tuple<std::string, void (*)(const Node&, MaterialMap&)>> MaterialMapFunctions
+    static std::vector<std::tuple<std::string, std::function<void(const Node&, MaterialMap&)>>> MaterialMapFunctions
     {
         {"emissive", &ParseEmissiveMaterial},
         {"lambertian", &ParseLambertianMaterial},

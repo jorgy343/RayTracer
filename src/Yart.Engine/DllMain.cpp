@@ -94,9 +94,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
                         Ray ray = camera.CreateRay({x, y}, {subpixelX, subpixelY}, random);
                         Vector3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);
 
-                        sampledColor.X = std::isnan(sampledColor.X) ? 0.0f : sampledColor.X;
-                        sampledColor.Y = std::isnan(sampledColor.Y) ? 0.0f : sampledColor.Y;
-                        sampledColor.Z = std::isnan(sampledColor.Z) ? 0.0f : sampledColor.Z;
+                        sampledColor.X = Math::max(0.0f, Math::min(1.0f, std::isnan(sampledColor.X) ? 0.0f : sampledColor.X));
+                        sampledColor.Y = Math::max(0.0f, Math::min(1.0f, std::isnan(sampledColor.Y) ? 0.0f : sampledColor.Y));
+                        sampledColor.Z = Math::max(0.0f, Math::min(1.0f, std::isnan(sampledColor.Z) ? 0.0f : sampledColor.Z));
 
                         color += sampledColor;
                     }

@@ -429,6 +429,12 @@ namespace Yart
             return *this;
         }
 
+        inline constexpr Matrix3x3& operator*=(const Matrix3x3& other)
+        {
+            *this = *this * other;
+            return *this;
+        }
+
         inline constexpr Matrix3x3& operator+=(float other)
         {
             M11 += other;

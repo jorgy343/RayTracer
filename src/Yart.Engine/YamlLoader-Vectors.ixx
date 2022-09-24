@@ -22,13 +22,25 @@ namespace YAML
 
 		static bool decode(const Node& node, Vector2& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 2)
+			if (!node.IsSequence())
 			{
 				return false;
 			}
 
-			rhs.X = node[0].as<float>();
-			rhs.Y = node[1].as<float>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<float>();
+                rhs.Y = node[0].as<float>();
+            }
+            else if (node.size() == 2)
+            {
+                rhs.X = node[0].as<float>();
+                rhs.Y = node[1].as<float>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -44,13 +56,25 @@ namespace YAML
 
 		static bool decode(const Node& node, IntVector2& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 2)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<int>();
-			rhs.Y = node[1].as<int>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<int>();
+                rhs.Y = node[0].as<int>();
+            }
+            else if (node.size() == 2)
+            {
+                rhs.X = node[0].as<int>();
+                rhs.Y = node[1].as<int>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -66,13 +90,25 @@ namespace YAML
 
 		static bool decode(const Node& node, UIntVector2& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 2)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<unsigned int>();
-			rhs.Y = node[1].as<unsigned int>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<unsigned int>();
+                rhs.Y = node[0].as<unsigned int>();
+            }
+            else if (node.size() == 2)
+            {
+                rhs.X = node[0].as<unsigned int>();
+                rhs.Y = node[1].as<unsigned int>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -88,14 +124,27 @@ namespace YAML
 
 		static bool decode(const Node& node, Vector3& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 3)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<float>();
-			rhs.Y = node[1].as<float>();
-			rhs.Z = node[2].as<float>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<float>();
+                rhs.Y = node[0].as<float>();
+                rhs.Z = node[0].as<float>();
+            }
+            else if (node.size() == 3)
+            {
+                rhs.X = node[0].as<float>();
+                rhs.Y = node[1].as<float>();
+                rhs.Z = node[2].as<float>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -111,14 +160,27 @@ namespace YAML
 
 		static bool decode(const Node& node, IntVector3& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 3)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<int>();
-			rhs.Y = node[1].as<int>();
-			rhs.Z = node[2].as<int>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<int>();
+                rhs.Y = node[0].as<int>();
+                rhs.Z = node[0].as<int>();
+            }
+            else if (node.size() == 3)
+            {
+                rhs.X = node[0].as<int>();
+                rhs.Y = node[1].as<int>();
+                rhs.Z = node[2].as<int>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -134,14 +196,27 @@ namespace YAML
 
 		static bool decode(const Node& node, UIntVector3& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 3)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<unsigned int>();
-			rhs.Y = node[1].as<unsigned int>();
-			rhs.Z = node[2].as<unsigned int>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<unsigned int>();
+                rhs.Y = node[0].as<unsigned int>();
+                rhs.Z = node[0].as<unsigned int>();
+            }
+            else if (node.size() == 3)
+            {
+                rhs.X = node[0].as<unsigned int>();
+                rhs.Y = node[1].as<unsigned int>();
+                rhs.Z = node[2].as<unsigned int>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -157,15 +232,29 @@ namespace YAML
 
 		static bool decode(const Node& node, Vector4& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 4)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<float>();
-			rhs.Y = node[1].as<float>();
-			rhs.Z = node[2].as<float>();
-			rhs.W = node[3].as<float>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<float>();
+                rhs.Y = node[0].as<float>();
+                rhs.Z = node[0].as<float>();
+                rhs.W = node[0].as<float>();
+            }
+            else if (node.size() == 4)
+            {
+                rhs.X = node[0].as<float>();
+                rhs.Y = node[1].as<float>();
+                rhs.Z = node[2].as<float>();
+                rhs.W = node[3].as<float>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -181,15 +270,29 @@ namespace YAML
 
 		static bool decode(const Node& node, IntVector4& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 4)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<int>();
-			rhs.Y = node[1].as<int>();
-			rhs.Z = node[2].as<int>();
-			rhs.W = node[3].as<int>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<int>();
+                rhs.Y = node[0].as<int>();
+                rhs.Z = node[0].as<int>();
+                rhs.W = node[0].as<int>();
+            }
+            else if (node.size() == 4)
+            {
+                rhs.X = node[0].as<int>();
+                rhs.Y = node[1].as<int>();
+                rhs.Z = node[2].as<int>();
+                rhs.W = node[3].as<int>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}
@@ -205,15 +308,29 @@ namespace YAML
 
 		static bool decode(const Node& node, UIntVector4& rhs)
 		{
-			if (!node.IsSequence() || node.size() != 4)
-			{
-				return false;
-			}
+            if (!node.IsSequence())
+            {
+                return false;
+            }
 
-			rhs.X = node[0].as<unsigned int>();
-			rhs.Y = node[1].as<unsigned int>();
-			rhs.Z = node[2].as<unsigned int>();
-			rhs.W = node[3].as<unsigned int>();
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<unsigned int>();
+                rhs.Y = node[0].as<unsigned int>();
+                rhs.Z = node[0].as<unsigned int>();
+                rhs.W = node[0].as<unsigned int>();
+            }
+            else if (node.size() == 4)
+            {
+                rhs.X = node[0].as<unsigned int>();
+                rhs.Y = node[1].as<unsigned int>();
+                rhs.Z = node[2].as<unsigned int>();
+                rhs.W = node[3].as<unsigned int>();
+            }
+            else
+            {
+                return false;
+            }
 
 			return true;
 		}

@@ -201,6 +201,9 @@
     <ClCompile Include="RefractiveMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="YamlLoader-Matrices.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

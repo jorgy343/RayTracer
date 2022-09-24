@@ -13,17 +13,17 @@ camera:
 materials:
   - emissive:
       name: "White Light"
-      emissiveColor: [1, 1, 1]
+      emissiveColor: [2]
   - emissive:
       name: "Soft White Light"
-      emissiveColor: [0.01, 0.01, 0.01]
+      emissiveColor: [0.01]
 
   - lambertian:
       name: "White"
-      diffuseColor: [1, 1, 1]
+      diffuseColor: [1]
   - lambertian:
       name: "Black"
-      diffuseColor: [0, 0, 0]
+      diffuseColor: [0]
   - lambertian:
       name: "Red"
       diffuseColor: [1, 0, 0]
@@ -49,8 +49,8 @@ materials:
 
   - ggx:
       name: "GGX"
-      diffuseColor: [1, 1, 1]
-      specularColor: [0.4, 0.4, 0.4]
+      diffuseColor: [1]
+      specularColor: [0.7]
       roughness: 0.07
 
   - reflective:
@@ -58,7 +58,7 @@ materials:
 
   - refractive:
       name: "Refractive"
-      refractionIndex: 1.02
+      refractionIndex: 1.03
 
 scene:
   geometry:
@@ -102,10 +102,15 @@ scene:
         #    height: 3
         #    radius: 1
 
-        - sphere:
-            material: "Refractive"
-            position: [-3, 2, 0]
-            radius: 4
+        - transformed:
+            child:
+              sphere:
+                material: "Refractive"
+                position: [0, 0, 0]
+                radius: 4
+            transformation:
+              - scale: [1, 2, 1]
+              - translate: [-3, 2, 0]
 
         - plane:
             material: "Red"

@@ -6,11 +6,15 @@ module;
 
 export module YamlLoader:Scene;
 
+import <functional>;
 import <memory>;
+import <string>;
 import <tuple>;
 import <unordered_map>;
+import <vector>;
 
 import :Materials;
+import :Matrices;
 import :Vectors;
 import AreaLight;
 import AxisAlignedBox;
@@ -28,6 +32,7 @@ import Plane;
 import PlaneSoa;
 import Sphere;
 import SphereSoa;
+import TransformedGeometry;
 import Triangle;
 import Vector3;
 
@@ -53,10 +58,10 @@ namespace Yart::Yaml
         std::vector<const AxisAlignedBox*> AsixAlignedBoxes{};
     };
 
-    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors);
+    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors, bool geometryOnly);
     std::shared_ptr<std::vector<const IntersectableGeometry*>> ParseGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig);
 
-    const Sphere* ParseSphereNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const Sphere* ParseSphereNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -67,10 +72,15 @@ namespace Yart::Yaml
         auto geometry = std::make_shared<const Sphere>(position, radius, material);
         sceneConfig.Geometries.push_back(geometry);
 
+        if (sequenceVectors)
+        {
+            sequenceVectors->Spheres.push_back(geometry.get());
+        }
+
         return geometry.get();
     }
 
-    const Plane* ParsePlaneNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const Plane* ParsePlaneNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -81,10 +91,15 @@ namespace Yart::Yaml
         auto geometry = std::make_shared<const Plane>(normal, point, material);
         sceneConfig.Geometries.push_back(geometry);
 
+        if (sequenceVectors)
+        {
+            sequenceVectors->Planes.push_back(geometry.get());
+        }
+
         return geometry.get();
     }
 
-    const Parallelogram* ParseParallelogramNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const Parallelogram* ParseParallelogramNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto areaLight = node["areaLight"].as<bool>(false);
 
@@ -103,10 +118,15 @@ namespace Yart::Yaml
             sceneConfig.AreaLights.push_back(geometry.get());
         }
 
+        if (sequenceVectors)
+        {
+            sequenceVectors->Parallelograms.push_back(geometry.get());
+        }
+
         return geometry.get();
     }
 
-    const Triangle* ParseTriangleNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const Triangle* ParseTriangleNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -131,7 +151,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Disc* ParseDiscNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const Disc* ParseDiscNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto areaLight = node["areaLight"].as<bool>(false);
 
@@ -153,7 +173,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -164,10 +184,15 @@ namespace Yart::Yaml
         auto geometry = std::make_shared<const AxisAlignedBox>(minimum, maximum, material);
         sceneConfig.Geometries.push_back(geometry);
 
+        if (sequenceVectors)
+        {
+            sequenceVectors->AsixAlignedBoxes.push_back(geometry.get());
+        }
+
         return geometry.get();
     }
 
-    const Cylinder* ParseCylinderNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const Cylinder* ParseCylinderNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -183,7 +208,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const GeometryCollection* ParseGeometryCollectionNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const GeometryCollection* ParseGeometryCollectionNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
         auto children = ParseGeometrySequenceNode(node["children"], materialMap, sceneConfig);
 
@@ -193,10 +218,10 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const BoundingGeometry* ParseBoundingGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig)
+    const BoundingGeometry* ParseBoundingGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
-        auto [boundingVolume, ignored1] = ParseGeometryNode(node["boundingVolume"], materialMap, sceneConfig, nullptr);
-        auto [child, ignored2] = ParseGeometryNode(node["child"], materialMap, sceneConfig, nullptr);
+        auto [boundingVolume, ignored1] = ParseGeometryNode(node["boundingVolume"], materialMap, sceneConfig, nullptr, false);
+        auto [child, ignored2] = ParseGeometryNode(node["child"], materialMap, sceneConfig, nullptr, false);
 
         auto geometry = std::make_shared<const BoundingGeometry>(boundingVolume, child);
         sceneConfig.Geometries.push_back(geometry);
@@ -204,86 +229,46 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
+    const TransformedGeometry* ParseTransformedGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors)
     {
-        auto sphereNode = node["sphere"];
-        auto planeNode = node["plane"];
-        auto parallelogramNode = node["parallelogram"];
-        auto triangleNode = node["triangle"];
-        auto discNode = node["disc"];
-        auto axisAlignedBoxNode = node["axisAlignedBox"];
-        auto cylinderNode = node["cylinder"];
-        auto geometryCollectionNode = node["geometryCollection"];
-        auto boundingGeometryNode = node["boundingGeometry"];
+        auto [childGeometry, ignored] = ParseGeometryNode(node["child"], materialMap, sceneConfig, nullptr, true);
+        auto matrix = ParseTransformationSequence(node["transformation"]);
 
-        if (sphereNode)
+        auto geometry = std::make_shared<const TransformedGeometry>(reinterpret_cast<const Geometry*>(childGeometry), matrix);
+        sceneConfig.Geometries.push_back(geometry);
+
+        return geometry.get();
+    }
+
+    static std::vector<std::tuple<std::string, bool, bool, std::function<const IntersectableGeometry* (const Node&, const MaterialMap&, SceneConfig&, SequenceVectors*)>>> GeometryMapFunctions
+    {
+        {"sphere", true, false, &ParseSphereNode},
+        {"plane", true, false, &ParsePlaneNode},
+        {"parallelogram", true, false, &ParseParallelogramNode},
+        {"triangle", true, true, &ParseTriangleNode},
+        {"disc", true, true, &ParseDiscNode},
+        {"axisAlignedBox", true, false, &ParseAxisAlignedBoxNode},
+        {"cylinder", true, true, &ParseCylinderNode},
+        {"geometryCollection", false, true, &ParseGeometryCollectionNode},
+        {"boundingGeometry", false, true, &ParseBoundingGeometryNode},
+        {"transformed", true, true, &ParseTransformedGeometryNode},
+    };
+
+    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, SequenceVectors* sequenceVectors, bool geometryOnly)
+    {
+        for (const auto& [nodeName, isGeometry, shouldInclude, functionPointer] : GeometryMapFunctions)
         {
-            auto geometry = ParseSphereNode(sphereNode, materialMap, sceneConfig);
-
-            if (sequenceVectors)
+            if (geometryOnly && !isGeometry)
             {
-                sequenceVectors->Spheres.push_back(geometry);
+                continue;
             }
 
-            return std::make_tuple(geometry, false);
-        }
-        else if (planeNode)
-        {
-            auto geometry = ParsePlaneNode(planeNode, materialMap, sceneConfig);
-
-            if (sequenceVectors)
+            auto childNode = node[nodeName];
+            if (childNode)
             {
-                sequenceVectors->Planes.push_back(geometry);
+                auto geometry = functionPointer(childNode, materialMap, sceneConfig, sequenceVectors);
+                return std::make_tuple(geometry, shouldInclude);
             }
-
-            return std::make_tuple(geometry, false);
-        }
-        else if (parallelogramNode)
-        {
-            auto geometry = ParseParallelogramNode(parallelogramNode, materialMap, sceneConfig);
-
-            if (sequenceVectors)
-            {
-                sequenceVectors->Parallelograms.push_back(geometry);
-            }
-
-            return std::make_tuple(geometry, false);
-        }
-        else if (triangleNode)
-        {
-            auto geometry = ParseTriangleNode(triangleNode, materialMap, sceneConfig);
-            return std::make_tuple(geometry, true);
-        }
-        else if (discNode)
-        {
-            auto geometry = ParseDiscNode(discNode, materialMap, sceneConfig);
-            return std::make_tuple(geometry, true);
-        }
-        else if (axisAlignedBoxNode)
-        {
-            auto geometry = ParseAxisAlignedBoxNode(axisAlignedBoxNode, materialMap, sceneConfig);
-
-            if (sequenceVectors)
-            {
-                sequenceVectors->AsixAlignedBoxes.push_back(geometry);
-            }
-
-            return std::make_tuple(geometry, false);
-        }
-        else if (cylinderNode)
-        {
-            auto geometry = ParseCylinderNode(cylinderNode, materialMap, sceneConfig);
-            return std::make_tuple(geometry, false);
-        }
-        else if (geometryCollectionNode)
-        {
-            auto geometry = ParseGeometryCollectionNode(geometryCollectionNode, materialMap, sceneConfig);
-            return std::make_tuple(geometry, true);
-        }
-        else if (boundingGeometryNode)
-        {
-            auto geometry = ParseBoundingGeometryNode(boundingGeometryNode, materialMap, sceneConfig);
-            return std::make_tuple(geometry, true);
         }
 
         return std::make_tuple(nullptr, false);
@@ -323,7 +308,7 @@ namespace Yart::Yaml
 
         for (const Node& childNode : node)
         {
-            auto [geometry, shouldInclude] = ParseGeometryNode(childNode, materialMap, sceneConfig, &sequenceVectors);
+            auto [geometry, shouldInclude] = ParseGeometryNode(childNode, materialMap, sceneConfig, &sequenceVectors, false);
             if (shouldInclude)
             {
                 geometries->push_back(geometry);
@@ -342,7 +327,7 @@ namespace Yart::Yaml
     {
         auto sceneConfig = std::shared_ptr<SceneConfig>(new SceneConfig{});
 
-        auto [geometry, _] = ParseGeometryNode(node["geometry"], materialMap, *sceneConfig, nullptr);
+        auto [geometry, _] = ParseGeometryNode(node["geometry"], materialMap, *sceneConfig, nullptr, false);
         sceneConfig->Geometry = geometry;
 
         return sceneConfig;
