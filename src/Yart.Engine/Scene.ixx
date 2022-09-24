@@ -77,7 +77,14 @@ namespace Yart
                 Vector3 hitNormal = intersection.HitGeometry->CalculateNormal(ray, hitPosition);
                 hitPosition += hitNormal * NormalBump;
 
-                outputColor = material->CalculateRenderingEquation(*this, random, depth, hitPosition, hitNormal, ray.Direction);
+                outputColor = material->CalculateRenderingEquation(
+                    *this,
+                    random,
+                    depth,
+                    intersection.HitGeometry,
+                    hitPosition,
+                    hitNormal,
+                    ray.Direction);
             }
 
             return outputColor;

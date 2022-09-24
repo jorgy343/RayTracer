@@ -148,6 +148,41 @@ namespace Yart
             return (X * right.X) + (Y * right.Y) + (Z * right.Z);
         }
 
+        //static constexpr void Fresnel(const Vector3T& direction, const Vector3T& normal, T fromIndex, T toIndex, Vector3T* reflection, Vector3T* refraction, T* reflectionCoefficient, T* refractionCoefficient)
+        //{
+        //    Vector3T b = Dot(direction, normal);
+        //    Vector3T c = -b;
+
+        //    T n = fromIndex / toIndex;
+        //    T sinT2 = n * n * (T{1} - c * c);
+
+        //    // Reflection
+        //    *reflection = direction - T{2} * b * normal;
+
+        //    // Refraction
+        //    T refractionRadicand = T{1} - sinT2;
+        //    if (refractionRadicand < T{0})
+        //    {
+        //        *refraction = Vector3T(T{0});
+        //    }
+
+        //    *refraction = (n * direction) + (n * c - Math::sqrt(refractionRadicand)) * normal;
+
+        //    // Reflection Coefficient
+        //    T r0 = (fromIndex - toIndex) / (fromIndex + toIndex);
+        //    r0 *= r0;
+
+        //    T cosX = c;
+        //    if (fromIndex > toIndex)
+        //    {
+        //        cosX = Math::sqrt(T{1} - cosX);
+        //    }
+
+        //    T x = T{1} - cosX;
+        //    *reflectionCoefficient = r0 + (T{1} - r0) * x * x * x * x * x;
+        //    *refractionCoefficient = T{1} - *reflectionCoefficient;
+        //}
+
         inline constexpr T Length() const
         {
             return Math::sqrt(LengthSquared());
@@ -183,9 +218,9 @@ namespace Yart
             return result.Normalize();
         }
 
-        inline constexpr Vector3T ProjectOnto(const Vector3T& vector2) const
+        inline constexpr Vector3T ProjectOnto(const Vector3T& vectorToProjectOnto) const
         {
-            return vector2 * ((*this * vector2) / (vector2 * vector2));
+            return vectorToProjectOnto * ((*this * vectorToProjectOnto) / (vectorToProjectOnto * vectorToProjectOnto));
         }
 
 		inline constexpr Vector3T& Reciprical()
@@ -208,6 +243,31 @@ namespace Yart
         inline constexpr Vector3T Reflect(const Vector3T& normal) const
         {
             return *this - 2.0f * (*this * normal) * normal;
+        }
+
+        static constexpr Vector3T Refract(const Vector3T& incomingDirection, const Vector3T& normal, T fromIndex, T toIndex)
+        {
+            T n = fromIndex / toIndex;
+            T cos = incomingDirection * normal;
+
+            T underSquareRoot = T{1} - n * n * (T{1} - cos * cos);
+            if (underSquareRoot < T{0})
+            {
+                return Vector3T{};
+            }
+
+            return (n * incomingDirection) - (n * cos + Math::sqrt(underSquareRoot)) * normal;
+        }
+
+        static constexpr T SchlickApproximation(const Vector3T& incomingDirection, const Vector3T& normal, T fromIndex, T toIndex)
+        {
+            T r = (fromIndex - toIndex) / (fromIndex + toIndex);
+            r = r * r;
+
+            T cos = -incomingDirection * normal;
+            T x = T{1} - cos;
+
+            return r + (T{1} - r) * x * x * x * x * x;
         }
 
         inline constexpr Vector3T operator+() const

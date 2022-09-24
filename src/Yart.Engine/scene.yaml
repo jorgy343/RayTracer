@@ -11,50 +11,54 @@ camera:
     subpixelCount: 4
 
 materials:
-  - emissiveMaterial:
+  - emissive:
       name: "White Light"
       emissiveColor: [1, 1, 1]
-  - emissiveMaterial:
+  - emissive:
       name: "Soft White Light"
       emissiveColor: [0.01, 0.01, 0.01]
 
-  - lambertianMaterial:
+  - lambertian:
       name: "White"
       diffuseColor: [1, 1, 1]
-  - lambertianMaterial:
+  - lambertian:
       name: "Black"
       diffuseColor: [0, 0, 0]
-  - lambertianMaterial:
+  - lambertian:
       name: "Red"
       diffuseColor: [1, 0, 0]
-  - lambertianMaterial:
+  - lambertian:
       name: "Green"
       diffuseColor: [0, 1, 0]
-  - lambertianMaterial:
+  - lambertian:
       name: "Blue"
       diffuseColor: [0, 0, 1]
-  - lambertianMaterial:
+  - lambertian:
       name: "Orange"
       diffuseColor: [1, 1, 0]
-  - lambertianMaterial:
+  - lambertian:
       name: "Pink"
       diffuseColor: [1, 0, 1]
-  - lambertianMaterial:
+  - lambertian:
       name: "Yellow"
       diffuseColor: [0, 1, 1]
 
-  - lambertianMaterial:
+  - lambertian:
       name: "Light Blue"
       diffuseColor: [0.7, 0.7, 1]
 
-  - ggxMaterial:
+  - ggx:
       name: "GGX"
       diffuseColor: [1, 1, 1]
       specularColor: [0.4, 0.4, 0.4]
       roughness: 0.07
 
-  - mirrorMaterial:
-      name: "Mirror"
+  - reflective:
+      name: "Reflective"
+
+  - refractive:
+      name: "Refractive"
+      refractionIndex: 1.02
 
 scene:
   geometry:
@@ -98,6 +102,11 @@ scene:
         #    height: 3
         #    radius: 1
 
+        - sphere:
+            material: "Refractive"
+            position: [-3, 2, 0]
+            radius: 4
+
         - plane:
             material: "Red"
             normal: [0, 0, -1]
@@ -126,7 +135,7 @@ scene:
         - boundingGeometry:
             boundingVolume:
               axisAlignedBox:
-                material: "Mirror"
+                material: "White"
                 minimum: [-19, -19, 14]
                 maximum: [19, 19, 20]
             child:
@@ -196,23 +205,23 @@ scene:
                       radius: 3
 
                   - sphere:
-                      material: "Mirror"
+                      material: "Reflective"
                       position: [-16, -8, 17]
                       radius: 3
                   - sphere:
-                      material: "Mirror"
+                      material: "Reflective"
                       position: [-8, -8, 17]
                       radius: 3
                   - sphere:
-                      material: "Mirror"
+                      material: "Reflective"
                       position: [0, -8, 17]
                       radius: 3
                   - sphere:
-                      material: "Mirror"
+                      material: "Reflective"
                       position: [8, -8, 17]
                       radius: 3
                   - sphere:
-                      material: "Mirror"
+                      material: "Reflective"
                       position: [16, -8, 17]
                       radius: 3
 

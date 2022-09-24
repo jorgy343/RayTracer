@@ -104,7 +104,7 @@
     <ClCompile Include="Math.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
-    <ClCompile Include="MirrorMaterial.ixx" />
+    <ClCompile Include="ReflectiveMaterial.ixx" />
     <ClCompile Include="MonteCarlo.ixx" />
     <ClCompile Include="Parallelogram.ixx" />
     <ClCompile Include="ParallelogramSoa.ixx" />
@@ -116,6 +116,7 @@
     <ClCompile Include="Random.ixx" />
     <ClCompile Include="ranvec1.cpp" />
     <ClCompile Include="Ray.ixx" />
+    <ClCompile Include="RefractiveMaterial.ixx" />
     <ClCompile Include="Scene.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />

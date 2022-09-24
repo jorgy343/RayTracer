@@ -4,6 +4,7 @@ import "Constants.h";
 
 import AreaLight;
 import DiffuseMaterial;
+import Geometry;
 import Random;
 import Ray;
 import Scene;
@@ -21,7 +22,14 @@ namespace Yart
 
 		}
 
-		constexpr Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+		constexpr Vector3 CalculateRenderingEquation(
+            const Scene& scene,
+            const Random& random,
+            int currentDepth,
+            const Geometry* hitGeometry,
+            const Vector3& hitPosition,
+            const Vector3& hitNormal,
+            const Vector3& incomingDirection) const override
 		{
 			float roulettePower{1.0f};
 			if constexpr (EnableRoulette)

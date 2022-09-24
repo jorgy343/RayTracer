@@ -120,7 +120,7 @@
     <ClCompile Include="Material.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
-    <ClCompile Include="MirrorMaterial.ixx">
+    <ClCompile Include="ReflectiveMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
     <ClCompile Include="Plane.ixx">
@@ -197,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="Disc.ixx">
       <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="RefractiveMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

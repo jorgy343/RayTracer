@@ -6,7 +6,9 @@ export module YamlLoader:Materials;
 
 import <memory>;
 import <string>;
+import <tuple>;
 import <unordered_map>;
+import <vector>;
 
 import :Vectors;
 import EmissiveMaterial;
@@ -15,23 +17,24 @@ import LambertianMaterial;
 import LambertianMaterial;
 import Material;
 import Math;
-import MirrorMaterial;
+import ReflectiveMaterial;
+import RefractiveMaterial;
 import Vector3;
 
 using namespace YAML;
 
 namespace Yart::Yaml
 {
-	export using MaterialMap = std::unordered_map<std::string, std::shared_ptr<const Material>>;
+    export using MaterialMap = std::unordered_map<std::string, std::shared_ptr<const Material>>;
 
-	void ParseEmissiveMaterial(const Node& node, MaterialMap& materialMap)
-	{
-		auto name = node["name"].as<std::string>();
-		auto emissiveColor = node["emissiveColor"].as<Vector3>();
+    void ParseEmissiveMaterial(const Node& node, MaterialMap& materialMap)
+    {
+        auto name = node["name"].as<std::string>();
+        auto emissiveColor = node["emissiveColor"].as<Vector3>();
 
-		auto material = std::make_shared<EmissiveMaterial>(emissiveColor);
-		materialMap[name] = material;
-	}
+        auto material = std::make_shared<EmissiveMaterial>(emissiveColor);
+        materialMap[name] = material;
+    }
 
     void ParseLambertianMaterial(const Node& node, MaterialMap& materialMap)
     {
@@ -53,41 +56,46 @@ namespace Yart::Yaml
         materialMap[name] = material;
     }
 
-    void ParseMirrorMaterial(const Node& node, MaterialMap& materialMap)
+    void ParseReflectiveMaterial(const Node& node, MaterialMap& materialMap)
     {
         auto name = node["name"].as<std::string>();
 
-        auto material = std::make_shared<MirrorMaterial>();
+        auto material = std::make_shared<ReflectiveMaterial>();
         materialMap[name] = material;
     }
 
+    void ParseRefractiveMaterial(const Node& node, MaterialMap& materialMap)
+    {
+        auto name = node["name"].as<std::string>();
+        auto refractionIndex = node["refractionIndex"].as<float>();
+
+        auto material = std::make_shared<RefractiveMaterial>(refractionIndex);
+        materialMap[name] = material;
+    }
+
+    static std::vector<std::tuple<std::string, void (*)(const Node&, MaterialMap&)>> MaterialMapFunctions
+    {
+        {"emissive", &ParseEmissiveMaterial},
+        {"lambertian", &ParseLambertianMaterial},
+        {"ggx", &ParseGgxMaterial},
+        {"reflective", &ParseReflectiveMaterial},
+        {"refractive", &ParseRefractiveMaterial},
+    };
+
     void ParseMaterialNode(const Node& node, MaterialMap& materialMap)
-	{
-		auto emissiveMaterialNode = node["emissiveMaterial"];
-		auto lambertianMaterialNode = node["lambertianMaterial"];
-		auto ggxMaterialNode = node["ggxMaterial"];
-		auto mirrorMaterialNode = node["mirrorMaterial"];
+    {
+        for (const auto& [nodeName, functionPointer] : MaterialMapFunctions)
+        {
+            auto childNode = node[nodeName];
+            if (childNode)
+            {
+                functionPointer(childNode, materialMap);
+            }
+        }
+    }
 
-		if (emissiveMaterialNode)
-		{
-            ParseEmissiveMaterial(emissiveMaterialNode, materialMap);
-		}
-		else if (lambertianMaterialNode)
-		{
-            ParseLambertianMaterial(lambertianMaterialNode, materialMap);
-		}
-		else if (ggxMaterialNode)
-		{
-            ParseGgxMaterial(ggxMaterialNode, materialMap);
-		}
-		else if (mirrorMaterialNode)
-		{
-            ParseMirrorMaterial(mirrorMaterialNode, materialMap);
-		}
-	}
-
-	export std::shared_ptr<MaterialMap> ParseMaterialsNode(const Node& node)
-	{
+    export std::shared_ptr<MaterialMap> ParseMaterialsNode(const Node& node)
+    {
         auto materialMap = std::shared_ptr<MaterialMap>{new MaterialMap{}};
 
         if (!node.IsSequence())
@@ -101,5 +109,5 @@ namespace Yart::Yaml
         }
 
         return materialMap;
-	}
+    }
 }

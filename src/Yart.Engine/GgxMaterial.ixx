@@ -3,6 +3,7 @@ export module GgxMaterial;
 import "Constants.h";
 
 import DiffuseMaterial;
+import Geometry;
 import Math;
 import MonteCarlo;
 import Random;
@@ -34,7 +35,14 @@ namespace Yart
 
 		}
 
-		inline Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+		inline Vector3 CalculateRenderingEquation(
+            const Scene& scene,
+            const Random& random,
+            int currentDepth,
+            const Geometry* hitGeometry,
+            const Vector3& hitPosition,
+            const Vector3& hitNormal,
+            const Vector3& incomingDirection) const override
 		{
 			Vector3 V = -incomingDirection;
 			float NdotV = hitNormal * V;

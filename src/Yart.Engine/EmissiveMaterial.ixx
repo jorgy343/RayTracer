@@ -1,5 +1,6 @@
 export module EmissiveMaterial;
 
+import Geometry;
 import Material;
 import Random;
 import Ray;
@@ -20,7 +21,14 @@ namespace Yart
 
         }
 
-        inline constexpr Vector3 CalculateRenderingEquation(const Scene& scene, const Random& random, int currentDepth, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection) const override
+        inline constexpr Vector3 CalculateRenderingEquation(
+            const Scene& scene,
+            const Random& random,
+            int currentDepth,
+            const Geometry* hitGeometry,
+            const Vector3& hitPosition,
+            const Vector3& hitNormal,
+            const Vector3& incomingDirection) const override
         {
             return EmissiveColor;
         }
