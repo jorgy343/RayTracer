@@ -14,35 +14,36 @@ import Vector3;
 
 namespace Yart
 {
-    export class PerspectiveCamera : public Camera
+    export template <std::floating_point T = float>
+        class PerspectiveCamera : public Camera
     {
     private:
-        float _recipricalWidth{};
-        float _recipricalHeight{};
+        T _recipricalWidth{};
+        T _recipricalHeight{};
 
-        float _subpixelSizeX{};
-        float _subpixelSizeY{};
+        T _subpixelSizeX{};
+        T _subpixelSizeY{};
 
-        Vector3 _du{};
-        Vector3 _dv{};
+        Vector3T<T> _du{};
+        Vector3T<T> _dv{};
 
-        Vector3 _upperLeftCorner{};
+        Vector3T<T> _upperLeftCorner{};
 
     public:
-        Vector3 Position{};
-        Vector3 LookAt{};
-        Vector3 Up{};
+        Vector3T<T> Position{};
+        Vector3T<T> LookAt{};
+        Vector3T<T> Up{};
 
         UIntVector2 ScreenSize{};
-        float FieldOfView{};
+        T FieldOfView{};
 
         inline constexpr PerspectiveCamera(
-            const Vector3& position,
-            const Vector3& lookAt,
-            const Vector3& up,
+            const Vector3T<T>& position,
+            const Vector3T<T>& lookAt,
+            const Vector3T<T>& up,
             unsigned int subpixelCount,
             const UIntVector2& screenSize,
-            float fieldOfView)
+            T fieldOfView)
             :
             Camera{subpixelCount},
             Position{position},
@@ -51,42 +52,47 @@ namespace Yart
             ScreenSize{screenSize},
             FieldOfView{fieldOfView}
         {
-            Vector3 forward = (Position - LookAt).Normalize();
+            Vector3T<T> forward = (Position - LookAt).Normalize();
 
-            Vector3 u = (Up % forward).Normalize();
-            Vector3 v = (forward % u).Normalize();
+            Vector3T<T> u = (Up % forward).Normalize();
+            Vector3T<T> v = (forward % u).Normalize();
 
-            float aspectRatio = static_cast<float>(ScreenSize.X) / static_cast<float>(ScreenSize.Y);
-            float halfWidth = Math::tan(FieldOfView * 0.5f);
+            T aspectRatio = static_cast<T>(ScreenSize.X) / static_cast<T>(ScreenSize.Y);
+            T halfWidth = Math::tan(FieldOfView * T{0.5});
 
-            float viewportHeight = halfWidth * 2.0f;
-            float viewportWidth = aspectRatio * viewportHeight;
+            T viewportHeight = halfWidth * T{2.0};
+            T viewportWidth = aspectRatio * viewportHeight;
 
             _du = viewportWidth * u;
             _dv = viewportHeight * v;
 
-            _upperLeftCorner = Position - _du * 0.5f + _dv * 0.5f - forward;
+            _upperLeftCorner = Position - _du * T{0.5} + _dv * T{0.5} - forward;
 
-            _recipricalWidth = Math::rcp(static_cast<float>(ScreenSize.X));
-            _recipricalHeight = Math::rcp(static_cast<float>(ScreenSize.Y));
+            _recipricalWidth = Math::rcp(static_cast<T>(ScreenSize.X));
+            _recipricalHeight = Math::rcp(static_cast<T>(ScreenSize.Y));
 
-            _subpixelSizeX = Math::rcp(static_cast<float>(subpixelCount)) * _recipricalWidth;
-            _subpixelSizeY = Math::rcp(static_cast<float>(subpixelCount)) * _recipricalHeight;
+            _subpixelSizeX = Math::rcp(static_cast<T>(subpixelCount)) * _recipricalWidth;
+            _subpixelSizeY = Math::rcp(static_cast<T>(subpixelCount)) * _recipricalHeight;
         }
 
         Ray CreateRay(UIntVector2 pixel, UIntVector2 subpixel, const Random& random) const override
         {
-            float normalizedX = static_cast<float>(ScreenSize.X - pixel.X - 1) * _recipricalWidth;
-            float normalizedY = static_cast<float>(pixel.Y) * _recipricalHeight;
+            T normalizedX = static_cast<T>(ScreenSize.X - pixel.X - 1) * _recipricalWidth;
+            T normalizedY = static_cast<T>(pixel.Y) * _recipricalHeight;
 
-            normalizedX += static_cast<float>(subpixel.X) * _subpixelSizeX;
-            normalizedY += static_cast<float>(subpixel.Y) * _subpixelSizeY;
+            normalizedX += static_cast<T>(subpixel.X) * _subpixelSizeX;
+            normalizedY += static_cast<T>(subpixel.Y) * _subpixelSizeY;
 
-            normalizedX += random.GetNormalizedFloat() * _subpixelSizeX;
-            normalizedY += random.GetNormalizedFloat() * _subpixelSizeY;
+            normalizedX += static_cast<T>(random.GetNormalized<T>()) * _subpixelSizeX;
+            normalizedY += static_cast<T>(random.GetNormalized<T>()) * _subpixelSizeY;
 
-            Vector3 rayDirection = _upperLeftCorner + (normalizedX * _du) - (normalizedY * _dv) - Position;
-            return {Position, rayDirection.Normalize()};
+            Vector3T<T> rayDirection = (_upperLeftCorner + (normalizedX * _du) - (normalizedY * _dv) - Position).Normalize();
+
+            return
+            {
+                Vector3{static_cast<float>(Position.X), static_cast<float>(Position.Y), static_cast<float>(Position.Z)},
+                Vector3{static_cast<float>(rayDirection.X), static_cast<float>(rayDirection.Y), static_cast<float>(rayDirection.Z)}
+            };
         }
     };
 }

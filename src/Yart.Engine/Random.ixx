@@ -4,6 +4,7 @@ module;
 
 export module Random;
 
+import <concepts>;
 import <cstdint>;
 import <random>;
 
@@ -31,6 +32,23 @@ namespace Yart
         inline float GetNormalizedFloat() const
         {
             return _ranvec.random1f();
+        }
+
+        template <std::floating_point T>
+        inline T GetNormalized() const
+        {
+            if constexpr (std::same_as<float, T>)
+            {
+                return _ranvec.random1f();
+            }
+            else if constexpr (std::same_as<double, T>)
+            {
+                return _ranvec.random1d();
+            }
+            else
+            {
+                static_assert("Type not supported in GetNormalized().");
+            }
         }
     };
 }

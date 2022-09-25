@@ -150,6 +150,42 @@ namespace YAML
 		}
 	};
 
+    export template<>
+        struct convert<Vector3T<double>>
+    {
+        static Node encode(const Vector3T<double>& rhs)
+        {
+            return {};
+        }
+
+        static bool decode(const Node& node, Vector3T<double>& rhs)
+        {
+            if (!node.IsSequence())
+            {
+                return false;
+            }
+
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<double>();
+                rhs.Y = node[0].as<double>();
+                rhs.Z = node[0].as<double>();
+            }
+            else if (node.size() == 3)
+            {
+                rhs.X = node[0].as<double>();
+                rhs.Y = node[1].as<double>();
+                rhs.Z = node[2].as<double>();
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+    };
+
 	export template<>
 		struct convert<IntVector3>
 	{

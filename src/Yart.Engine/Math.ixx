@@ -118,12 +118,16 @@ namespace Yart
             {
                 return gcem::sqrt(value);
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 __m128 mmValue = _mm_load_ss(&value);
                 _mm_store_ss(&value, _mm_sqrt_ss(mmValue));
 
                 return value;
+            }
+            else
+            {
+                return std::sqrt(value);
             }
         }
 
@@ -134,12 +138,15 @@ namespace Yart
             {
                 return value == T{0} ? std::numeric_limits<T>::infinity() : T{1} / value;
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 __m128 mmValue = _mm_load_ss(&value);
                 _mm_store_ss(&value, _mm_rcp_ss(mmValue));
-
                 return value;
+            }
+            else
+            {
+                return value == T{0} ? std::numeric_limits<T>::infinity() : T{1} / value;
             }
         }
 

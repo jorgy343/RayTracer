@@ -61,7 +61,7 @@ namespace Yart
             float discriminant = (b * b) - (a * c);
             if (discriminant < 0.0f)
             {
-                std::numeric_limits<float>::infinity();
+                return std::numeric_limits<float>::infinity();
             }
 
             float discriminantSqrt = Math::sqrt(discriminant);
