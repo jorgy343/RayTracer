@@ -77,7 +77,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(int index, const Parallelogram* geometry) override final
+        constexpr void Insert(size_t index, const Parallelogram* geometry) override final
         {
             assert(index >= 0 && index < 8);
 
@@ -151,7 +151,7 @@ namespace Yart
                 Vec8f edge1Y = Vec8f{}.load_a(_edge1Y);
                 Vec8f edge1Z = Vec8f{}.load_a(_edge1Z);
 
-                Vec8f determinant = SimdDot2(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
+                Vec8f determinant = SimdDot(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
                 Vec8f invDeterminant = approx_recipr(determinant);
 
                 Vec8f rayPositionX{ray.Position.X};
@@ -166,11 +166,11 @@ namespace Yart
                 Vec8f tY = rayPositionY - positionY;
                 Vec8f tZ = rayPositionZ - positionZ;
 
-                Vec8f a = SimdDot2(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
+                Vec8f a = SimdDot(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
                 Vec8f3 q = SimdCrossProduct(tX, tY, tZ, edge1X, edge1Y, edge1Z);
-                Vec8f b = SimdDot2(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
+                Vec8f b = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
 
-                Vec8f entranceDistance = SimdDot2(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
+                Vec8f entranceDistance = SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
 
                 Vec8fb comparison =
                     entranceDistance >= Vec8f(0.0f) &&

@@ -60,7 +60,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(int index, const Plane* geometry) override final
+        constexpr void Insert(size_t index, const Plane* geometry) override final
         {
             assert(index >= 0 && index < 8);
 
@@ -71,77 +71,48 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Entrance>(ray);
+            return Intersect(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override final
         {
-            return Intersect<IntersectionResultType::Exit>(ray);
+            return Intersect(ray);
         }
 
     private:
-        template <IntersectionResultType TIntersectionResultType>
-        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
+        force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            if (std::is_constant_evaluated())
-            {
-                float closestDistance = std::numeric_limits<float>::infinity();
-                const Plane* closestGeometry = nullptr;
+            Vec8f rayDirectionX{ray.Direction.X};
+            Vec8f rayDirectionY{ray.Direction.Y};
+            Vec8f rayDirectionZ{ray.Direction.Z};
 
-                for (int i = 0; i < 8; i++)
-                {
-                    auto geometry = _geometries[i];
+            Vec8f normalX = Vec8f{}.load_a(_normalX);
+            Vec8f normalY = Vec8f{}.load_a(_normalY);
+            Vec8f normalZ = Vec8f{}.load_a(_normalZ);
 
-                    if (geometry == nullptr)
-                    {
-                        continue;
-                    }
+            Vec8f normalDotDirection = SimdDot(normalX, normalY, normalZ, rayDirectionX, rayDirectionY, rayDirectionZ);
 
-                    float distance = geometry->Intersect(ray);
+            Vec8f rayPositionX{ray.Position.X};
+            Vec8f rayPositionY{ray.Position.Y};
+            Vec8f rayPositionZ{ray.Position.Z};
 
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestGeometry = geometry;
-                    }
-                }
+            Vec8f normalDotRayPosition = SimdDot(normalX, normalY, normalZ, rayPositionX, rayPositionY, rayPositionZ);
 
-                return {closestGeometry, closestDistance};
-            }
-            else
-            {
-                Vec8f rayDirectionX{ray.Direction.X};
-                Vec8f rayDirectionY{ray.Direction.Y};
-                Vec8f rayDirectionZ{ray.Direction.Z};
+            Vec8f distance = Vec8f{}.load_a(_distance);
+            Vec8f entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
 
-                Vec8f normalX = Vec8f{}.load_a(_normalX);
-                Vec8f normalY = Vec8f{}.load_a(_normalY);
-                Vec8f normalZ = Vec8f{}.load_a(_normalZ);
+            // Make sure infinite8f() is second so nans are replaced with inf.
+            Vec8f clampedEntranceDistance = select(entranceDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
 
-                Vec8f normalDotDirection = SimdDot(normalX, rayDirectionX, normalY, rayDirectionY, normalZ, rayDirectionZ);
+            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
 
-                Vec8f rayPositionX{ray.Position.X};
-                Vec8f rayPositionY{ray.Position.Y};
-                Vec8f rayPositionZ{ray.Position.Z};
-
-                Vec8f normalDotRayPosition = SimdDot(normalX, rayPositionX, normalY, rayPositionY, normalZ, rayPositionZ);
-
-                Vec8f distance = Vec8f{}.load_a(_distance);
-                Vec8f entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
-
-                // Make sure infinite8f() is second so nans are replaced with inf.
-                Vec8f clampedEntranceDistance = select(entranceDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
-
-                float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-                int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
-
-                return {
-                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
-                    minimumEntranceDistance,
-                };
-            }
+            return {
+                _geometries[minimumIndex == -1 ? 0 : minimumIndex],
+                minimumEntranceDistance,
+            };
         }
     };
 }

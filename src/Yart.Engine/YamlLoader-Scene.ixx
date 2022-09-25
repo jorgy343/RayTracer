@@ -34,6 +34,7 @@ import Sphere;
 import SphereSoa;
 import TransformedGeometry;
 import Triangle;
+import TriangleSoa;
 import Vector3;
 
 using namespace YAML;
@@ -55,6 +56,7 @@ namespace Yart::Yaml
         std::vector<const Sphere*> Spheres{};
         std::vector<const Plane*> Planes{};
         std::vector<const Parallelogram*> Parallelograms{};
+        std::vector<const Triangle*> Triangles{};
         std::vector<const AxisAlignedBox*> AsixAlignedBoxes{};
     };
 
@@ -148,6 +150,12 @@ namespace Yart::Yaml
         }
 
         sceneConfig.Geometries.push_back(geometry);
+
+        if (sequenceVectors)
+        {
+            sequenceVectors->Triangles.push_back(geometry.get());
+        }
+
         return geometry.get();
     }
 
@@ -245,7 +253,7 @@ namespace Yart::Yaml
         {"sphere", true, false, &ParseSphereNode},
         {"plane", true, false, &ParsePlaneNode},
         {"parallelogram", true, false, &ParseParallelogramNode},
-        {"triangle", true, true, &ParseTriangleNode},
+        {"triangle", true, false, &ParseTriangleNode},
         {"disc", true, true, &ParseDiscNode},
         {"axisAlignedBox", true, false, &ParseAxisAlignedBoxNode},
         {"cylinder", true, true, &ParseCylinderNode},
@@ -318,6 +326,7 @@ namespace Yart::Yaml
         CreateSoa<Sphere, SphereSoa>(sequenceVectors.Spheres, sceneConfig, geometries);
         CreateSoa<Plane, PlaneSoa>(sequenceVectors.Planes, sceneConfig, geometries);
         CreateSoa<Parallelogram, ParallelogramSoa>(sequenceVectors.Parallelograms, sceneConfig, geometries);
+        CreateSoa<Triangle, TriangleSoa>(sequenceVectors.Triangles, sceneConfig, geometries);
         CreateSoa<AxisAlignedBox, AxisAlignedBoxSoa>(sequenceVectors.AsixAlignedBoxes, sceneConfig, geometries);
 
         return geometries;

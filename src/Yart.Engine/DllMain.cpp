@@ -49,7 +49,7 @@ extern "C" __declspec(dllexport) void* __cdecl CreateScene()
 {
     auto [config, camera, sceneConfig, materialMap] = Yaml::LoadYaml();
 
-    auto scene = std::make_shared<Scene>(sceneConfig->Geometry, Vector3{0.0f, 0.0f, 0.0f});
+    auto scene = std::make_shared<Scene>(sceneConfig->Geometry, config->BackgroundColor);
 
     for (auto areaLight : sceneConfig->AreaLights)
     {
@@ -77,6 +77,7 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     Camera& camera = *sceneData->SavedCamera;
 
     int subpixelCountSquared = camera.SubpixelCount * camera.SubpixelCount;
+    Vector2 colorClamp = sceneData->SavedConfig->ColorClamp;
 
     // Execute ray tracing.
     for (unsigned int count = 0; count < sceneData->SavedConfig->Iterations; count++)
@@ -94,9 +95,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
                         Ray ray = camera.CreateRay({x, y}, {subpixelX, subpixelY}, random);
                         Vector3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);
 
-                        sampledColor.X = Math::max(0.0f, Math::min(1.0f, std::isnan(sampledColor.X) ? 0.0f : sampledColor.X));
-                        sampledColor.Y = Math::max(0.0f, Math::min(1.0f, std::isnan(sampledColor.Y) ? 0.0f : sampledColor.Y));
-                        sampledColor.Z = Math::max(0.0f, Math::min(1.0f, std::isnan(sampledColor.Z) ? 0.0f : sampledColor.Z));
+                        sampledColor.X = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.X) ? 0.0f : sampledColor.X));
+                        sampledColor.Y = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Y) ? 0.0f : sampledColor.Y));
+                        sampledColor.Z = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Z) ? 0.0f : sampledColor.Z));
 
                         color += sampledColor;
                     }

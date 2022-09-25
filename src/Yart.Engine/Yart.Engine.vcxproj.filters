@@ -204,6 +204,9 @@
     <ClCompile Include="YamlLoader-Matrices.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
+    <ClCompile Include="TriangleSoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

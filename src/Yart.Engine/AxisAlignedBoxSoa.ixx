@@ -69,7 +69,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(int index, const AxisAlignedBox* geometry) override final
+        constexpr void Insert(size_t index, const AxisAlignedBox* geometry) override final
         {
 			assert(index >= 0 && index < 8);
 

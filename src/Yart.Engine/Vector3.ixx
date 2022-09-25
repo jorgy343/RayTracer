@@ -248,7 +248,7 @@ namespace Yart
         static constexpr Vector3T Refract(const Vector3T& incomingDirection, const Vector3T& normal, T fromIndex, T toIndex)
         {
             T n = fromIndex / toIndex;
-            T cos = incomingDirection * normal;
+            T cos = -(incomingDirection * normal);
 
             T underSquareRoot = T{1} - n * n * (T{1} - cos * cos);
             if (underSquareRoot < T{0})
@@ -256,7 +256,7 @@ namespace Yart
                 return Vector3T{};
             }
 
-            return (n * incomingDirection) - (n * cos + Math::sqrt(underSquareRoot)) * normal;
+            return (n * incomingDirection) - (n * cos - Math::sqrt(underSquareRoot)) * normal;
         }
 
         static constexpr T SchlickApproximation(const Vector3T& incomingDirection, const Vector3T& normal, T fromIndex, T toIndex)
@@ -264,7 +264,7 @@ namespace Yart
             T r = (fromIndex - toIndex) / (fromIndex + toIndex);
             r = r * r;
 
-            T cos = -incomingDirection * normal;
+            T cos = -(incomingDirection * normal);
             T x = T{1} - cos;
 
             return r + (T{1} - r) * x * x * x * x * x;

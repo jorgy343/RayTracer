@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "dependencies": [
     "yaml-cpp",
-    "range-v3"
+    "range-v3",
+    "tinyobjloader"
   ]
 }

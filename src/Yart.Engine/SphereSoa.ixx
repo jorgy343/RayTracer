@@ -60,7 +60,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(int index, const Sphere* geometry) override final
+        constexpr void Insert(size_t index, const Sphere* geometry) override final
         {
             assert(index >= 0 && index < 8);
 
@@ -130,9 +130,9 @@ namespace Yart
 
                 Vec8f sphereRadius = Vec8f{}.load_a(_radius);
 
-                Vec8f a = SimdDot(rayDirectionX, rayDirectionX, rayDirectionY, rayDirectionY, rayDirectionZ, rayDirectionZ);
-                Vec8f b = SimdDot(vX, rayDirectionX, vY, rayDirectionY, vZ, rayDirectionZ);
-                Vec8f c = SimdDot(vX, vX, vY, vY, vZ, vZ) - (sphereRadius * sphereRadius);
+                Vec8f a = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, rayDirectionX, rayDirectionY, rayDirectionZ);
+                Vec8f b = SimdDot(vX, vY, vZ, rayDirectionX, rayDirectionY, rayDirectionZ);
+                Vec8f c = SimdDot(vX, vY, vZ, vX, vY, vZ) - (sphereRadius * sphereRadius);
 
                 Vec8f discriminant = (b * b) - (a * c);
                 Vec8f discriminantSqrt = sqrt(discriminant);

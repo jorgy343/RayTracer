@@ -122,6 +122,7 @@
     <ClCompile Include="SphereSoa.ixx" />
     <ClCompile Include="TransformedGeometry.ixx" />
     <ClCompile Include="Triangle.ixx" />
+    <ClCompile Include="TriangleSoa.ixx" />
     <ClCompile Include="Vec8f3.ixx" />
     <ClCompile Include="Vector2.ixx" />
     <ClCompile Include="Vector3.ixx" />
