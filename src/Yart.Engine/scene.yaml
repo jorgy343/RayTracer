@@ -89,7 +89,7 @@ scene:
         - disc:
             material: "Light Blue"
             position: [-14, 2, 10]
-            normal: [0, 0, -1]
+            normal: [0, 0, 1]
             radius: 3
 
         - axisAlignedBox:
@@ -97,12 +97,11 @@ scene:
             minimum: [14, 8, 6]
             maximum: [16, 10, 8]
 
-        #- cylinder:
-        #    material: "Light Blue"
-        #    position: [-14, 8, 6]
-        #    direction: [0, 1, 0]
-        #    height: 3
-        #    radius: 1
+        - cylinder:
+            material: "Light Blue"
+            start: [12, -1, 0]
+            end: [13, -5, 0]
+            radius: 3
 
         - transformed:
             child:

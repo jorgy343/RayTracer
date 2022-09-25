@@ -34,7 +34,7 @@ namespace Yart
         Vector3 Up{};
 
         UIntVector2 ScreenSize{};
-        float FieldOfView{0.0f};
+        float FieldOfView{};
 
         inline constexpr PerspectiveCamera(
             const Vector3& position,

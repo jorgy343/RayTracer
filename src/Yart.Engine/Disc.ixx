@@ -82,6 +82,16 @@ namespace Yart
             float distanceToCenterSquared = hitPosition.DistanceSquared(Position);
 
             return distanceToCenterSquared <= RadiusSquared ? entranceDistance : std::numeric_limits<float>::infinity();
+
+
+
+
+            // Source: https://iquilezles.org/articles/intersectors/
+            //Vector3 o = ray.Position - Position;
+            //float t = -(Normal * o) / (ray.Direction * Normal);
+            //Vector3 q = o + t * ray.Direction;
+
+            //return q * q < RadiusSquared ? t : std::numeric_limits<float>::infinity();
         }
 
         inline Vector3 GenerateRandomDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override

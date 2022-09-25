@@ -205,12 +205,11 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto position = node["position"].as<Vector3>();
-        auto direction = node["direction"].as<Vector3>();
-        auto height = node["height"].as<float>();
+        auto start = node["start"].as<Vector3>();
+        auto end = node["end"].as<Vector3>();
         auto radius = node["radius"].as<float>();
 
-        auto geometry = std::make_shared<const Cylinder>(position, direction, height, radius, material);
+        auto geometry = std::make_shared<const Cylinder>(start, end, radius, material);
         sceneConfig.Geometries.push_back(geometry);
 
         return geometry.get();

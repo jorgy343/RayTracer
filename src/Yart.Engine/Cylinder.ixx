@@ -16,24 +16,21 @@ namespace Yart
     export class alignas(16) Cylinder : public Geometry
     {
     public:
-        Vector3 Position{};
-        Vector3 Direction{};
-        float Height{};
+        Vector3 Start{};
+        Vector3 End{};
         float Radius{};
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Cylinder() = default;
 
         inline constexpr Cylinder(
-            const Vector3& position,
-            const Vector3& direction,
-            float height,
+            const Vector3& start,
+            const Vector3& end,
             float radius,
             const Material* appliedMaterial)
             :
-            Position{position},
-            Direction{direction},
-            Height{height},
+            Start{start},
+            End{end},
             Radius{radius},
             AppliedMaterial{appliedMaterial}
         {
@@ -47,9 +44,12 @@ namespace Yart
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
         {
-            Vector3 axisLine = Position + Direction * Height;
-            Vector3 v1 = hitPosition - Position;
-            Vector3 v2 = v1.ProjectOnto(Direction) + Position;
+            Vector3 direction = (End - Start).Normalize();
+            float height = (End - Start).Length();
+
+            Vector3 axisLine = Start + direction * height;
+            Vector3 v1 = hitPosition - Start;
+            Vector3 v2 = v1.ProjectOnto(direction) + Start;
 
             Vector3 normal = (v1 - v2).Normalize();
             return normal;
@@ -68,57 +68,59 @@ namespace Yart
         template <IntersectionResultType TIntersectionResultType>
         force_inline constexpr float Intersect(const Ray& ray) const
         {
-            Vector3 rayPosition = ray.Position - (Direction * ray.Position) * Direction;
-            Vector3 rayDirection = ray.Direction - (Direction * ray.Direction) * Direction;
+            Vector3 ca = End - Start;
+            Vector3 oc = ray.Position - Start;
 
-            Vector3 cylinderPosition = Position - (Direction * Position) * Direction;
+            float caca = ca * ca;
+            float card = ca * ray.Direction;
+            float caoc = ca * oc;
 
-            float a = rayDirection * rayDirection;
-            float b = 2 * ((rayPosition * rayDirection) - (cylinderPosition * rayDirection));
-            float c = -2 * (rayPosition * cylinderPosition) + (rayPosition * rayPosition) + (cylinderPosition * cylinderPosition) - Radius * Radius;
+            float a = caca - card * card;
+            float b = caca * (oc * ray.Direction) - caoc * card;
+            float c = caca * (oc * oc) - caoc * caoc - Radius * Radius * caca;
 
-            Vector3 point;
-            Vector3 positionToPoint;
-            Vector3 pointProjectedOntoDirection;
-
-            float radicand = b * b - 4 * a * c;
-            if (radicand < 0.0f)
+            float discriminant = b * b - a * c;
+            if (discriminant < 0.0f)
             {
                 return std::numeric_limits<float>::infinity();
             }
 
-            float denominator = 2 * a;
-            float negativeB = -b;
+            float discriminantSqrt = Math::sqrt(discriminant);
+            
+            float inverseA = Math::rcp(a);
+            float exitDistance = (-b + discriminantSqrt) * inverseA;
 
-            float tMin = (negativeB - Math::sqrt(radicand)) / denominator;
-            float tMax = (negativeB + Math::sqrt(radicand)) / denominator;
-
-            if (tMax < 0.0f)
-            {
-                return std::numeric_limits<float>::infinity();
-            }
-
-            point = ray.Position + tMin * ray.Direction;
-            positionToPoint = point - Position;
-            pointProjectedOntoDirection = positionToPoint.ProjectOnto(Direction);
-
-            float cosAngle = (positionToPoint * Direction) / (positionToPoint.Length() * Direction.Length());
-            if (positionToPoint * Direction <= 0.0f || pointProjectedOntoDirection.Length() > Height)
-            {
-                return std::numeric_limits<float>::infinity();
-            }
-
+            // body
             float result;
+            float y;
+
             if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
-                result = tMin;
+                float entranceDistance = (-b - discriminantSqrt) * inverseA;
+
+                y = caoc + entranceDistance * card;
+                result = entranceDistance;
             }
             else
             {
-                result = tMax;
+                y = caoc + exitDistance * card;
+                result = exitDistance;
             }
 
-            return result;
+            return exitDistance >= 0.0f && y > 0.0f && y < caca ? result : std::numeric_limits<float>::infinity();
+            // Normal = (hitPosition - ca * y / caca) / Radius
+
+
+
+
+            // caps
+            //t = (((y < 0.0) ? 0.0 : caca) - caoc) / card;
+            //if (Math::abs(b + a * t) < h)
+            //{
+            //    return t;
+
+            //    // Normal = ca * sign(y) / caca
+            //}
         }
     };
 }

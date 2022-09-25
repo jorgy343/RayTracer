@@ -59,6 +59,11 @@ namespace Yart
             float c = (v * v) - (Radius * Radius);
 
             float discriminant = (b * b) - (a * c);
+            if (discriminant < 0.0f)
+            {
+                std::numeric_limits<float>::infinity();
+            }
+
             float discriminantSqrt = Math::sqrt(discriminant);
 
             float reciprocalA = Math::rcp(a);
