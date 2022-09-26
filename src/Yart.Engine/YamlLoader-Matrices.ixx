@@ -2,6 +2,8 @@ module;
 
 #include "yaml-cpp/yaml.h"
 
+#include "Vcl.h"
+
 export module YamlLoader:Matrices;
 
 import :Vectors;

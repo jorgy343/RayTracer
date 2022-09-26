@@ -13,25 +13,26 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) Matrix3x3
+    export template <std::floating_point T>
+    class __declspec(dllexport) alignas(64) Matrix3x3T
     {
     public:
-        float M11{0.0f}, M12{0.0f}, M13{0.0f};
+        T M11{}, M12{}, M13{};
     private:
-        float __DummyM14{0.0f};
+        T __DummyM14{};
     public:
-        float M21{0.0f}, M22{0.0f}, M23{0.0f};
+        T M21{}, M22{}, M23{};
     private:
-        float __DummyM24{0.0f};
+        T __DummyM24{};
     public:
-        float M31{0.0f}, M32{0.0f}, M33{0.0f};
+        T M31{}, M32{}, M33{};
     private:
-        float __DummyM34{0.0f};
+        T __DummyM34{};
 
     public:
-        inline constexpr Matrix3x3() = default;
+        inline constexpr Matrix3x3T() = default;
 
-        inline constexpr explicit Matrix3x3(float scalar)
+        inline constexpr explicit Matrix3x3T(T scalar)
             :
             M11{scalar}, M12{scalar}, M13{scalar},
             M21{scalar}, M22{scalar}, M23{scalar},
@@ -40,10 +41,10 @@ namespace Yart
 
         }
 
-        inline constexpr Matrix3x3(
-            float m11, float m12, float m13,
-            float m21, float m22, float m23,
-            float m31, float m32, float m33)
+        inline constexpr Matrix3x3T(
+            T m11, T m12, T m13,
+            T m21, T m22, T m23,
+            T m31, T m32, T m33)
             :
             M11{m11}, M12{m12}, M13{m13},
             M21{m21}, M22{m22}, M23{m23},
@@ -52,10 +53,10 @@ namespace Yart
 
         }
 
-        inline constexpr Matrix3x3(
-            const Vector3& row1,
-            const Vector3& row2,
-            const Vector3& row3)
+        inline constexpr Matrix3x3T(
+            const Vector3T<T>& row1,
+            const Vector3T<T>& row2,
+            const Vector3T<T>& row3)
             :
             M11{row1.X}, M12{row1.Y}, M13{row1.Z},
             M21{row2.X}, M22{row2.Y}, M23{row2.Z},
@@ -64,7 +65,7 @@ namespace Yart
 
         }
 
-        constexpr float Determinant() const
+        constexpr T Determinant() const
         {
             return
                 (M11 * M22 * M33) +
@@ -75,28 +76,28 @@ namespace Yart
                 (M11 * M23 * M32);
         }
 
-        constexpr Matrix3x3& Invert()
+        constexpr Matrix3x3T& Invert()
         {
             // Source: https://stackoverflow.com/a/18504573/1078268
 
-            float det =
+            T det =
                 M11 * (M22 * M33 - M32 * M23) -
                 M12 * (M21 * M33 - M23 * M31) +
                 M13 * (M21 * M32 - M22 * M31);
 
-            float invDet = Math::rcp(det);
+            T invDet = Math::rcp(det);
 
-            float m11 = (M22 * M33 - M32 * M23) * invDet;
-            float m12 = (M13 * M32 - M12 * M33) * invDet;
-            float m13 = (M12 * M23 - M13 * M22) * invDet;
+            T m11 = (M22 * M33 - M32 * M23) * invDet;
+            T m12 = (M13 * M32 - M12 * M33) * invDet;
+            T m13 = (M12 * M23 - M13 * M22) * invDet;
 
-            float m21 = (M23 * M31 - M21 * M33) * invDet;
-            float m22 = (M11 * M33 - M13 * M31) * invDet;
-            float m23 = (M21 * M13 - M11 * M23) * invDet;
+            T m21 = (M23 * M31 - M21 * M33) * invDet;
+            T m22 = (M11 * M33 - M13 * M31) * invDet;
+            T m23 = (M21 * M13 - M11 * M23) * invDet;
 
-            float m31 = (M21 * M32 - M31 * M22) * invDet;
-            float m32 = (M31 * M12 - M11 * M32) * invDet;
-            float m33 = (M11 * M22 - M21 * M12) * invDet;
+            T m31 = (M21 * M32 - M31 * M22) * invDet;
+            T m32 = (M31 * M12 - M11 * M32) * invDet;
+            T m33 = (M11 * M22 - M21 * M12) * invDet;
 
             M11 = m11;
             M12 = m12;
@@ -113,7 +114,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3& Transpose()
+        inline constexpr Matrix3x3T& Transpose()
         {
             M11 = M11;
             M12 = M21;
@@ -130,7 +131,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3 operator+() const
+        inline constexpr Matrix3x3T operator+() const
         {
             return {
                 +M11,
@@ -147,7 +148,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3 operator-() const
+        inline constexpr Matrix3x3T operator-() const
         {
             return {
                 -M11,
@@ -164,79 +165,79 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3& operator++()
+        inline constexpr Matrix3x3T& operator++()
         {
-            M11 += 1.0f;
-            M12 += 1.0f;
-            M13 += 1.0f;
+            M11 += T{1};
+            M12 += T{1};
+            M13 += T{1};
 
-            M21 += 1.0f;
-            M22 += 1.0f;
-            M23 += 1.0f;
+            M21 += T{1};
+            M22 += T{1};
+            M23 += T{1};
 
-            M31 += 1.0f;
-            M32 += 1.0f;
-            M33 += 1.0f;
+            M31 += T{1};
+            M32 += T{1};
+            M33 += T{1};
 
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator--()
+        inline constexpr Matrix3x3T& operator--()
         {
-            M11 -= 1.0f;
-            M12 -= 1.0f;
-            M13 -= 1.0f;
+            M11 -= T{1};
+            M12 -= T{1};
+            M13 -= T{1};
 
-            M21 -= 1.0f;
-            M22 -= 1.0f;
-            M23 -= 1.0f;
+            M21 -= T{1};
+            M22 -= T{1};
+            M23 -= T{1};
 
-            M31 -= 1.0f;
-            M32 -= 1.0f;
-            M33 -= 1.0f;
+            M31 -= T{1};
+            M32 -= T{1};
+            M33 -= T{1};
 
             return *this;
         }
 
-        inline constexpr Matrix3x3 operator++(int)
+        inline constexpr Matrix3x3T operator++(int)
         {
-            Matrix3x3 temp = *this;
+            Matrix3x3T temp = *this;
 
-            M11 += 1.0f;
-            M12 += 1.0f;
-            M13 += 1.0f;
+            M11 += T{1};
+            M12 += T{1};
+            M13 += T{1};
 
-            M21 += 1.0f;
-            M22 += 1.0f;
-            M23 += 1.0f;
+            M21 += T{1};
+            M22 += T{1};
+            M23 += T{1};
 
-            M31 += 1.0f;
-            M32 += 1.0f;
-            M33 += 1.0f;
+            M31 += T{1};
+            M32 += T{1};
+            M33 += T{1};
 
             return temp;
         }
 
-        inline constexpr Matrix3x3 operator--(int)
+        inline constexpr Matrix3x3T operator--(int)
         {
-            Matrix3x3 temp = *this;
+            Matrix3x3T temp = *this;
 
-            M11 -= 1.0f;
-            M12 -= 1.0f;
-            M13 -= 1.0f;
+            M11 -= T{1};
+            M12 -= T{1};
+            M13 -= T{1};
 
-            M21 -= 1.0f;
-            M22 -= 1.0f;
-            M23 -= 1.0f;
+            M21 -= T{1};
+            M22 -= T{1};
+            M23 -= T{1};
 
-            M31 -= 1.0f;
-            M32 -= 1.0f;
-            M33 -= 1.0f;
+            M31 -= T{1};
+            M32 -= T{1};
+            M33 -= T{1};
 
             return temp;
         }
 
-        inline constexpr Matrix3x3 operator+(const Matrix3x3& right) const
+        inline constexpr Matrix3x3T operator+(const Matrix3x3T& right) const
         {
             return {
                 M11 + right.M11,
@@ -253,7 +254,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3 operator-(const Matrix3x3& right) const
+        inline constexpr Matrix3x3T operator-(const Matrix3x3T& right) const
         {
             return {
                 M11 - right.M11,
@@ -270,7 +271,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3 operator*(const Matrix3x3& right) const
+        inline constexpr Matrix3x3T operator*(const Matrix3x3T& right) const
         {
             if (std::is_constant_evaluated())
             {
@@ -288,7 +289,7 @@ namespace Yart
                     M31 * right.M13 + M32 * right.M23 + M33 * right.M33,
                 };
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 // Currently this is slower on zen 2 architecture.
                 //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
@@ -317,7 +318,7 @@ namespace Yart
 
                 Vec4f resultRow3 = (leftRow13 * rightColumn1) + (leftRow23 * rightColumn2) + (leftRow33 * rightColumn3);
 
-                Matrix3x3 result;
+                Matrix3x3T result;
 
                 resultRow1.store_a(&result.M11);
                 resultRow2.store_a(&result.M21);
@@ -325,9 +326,25 @@ namespace Yart
 
                 return result;
             }
+            else
+            {
+                return {
+                    M11 * right.M11 + M12 * right.M21 + M13 * right.M31,
+                    M11 * right.M12 + M12 * right.M22 + M13 * right.M32,
+                    M11 * right.M13 + M12 * right.M23 + M13 * right.M33,
+
+                    M21 * right.M11 + M22 * right.M21 + M23 * right.M31,
+                    M21 * right.M12 + M22 * right.M22 + M23 * right.M32,
+                    M21 * right.M13 + M22 * right.M23 + M23 * right.M33,
+
+                    M31 * right.M11 + M32 * right.M21 + M33 * right.M31,
+                    M31 * right.M12 + M32 * right.M22 + M33 * right.M32,
+                    M31 * right.M13 + M32 * right.M23 + M33 * right.M33,
+                };
+            }
         }
 
-        inline constexpr Matrix3x3 operator+(float right) const
+        inline constexpr Matrix3x3T operator+(T right) const
         {
             return {
                 M11 + right,
@@ -344,7 +361,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3 operator-(float right) const
+        inline constexpr Matrix3x3T operator-(T right) const
         {
             return {
                 M11 - right,
@@ -361,7 +378,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3 operator*(float right) const
+        inline constexpr Matrix3x3T operator*(T right) const
         {
             return {
                 M11 * right,
@@ -378,7 +395,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3 operator/(float right) const
+        inline constexpr Matrix3x3T operator/(T right) const
         {
             return {
                 M11 / right,
@@ -395,7 +412,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix3x3& operator+=(const Matrix3x3& other)
+        inline constexpr Matrix3x3T& operator+=(const Matrix3x3T& other)
         {
             M11 += other.M11;
             M12 += other.M12;
@@ -412,7 +429,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator-=(const Matrix3x3& other)
+        inline constexpr Matrix3x3T& operator-=(const Matrix3x3T& other)
         {
             M11 -= other.M11;
             M12 -= other.M12;
@@ -429,13 +446,13 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator*=(const Matrix3x3& other)
+        inline constexpr Matrix3x3T& operator*=(const Matrix3x3T& other)
         {
             *this = *this * other;
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator+=(float other)
+        inline constexpr Matrix3x3T& operator+=(T other)
         {
             M11 += other;
             M12 += other;
@@ -452,7 +469,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator-=(float other)
+        inline constexpr Matrix3x3T& operator-=(T other)
         {
             M11 -= other;
             M12 -= other;
@@ -469,7 +486,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator*=(float other)
+        inline constexpr Matrix3x3T& operator*=(T other)
         {
             M11 *= other;
             M12 *= other;
@@ -486,7 +503,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix3x3& operator/=(float other)
+        inline constexpr Matrix3x3T& operator/=(T other)
         {
             M11 /= other;
             M12 /= other;
@@ -504,7 +521,8 @@ namespace Yart
         }
     };
 
-    export inline constexpr Matrix3x3 operator*(float left, const Matrix3x3& right)
+    export template <std::floating_point T>
+    inline constexpr Matrix3x3T<T> operator*(T left, const Matrix3x3T<T>& right)
     {
         return {
             left * right.M11,
@@ -521,7 +539,8 @@ namespace Yart
         };
     }
 
-    export inline constexpr Vector3 operator*(const Vector3& left, const Matrix3x3& right)
+    export template <std::floating_point T>
+    inline constexpr Vector3T<T> operator*(const Vector3T<T>& left, const Matrix3x3T<T>& right)
     {
         return {
             (left.X * right.M11) + (left.Y * right.M21) + (left.Z * right.M31),
@@ -529,4 +548,6 @@ namespace Yart
             (left.X * right.M13) + (left.Y * right.M23) + (left.Z * right.M33),
         };
     }
+
+    export using Matrix3x3 = Matrix3x3T<float>;
 }

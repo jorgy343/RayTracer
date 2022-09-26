@@ -8,6 +8,7 @@ import Scene;
 import Vector2;
 import Vector3;
 import YamlLoader;
+import Matrix4x4;
 
 #include <cmath>
 #include <memory>

@@ -5,6 +5,7 @@ module;
 export module Matrix4x4;
 
 import <cmath>;
+import <concepts>;
 
 import Math;
 import Vector3;
@@ -14,18 +15,19 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) Matrix4x4
+    export template <std::floating_point T>
+    class __declspec(dllexport) alignas(64) Matrix4x4T
     {
     public:
-        float
-            M11{0.0f}, M12{0.0f}, M13{0.0f}, M14{0.0f},
-            M21{0.0f}, M22{0.0f}, M23{0.0f}, M24{0.0f},
-            M31{0.0f}, M32{0.0f}, M33{0.0f}, M34{0.0f},
-            M41{0.0f}, M42{0.0f}, M43{0.0f}, M44{0.0f};
+        T
+            M11{}, M12{}, M13{}, M14{},
+            M21{}, M22{}, M23{}, M24{},
+            M31{}, M32{}, M33{}, M34{},
+            M41{}, M42{}, M43{}, M44{};
 
-        inline constexpr Matrix4x4() = default;
+        inline constexpr Matrix4x4T() = default;
 
-        inline constexpr explicit Matrix4x4(float scalar)
+        inline constexpr explicit Matrix4x4T(T scalar)
             :
             M11{scalar}, M12{scalar}, M13{scalar}, M14{scalar},
             M21{scalar}, M22{scalar}, M23{scalar}, M24{scalar},
@@ -35,11 +37,11 @@ namespace Yart
 
         }
 
-        inline constexpr Matrix4x4(
-            float m11, float m12, float m13, float m14,
-            float m21, float m22, float m23, float m24,
-            float m31, float m32, float m33, float m34,
-            float m41, float m42, float m43, float m44)
+        inline constexpr Matrix4x4T(
+            T m11, T m12, T m13, T m14,
+            T m21, T m22, T m23, T m24,
+            T m31, T m32, T m33, T m34,
+            T m41, T m42, T m43, T m44)
             :
             M11{m11}, M12{m12}, M13{m13}, M14{m14},
             M21{m21}, M22{m22}, M23{m23}, M24{m24},
@@ -49,126 +51,126 @@ namespace Yart
 
         }
 
-        inline constexpr Matrix4x4(
-            const Vector4& row1,
-            const Vector4& row2,
-            const Vector4& row3,
-            const Vector4& row4)
+        inline constexpr Matrix4x4T(
+            const Vector4T<T>& row1,
+            const Vector4T<T>& row2,
+            const Vector4T<T>& row3,
+            const Vector4T<T>& row4)
             :
-            M11{row1.X}, M12{row1.Y}, M13{row1.Z}, M14{row1.Z},
-            M21{row2.X}, M22{row2.Y}, M23{row2.Z}, M24{row2.Z},
-            M31{row3.X}, M32{row3.Y}, M33{row3.Z}, M34{row3.Z},
-            M41{row4.X}, M42{row4.Y}, M43{row4.Z}, M44{row4.Z}
+            M11{row1.X}, M12{row1.Y}, M13{row1.Z}, M14{row1.W},
+            M21{row2.X}, M22{row2.Y}, M23{row2.Z}, M24{row2.W},
+            M31{row3.X}, M32{row3.Y}, M33{row3.Z}, M34{row3.W},
+            M41{row4.X}, M42{row4.Y}, M43{row4.Z}, M44{row4.W}
         {
 
         }
 
-        inline constexpr static Matrix4x4 CreateIdentity()
+        inline constexpr static Matrix4x4T CreateIdentity()
         {
             return
             {
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
+                T{1}, T{0}, T{0}, T{0},
+                T{0}, T{1}, T{0}, T{0},
+                T{0}, T{0}, T{1}, T{0},
+                T{0}, T{0}, T{0}, T{1},
             };
         }
 
-        inline constexpr static Matrix4x4 CreateRotation(Vector3 radians)
+        inline constexpr static Matrix4x4T CreateRotation(Vector3T<T> radians)
         {
             return CreateRotation(radians.X, radians.Y, radians.Z);
         }
 
-        inline constexpr static Matrix4x4 CreateRotation(float radiansX, float radiansY, float radiansZ)
+        inline constexpr static Matrix4x4T CreateRotation(T radiansX, T radiansY, T radiansZ)
         {
             return CreateRotationX(radiansX) * CreateRotationY(radiansY) * CreateRotationZ(radiansZ);
         }
 
-        inline constexpr static Matrix4x4 CreateRotationX(float radians)
+        inline constexpr static Matrix4x4T CreateRotationX(T radians)
         {
-            float cosine = Math::cos(radians);
-            float sine = Math::sin(radians);
+            T cosine = Math::cos(radians);
+            T sine = Math::sin(radians);
 
             return
             {
-                1, 0, 0, 0,
-                0, cosine, -sine, 0,
-                0, sine, cosine, 0,
-                0, 0, 0, 1,
+                T{1}, T{0}, T{0}, T{0},
+                T{0}, cosine, -sine, T{0},
+                T{0}, sine, cosine, T{0},
+                T{0}, T{0}, T{0}, T{1},
             };
         }
 
-        inline constexpr static Matrix4x4 CreateRotationY(float radians)
+        inline constexpr static Matrix4x4T CreateRotationY(T radians)
         {
-            float cosine = Math::cos(radians);
-            float sine = Math::sin(radians);
+            T cosine = Math::cos(radians);
+            T sine = Math::sin(radians);
 
             return
             {
-                cosine, 0, sine, 0,
-                0, 1, 0, 0,
-                -sine, 0, cosine, 0,
-                0, 0, 0, 1,
+                cosine, T{0}, sine, T{0},
+                T{0}, T{1}, T{0}, T{0},
+                -sine, T{0}, cosine, T{0},
+                T{0}, T{0}, T{0}, T{1},
             };
         }
 
-        inline constexpr static Matrix4x4 CreateRotationZ(float radians)
+        inline constexpr static Matrix4x4T CreateRotationZ(T radians)
         {
-            float cosine = Math::cos(radians);
-            float sine = Math::sin(radians);
+            T cosine = Math::cos(radians);
+            T sine = Math::sin(radians);
 
             return
             {
-                cosine, -sine, 0, 0,
-                sine, cosine, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
+                cosine, -sine, T{0}, T{0},
+                sine, cosine, T{0}, T{0},
+                T{0}, T{0}, T{1}, T{0},
+                T{0}, T{0}, T{0}, T{1},
             };
         }
 
-        inline constexpr static Matrix4x4 CreateScale(Vector3 vector)
+        inline constexpr static Matrix4x4T CreateScale(Vector3T<T> vector)
         {
             return CreateScale(vector.X, vector.Y, vector.Z);
         }
 
-        inline constexpr static Matrix4x4 CreateScale(float scalar)
+        inline constexpr static Matrix4x4T CreateScale(T scalar)
         {
             return CreateScale(scalar, scalar, scalar);
         }
 
-        inline constexpr static Matrix4x4 CreateScale(float x, float y, float z)
+        inline constexpr static Matrix4x4T CreateScale(T x, T y, T z)
         {
             return
             {
-                x, 0, 0, 0,
-                0, y, 0, 0,
-                0, 0, z, 0,
-                0, 0, 0, 1,
+                x, T{0}, T{0}, T{0},
+                T{0}, y, T{0}, T{0},
+                T{0}, T{0}, z, T{0},
+                T{0}, T{0}, T{0}, T{1},
             };
         }
 
-        inline constexpr static Matrix4x4 CreateTranslation(Vector3 vector)
+        inline constexpr static Matrix4x4T CreateTranslation(Vector3T<T> vector)
         {
             return CreateTranslation(vector.X, vector.Y, vector.Z);
         }
 
-        inline constexpr static Matrix4x4 CreateTranslation(float scalar)
+        inline constexpr static Matrix4x4T CreateTranslation(T scalar)
         {
             return CreateTranslation(scalar, scalar, scalar);
         }
 
-        inline constexpr static Matrix4x4 CreateTranslation(float x, float y, float z)
+        inline constexpr static Matrix4x4T CreateTranslation(T x, T y, T z)
         {
             return
             {
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                x, y, z, 1,
+                T{1}, T{0}, T{0}, T{0},
+                T{0}, T{1}, T{0}, T{0},
+                T{0}, T{0}, T{1}, T{0},
+                x, y, z, T{1},
             };
         }
 
-        constexpr float Determinant() const
+        constexpr T Determinant() const
         {
             return
                 (M14 * M23 * M32 * M41) - (M13 * M24 * M32 * M41) - (M14 * M22 * M33 * M41) + (M12 * M24 * M33 * M41) +
@@ -179,48 +181,48 @@ namespace Yart
                 (M13 * M21 * M32 * M44) - (M11 * M23 * M32 * M44) - (M12 * M21 * M33 * M44) + (M11 * M22 * M33 * M44);
         }
 
-        constexpr Matrix4x4& Invert()
+        constexpr Matrix4x4T& Invert()
         {
-            float b0 = (M31 * M42) - (M32 * M41);
-            float b1 = (M31 * M43) - (M33 * M41);
-            float b2 = (M34 * M41) - (M31 * M44);
-            float b3 = (M32 * M43) - (M33 * M42);
-            float b4 = (M34 * M42) - (M32 * M44);
-            float b5 = (M33 * M44) - (M34 * M43);
+            T b0 = (M31 * M42) - (M32 * M41);
+            T b1 = (M31 * M43) - (M33 * M41);
+            T b2 = (M34 * M41) - (M31 * M44);
+            T b3 = (M32 * M43) - (M33 * M42);
+            T b4 = (M34 * M42) - (M32 * M44);
+            T b5 = (M33 * M44) - (M34 * M43);
 
-            float d11 = M22 * b5 + M23 * b4 + M24 * b3;
-            float d12 = M21 * b5 + M23 * b2 + M24 * b1;
-            float d13 = M21 * -b4 + M22 * b2 + M24 * b0;
-            float d14 = M21 * b3 + M22 * -b1 + M23 * b0;
+            T d11 = M22 * b5 + M23 * b4 + M24 * b3;
+            T d12 = M21 * b5 + M23 * b2 + M24 * b1;
+            T d13 = M21 * -b4 + M22 * b2 + M24 * b0;
+            T d14 = M21 * b3 + M22 * -b1 + M23 * b0;
 
-            float det = M11 * d11 - M12 * d12 + M13 * d13 - M14 * d14;
+            T det = M11 * d11 - M12 * d12 + M13 * d13 - M14 * d14;
 
             // Normally you would check if the determinant is zero here and handle that case.
             // We're just going to assume it is not zero and continue as normal.
 
             det = Math::rcp(det);
 
-            float a0 = (M11 * M22) - (M12 * M21);
-            float a1 = (M11 * M23) - (M13 * M21);
-            float a2 = (M14 * M21) - (M11 * M24);
-            float a3 = (M12 * M23) - (M13 * M22);
-            float a4 = (M14 * M22) - (M12 * M24);
-            float a5 = (M13 * M24) - (M14 * M23);
+            T a0 = (M11 * M22) - (M12 * M21);
+            T a1 = (M11 * M23) - (M13 * M21);
+            T a2 = (M14 * M21) - (M11 * M24);
+            T a3 = (M12 * M23) - (M13 * M22);
+            T a4 = (M14 * M22) - (M12 * M24);
+            T a5 = (M13 * M24) - (M14 * M23);
 
-            float d21 = M12 * +b5 + M13 * +b4 + M14 * b3;
-            float d22 = M11 * +b5 + M13 * +b2 + M14 * b1;
-            float d23 = M11 * -b4 + M12 * +b2 + M14 * b0;
-            float d24 = M11 * +b3 + M12 * -b1 + M13 * b0;
+            T d21 = M12 * +b5 + M13 * +b4 + M14 * b3;
+            T d22 = M11 * +b5 + M13 * +b2 + M14 * b1;
+            T d23 = M11 * -b4 + M12 * +b2 + M14 * b0;
+            T d24 = M11 * +b3 + M12 * -b1 + M13 * b0;
 
-            float d31 = M42 * +a5 + M43 * +a4 + M44 * a3;
-            float d32 = M41 * +a5 + M43 * +a2 + M44 * a1;
-            float d33 = M41 * -a4 + M42 * +a2 + M44 * a0;
-            float d34 = M41 * +a3 + M42 * -a1 + M43 * a0;
+            T d31 = M42 * +a5 + M43 * +a4 + M44 * a3;
+            T d32 = M41 * +a5 + M43 * +a2 + M44 * a1;
+            T d33 = M41 * -a4 + M42 * +a2 + M44 * a0;
+            T d34 = M41 * +a3 + M42 * -a1 + M43 * a0;
 
-            float d41 = M32 * +a5 + M33 * +a4 + M34 * a3;
-            float d42 = M31 * +a5 + M33 * +a2 + M34 * a1;
-            float d43 = M31 * -a4 + M32 * +a2 + M34 * a0;
-            float d44 = M31 * +a3 + M32 * -a1 + M33 * a0;
+            T d41 = M32 * +a5 + M33 * +a4 + M34 * a3;
+            T d42 = M31 * +a5 + M33 * +a2 + M34 * a1;
+            T d43 = M31 * -a4 + M32 * +a2 + M34 * a0;
+            T d44 = M31 * +a3 + M32 * -a1 + M33 * a0;
 
             M11 = +d11 * det;
             M12 = -d21 * det;
@@ -245,15 +247,15 @@ namespace Yart
             return *this;
         }
 
-        constexpr Matrix4x4 InvertConst() const
+        constexpr Matrix4x4T InvertConst() const
         {
-            Matrix4x4 result = *this;
+            Matrix4x4T result = *this;
             result.Invert();
 
             return result;
         }
 
-        inline constexpr Matrix4x4& Transpose()
+        inline constexpr Matrix4x4T& Transpose()
         {
             M11 = M11;
             M12 = M21;
@@ -278,15 +280,15 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix4x4 TransposeConst() const
+        inline constexpr Matrix4x4T TransposeConst() const
         {
-            Matrix4x4 result = *this;
+            Matrix4x4T result = *this;
             result.Transpose();
 
             return result;
         }
 
-        inline constexpr Matrix4x4 operator+() const
+        inline constexpr Matrix4x4T operator+() const
         {
             return {
                 +M11,
@@ -311,7 +313,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4 operator-() const
+        inline constexpr Matrix4x4T operator-() const
         {
             return {
                 -M11,
@@ -336,111 +338,111 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4& operator++()
+        inline constexpr Matrix4x4T& operator++()
         {
-            M11 += 1.0f;
-            M12 += 1.0f;
-            M13 += 1.0f;
-            M14 += 1.0f;
+            M11 += T{1};
+            M12 += T{1};
+            M13 += T{1};
+            M14 += T{1};
 
-            M21 += 1.0f;
-            M22 += 1.0f;
-            M23 += 1.0f;
-            M24 += 1.0f;
+            M21 += T{1};
+            M22 += T{1};
+            M23 += T{1};
+            M24 += T{1};
 
-            M31 += 1.0f;
-            M32 += 1.0f;
-            M33 += 1.0f;
-            M34 += 1.0f;
+            M31 += T{1};
+            M32 += T{1};
+            M33 += T{1};
+            M34 += T{1};
 
-            M41 += 1.0f;
-            M42 += 1.0f;
-            M43 += 1.0f;
-            M44 += 1.0f;
+            M41 += T{1};
+            M42 += T{1};
+            M43 += T{1};
+            M44 += T{1};
 
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator--()
+        inline constexpr Matrix4x4T& operator--()
         {
-            M11 -= 1.0f;
-            M12 -= 1.0f;
-            M13 -= 1.0f;
-            M14 -= 1.0f;
+            M11 -= T{1};
+            M12 -= T{1};
+            M13 -= T{1};
+            M14 -= T{1};
 
-            M21 -= 1.0f;
-            M22 -= 1.0f;
-            M23 -= 1.0f;
-            M24 -= 1.0f;
+            M21 -= T{1};
+            M22 -= T{1};
+            M23 -= T{1};
+            M24 -= T{1};
 
-            M31 -= 1.0f;
-            M32 -= 1.0f;
-            M33 -= 1.0f;
-            M34 -= 1.0f;
+            M31 -= T{1};
+            M32 -= T{1};
+            M33 -= T{1};
+            M34 -= T{1};
 
-            M41 -= 1.0f;
-            M42 -= 1.0f;
-            M43 -= 1.0f;
-            M44 -= 1.0f;
+            M41 -= T{1};
+            M42 -= T{1};
+            M43 -= T{1};
+            M44 -= T{1};
 
             return *this;
         }
 
-        inline constexpr Matrix4x4 operator++(int)
+        inline constexpr Matrix4x4T operator++(int)
         {
-            Matrix4x4 temp = *this;
+            Matrix4x4T temp = *this;
 
-            M11 += 1.0f;
-            M12 += 1.0f;
-            M13 += 1.0f;
-            M14 += 1.0f;
+            M11 += T{1};
+            M12 += T{1};
+            M13 += T{1};
+            M14 += T{1};
 
-            M21 += 1.0f;
-            M22 += 1.0f;
-            M23 += 1.0f;
-            M24 += 1.0f;
+            M21 += T{1};
+            M22 += T{1};
+            M23 += T{1};
+            M24 += T{1};
 
-            M31 += 1.0f;
-            M32 += 1.0f;
-            M33 += 1.0f;
-            M34 += 1.0f;
+            M31 += T{1};
+            M32 += T{1};
+            M33 += T{1};
+            M34 += T{1};
 
-            M41 += 1.0f;
-            M42 += 1.0f;
-            M43 += 1.0f;
-            M44 += 1.0f;
+            M41 += T{1};
+            M42 += T{1};
+            M43 += T{1};
+            M44 += T{1};
 
             return temp;
         }
 
-        inline constexpr Matrix4x4 operator--(int)
+        inline constexpr Matrix4x4T operator--(int)
         {
-            Matrix4x4 temp = *this;
+            Matrix4x4T temp = *this;
 
-            M11 -= 1.0f;
-            M12 -= 1.0f;
-            M13 -= 1.0f;
-            M14 -= 1.0f;
+            M11 -= T{1};
+            M12 -= T{1};
+            M13 -= T{1};
+            M14 -= T{1};
 
-            M21 -= 1.0f;
-            M22 -= 1.0f;
-            M23 -= 1.0f;
-            M24 -= 1.0f;
+            M21 -= T{1};
+            M22 -= T{1};
+            M23 -= T{1};
+            M24 -= T{1};
 
-            M31 -= 1.0f;
-            M32 -= 1.0f;
-            M33 -= 1.0f;
-            M34 -= 1.0f;
+            M31 -= T{1};
+            M32 -= T{1};
+            M33 -= T{1};
+            M34 -= T{1};
 
-            M41 -= 1.0f;
-            M42 -= 1.0f;
-            M43 -= 1.0f;
-            M44 -= 1.0f;
+            M41 -= T{1};
+            M42 -= T{1};
+            M43 -= T{1};
+            M44 -= T{1};
 
             return temp;
         }
 
-        inline constexpr Matrix4x4 operator+(const Matrix4x4& right) const
+        inline constexpr Matrix4x4T operator+(const Matrix4x4T& right) const
         {
             return {
                 M11 + right.M11,
@@ -465,7 +467,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4 operator-(const Matrix4x4& right) const
+        inline constexpr Matrix4x4T operator-(const Matrix4x4T& right) const
         {
             return {
                 M11 - right.M11,
@@ -490,7 +492,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4 operator*(const Matrix4x4& right) const
+        inline constexpr Matrix4x4T operator*(const Matrix4x4T& right) const
         {
             if (std::is_constant_evaluated())
             {
@@ -516,7 +518,7 @@ namespace Yart
                     M41 * right.M14 + M42 * right.M24 + M43 * right.M34 + M44 * right.M44,
                 };
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 // Currently this is slower on zen 2 architecture.
                 //Vec4f rightColumn1 = gather4f<0, 4, 8, 12>(&right.M11);
@@ -557,7 +559,7 @@ namespace Yart
 
                 Vec4f resultRow4 = (leftRow14 * rightColumn1) + (leftRow24 * rightColumn2) + (leftRow34 * rightColumn3) + (leftRow44 * rightColumn4);
 
-                Matrix4x4 result;
+                Matrix4x4T result;
 
                 resultRow1.store_a(&result.M11);
                 resultRow2.store_a(&result.M21);
@@ -566,9 +568,33 @@ namespace Yart
 
                 return result;
             }
+            else
+            {
+                return {
+                    M11 * right.M11 + M12 * right.M21 + M13 * right.M31 + M14 * right.M41,
+                    M11 * right.M12 + M12 * right.M22 + M13 * right.M32 + M14 * right.M42,
+                    M11 * right.M13 + M12 * right.M23 + M13 * right.M33 + M14 * right.M43,
+                    M11 * right.M14 + M12 * right.M24 + M13 * right.M34 + M14 * right.M44,
+
+                    M21 * right.M11 + M22 * right.M21 + M23 * right.M31 + M24 * right.M41,
+                    M21 * right.M12 + M22 * right.M22 + M23 * right.M32 + M24 * right.M42,
+                    M21 * right.M13 + M22 * right.M23 + M23 * right.M33 + M24 * right.M43,
+                    M21 * right.M14 + M22 * right.M24 + M23 * right.M34 + M24 * right.M44,
+
+                    M31 * right.M11 + M32 * right.M21 + M33 * right.M31 + M34 * right.M41,
+                    M31 * right.M12 + M32 * right.M22 + M33 * right.M32 + M34 * right.M42,
+                    M31 * right.M13 + M32 * right.M23 + M33 * right.M33 + M34 * right.M43,
+                    M31 * right.M14 + M32 * right.M24 + M33 * right.M34 + M34 * right.M44,
+
+                    M41 * right.M11 + M42 * right.M21 + M43 * right.M31 + M44 * right.M41,
+                    M41 * right.M12 + M42 * right.M22 + M43 * right.M32 + M44 * right.M42,
+                    M41 * right.M13 + M42 * right.M23 + M43 * right.M33 + M44 * right.M43,
+                    M41 * right.M14 + M42 * right.M24 + M43 * right.M34 + M44 * right.M44,
+                };
+            }
         }
 
-        inline constexpr Matrix4x4 operator+(float right) const
+        inline constexpr Matrix4x4T operator+(T right) const
         {
             return {
                 M11 + right,
@@ -593,7 +619,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4 operator-(float right) const
+        inline constexpr Matrix4x4T operator-(T right) const
         {
             return {
                 M11 - right,
@@ -618,7 +644,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4 operator*(float right) const
+        inline constexpr Matrix4x4T operator*(T right) const
         {
             return {
                 M11 * right,
@@ -643,7 +669,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4 operator/(float right) const
+        inline constexpr Matrix4x4T operator/(T right) const
         {
             return {
                 M11 / right,
@@ -668,7 +694,7 @@ namespace Yart
             };
         }
 
-        inline constexpr Matrix4x4& operator+=(const Matrix4x4& other)
+        inline constexpr Matrix4x4T& operator+=(const Matrix4x4T& other)
         {
             M11 += other.M11;
             M12 += other.M12;
@@ -693,7 +719,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator-=(const Matrix4x4& other)
+        inline constexpr Matrix4x4T& operator-=(const Matrix4x4T& other)
         {
             M11 -= other.M11;
             M12 -= other.M12;
@@ -718,13 +744,13 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator*=(const Matrix4x4& other)
+        inline constexpr Matrix4x4T& operator*=(const Matrix4x4T& other)
         {
             *this = *this * other;
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator+=(float other)
+        inline constexpr Matrix4x4T& operator+=(T other)
         {
             M11 += other;
             M12 += other;
@@ -749,7 +775,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator-=(float other)
+        inline constexpr Matrix4x4T& operator-=(T other)
         {
             M11 -= other;
             M12 -= other;
@@ -774,7 +800,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator*=(float other)
+        inline constexpr Matrix4x4T& operator*=(T other)
         {
             M11 *= other;
             M12 *= other;
@@ -799,7 +825,7 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Matrix4x4& operator/=(float other)
+        inline constexpr Matrix4x4T& operator/=(T other)
         {
             M11 /= other;
             M12 /= other;
@@ -825,7 +851,8 @@ namespace Yart
         }
     };
 
-    export inline constexpr Matrix4x4 operator*(float left, const Matrix4x4& right)
+    export template <std::floating_point T>
+    inline constexpr Matrix4x4T<T> operator*(T left, const Matrix4x4T<T>& right)
     {
         return {
             left * right.M11,
@@ -850,7 +877,8 @@ namespace Yart
         };
     }
 
-    export inline constexpr Vector4 operator*(const Vector4& left, const Matrix4x4& right)
+    export template <std::floating_point T>
+    inline constexpr Vector4T<T> operator*(const Vector4T<T>& left, const Matrix4x4T<T>& right)
     {
         return {
             (left.X * right.M11) + (left.Y * right.M21) + (left.Z * right.M31) + (left.W * right.M41),
@@ -859,4 +887,6 @@ namespace Yart
             (left.X * right.M14) + (left.Y * right.M24) + (left.Z * right.M34) + (left.W * right.M44),
         };
     }
+
+    export using Matrix4x4 = Matrix4x4T<float>;
 }

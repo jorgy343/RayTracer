@@ -80,7 +80,7 @@ namespace Yart
             {
                 return gcem::min(left, right);
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 __m128 mmLeft1 = _mm_load_ss(&left);
                 __m128 mmRight2 = _mm_load_ss(&right);
@@ -89,6 +89,20 @@ namespace Yart
                 _mm_store_ss(&result, _mm_min_ss(mmLeft1, mmRight2));
 
                 return result;
+            }
+            else if constexpr (std::same_as<double, T>)
+            {
+                __m128 mmLeft1 = _mm_load_sd(&left);
+                __m128 mmRight2 = _mm_load_sd(&right);
+
+                float result;
+                _mm_store_sd(&result, _mm_min_sd(mmLeft1, mmRight2));
+
+                return result;
+            }
+            else
+            {
+                return std::min(left, right);
             }
         }
 
@@ -99,7 +113,7 @@ namespace Yart
             {
                 return gcem::max(left, right);
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 __m128 mmLeft1 = _mm_load_ss(&left);
                 __m128 mmRight2 = _mm_load_ss(&right);
@@ -108,6 +122,20 @@ namespace Yart
                 _mm_store_ss(&result, _mm_max_ss(mmLeft1, mmRight2));
 
                 return result;
+            }
+            else if constexpr (std::same_as<double, T>)
+            {
+                __m128 mmLeft1 = _mm_load_sd(&left);
+                __m128 mmRight2 = _mm_load_sd(&right);
+
+                float result;
+                _mm_store_sd(&result, _mm_max_sd(mmLeft1, mmRight2));
+
+                return result;
+            }
+            else
+            {
+                return std::max(left, right);
             }
         }
 
@@ -157,12 +185,16 @@ namespace Yart
             {
                 return gcem::inv_sqrt(value);
             }
-            else
+            else if constexpr (std::same_as<float, T>)
             {
                 __m128 mmValue = _mm_load_ss(&value);
                 _mm_store_ss(&value, _mm_rsqrt_ss(mmValue));
 
                 return value;
+            }
+            else
+            {
+                return T{1} / std::sqrt(value);
             }
         }
 
