@@ -4,7 +4,7 @@ export module Disc;
 
 import <limits>;
 
-import "Constants.h";
+import "Common.h";
 
 import AreaLight;
 import IntersectionResult;

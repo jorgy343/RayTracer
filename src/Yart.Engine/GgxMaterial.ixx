@@ -1,6 +1,6 @@
 export module GgxMaterial;
 
-import "Constants.h";
+import "Common.h";
 
 import DiffuseMaterial;
 import Geometry;

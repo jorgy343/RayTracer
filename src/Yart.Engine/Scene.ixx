@@ -10,7 +10,7 @@ import <memory>;
 import <utility>;
 import <vector>;
 
-import "Constants.h";
+import "Common.h";
 
 import Alignment;
 import AreaLight;

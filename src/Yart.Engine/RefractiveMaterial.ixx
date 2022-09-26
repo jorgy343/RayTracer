@@ -1,6 +1,6 @@
 export module RefractiveMaterial;
 
-import "Constants.h";
+import "Common.h";
 
 import Geometry;
 import Material;

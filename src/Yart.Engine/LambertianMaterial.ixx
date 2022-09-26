@@ -1,6 +1,6 @@
 export module LambertianMaterial;
 
-import "Constants.h";
+import "Common.h";
 
 import AreaLight;
 import DiffuseMaterial;

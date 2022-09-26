@@ -8,7 +8,7 @@ export module Math;
 import <cmath>;
 import <concepts>;
 
-import "Constants.h";
+import "Common.h";
 
 import Vec8f3;
 

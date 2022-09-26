@@ -4,6 +4,8 @@ export module Vector4;
 
 import <cmath>;
 
+import "Common.h";
+
 import Math;
 import Vector2;
 import Vector3;
@@ -348,6 +350,7 @@ namespace Yart
     }
 
     export using Vector4 = Vector4T<float>;
+    export using RealVector4 = Vector4T<real>;
     export using IntVector4 = Vector4T<int>;
     export using UIntVector4 = Vector4T<unsigned int>;
 
