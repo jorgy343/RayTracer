@@ -3,6 +3,7 @@ module;
 export module MonteCarlo;
 
 import <cmath>;
+import <concepts>;
 
 import "Common.h";
 
@@ -11,34 +12,36 @@ import Vector3;
 
 namespace Yart
 {
-    export inline constexpr Vector3 CosineWeightedSampleHemisphere(float random1, float random2)
+    export template <std::floating_point T = real>
+    inline constexpr Vector3 CosineWeightedSampleHemisphere(T random1, T random2)
     {
         // Source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
 
-        float sinTheta = Math::sqrt(1 - random1 * random1);
-        float phi = TwoPi * random2;
+        T sinTheta = Math::sqrt(T{1} - random1 * random1);
+        T phi = TwoPi * random2;
 
-        float z = sinTheta * Math::sin(phi);
-        float x = sinTheta * Math::cos(phi);
+        T z = sinTheta * Math::sin(phi);
+        T x = sinTheta * Math::cos(phi);
 
-        return Vector3{x, random1, z};
+        return Vector3T<T>{x, random1, z};
     }
 
-    export inline constexpr Vector3 TransformFromTangentSpaceToWorldSpace(const Vector3& hitNormal, const Vector3& vectorToTransform)
+    export template <std::floating_point T = real>
+    inline constexpr Vector3 TransformFromTangentSpaceToWorldSpace(const Vector3T<T>& hitNormal, const Vector3T<T>& vectorToTransform)
     {
         // Source: https://www.scratchapixel.com/code.php?id=34&origin=/lessons/3d-basic-rendering/global-illumination-path-tracing
 
-        Vector3 nt;
+        Vector3T<T> nt;
         if (Math::abs(hitNormal.X) > Math::abs(hitNormal.Y))
         {
-            nt = Vector3{hitNormal.Z, 0, -hitNormal.X} / Math::sqrt((hitNormal.X * hitNormal.X) + (hitNormal.Z * hitNormal.Z));
+            nt = Vector3T<T>{hitNormal.Z, T{0}, -hitNormal.X} / Math::sqrt((hitNormal.X * hitNormal.X) + (hitNormal.Z * hitNormal.Z));
         }
         else
         {
-            nt = Vector3{0, -hitNormal.Z, hitNormal.Y} / Math::sqrt((hitNormal.Y * hitNormal.Y) + (hitNormal.Z * hitNormal.Z));
+            nt = Vector3T<T>{T{0}, -hitNormal.Z, hitNormal.Y} / Math::sqrt((hitNormal.Y * hitNormal.Y) + (hitNormal.Z * hitNormal.Z));
         }
 
-        Vector3 nb = hitNormal % nt;
+        Vector3T<T> nb = hitNormal % nt;
 
         return {
             (vectorToTransform.X * nb.X) + (vectorToTransform.Y * hitNormal.X) + (vectorToTransform.Z * nt.X),

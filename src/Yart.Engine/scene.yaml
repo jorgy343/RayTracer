@@ -15,7 +15,7 @@ camera:
 materials:
   - emissive:
       name: "White Light"
-      emissiveColor: [2.2]
+      emissiveColor: [5]
   - emissive:
       name: "Soft White Light"
       emissiveColor: [0.01]
