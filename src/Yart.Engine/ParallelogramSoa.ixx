@@ -23,7 +23,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) ParallelogramSoa final : public GeometrySoa<Parallelogram>
+    export class alignas(64) ParallelogramSoa : public GeometrySoa<Parallelogram>
     {
     private:
         alignas(16) float _positionX[8];
@@ -77,7 +77,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(size_t index, const Parallelogram* geometry) override final
+        constexpr void Insert(size_t index, const Parallelogram* geometry) override
         {
             assert(index >= 0 && index < 8);
 
@@ -96,19 +96,18 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
-            return Intersect<IntersectionResultType::Entrance>(ray);
+            return Intersect(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override
         {
-            return Intersect<IntersectionResultType::Exit>(ray);
+            return Intersect(ray);
         }
 
     private:
-        template <IntersectionResultType TIntersectionResultType>
-        force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
+        force_inline IntersectionResult Intersect(const Ray& ray) const
         {
             if (std::is_constant_evaluated())
             {
@@ -124,7 +123,7 @@ namespace Yart
                         continue;
                     }
 
-                    float distance = geometry->Intersect<TIntersectionResultType>(ray);
+                    float distance = geometry->Intersect(ray);
 
                     if (distance < closestDistance)
                     {

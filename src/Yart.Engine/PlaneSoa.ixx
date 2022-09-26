@@ -22,7 +22,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) PlaneSoa final : public GeometrySoa<Plane>
+    export class __declspec(dllexport) alignas(64) PlaneSoa : public GeometrySoa<Plane>
     {
     private:
         alignas(16) float _normalX[8];
@@ -60,7 +60,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(size_t index, const Plane* geometry) override final
+        constexpr void Insert(size_t index, const Plane* geometry) override
         {
             assert(index >= 0 && index < 8);
 
@@ -71,12 +71,12 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect(ray);
         }

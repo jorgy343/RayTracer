@@ -14,7 +14,7 @@ import Vector3;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Sphere final : public Geometry
+    export class __declspec(dllexport) alignas(16) Sphere : public Geometry
     {
     public:
         Vector3 Position{};
@@ -29,22 +29,22 @@ namespace Yart
 
         }
 
-        inline constexpr const Material* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
         {
             return (hitPosition - Position).Normalize();
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }

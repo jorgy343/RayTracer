@@ -22,7 +22,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) SphereSoa final : public GeometrySoa<Sphere>
+    export class __declspec(dllexport) alignas(64) SphereSoa : public GeometrySoa<Sphere>
     {
     private:
         alignas(16) float _positionX[8];
@@ -60,7 +60,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(size_t index, const Sphere* geometry) override final
+        constexpr void Insert(size_t index, const Sphere* geometry) override
         {
             assert(index >= 0 && index < 8);
 
@@ -71,12 +71,12 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override final
+        constexpr IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

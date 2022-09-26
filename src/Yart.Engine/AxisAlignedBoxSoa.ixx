@@ -23,7 +23,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) AxisAlignedBoxSoa final : public GeometrySoa<AxisAlignedBox>
+    export class __declspec(dllexport) alignas(64) AxisAlignedBoxSoa : public GeometrySoa<AxisAlignedBox>
     {
     private:
         alignas(16) float _minimumX[8];
@@ -69,7 +69,7 @@ namespace Yart
 			}
 		}
 
-        constexpr void Insert(size_t index, const AxisAlignedBox* geometry) override final
+        constexpr void Insert(size_t index, const AxisAlignedBox* geometry) override
         {
 			assert(index >= 0 && index < 8);
 
@@ -84,12 +84,12 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

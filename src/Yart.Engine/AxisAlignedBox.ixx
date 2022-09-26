@@ -19,7 +19,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) AxisAlignedBox final : public Geometry
+    export class __declspec(dllexport) alignas(16) AxisAlignedBox : public Geometry
     {
     public:
         Vector3 Minimum{};
@@ -34,12 +34,12 @@ namespace Yart
 
         }
 
-        inline constexpr const Material* GetMaterial() const override final
+        inline constexpr const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override final
+        constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
         {
             Vector3 distanceMinimum = (hitPosition - Minimum).Abs();
             Vector3 distanceMaxmimum = (hitPosition - Maximum).Abs();
@@ -85,12 +85,12 @@ namespace Yart
             return normal;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override final
+        IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override final
+        IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
