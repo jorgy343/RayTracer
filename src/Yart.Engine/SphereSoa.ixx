@@ -11,6 +11,7 @@ import <initializer_list>;
 import "Common.h";
 
 import Alignment;
+import BoundingBox;
 import GeometrySoa;
 import IntersectionResult;
 import IntersectionResultType;
@@ -69,6 +70,30 @@ namespace Yart
             _positionZ[index] = geometry->Position.Z;
             _radius[index] = geometry->Radius;
             _geometries[index] = geometry;
+        }
+
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            Vector3 minimum{std::numeric_limits<float>::infinity()};
+            Vector3 maximum{-std::numeric_limits<float>::infinity()};
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (!_geometries[i])
+                {
+                    break;
+                }
+
+                Vector3 position = Vector3{_positionX[i], _positionY[i], _positionZ[i]};
+
+                minimum = minimum.Min(position - _radius[i]);
+                maximum = maximum.Max(position + _radius[i]);
+            }
+
+            return BoundingBox{
+                minimum,
+                maximum,
+            };
         }
 
         constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override

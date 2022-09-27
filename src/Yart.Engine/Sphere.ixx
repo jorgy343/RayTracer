@@ -30,7 +30,10 @@ namespace Yart
 
         constexpr BoundingBox CalculateBoundingBox() const override
         {
-            return BoundingBox{Position - Radius, Position + Radius};
+            return BoundingBox{
+                Position - Radius,
+                Position + Radius,
+            };
         }
 
         inline constexpr const Material* GetMaterial() const override
