@@ -3,6 +3,7 @@ module;
 export module Vector3;
 
 import <cmath>;
+import <concepts>;
 
 import "Common.h";
 
@@ -12,7 +13,7 @@ import Vector2;
 namespace Yart
 {
     export template <any_number T>
-    class __declspec(dllexport) alignas(sizeof(T) * 4) Vector3T
+        class __declspec(dllexport) alignas(sizeof(T) * 4) Vector3T
     {
     public:
         T X{};
@@ -224,22 +225,22 @@ namespace Yart
             return vectorToProjectOnto * ((*this * vectorToProjectOnto) / (vectorToProjectOnto * vectorToProjectOnto));
         }
 
-		inline constexpr Vector3T& Reciprical()
-		{
-			X = Math::rcp(X);
-			Y = Math::rcp(Y);
-			Z = Math::rcp(Z);
+        inline constexpr Vector3T& Reciprical()
+        {
+            X = Math::rcp(X);
+            Y = Math::rcp(Y);
+            Z = Math::rcp(Z);
 
-			return *this;
-		}
+            return *this;
+        }
 
-		inline constexpr Vector3T RecipricalConst() const
-		{
-			Vector3T result = *this;
-			result.Reciprical();
+        inline constexpr Vector3T RecipricalConst() const
+        {
+            Vector3T result = *this;
+            result.Reciprical();
 
-			return result;
-		}
+            return result;
+        }
 
         inline constexpr Vector3T Reflect(const Vector3T& normal) const
         {
@@ -414,16 +415,22 @@ namespace Yart
 
             return *this;
         }
+
+        template <any_number U>
+        inline constexpr explicit operator Vector3T<U>() const
+        {
+            return Vector3T<U>(static_cast<U>(X), static_cast<U>(Y), static_cast<U>(Z));
+        }
     };
 
     export template <any_number T>
-    inline constexpr Vector3T<T> operator+(T left, const Vector3T<T>&right)
+        inline constexpr Vector3T<T> operator+(T left, const Vector3T<T>& right)
     {
         return {left + right.X, left + right.Y, left + right.Z};
     }
 
     export template <any_number T>
-    inline constexpr Vector3T<T> operator*(T left, const Vector3T<T>&right)
+        inline constexpr Vector3T<T> operator*(T left, const Vector3T<T>& right)
     {
         return {left * right.X, left * right.Y, left * right.Z};
     }

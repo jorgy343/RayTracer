@@ -85,15 +85,15 @@ namespace Yart
             normalizedX += static_cast<T>(subpixel.X) * _subpixelSizeX;
             normalizedY += static_cast<T>(subpixel.Y) * _subpixelSizeY;
 
-            normalizedX += static_cast<T>(random.GetNormalized<T>()) * _subpixelSizeX;
-            normalizedY += static_cast<T>(random.GetNormalized<T>()) * _subpixelSizeY;
+            normalizedX += random.GetNormalized<T>() * _subpixelSizeX;
+            normalizedY += random.GetNormalized<T>() * _subpixelSizeY;
 
             Vector3T<T> rayDirection = (_upperLeftCorner + (normalizedX * _du) - (normalizedY * _dv) - Position).Normalize();
 
             return
             {
-                Vector3{static_cast<TOutput>(Position.X), static_cast<TOutput>(Position.Y), static_cast<TOutput>(Position.Z)},
-                Vector3{static_cast<TOutput>(rayDirection.X), static_cast<TOutput>(rayDirection.Y), static_cast<TOutput>(rayDirection.Z)}
+                Vector3{static_cast<Vector3T<TOutput>>(Position)},
+                Vector3{static_cast<Vector3T<TOutput>>(rayDirection)},
             };
         }
     };

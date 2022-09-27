@@ -47,7 +47,7 @@ namespace Yart
 
             // Reverse the refraction direction so that the CalculateNormal method will see the ray
             // as coming in towards the geometry rather than coming out of it.
-            refractionRay.Direction = -refractionRay.Direction;
+            refractionRay = Ray{refractionRay.Position, -refractionRay.Direction};
 
             // Because we flipped the refraction direction, the normal should be pointing away
             // from the geometry.

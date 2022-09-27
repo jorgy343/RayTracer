@@ -332,6 +332,12 @@ namespace Yart
 
             return *this;
         }
+
+        template <any_number U>
+        inline constexpr explicit operator Vector4T<U>() const
+        {
+            return Vector4T<U>(static_cast<U>(X), static_cast<U>(Y), static_cast<U>(Z), static_cast<U>(W));
+        }
     };
 
     export template <any_number T>

@@ -278,6 +278,12 @@ namespace Yart
 
 			return *this;
 		}
+
+        template <any_number U>
+        inline constexpr explicit operator Vector2T<U>() const
+        {
+            return Vector2T<U>(static_cast<U>(X), static_cast<U>(Y));
+        }
 	};
 
 	export template <any_number T>

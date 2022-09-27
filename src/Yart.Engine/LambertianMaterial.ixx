@@ -5,6 +5,7 @@ import "Common.h";
 import AreaLight;
 import DiffuseMaterial;
 import Geometry;
+import Math;
 import Random;
 import Ray;
 import Scene;

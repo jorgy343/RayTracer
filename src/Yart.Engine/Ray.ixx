@@ -5,24 +5,39 @@ export module Ray;
 import <cmath>;
 import <limits>;
 
+import "Common.h";
+
 import Math;
 import Vector3;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Ray
+    export template <real_number T>
+        class __declspec(dllexport) alignas(16) RayT
     {
     public:
-        Vector3 Position{};
-        Vector3 Direction{};
-        Vector3 InverseDirection{};
+        Vector3T<T> Position{};
+        Vector3T<T> Direction{};
+        Vector3T<T> InverseDirection{};
 
-        inline constexpr Ray() = default;
-
-        inline constexpr Ray(const Vector3& position, const Vector3& direction)
+        inline constexpr RayT(const Vector3T<T>& position, const Vector3T<T>& direction)
             : Position{position}, Direction{direction}, InverseDirection{Vector3{Math::rcp(direction.X), Math::rcp(direction.Y), Math::rcp(direction.Z)}}
         {
 
         }
+
+        inline constexpr RayT(const Vector3T<T>& position, const Vector3T<T>& direction, const Vector3T<T>& inverseDirection)
+            : Position{position}, Direction{direction}, InverseDirection{inverseDirection}
+        {
+
+        }
+
+        template <real_number U>
+        inline constexpr explicit operator RayT<U>() const
+        {
+            return RayT<U>(static_cast<Vector3T<U>>(Position), static_cast<Vector3T<U>>(Direction), static_cast<Vector3T<U>>(InverseDirection));
+        }
     };
+
+    export using Ray = RayT<real>;
 }
