@@ -1,5 +1,3 @@
-module;
-
 export module Parallelogram;
 
 import <limits>;

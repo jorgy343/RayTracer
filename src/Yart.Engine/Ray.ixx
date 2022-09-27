@@ -1,5 +1,3 @@
-module;
-
 export module Ray;
 
 import <cmath>;

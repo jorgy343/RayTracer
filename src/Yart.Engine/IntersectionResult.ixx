@@ -1,7 +1,3 @@
-module;
-
-import <memory>;
-
 export module IntersectionResult;
 
 namespace Yart

@@ -84,6 +84,7 @@
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
     <ClCompile Include="BoundingGeometry.ixx" />
+    <ClCompile Include="Box.ixx" />
     <ClCompile Include="Camera.ixx" />
     <ClCompile Include="Cylinder.ixx" />
     <ClCompile Include="DiffuseMaterial.ixx" />

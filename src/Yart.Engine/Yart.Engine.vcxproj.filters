@@ -207,6 +207,9 @@
     <ClCompile Include="TriangleSoa.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
+    <ClCompile Include="Box.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

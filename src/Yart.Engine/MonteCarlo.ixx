@@ -1,5 +1,3 @@
-module;
-
 export module MonteCarlo;
 
 import <cmath>;

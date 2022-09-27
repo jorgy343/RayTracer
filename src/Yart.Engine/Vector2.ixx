@@ -1,5 +1,3 @@
-module;
-
 export module Vector2;
 
 import <cmath>;
