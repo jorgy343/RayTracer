@@ -2,6 +2,7 @@ export module Geometry;
 
 import <concepts>;
 
+import GeometryForward;
 import IntersectableGeometry;
 import Material;
 import Ray;
@@ -9,7 +10,7 @@ import Vector3;
 
 namespace Yart
 {
-    export class Geometry : public IntersectableGeometry
+    export class __declspec(dllexport) Geometry : public IntersectableGeometry
     {
     public:
         virtual constexpr const Material* GetMaterial() const = 0;

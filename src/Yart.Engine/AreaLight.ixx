@@ -6,7 +6,7 @@ import Vector3;
 
 namespace Yart
 {
-    export class AreaLight : public Geometry
+    export class __declspec(dllexport) AreaLight : public Geometry
     {
     public:
         virtual constexpr Vector3 GenerateRandomDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const = 0;

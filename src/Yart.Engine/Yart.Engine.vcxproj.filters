@@ -213,6 +213,9 @@
     <ClCompile Include="BoundingBox.ixx">
       <Filter>Modules\Geometries\Bounding</Filter>
     </ClCompile>
+    <ClCompile Include="GeometryForward.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

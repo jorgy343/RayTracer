@@ -9,7 +9,7 @@ import Ray;
 
 namespace Yart
 {
-    export class IntersectableGeometry
+    export class __declspec(dllexport) IntersectableGeometry
     {
     public:
         virtual constexpr IntersectionResult IntersectEntrance(const Ray& ray) const = 0;

@@ -2,10 +2,10 @@ export module IntersectionResult;
 
 import "Common.h";
 
+import GeometryForward;
+
 namespace Yart
 {
-    export class Geometry;
-
     export template <real_number T>
     class IntersectionResultT
     {
