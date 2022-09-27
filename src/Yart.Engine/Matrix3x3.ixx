@@ -6,6 +6,8 @@ export module Matrix3x3;
 
 import <cmath>;
 
+import "Common.h";
+
 import Math;
 import Vector3;
 
@@ -13,7 +15,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export template <std::floating_point T>
+    export template <real_number T>
     class __declspec(dllexport) alignas(64) Matrix3x3T
     {
     public:
@@ -521,7 +523,7 @@ namespace Yart
         }
     };
 
-    export template <std::floating_point T>
+    export template <real_number T>
     inline constexpr Matrix3x3T<T> operator*(T left, const Matrix3x3T<T>& right)
     {
         return {
@@ -539,7 +541,7 @@ namespace Yart
         };
     }
 
-    export template <std::floating_point T>
+    export template <real_number T>
     inline constexpr Vector3T<T> operator*(const Vector3T<T>& left, const Matrix3x3T<T>& right)
     {
         return {
@@ -549,5 +551,7 @@ namespace Yart
         };
     }
 
-    export using Matrix3x3 = Matrix3x3T<float>;
+    export using Matrix3x3 = Matrix3x3T<real>;
+    export using FloatMatrix3x3 = Matrix3x3T<float>;
+    export using DoubleMatrix3x3 = Matrix3x3T<double>;
 }

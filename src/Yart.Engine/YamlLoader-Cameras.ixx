@@ -6,6 +6,8 @@ export module YamlLoader:Cameras;
 
 import <memory>;
 
+import "Common.h";
+
 import :Vectors;
 import Camera;
 import Math;
@@ -17,7 +19,7 @@ using namespace YAML;
 
 namespace Yart::Yaml
 {
-	std::shared_ptr<PerspectiveCamera<double>> ParsePerspectiveCamera(const Node& node)
+	std::shared_ptr<PerspectiveCamera<double, real>> ParsePerspectiveCamera(const Node& node)
 	{
 		Vector3T<double> position = node["position"].as<Vector3T<double>>();
 		Vector3T<double> lookAt = node["lookAt"].as<Vector3T<double>>();
@@ -26,7 +28,7 @@ namespace Yart::Yaml
 		UIntVector2 screenSize = node["screenSize"].as<UIntVector2>();
 		unsigned int subpixelCount = node["subpixelCount"].as<unsigned int>();
 
-		return std::make_unique<PerspectiveCamera<double>>(position, lookAt, up, subpixelCount, screenSize, fov);
+		return std::make_unique<PerspectiveCamera<double, real>>(position, lookAt, up, subpixelCount, screenSize, fov);
 	}
 
 	export std::shared_ptr<Camera> ParseCameraNode(const Node& node)

@@ -10,13 +10,12 @@ import Math;
 
 namespace Yart
 {
-	export template <typename T>
-		requires std::integral<T> || std::floating_point<T>
+	export template <any_number T>
 	class __declspec(dllexport) alignas(sizeof(T) * 2) Vector2T
 	{
 	public:
-		T X{0};
-		T Y{0};
+		T X{};
+		T Y{};
 
 		inline constexpr Vector2T() = default;
 
@@ -281,24 +280,21 @@ namespace Yart
 		}
 	};
 
-	export template <typename T>
-		requires std::integral<T> || std::floating_point<T>
+	export template <any_number T>
 	inline constexpr Vector2T<T> operator+(T left, const Vector2T<T>&right)
 	{
 		return {left + right.X, left + right.Y};
 	}
 
-	export template <typename T>
-		requires std::integral<T> || std::floating_point<T>
+	export template <any_number T>
 	inline constexpr Vector2T<T> operator*(T left, const Vector2T<T>&right)
 	{
 		return {left * right.X, left * right.Y};
 	}
 
-	export using Vector2 = Vector2T<float>;
-    export using RealVector2 = Vector2T<real>;
+	export using Vector2 = Vector2T<real>;
+    export using FloatVector2 = Vector2T<float>;
+    export using DoubleVector2 = Vector2T<double>;
 	export using IntVector2 = Vector2T<int>;
 	export using UIntVector2 = Vector2T<unsigned int>;
-
-	static_assert(Vector2{0, -5}.Abs().Normalize().Length() == 1);
 }

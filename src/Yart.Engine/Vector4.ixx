@@ -12,15 +12,14 @@ import Vector3;
 
 namespace Yart
 {
-    export template <typename T>
-        requires std::integral<T> || std::floating_point<T>
+    export template <any_number T>
     class __declspec(dllexport) alignas(sizeof(T) * 4) Vector4T
     {
     public:
-        T X{0};
-        T Y{0};
-        T Z{0};
-        T W{0};
+        T X{};
+        T Y{};
+        T Z{};
+        T W{};
 
         inline constexpr Vector4T() = default;
 
@@ -335,24 +334,21 @@ namespace Yart
         }
     };
 
-    export template <typename T>
-        requires std::integral<T> || std::floating_point<T>
+    export template <any_number T>
     inline constexpr Vector4T<T> operator+(T left, const Vector4T<T>&right)
     {
         return {left + right.X, left + right.Y, left + right.Z, left + right.W};
     }
 
-    export template <typename T>
-        requires std::integral<T> || std::floating_point<T>
+    export template <any_number T>
     inline constexpr Vector4T<T> operator*(T left, const Vector4T<T>&right)
     {
         return {left * right.X, left * right.Y, left * right.Z, left * right.W};
     }
 
-    export using Vector4 = Vector4T<float>;
-    export using RealVector4 = Vector4T<real>;
+    export using Vector4 = Vector4T<real>;
+    export using FloatVector4 = Vector4T<float>;
+    export using DoubleVector4 = Vector4T<double>;
     export using IntVector4 = Vector4T<int>;
     export using UIntVector4 = Vector4T<unsigned int>;
-
-    static_assert(Vector4{0, -5, 0, 0}.Abs().Normalize().Length() == 1);
 }

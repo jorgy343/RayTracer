@@ -8,6 +8,8 @@ import <concepts>;
 import <cstdint>;
 import <random>;
 
+import "Common.h";
+
 using namespace vcl;
 
 namespace Yart
@@ -34,7 +36,7 @@ namespace Yart
             return _ranvec.random1f();
         }
 
-        template <std::floating_point T>
+        template <real_number T>
         inline T GetNormalized() const
         {
             if constexpr (std::same_as<float, T>)

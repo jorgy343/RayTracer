@@ -7,6 +7,8 @@ export module Matrix4x4;
 import <cmath>;
 import <concepts>;
 
+import "Common.h";
+
 import Math;
 import Vector3;
 import Vector4;
@@ -15,7 +17,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export template <std::floating_point T>
+    export template <real_number T>
     class __declspec(dllexport) alignas(64) Matrix4x4T
     {
     public:
@@ -851,7 +853,7 @@ namespace Yart
         }
     };
 
-    export template <std::floating_point T>
+    export template <real_number T>
     inline constexpr Matrix4x4T<T> operator*(T left, const Matrix4x4T<T>& right)
     {
         return {
@@ -877,7 +879,7 @@ namespace Yart
         };
     }
 
-    export template <std::floating_point T>
+    export template <real_number T>
     inline constexpr Vector4T<T> operator*(const Vector4T<T>& left, const Matrix4x4T<T>& right)
     {
         return {
@@ -888,5 +890,7 @@ namespace Yart
         };
     }
 
-    export using Matrix4x4 = Matrix4x4T<float>;
+    export using Matrix4x4 = Matrix4x4T<real>;
+    export using FloatMatrix4x4 = Matrix4x4T<float>;
+    export using DoubleMatrix4x4 = Matrix4x4T<double>;
 }

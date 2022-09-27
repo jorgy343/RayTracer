@@ -1,8 +1,16 @@
 #pragma once
 
+#include "concepts"
+
 #define force_inline __forceinline
 
 using real = float;
+
+template <typename T>
+concept real_number = std::same_as<float, T> || std::same_as<double, T>;
+
+template <typename T>
+concept any_number = std::integral<T> || real_number<T>;
 
 namespace Yart
 {

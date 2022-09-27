@@ -5,6 +5,8 @@ export module PerspectiveCamera;
 import <cmath>;
 import <vector>;
 
+import "Common.h";
+
 import Camera;
 import Math;
 import Random;
@@ -14,7 +16,7 @@ import Vector3;
 
 namespace Yart
 {
-    export template <std::floating_point T = float>
+    export template <real_number T = real, real_number TOutput = real>
         class PerspectiveCamera : public Camera
     {
     private:
@@ -90,8 +92,8 @@ namespace Yart
 
             return
             {
-                Vector3{static_cast<float>(Position.X), static_cast<float>(Position.Y), static_cast<float>(Position.Z)},
-                Vector3{static_cast<float>(rayDirection.X), static_cast<float>(rayDirection.Y), static_cast<float>(rayDirection.Z)}
+                Vector3{static_cast<TOutput>(Position.X), static_cast<TOutput>(Position.Y), static_cast<TOutput>(Position.Z)},
+                Vector3{static_cast<TOutput>(rayDirection.X), static_cast<TOutput>(rayDirection.Y), static_cast<TOutput>(rayDirection.Z)}
             };
         }
     };

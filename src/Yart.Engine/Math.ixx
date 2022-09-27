@@ -18,10 +18,7 @@ namespace Yart
 {
     namespace Math
     {
-        export template <typename T>
-            concept number = std::integral<T> || std::floating_point<T>;
-
-        export template <number T>
+        export template <any_number T>
             inline constexpr bool isnan(T value)
         {
             if (std::is_constant_evaluated())
@@ -34,7 +31,7 @@ namespace Yart
             }
         }
 
-        export template <number T>
+        export template <any_number T>
             inline constexpr bool isinf(T value)
         {
             if (std::is_constant_evaluated())
@@ -47,7 +44,7 @@ namespace Yart
             }
         }
 
-        export template <number T>
+        export template <any_number T>
             inline constexpr bool isfinite(T value)
         {
             if (std::is_constant_evaluated())
@@ -60,7 +57,7 @@ namespace Yart
             }
         }
 
-        export template <number T>
+        export template <any_number T>
             inline constexpr T abs(T value)
         {
             if (std::is_constant_evaluated())
@@ -73,7 +70,7 @@ namespace Yart
             }
         }
 
-        export template <number T>
+        export template <any_number T>
             inline constexpr T min(T left, T right)
         {
             if (std::is_constant_evaluated())
@@ -106,7 +103,7 @@ namespace Yart
             }
         }
 
-        export template <number T>
+        export template <any_number T>
             inline constexpr T max(T left, T right)
         {
             if (std::is_constant_evaluated())
@@ -139,7 +136,7 @@ namespace Yart
             }
         }
 
-        export template <std::floating_point T>
+        export template <real_number T>
             inline constexpr T sqrt(T value)
         {
             if (std::is_constant_evaluated())
@@ -159,7 +156,7 @@ namespace Yart
             }
         }
 
-        export template <std::floating_point T>
+        export template <real_number T>
             inline constexpr T rcp(T value)
         {
             if (std::is_constant_evaluated())
@@ -178,7 +175,7 @@ namespace Yart
             }
         }
 
-        export template <std::floating_point T>
+        export template <real_number T>
             inline constexpr T inv_sqrt(T value)
         {
             if (std::is_constant_evaluated())
@@ -198,7 +195,7 @@ namespace Yart
             }
         }
 
-        export template <std::integral T>
+        export template <any_number T>
             inline constexpr T pow(T base, T exponent)
         {
             if (std::is_constant_evaluated())
@@ -207,11 +204,11 @@ namespace Yart
             }
             else
             {
-                return std::pow(static_cast<double>(base), static_cast<double>(exponent));
+                return std::pow(base, exponent);
             }
         }
 
-        export template <std::floating_point T>
+        export template <real_number T>
             inline constexpr T cos(T radians)
         {
             if (std::is_constant_evaluated())
@@ -224,7 +221,7 @@ namespace Yart
             }
         }
 
-        export template <std::floating_point T>
+        export template <real_number T>
             inline constexpr T sin(T radians)
         {
             if (std::is_constant_evaluated())
@@ -237,7 +234,7 @@ namespace Yart
             }
         }
 
-        export template <std::floating_point T>
+        export template <real_number T>
             inline constexpr T tan(T radians)
         {
             if (std::is_constant_evaluated())
@@ -250,13 +247,13 @@ namespace Yart
             }
         }
 
-        export template<number T>
+        export template<real_number T>
             inline constexpr T deg_to_rad(T degrees)
         {
             return degrees * (Pi / T{180});
         }
 
-        export template<number T>
+        export template<real_number T>
             inline constexpr T rad_to_deg(T radians)
         {
             return radians * (T{180} / Pi);

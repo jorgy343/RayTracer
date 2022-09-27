@@ -11,14 +11,13 @@ import Vector2;
 
 namespace Yart
 {
-    export template <typename T>
-        requires std::integral<T> || std::floating_point<T>
+    export template <any_number T>
     class __declspec(dllexport) alignas(sizeof(T) * 4) Vector3T
     {
     public:
-        T X{0};
-        T Y{0};
-        T Z{0};
+        T X{};
+        T Y{};
+        T Z{};
 
     private:
         T __DummyW{0};
@@ -63,7 +62,7 @@ namespace Yart
 
         inline constexpr Vector3T BuildPerpendicularVector() const
         {
-            // From Efficient Construction of Perpendicular Vectors Without Branching.
+            // From: Efficient Construction of Perpendicular Vectors Without Branching.
             Vector3T a = this->AbsConst();
 
             unsigned int xm = ((a.X - a.Y) < 0 && (a.X - a.Z) < 0) ? 1 : 0;
@@ -417,24 +416,21 @@ namespace Yart
         }
     };
 
-    export template <typename T>
-        requires std::integral<T> || std::floating_point<T>
+    export template <any_number T>
     inline constexpr Vector3T<T> operator+(T left, const Vector3T<T>&right)
     {
         return {left + right.X, left + right.Y, left + right.Z};
     }
 
-    export template <typename T>
-        requires std::integral<T> || std::floating_point<T>
+    export template <any_number T>
     inline constexpr Vector3T<T> operator*(T left, const Vector3T<T>&right)
     {
         return {left * right.X, left * right.Y, left * right.Z};
     }
 
-    export using Vector3 = Vector3T<float>;
-    export using RealVector3 = Vector3T<real>;
+    export using Vector3 = Vector3T<real>;
+    export using FloatVector3 = Vector3T<float>;
+    export using DoubleVector3 = Vector3T<double>;
     export using IntVector3 = Vector3T<int>;
     export using UIntVector3 = Vector3T<unsigned int>;
-
-    static_assert(Vector3{0, -5, 0}.Abs().Normalize().Length() == 1);
 }
