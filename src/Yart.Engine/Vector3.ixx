@@ -193,6 +193,24 @@ namespace Yart
             return (X * X) + (Y * Y) + (Z * Z);
         }
 
+        inline constexpr Vector3T Max(const Vector3T& other) const
+        {
+            return Vector3T{
+                Math::max(X, other.X),
+                Math::max(Y, other.Y),
+                Math::max(Z, other.Z),
+            };
+        }
+
+        inline constexpr Vector3T Min(const Vector3T& other) const
+        {
+            return Vector3T{
+                Math::min(X, other.X),
+                Math::min(Y, other.Y),
+                Math::min(Z, other.Z),
+            };
+        }
+
         inline constexpr Vector3T& Normalize()
         {
             T inverseLength;

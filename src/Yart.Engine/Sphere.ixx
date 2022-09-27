@@ -2,6 +2,7 @@ export module Sphere;
 
 import <limits>;
 
+import BoundingBox;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
@@ -25,6 +26,11 @@ namespace Yart
             : Position{position}, Radius{radius}, AppliedMaterial{appliedMaterial}
         {
 
+        }
+
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            return BoundingBox{Position - Radius, Position + Radius};
         }
 
         inline constexpr const Material* GetMaterial() const override

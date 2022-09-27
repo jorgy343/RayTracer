@@ -56,6 +56,14 @@ namespace Yart
 
         }
 
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            return BoundingBox{
+                Vertex0.Min(Vertex1.Min(Vertex2)),
+                Vertex0.Max(Vertex1.Max(Vertex2)),
+            };
+        }
+
         inline constexpr const Material* GetMaterial() const override
         {
             return AppliedMaterial;

@@ -3,7 +3,7 @@ export module IntersectableGeometry;
 import <concepts>;
 import <limits>;
 
-import Box;
+import BoundingBox;
 import IntersectionResult;
 import Ray;
 
@@ -15,9 +15,9 @@ namespace Yart
         virtual constexpr IntersectionResult IntersectEntrance(const Ray& ray) const = 0;
         virtual constexpr IntersectionResult IntersectExit(const Ray& ray) const = 0;
 
-        virtual constexpr Box CalculateBoundingBox() const
+        virtual constexpr BoundingBox CalculateBoundingBox() const
         {
-            return Box{
+            return BoundingBox{
                 Vector3{-std::numeric_limits<float>::infinity()},
                 Vector3{std::numeric_limits<float>::infinity()},
             };

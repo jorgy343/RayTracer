@@ -8,6 +8,7 @@ import <cmath>;
 import <limits>;
 import <memory>;
 
+import BoundingBox;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
@@ -32,6 +33,11 @@ namespace Yart
             : Minimum{minimum}, Maximum{maximum}, AppliedMaterial{appliedMaterial}
         {
 
+        }
+
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            return BoundingBox{Minimum, Maximum};
         }
 
         inline constexpr const Material* GetMaterial() const override

@@ -30,6 +30,18 @@ namespace Yart
 
         }
 
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            Vector3 point1 = Position + Edge1;
+            Vector3 point2 = Position + Edge2;
+            Vector3 point3 = Position + Edge1 + Edge2;
+
+            return BoundingBox{
+                Position.Min(point1.Min(point2.Min(point3))),
+                Position.Max(point1.Max(point2.Max(point3))),
+            };
+        }
+
         inline constexpr const Material* GetMaterial() const override
         {
             return AppliedMaterial;

@@ -1,21 +1,26 @@
 export module IntersectionResult;
 
+import "Common.h";
+
 namespace Yart
 {
     export class Geometry;
 
-    export class IntersectionResult
+    export template <real_number T>
+    class IntersectionResultT
     {
     public:
         const Geometry* HitGeometry{nullptr};
-        float HitDistance{0.0f};
+        T HitDistance{0.0f};
 
-		inline constexpr IntersectionResult() = default;
+		inline constexpr IntersectionResultT() = default;
 
-        inline IntersectionResult(const Geometry* hitGeometry, float hitDistance)
+        inline IntersectionResultT(const Geometry* hitGeometry, T hitDistance)
             : HitGeometry{hitGeometry}, HitDistance{hitDistance}
         {
             
         }
     };
+
+    export using IntersectionResult = IntersectionResultT<real>;
 }
