@@ -15,7 +15,7 @@ namespace Yart
 {
 	export class GeometryCollection : public IntersectableGeometry
 	{
-	protected:
+    public:
 		std::vector<const IntersectableGeometry*> ChildGeometries{};
 
 	public:

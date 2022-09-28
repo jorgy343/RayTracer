@@ -19,6 +19,22 @@ namespace Yart
 
         }
 
+        constexpr BoundingBoxT Union(const Vector3T<T>& other) const
+        {
+            return BoundingBoxT{
+                Minimum.Min(other),
+                Maximum.Max(other),
+            };
+        }
+
+        constexpr BoundingBoxT Union(const BoundingBoxT& other) const
+        {
+            return BoundingBoxT{
+                Minimum.Min(other.Minimum),
+                Maximum.Max(other.Maximum),
+            };
+        }
+
         constexpr bool Intersects(const Vector3T<T>& other) const
         {
             return

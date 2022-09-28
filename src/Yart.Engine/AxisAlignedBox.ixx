@@ -35,6 +35,12 @@ namespace Yart
 
         }
 
+        inline constexpr AxisAlignedBox(const BoundingBox& boundingBox, const Material* appliedMaterial)
+            : Minimum{boundingBox.Minimum}, Maximum{boundingBox.Maximum}, AppliedMaterial{appliedMaterial}
+        {
+
+        }
+
         constexpr BoundingBox CalculateBoundingBox() const override
         {
             return BoundingBox{Minimum, Maximum};

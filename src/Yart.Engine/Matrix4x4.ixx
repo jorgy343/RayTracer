@@ -257,6 +257,14 @@ namespace Yart
             return result;
         }
 
+        constexpr static Vector3T<T> Multiply(const Vector3T<T>& leftXYZ, T leftW, const Matrix4x4T& right)
+        {
+            Vector4T<T> left{leftXYZ, leftW};
+            Vector4T<T> result = left * right;
+
+            return Vector3T<T>{result.X, result.Y, result.Z};
+        }
+
         inline constexpr Matrix4x4T& Transpose()
         {
             M11 = M11;

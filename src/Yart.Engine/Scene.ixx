@@ -31,14 +31,13 @@ namespace Yart
     private:
         Vector3 _backgroundColor{0.0f};
 
-        const IntersectableGeometry* _rootGeometry{};
-
     public:
+        const IntersectableGeometry* RootGeometry{};
         std::vector<const Light*> Lights{};
         std::vector<const AreaLight*> AreaLights{};
 
         inline constexpr Scene(const IntersectableGeometry* rootGeometry, Vector3 backgroundColor)
-            : _rootGeometry{rootGeometry}, _backgroundColor { backgroundColor }
+            : RootGeometry{rootGeometry}, _backgroundColor { backgroundColor }
         {
             // TODO: This seems to fix some weird module linker issue/bug.
             Sphere sphere{};
@@ -66,7 +65,7 @@ namespace Yart
                 return Vector3{};
             }
 
-            IntersectionResult intersection = _rootGeometry->IntersectEntrance(ray);
+            IntersectionResult intersection = RootGeometry->IntersectEntrance(ray);
             Vector3 outputColor = _backgroundColor;
 
             if (intersection.HitGeometry)
@@ -92,7 +91,7 @@ namespace Yart
 
         float CastRayDistance(const Ray& ray) const
         {
-            IntersectionResult intersection = _rootGeometry->IntersectEntrance(ray);
+            IntersectionResult intersection = RootGeometry->IntersectEntrance(ray);
             return Math::max(0.0f, intersection.HitDistance);
         }
     };

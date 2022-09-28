@@ -83,6 +83,7 @@
     <ClCompile Include="AreaLight.ixx" />
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
+    <ClCompile Include="BoundingBoxHierarchy.ixx" />
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="BoundingBox.ixx" />
     <ClCompile Include="Camera.ixx" />
