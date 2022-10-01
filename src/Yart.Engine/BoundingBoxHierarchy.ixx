@@ -14,6 +14,8 @@ import "Common.h";
 
 import BoundingBox;
 import Geometry;
+import GeometryCollection;
+import GeometrySoaUtilities;
 import IntersectableGeometry;
 import IntersectionResult;
 import IntersectionResultType;
@@ -29,13 +31,13 @@ namespace Yart
         class alignas(64) BoundingBoxHierarchyT : public IntersectableGeometry
     {
     protected:
-        T MinimumX[NumberOfLeafs];
-        T MinimumY[NumberOfLeafs];
-        T MinimumZ[NumberOfLeafs];
+        alignas(32) T MinimumX[NumberOfLeafs];
+        alignas(32) T MinimumY[NumberOfLeafs];
+        alignas(32) T MinimumZ[NumberOfLeafs];
 
-        T MaximumX[NumberOfLeafs];
-        T MaximumY[NumberOfLeafs];
-        T MaximumZ[NumberOfLeafs];
+        alignas(32) T MaximumX[NumberOfLeafs];
+        alignas(32) T MaximumY[NumberOfLeafs];
+        alignas(32) T MaximumZ[NumberOfLeafs];
 
         const IntersectableGeometry* Children[NumberOfLeafs];
 
@@ -72,6 +74,43 @@ namespace Yart
             MaximumZ[leafIndex] = boundingBox.Maximum.Z;
 
             Children[leafIndex] = child;
+        }
+
+        constexpr void SetChild(size_t leafIndex, const BoundingBoxT<T>& boundingBox, const IntersectableGeometry* child)
+        {
+            assert(leafIndex < NumberOfLeafs);
+
+            MinimumX[leafIndex] = boundingBox.Minimum.X;
+            MinimumY[leafIndex] = boundingBox.Minimum.Y;
+            MinimumZ[leafIndex] = boundingBox.Minimum.Z;
+
+            MaximumX[leafIndex] = boundingBox.Maximum.X;
+            MaximumY[leafIndex] = boundingBox.Maximum.Y;
+            MaximumZ[leafIndex] = boundingBox.Maximum.Z;
+
+            Children[leafIndex] = child;
+        }
+
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            static_assert(NumberOfLeafs > 0);
+
+            BoundingBox boundingBox{
+                Vector3{MinimumX[0], MinimumY[0], MinimumZ[0]},
+                Vector3{MaximumX[0], MaximumY[0], MaximumZ[0]},
+            };
+
+            for (int i = 1; i < NumberOfLeafs; i++)
+            {
+                BoundingBox newBoundingBox{
+                    Vector3{MinimumX[i], MinimumY[i], MinimumZ[i]},
+                    Vector3{MaximumX[i], MaximumY[i], MaximumZ[i]},
+                };
+
+                boundingBox = boundingBox.Union(newBoundingBox);
+            }
+
+            return boundingBox;
         }
 
         constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override
@@ -179,20 +218,86 @@ namespace Yart
 
     export using BoundingBoxHierarchy = BoundingBoxHierarchyT<real, 8>;
 
-    export std::shared_ptr<BoundingBoxHierarchy> CreateBoundingBoxHierarchy(const std::vector<Triangle>& triangles)
+    export class BoundingBoxBuildParameters
+    {
+    public:
+        size_t PreferredMaxItemCountPerNode{32};
+        size_t MaxDepth{4};
+
+        BoundingBoxBuildParameters() = default;
+
+        BoundingBoxBuildParameters(size_t preferredMaxItemCountPerNode, size_t maxDepth)
+            : PreferredMaxItemCountPerNode{preferredMaxItemCountPerNode}, MaxDepth{maxDepth}
+        {
+
+        }
+    };
+
+    const BoundingBoxHierarchy* BuildUniformBoundingBoxHierarchy(
+        size_t currentDepth,
+        const BoundingBoxBuildParameters& parameters,
+        std::vector<const IntersectableGeometry*>& inputGeometries,
+        std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
     {
         auto hierarchy = std::shared_ptr<BoundingBoxHierarchy>(new BoundingBoxHierarchy{});
-        
-        BoundingBox rootBox{
+        geometryPointers.push_back(hierarchy);
+
+        BoundingBox rootBoundingBox{
             Vector3{std::numeric_limits<float>::infinity()},
             Vector3{-std::numeric_limits<float>::infinity()},
         };
 
-        for (const auto& triangle : triangles)
+        for (const auto* inputGeometry : inputGeometries)
         {
-            rootBox = rootBox.Union(triangle.CalculateBoundingBox());
+            rootBoundingBox = rootBoundingBox.Union(inputGeometry->CalculateBoundingBox());
         }
 
-        return hierarchy;
+        // Split the root bounding box into 8 evenly sized bounding boxes.
+        auto splitRootBoundingBoxes = rootBoundingBox.UniformSplit(2);
+
+        for (size_t i = 0; i < 8; i++)
+        {
+            auto& splitRootBoundingBox = splitRootBoundingBoxes[i];
+            std::vector<const IntersectableGeometry*> intersectedGeometries{};
+
+            for (const auto* inputGeometry : inputGeometries)
+            {
+                if (splitRootBoundingBox.Intersects(inputGeometry->CalculateBoundingBox()))
+                {
+                    intersectedGeometries.push_back(inputGeometry);
+                }
+            }
+
+            if (intersectedGeometries.size() == 0)
+            {
+                hierarchy->SetChild(i, splitRootBoundingBox, nullptr);
+            }
+            else if (currentDepth < parameters.MaxDepth && intersectedGeometries.size() > parameters.PreferredMaxItemCountPerNode)
+            {
+                auto childHierarchy = BuildUniformBoundingBoxHierarchy(currentDepth + 1, parameters, intersectedGeometries, geometryPointers);
+                hierarchy->SetChild(i, splitRootBoundingBox, childHierarchy);
+            }
+            else
+            {
+                std::vector<const IntersectableGeometry*> finalIntersectedGeometries{};
+                CreateGeometrySoaStructures(intersectedGeometries, finalIntersectedGeometries, geometryPointers);
+
+                // TODO: Small optimization: If a single geometry, just add that to the note instead of a geometry collection.
+                auto geometryCollection = std::make_shared<const GeometryCollection>(finalIntersectedGeometries);
+                geometryPointers.push_back(geometryCollection);
+
+                hierarchy->SetChild(i, splitRootBoundingBox, geometryCollection.get());
+            }
+        }
+
+        return hierarchy.get();
+    }
+
+    export const BoundingBoxHierarchy* BuildUniformBoundingBoxHierarchy(
+        const BoundingBoxBuildParameters& parameters,
+        std::vector<const IntersectableGeometry*>& inputGeometries,
+        std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
+    {
+        return BuildUniformBoundingBoxHierarchy(1, parameters, inputGeometries, geometryPointers);
     }
 }

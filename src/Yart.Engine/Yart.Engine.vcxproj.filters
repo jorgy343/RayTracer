@@ -96,9 +96,6 @@
     <ClCompile Include="GeometryCollection.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
-    <ClCompile Include="GeometrySoa.ixx">
-      <Filter>Modules\Geometries</Filter>
-    </ClCompile>
     <ClCompile Include="IntersectableGeometry.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
@@ -219,6 +216,12 @@
     <ClCompile Include="BoundingBoxHierarchy.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
+    <ClCompile Include="GeometrySoaUtilities.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometrySoa.ixx">
+      <Filter>Modules\Geometries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -233,6 +236,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scene.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="teapot.mtl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="teapot.obj">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

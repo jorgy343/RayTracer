@@ -37,10 +37,6 @@ namespace Yart
         alignas(16) float _vertex2Y[8];
         alignas(16) float _vertex2Z[8];
 
-        alignas(16) float _normalX[8];
-        alignas(16) float _normalY[8];
-        alignas(16) float _normalZ[8];
-
         alignas(16) const Triangle* _geometries[8];
 
     public:
@@ -59,10 +55,6 @@ namespace Yart
                 _vertex2X[i] = std::numeric_limits<float>::infinity();
                 _vertex2Y[i] = std::numeric_limits<float>::infinity();
                 _vertex2Z[i] = std::numeric_limits<float>::infinity();
-
-                _normalX[i] = std::numeric_limits<float>::infinity();
-                _normalY[i] = std::numeric_limits<float>::infinity();
-                _normalZ[i] = std::numeric_limits<float>::infinity();
 
                 _geometries[i] = nullptr;
             }
@@ -99,10 +91,6 @@ namespace Yart
             _vertex2X[index] = geometry->Vertex2.X;
             _vertex2Y[index] = geometry->Vertex2.Y;
             _vertex2Z[index] = geometry->Vertex2.Z;
-
-            _normalX[index] = geometry->Normal.X;
-            _normalY[index] = geometry->Normal.Y;
-            _normalZ[index] = geometry->Normal.Z;
 
             _geometries[index] = geometry;
         }

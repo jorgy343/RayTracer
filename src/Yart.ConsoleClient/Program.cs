@@ -24,14 +24,47 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
         //    Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(566, 284), new UIntVector2(566, 284), sceneData, pixelBufferPointer);
         //}
 
-        Parallel.For(0, screenHeight - 1, y =>
-        //for (int y = 0; y < screenHeight; y++)
+        var patches = new List<Patch>();
+
+        const uint patchSize = 8;
+        for (uint startY = 0; ; startY += patchSize)
+        {
+            if (startY >= screenHeight)
+            {
+                break;
+            }
+
+            uint endY = startY + patchSize >= screenHeight ? screenHeight - 1 : startY + patchSize - 1;
+
+            for (uint startX = 0; ; startX += patchSize)
+            {
+                if (startX >= screenWidth)
+                {
+                    break;
+                }
+
+                uint endX = startX + patchSize >= screenWidth ? screenWidth - 1 : startX + patchSize - 1;
+
+                patches.Add(new Patch(new UIntVector2(startX, startY), new UIntVector2(endX, endY)));
+            }
+        }
+
+        Parallel.ForEach(patches, patch =>
         {
             fixed (float* pixelBufferPointer = pixelBuffer)
             {
-                Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(0, (uint)y), new UIntVector2(screenWidth - 1, (uint)y), sceneData, pixelBufferPointer);
+                Native.TraceScene(new UIntVector2(screenWidth, screenHeight), patch.Start, patch.End, sceneData, pixelBufferPointer);
             }
         });
+
+        //Parallel.For(0, screenHeight - 1, y =>
+        ////for (int y = 0; y < screenHeight; y++)
+        //{
+        //    fixed (float* pixelBufferPointer = pixelBuffer)
+        //    {
+        //        Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(0, (uint)y), new UIntVector2(screenWidth - 1, (uint)y), sceneData, pixelBufferPointer);
+        //    }
+        //});
     }
 
     image.Mutate(c => c.ProcessPixelRowsAsVector4((Span<Vector4> row, Point point) =>
@@ -51,3 +84,5 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 
 stopwatch.Stop();
 Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+
+public record struct Patch(UIntVector2 Start, UIntVector2 End);

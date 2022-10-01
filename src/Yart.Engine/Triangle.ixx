@@ -20,7 +20,11 @@ namespace Yart
         Vector3 Vertex0{};
         Vector3 Vertex1{};
         Vector3 Vertex2{};
-        Vector3 Normal{};
+
+        Vector3 Normal0{};
+        Vector3 Normal1{};
+        Vector3 Normal2{};
+
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Triangle() = default;
@@ -34,7 +38,9 @@ namespace Yart
             Vertex0{vertex0},
             Vertex1{vertex1},
             Vertex2{vertex2},
-            Normal{Vector3{vertex0.Y * vertex1.Z - vertex0.Z * vertex1.Y, vertex0.Z * vertex1.X - vertex0.X * vertex1.Z, vertex0.X * vertex1.Y - vertex0.Y * vertex1.X}.Normalize()},
+            Normal0{Vector3{vertex0.Y * vertex1.Z - vertex0.Z * vertex1.Y, vertex0.Z * vertex1.X - vertex0.X * vertex1.Z, vertex0.X * vertex1.Y - vertex0.Y * vertex1.X}.Normalize()},
+            Normal1{Normal0},
+            Normal2{Normal0},
             AppliedMaterial{appliedMaterial}
         {
 
@@ -44,13 +50,17 @@ namespace Yart
             const Vector3& vertex0,
             const Vector3& vertex1,
             const Vector3& vertex2,
-            const Vector3& normal,
+            const Vector3& normal0,
+            const Vector3& normal1,
+            const Vector3& normal2,
             const Material* appliedMaterial)
             :
             Vertex0{vertex0},
             Vertex1{vertex1},
             Vertex2{vertex2},
-            Normal{normal},
+            Normal0{normal0},
+            Normal1{normal1},
+            Normal2{normal2},
             AppliedMaterial{appliedMaterial}
         {
 
@@ -71,7 +81,26 @@ namespace Yart
 
         inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
         {
-            return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
+            // Barycentric coordinate calculations from: https://gamedev.stackexchange.com/a/23745
+            Vector3 v0 = Vertex1 - Vertex0;
+            Vector3 v1 = Vertex2 - Vertex0;
+            Vector3 v2 = hitPosition - Vertex0;
+
+            float d00 = v0 * v0;
+            float d01 = v0 * v1;
+            float d11 = v1 * v1;
+            float d20 = v2 * v0;
+            float d21 = v2 * v1;
+
+            float inverseDenom = Math::rcp(d00 * d11 - d01 * d01);
+
+            float v = (d11 * d20 - d01 * d21) * inverseDenom;
+            float w = (d00 * d21 - d01 * d20) * inverseDenom;
+            float u = 1.0f - v - w;
+
+            Vector3 normal = (Normal0 * u + Normal1 * v + Normal2 * w).Normalize();
+
+            return (ray.Direction * normal) < 0.0f ? normal : -normal;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override

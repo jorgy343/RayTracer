@@ -1,5 +1,5 @@
 config:
-  iterations: 8
+  iterations: 16
   backgroundColor: [0]
   colorClamp: [0, 1]
 
@@ -70,8 +70,8 @@ scene:
             areaLight: true
             material: "White Light"
             position: [0, 19.9, -6]
-            edge1: [-1.2, 0, 0]
-            edge2: [0, 0, 1.2]
+            edge1: [-1.4, 0, 0]
+            edge2: [0, 0, 1.4]
 
         #- disc:
         #    areaLight: true
@@ -79,6 +79,14 @@ scene:
         #    position: [0, 19.9, -6]
         #    normal: [0, -1, 0]
         #    radius: 0.65
+
+        - triangleMeshObj:
+            material: "White"
+            objFile: "teapot.obj"
+            transformation:
+              - scale: [2]
+              - rotate: [0, 90, 0]
+              - translate: [0, -7, -10]
 
         - triangle:
             material: "White"

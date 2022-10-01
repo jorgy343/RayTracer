@@ -97,6 +97,7 @@
     <ClCompile Include="GeometryCollection.ixx" />
     <ClCompile Include="GeometryForward.ixx" />
     <ClCompile Include="GeometrySoa.ixx" />
+    <ClCompile Include="GeometrySoaUtilities.ixx" />
     <ClCompile Include="GgxMaterial.ixx" />
     <ClCompile Include="IntersectableGeometry.ixx" />
     <ClCompile Include="IntersectionResult.ixx" />
@@ -146,6 +147,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scene.yaml" />
+    <None Include="teapot.mtl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="teapot.obj">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

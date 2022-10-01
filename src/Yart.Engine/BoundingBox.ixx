@@ -1,5 +1,7 @@
 export module BoundingBox;
 
+import <vector>;
+
 import "Common.h";
 
 import Vector3;
@@ -55,6 +57,33 @@ namespace Yart
                 Maximum.X >= other.Minimum.X &&
                 Maximum.Y >= other.Minimum.Y &&
                 Maximum.Z >= other.Minimum.Z;
+        }
+
+        constexpr std::vector<BoundingBoxT> UniformSplit(size_t count) const
+        {
+            constexpr T buffer = T{0.001};
+
+            T deltaX = (Maximum.X - Minimum.X) / static_cast<T>(count);
+            T deltaY = (Maximum.Y - Minimum.Y) / static_cast<T>(count);
+            T deltaZ = (Maximum.Z - Minimum.Z) / static_cast<T>(count);
+
+            std::vector<BoundingBoxT> result{};
+            result.reserve(count * count * count);
+
+            for (size_t z = 0; z < count; z++)
+            {
+                for (size_t y = 0; y < count; y++)
+                {
+                    for (size_t x = 0; x < count; x++)
+                    {
+                        result.push_back(BoundingBoxT{
+                            Vector3T<T>{Minimum.X + (x + 0) * deltaX - buffer, Minimum.Y + (y + 0) * deltaY - buffer, Minimum.Z + (z + 0) * deltaZ - buffer},
+                            Vector3T<T>{Minimum.X + (x + 1) * deltaX + buffer, Minimum.Y + (y + 1) * deltaY + buffer, Minimum.Z + (z + 1) * deltaZ + buffer}});
+                    }
+                }
+            }
+
+            return result;
         }
     };
 
