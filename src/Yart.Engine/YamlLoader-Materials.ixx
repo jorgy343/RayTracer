@@ -18,6 +18,7 @@ import LambertianMaterial;
 import LambertianMaterial;
 import Material;
 import Math;
+import PhongMaterial;
 import ReflectiveMaterial;
 import RefractiveMaterial;
 import Vector3;
@@ -74,6 +75,25 @@ namespace Yart::Yaml
         materialMap[name] = material;
     }
 
+    void ParsePhongMaterial(const Node& node, MaterialMap& materialMap)
+    {
+        auto name = node["name"].as<std::string>();
+
+        auto ambientColor = node["ambientColor"].as<Vector3>();
+        auto diffuseColor = node["diffuseColor"].as<Vector3>();
+        auto specularColor = node["specularColor"].as<Vector3>();
+
+        auto shininess = node["shininess"].as<float>();
+
+        auto material = std::make_shared<PhongMaterial>(
+            ambientColor,
+            diffuseColor,
+            specularColor,
+            shininess);
+
+        materialMap[name] = material;
+    }
+
     static std::vector<std::tuple<std::string, std::function<void(const Node&, MaterialMap&)>>> MaterialMapFunctions
     {
         {"emissive", &ParseEmissiveMaterial},
@@ -81,6 +101,7 @@ namespace Yart::Yaml
         {"ggx", &ParseGgxMaterial},
         {"reflective", &ParseReflectiveMaterial},
         {"refractive", &ParseRefractiveMaterial},
+        {"phong", &ParsePhongMaterial},
     };
 
     void ParseMaterialNode(const Node& node, MaterialMap& materialMap)
@@ -91,6 +112,7 @@ namespace Yart::Yaml
             if (childNode)
             {
                 functionPointer(childNode, materialMap);
+                return;
             }
         }
     }

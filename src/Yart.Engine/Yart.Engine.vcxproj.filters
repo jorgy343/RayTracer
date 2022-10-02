@@ -222,6 +222,12 @@
     <ClCompile Include="GeometrySoa.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
+    <ClCompile Include="PhongMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlLoader-Lights.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

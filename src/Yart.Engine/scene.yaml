@@ -62,6 +62,22 @@ materials:
       name: "Refractive"
       refractionIndex: 1.02
 
+  - phong:
+      name: "Phong"
+      ambientColor: [0.1]
+      diffuseColor: [0, 0, 1]
+      specularColor: [1]
+      shininess: 30
+
+lights:
+  #- directional:
+  #    color: [1]
+  #    direction: [0, -1, 0]
+
+  - point:
+      color: [1]
+      position: [0, 19.9, 0]
+
 scene:
   geometry:
     geometryCollection:
@@ -242,22 +258,22 @@ scene:
                       radius: 3
 
                   - sphere:
-                      material: "White"
+                      material: "Phong"
                       position: [-16, -16, 17]
                       radius: 3
                   - sphere:
-                      material: "White"
+                      material: "Phong"
                       position: [-8, -16, 17]
                       radius: 3
                   - sphere:
-                      material: "White"
+                      material: "Phong"
                       position: [0, -16, 17]
                       radius: 3
                   - sphere:
-                      material: "White"
+                      material: "Phong"
                       position: [8, -16, 17]
                       radius: 3
                   - sphere:
-                      material: "White"
+                      material: "Phong"
                       position: [16, -16, 17]
                       radius: 3

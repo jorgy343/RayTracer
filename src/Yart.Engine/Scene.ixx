@@ -21,7 +21,6 @@ import Material;
 import Math;
 import Random;
 import Ray;
-import Sphere;
 import Vector3;
 
 namespace Yart
@@ -39,8 +38,7 @@ namespace Yart
         inline constexpr Scene(const IntersectableGeometry* rootGeometry, Vector3 backgroundColor)
             : RootGeometry{rootGeometry}, _backgroundColor { backgroundColor }
         {
-            // TODO: This seems to fix some weird module linker issue/bug.
-            Sphere sphere{};
+
         }
 
         inline constexpr void AddLight(const Light* light)

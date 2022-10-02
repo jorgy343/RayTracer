@@ -5,6 +5,7 @@ import Camera;
 import GeometryCollection;
 import IntersectableGeometry;
 import LambertianMaterial;
+import Light;
 import Math;
 import Matrix4x4;
 import Random;
@@ -33,6 +34,7 @@ public:
     std::shared_ptr<Yaml::Config> SavedConfig{};
     std::shared_ptr<Yaml::SceneConfig> SavedSceneConfig{};
     std::shared_ptr<Yaml::MaterialMap> SavedMaterialMap{};
+    std::vector<std::shared_ptr<const Light>> Lights{};
     std::shared_ptr<Scene> SavedScene{};
     std::shared_ptr<Camera> SavedCamera{};
 
@@ -40,12 +42,14 @@ public:
         std::shared_ptr<Yaml::Config> savedConfig,
         std::shared_ptr<Yaml::SceneConfig> savedSceneConfig,
         std::shared_ptr<Yaml::MaterialMap> savedMaterialMap,
+        std::vector<std::shared_ptr<const Light>> lights,
         std::shared_ptr<Scene> savedScene,
         std::shared_ptr<Camera> savedCamera)
         :
         SavedConfig{savedConfig},
         SavedSceneConfig{savedSceneConfig},
         SavedMaterialMap{savedMaterialMap},
+        Lights{lights},
         SavedScene{savedScene},
         SavedCamera{savedCamera}
     {
@@ -55,11 +59,16 @@ public:
 
 extern "C" __declspec(dllexport) void* __cdecl CreateScene()
 {
-    auto [config, camera, sceneConfig, materialMap] = Yaml::LoadYaml();
+    auto [config, camera, lights, sceneConfig, materialMap] = Yaml::LoadYaml();
 
     auto scene = std::make_shared<Scene>(sceneConfig->Geometry, config->BackgroundColor);
 
-    for (auto areaLight : sceneConfig->AreaLights)
+    for (const auto light : lights)
+    {
+        scene->AddLight(light.get());
+    }
+
+    for (const auto areaLight : sceneConfig->AreaLights)
     {
         scene->AddAreaLight(areaLight);
     }
@@ -68,6 +77,7 @@ extern "C" __declspec(dllexport) void* __cdecl CreateScene()
         config,
         sceneConfig,
         materialMap,
+        lights,
         scene,
         camera};
 
