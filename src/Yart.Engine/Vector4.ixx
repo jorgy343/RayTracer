@@ -11,7 +11,7 @@ import Vector3;
 namespace Yart
 {
     export template <any_number T>
-    class __declspec(dllexport) alignas(sizeof(T) * 4) Vector4T
+        class __declspec(dllexport) alignas(sizeof(T) * 4) Vector4T
     {
     public:
         T X{};
@@ -178,29 +178,53 @@ namespace Yart
             return *this;
         }
 
-		inline constexpr Vector4T NormalizeConst() const
-		{
-			Vector4T result = *this;
-			return result.Normalize();
-		}
+        inline constexpr Vector4T NormalizeConst() const
+        {
+            Vector4T result = *this;
+            return result.Normalize();
+        }
 
-		inline constexpr Vector4T& Reciprical()
-		{
-			X = Math::rcp(X);
-			Y = Math::rcp(Y);
-			Z = Math::rcp(Z);
-			W = Math::rcp(W);
+        inline constexpr Vector4T& Reciprical()
+        {
+            X = Math::rcp(X);
+            Y = Math::rcp(Y);
+            Z = Math::rcp(Z);
+            W = Math::rcp(W);
 
-			return *this;
-		}
+            return *this;
+        }
 
-		inline constexpr Vector4T RecipricalConst() const
-		{
-			Vector4T result = *this;
-			result.Reciprical();
+        inline constexpr Vector4T RecipricalConst() const
+        {
+            Vector4T result = *this;
+            result.Reciprical();
 
-			return result;
-		}
+            return result;
+        }
+
+        inline constexpr T& operator[](size_t index)
+        {
+            switch (index)
+            {
+                case 0: return X;
+                case 1: return Y;
+                case 2: return Z;
+                case 3: return W;
+                default: return X;
+            }
+        }
+
+        inline constexpr const T& operator[](size_t index) const
+        {
+            switch (index)
+            {
+                case 0: return X;
+                case 1: return Y;
+                case 2: return Z;
+                case 3: return W;
+                default: return X;
+            }
+        }
 
         inline constexpr Vector4T operator+() const
         {
@@ -359,13 +383,13 @@ namespace Yart
     };
 
     export template <any_number T>
-    inline constexpr Vector4T<T> operator+(T left, const Vector4T<T>&right)
+        inline constexpr Vector4T<T> operator+(T left, const Vector4T<T>& right)
     {
         return {left + right.X, left + right.Y, left + right.Z, left + right.W};
     }
 
     export template <any_number T>
-    inline constexpr Vector4T<T> operator*(T left, const Vector4T<T>&right)
+        inline constexpr Vector4T<T> operator*(T left, const Vector4T<T>& right)
     {
         return {left * right.X, left * right.Y, left * right.Z, left * right.W};
     }

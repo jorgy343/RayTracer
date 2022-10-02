@@ -298,6 +298,62 @@ namespace Yart
             return result;
         }
 
+        inline constexpr T& operator[](size_t index)
+        {
+            switch (index)
+            {
+                case 0: return M11;
+                case 1: return M12;
+                case 2: return M13;
+                case 3: return M14;
+
+                case 4: return M21;
+                case 5: return M22;
+                case 6: return M23;
+                case 7: return M24;
+
+                case 8: return M31;
+                case 9: return M32;
+                case 10: return M33;
+                case 11: return M34;
+
+                case 12: return M41;
+                case 13: return M42;
+                case 14: return M43;
+                case 15: return M44;
+
+                default: return M11;
+            }
+        }
+
+        inline constexpr const T& operator[](size_t index) const
+        {
+            switch (index)
+            {
+                case 0: return M11;
+                case 1: return M12;
+                case 2: return M13;
+                case 3: return M14;
+
+                case 4: return M21;
+                case 5: return M22;
+                case 6: return M23;
+                case 7: return M24;
+
+                case 8: return M31;
+                case 9: return M32;
+                case 10: return M33;
+                case 11: return M34;
+
+                case 12: return M41;
+                case 13: return M42;
+                case 14: return M43;
+                case 15: return M44;
+
+                default: return M11;
+            }
+        }
+
         inline constexpr Matrix4x4T operator+() const
         {
             return {

@@ -288,6 +288,28 @@ namespace Yart
             return r + (T{1} - r) * x * x * x * x * x;
         }
 
+        inline constexpr T& operator[](size_t index)
+        {
+            switch (index)
+            {
+                case 0: return X;
+                case 1: return Y;
+                case 2: return Z;
+                default: return X;
+            }
+        }
+
+        inline constexpr const T& operator[](size_t index) const
+        {
+            switch (index)
+            {
+                case 0: return X;
+                case 1: return Y;
+                case 2: return Z;
+                default: return X;
+            }
+        }
+
         inline constexpr Vector3T operator+() const
         {
             return {+X, +Y, +Z};

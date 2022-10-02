@@ -58,6 +58,32 @@ namespace Yart
         }
 
         export template <any_number T>
+            inline constexpr T floor(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::floor(value);
+            }
+            else
+            {
+                return std::floor(value);
+            }
+        }
+
+        export template <any_number T>
+            inline constexpr T ceil(T value)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::ceil(value);
+            }
+            else
+            {
+                return std::ceil(value);
+            }
+        }
+
+        export template <any_number T>
             inline constexpr T abs(T value)
         {
             if (std::is_constant_evaluated())

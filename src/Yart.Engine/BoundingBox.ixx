@@ -21,6 +21,23 @@ namespace Yart
 
         }
 
+        /// @brief Increases (or decreases if sizeIncrease is negative) the size of the bounding box by sizeIncrease. Each axis
+        /// of the bounding box can be adjusted independently.
+        /// @param sizeIncrease The amount to increase (or decrease) the bounding box by.
+        /// @return A new bounding box with the size adjusted by sizeIncrease.
+        constexpr BoundingBoxT AddMargin(const Vector3T<T>& sizeIncrease) const
+        {
+            return BoundingBoxT{
+                Minimum - sizeIncrease,
+                Maximum + sizeIncrease,
+            };
+        }
+
+        constexpr Vector3T<T> CalculateCenterPoint() const
+        {
+            return Minimum + (Maximum - Minimum) * T { 0.5 };
+        }
+
         constexpr BoundingBoxT Union(const Vector3T<T>& other) const
         {
             return BoundingBoxT{

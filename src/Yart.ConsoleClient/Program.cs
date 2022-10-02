@@ -9,7 +9,6 @@ const int screenWidth = 1920;
 const int screenHeight = 1080;
 
 var stopwatch = new Stopwatch();
-stopwatch.Start();
 
 using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 {
@@ -49,6 +48,8 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
             }
         }
 
+        stopwatch.Start();
+
         Parallel.ForEach(patches, patch =>
         {
             fixed (float* pixelBufferPointer = pixelBuffer)
@@ -57,14 +58,7 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
             }
         });
 
-        //Parallel.For(0, screenHeight - 1, y =>
-        ////for (int y = 0; y < screenHeight; y++)
-        //{
-        //    fixed (float* pixelBufferPointer = pixelBuffer)
-        //    {
-        //        Native.TraceScene(new UIntVector2(screenWidth, screenHeight), new UIntVector2(0, (uint)y), new UIntVector2(screenWidth - 1, (uint)y), sceneData, pixelBufferPointer);
-        //    }
-        //});
+        stopwatch.Stop();
     }
 
     image.Mutate(c => c.ProcessPixelRowsAsVector4((Span<Vector4> row, Point point) =>
@@ -82,7 +76,6 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
     await image.SaveAsPngAsync("test-image.png");
 }
 
-stopwatch.Stop();
 Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
 
 public record struct Patch(UIntVector2 Start, UIntVector2 End);

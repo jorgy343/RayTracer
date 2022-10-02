@@ -231,19 +231,28 @@ namespace Yart::Yaml
 
     const BoundingGeometry* ParseBoundingGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
-        auto [boundingVolume, ignored1] = ParseGeometryNode(node["boundingVolume"], materialMap, sceneConfig, nullptr, false);
-        auto [child, ignored2] = ParseGeometryNode(node["child"], materialMap, sceneConfig, nullptr, false);
+        auto [child, ignored1] = ParseGeometryNode(node["child"], materialMap, sceneConfig, nullptr, false);
 
-        auto geometry = std::make_shared<const BoundingGeometry>(boundingVolume, child);
-        sceneConfig.Geometries.push_back(geometry);
+        auto boundingVolumeNode = node["boundingVolume"];
+        if (boundingVolumeNode)
+        {
+            auto [boundingVolume, ignored2] = ParseGeometryNode(boundingVolumeNode, materialMap, sceneConfig, nullptr, false);
 
-        return geometry.get();
+            auto geometry = std::make_shared<const BoundingGeometry>(boundingVolume, child);
+            sceneConfig.Geometries.push_back(geometry);
+
+            return geometry.get();
+        }
+        else
+        {
+            return CreateBoundingGeometryFromGeometry(child, sceneConfig.Geometries);
+        }
     }
 
     const TransformedGeometry* ParseTransformedGeometryNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto [childGeometry, ignored] = ParseGeometryNode(node["child"], materialMap, sceneConfig, nullptr, true);
-        auto matrix = ParseTransformationSequence(node["transformation"]);
+        auto matrix = ParseTransformationSequence<float>(node["transformation"]);
 
         auto geometry = std::make_shared<const TransformedGeometry>(reinterpret_cast<const Geometry*>(childGeometry), matrix);
         sceneConfig.Geometries.push_back(geometry);
@@ -251,7 +260,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const BoundingGeometry* ParseTriangleMeshObjNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const IntersectableGeometry* ParseTriangleMeshObjNode(const Node& node, const MaterialMap& materialMap, SceneConfig& sceneConfig, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -261,20 +270,17 @@ namespace Yart::Yaml
         auto transformationNode = node["transformation"];
         if (transformationNode)
         {
-            transformation = ParseTransformationSequence(node["transformation"]);
+            transformation = ParseTransformationSequence<float>(node["transformation"]);
         }
 
         // Read the geometry from the obj file.
+        auto objFilename = node["objFile"].as<std::string>();
+
         tinyobj::ObjReader reader{};
-        reader.ParseFromFile("../../../../Yart.Engine/teapot.obj"); // TODO: Pull this from the yaml file.
+        reader.ParseFromFile(objFilename);
 
         auto& attributes = reader.GetAttrib();
         auto& shapes = reader.GetShapes();
-
-        BoundingBox meshBoundingBox{
-            Vector3{std::numeric_limits<float>::infinity()},
-            Vector3{-std::numeric_limits<float>::infinity()},
-        };
 
         std::vector<const IntersectableGeometry*> triangles{};
         for (auto& shape : shapes)
@@ -325,8 +331,6 @@ namespace Yart::Yaml
                 vertex1 = Matrix4x4::Multiply(vertex1, 1.0f, transformation);
                 vertex2 = Matrix4x4::Multiply(vertex2, 1.0f, transformation);
 
-                meshBoundingBox = meshBoundingBox.Union(vertex0).Union(vertex1).Union(vertex2);
-
                 Vector3 normal0{normalX0, normalY0, normalZ0};
                 Vector3 normal1{normalX1, normalY1, normalZ1};
                 Vector3 normal2{normalX2, normalY2, normalZ2};
@@ -346,16 +350,9 @@ namespace Yart::Yaml
 
         // Create the bounding box hierarchy.
         BoundingBoxBuildParameters parameters{};
-        auto hierarchy = BuildUniformBoundingBoxHierarchy(parameters, triangles, sceneConfig.Geometries);
 
-        // Build a bounding box around the hierarchy.
-        auto axisAlignedBox = std::make_shared<const AxisAlignedBox>(hierarchy->CalculateBoundingBox(), material);
-        sceneConfig.Geometries.push_back(axisAlignedBox);
-
-        auto boundingGeometry = std::make_shared<const BoundingGeometry>(axisAlignedBox.get(), hierarchy);
-        sceneConfig.Geometries.push_back(boundingGeometry);
-
-        return boundingGeometry.get();
+        return BuildSplitByLongAxisBoundingBoxHierarchy(parameters, triangles, sceneConfig.Geometries);
+        //return BuildUniformBoundingBoxHierarchy(parameters, triangles, sceneConfig.Geometries);
     }
 
     static std::vector<std::tuple<std::string, bool, bool, std::function<const IntersectableGeometry* (const Node&, const MaterialMap&, SceneConfig&, std::vector<const IntersectableGeometry*>*)>>> GeometryMapFunctions

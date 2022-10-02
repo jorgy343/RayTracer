@@ -1,5 +1,5 @@
 config:
-  iterations: 16
+  iterations: 4
   backgroundColor: [0]
   colorClamp: [0, 1]
 
@@ -80,13 +80,15 @@ scene:
         #    normal: [0, -1, 0]
         #    radius: 0.65
 
-        - triangleMeshObj:
-            material: "White"
-            objFile: "teapot.obj"
-            transformation:
-              - scale: [2]
-              - rotate: [0, 90, 0]
-              - translate: [0, -7, -10]
+        - boundingGeometry:
+            child:
+              triangleMeshObj:
+                material: "White"
+                objFile: "../../../../Yart.Engine/teapot.obj"
+                transformation:
+                  - scale: [2]
+                  - rotate: [0, 90, 0]
+                  - translate: [0, -7, -10]
 
         - triangle:
             material: "White"
@@ -112,14 +114,14 @@ scene:
             radius: 3
 
         - transformed:
+            transformation:
+              - scale: [4, 8, 2]
+              - translate: [-3, 2, 0]
             child:
               sphere:
                 material: "Refractive"
                 position: [0, 0, 0]
                 radius: 1
-            transformation:
-              - scale: [4, 8, 2]
-              - translate: [-3, 2, 0]
 
         - plane:
             material: "Red"
