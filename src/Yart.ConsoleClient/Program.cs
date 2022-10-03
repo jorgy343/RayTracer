@@ -50,11 +50,20 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
 
         stopwatch.Start();
 
+        uint completed = 0;
         Parallel.ForEach(patches, patch =>
         {
             fixed (float* pixelBufferPointer = pixelBuffer)
             {
                 Native.TraceScene(new UIntVector2(screenWidth, screenHeight), patch.Start, patch.End, sceneData, pixelBufferPointer);
+            }
+
+            var newCompleted = Interlocked.Increment(ref completed);
+
+            var random = new Random();
+            if (random.NextDouble() > 0.97)
+            {
+                Console.WriteLine(((double)newCompleted / patches.Count).ToString("p"));
             }
         });
 
