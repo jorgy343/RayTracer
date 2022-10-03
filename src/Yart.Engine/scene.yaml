@@ -1,5 +1,5 @@
 config:
-  iterations: 4
+  iterations: 16
   backgroundColor: [0]
   colorClamp: [0, 1]
 
@@ -10,7 +10,7 @@ camera:
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 4
+    subpixelCount: 16
 
 materials:
   - emissive:
@@ -74,9 +74,9 @@ lights:
   #    color: [1]
   #    direction: [0, -1, 0]
 
-  - point:
-      color: [1]
-      position: [0, 19.9, 0]
+  #- point:
+  #    color: [1]
+  #    position: [0, 19.9, 0]
 
 scene:
   geometry:

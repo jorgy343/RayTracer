@@ -21,7 +21,7 @@ namespace Yart
 
         }
 
-        inline constexpr Vector3 GetDirectionToLight(const Vector3& hitPosition, const Vector3& hitNormal) const override
+        inline constexpr Vector3 GetDirectionTowardsLight(const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
             return ReversedDirection;
         }

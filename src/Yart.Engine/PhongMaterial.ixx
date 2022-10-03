@@ -50,7 +50,7 @@ namespace Yart
 
             for (const auto& light : scene.Lights)
             {
-                Vector3 directionToLight = light->GetDirectionToLight(hitPosition, hitNormal);
+                Vector3 directionToLight = light->GetDirectionTowardsLight(hitPosition, hitNormal);
 
                 if (light->IsInShadow(scene, hitPosition, hitNormal, directionToLight))
                 {
@@ -68,6 +68,33 @@ namespace Yart
                     if (reflectionDotView >= 0.0f)
                     {
                         specularComponent += Math::pow(reflectionDotView, Shininess) * SpecularColor.ComponentwiseMultiply(light->Color);
+                    }
+                }
+            }
+
+            for (const auto& areaLight : scene.AreaLights)
+            {
+                Vector3 pointOnLight = areaLight->GetPointOnLight(random, hitPosition, hitNormal);
+                Vector3 directionToLight = (pointOnLight - hitPosition).Normalize();
+
+                if (areaLight->IsInShadow(scene, hitPosition, hitNormal, pointOnLight))
+                {
+                    continue;
+                }
+
+                float lightDotNormal = directionToLight * hitNormal;
+                float areaLightInversePdf = areaLight->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, directionToLight);
+
+                if (lightDotNormal >= 0.0f)
+                {
+                    diffuseComponent += lightDotNormal * areaLightInversePdf * DiffuseColor; // TODO: Multiply by the light's color. Not sure how to obtain the light's color right now.
+
+                    Vector3 reflectionDirection = directionToLight.Reflect(hitNormal);
+                    float reflectionDotView = reflectionDirection * incomingDirection;
+
+                    if (reflectionDotView >= 0.0f)
+                    {
+                        specularComponent += Math::pow(reflectionDotView, Shininess) * areaLightInversePdf * SpecularColor; // TODO: Multiply by the light's color. Not sure how to obtain the light's color right now.
                     }
                 }
             }

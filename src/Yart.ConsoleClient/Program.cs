@@ -61,7 +61,7 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
             var newCompleted = Interlocked.Increment(ref completed);
 
             var random = new Random();
-            if (random.NextDouble() > 0.97)
+            if (random.NextDouble() > 0.99)
             {
                 Console.WriteLine(((double)newCompleted / patches.Count).ToString("p"));
             }

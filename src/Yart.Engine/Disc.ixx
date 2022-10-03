@@ -10,6 +10,7 @@ import IntersectionResultType;
 import Material;
 import Math;
 import Ray;
+import Scene;
 import Vector3;
 
 namespace Yart
@@ -92,7 +93,15 @@ namespace Yart
             //return q * q < RadiusSquared ? t : std::numeric_limits<float>::infinity();
         }
 
-        inline Vector3 GenerateRandomDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        inline Vector3 GetDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        {
+            Vector3 randomPointOnLight = GetPointOnLight(random, hitPosition, hitNormal);
+            Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
+
+            return directionToLight;
+        }
+
+        inline Vector3 GetPointOnLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
             float distanceFromCenter = Radius * Math::sqrt(random.GetNormalizedFloat());
             float theta = random.GetNormalizedFloat() * TwoPi;
@@ -104,9 +113,20 @@ namespace Yart
             Vector3 yDirection = Normal % xDirection;
 
             Vector3 randomPointOnLight = Position + xDirection * dx + yDirection * dy;
-            Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
+            return randomPointOnLight;
+        }
 
-            return directionToLight;
+        inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& positionOnLight) const override
+        {
+            Vector3 directionToLight = positionOnLight - hitPosition;
+            float distanceToLightSquared = directionToLight.LengthSquared();
+
+            directionToLight.Normalize();
+
+            Ray ray{hitPosition, directionToLight};
+            float distance = scene.CastRayDistance(ray);
+
+            return distance * distance >= distanceToLightSquared - 0.01f ? false : true;
         }
 
         inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override

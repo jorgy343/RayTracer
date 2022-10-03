@@ -7,6 +7,7 @@ import IntersectionResult;
 import IntersectionResultType;
 import Material;
 import Math;
+import Scene;
 import Vector3;
 
 namespace Yart
@@ -94,12 +95,31 @@ namespace Yart
             return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
         }
 
-        inline constexpr Vector3 GenerateRandomDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        inline Vector3 GetDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
-            Vector3 randomPointOnLight = Position + (Edge1 * random.GetNormalizedFloat()) + (Edge2 * random.GetNormalizedFloat());
+            Vector3 randomPointOnLight = GetPointOnLight(random, hitPosition, hitNormal);
             Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
 
             return directionToLight;
+        }
+
+        inline Vector3 GetPointOnLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        {
+            Vector3 randomPointOnLight = Position + (Edge1 * random.GetNormalizedFloat()) + (Edge2 * random.GetNormalizedFloat());
+            return randomPointOnLight;
+        }
+
+        inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& positionOnLight) const override
+        {
+            Vector3 directionToLight = positionOnLight - hitPosition;
+            float distanceToLight = directionToLight.Length();
+
+            directionToLight.Normalize();
+
+            Ray ray{hitPosition, directionToLight};
+            float distance = scene.CastRayDistance(ray);
+
+            return distance >= distanceToLight - 0.01f ? false : true;
         }
 
         inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override

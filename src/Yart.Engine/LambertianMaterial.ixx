@@ -70,7 +70,7 @@ namespace Yart
 				auto& light = scene.AreaLights[indexOfLightToSample];
 
 				// Direct light sample to a random light.
-				Vector3 outgoingDirection = light->GenerateRandomDirectionTowardsLight(random, hitPosition, hitNormal);
+				Vector3 outgoingDirection = light->GetDirectionTowardsLight(random, hitPosition, hitNormal);
 				Ray outgoingRay = Ray{hitPosition, outgoingDirection};
 
 				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
