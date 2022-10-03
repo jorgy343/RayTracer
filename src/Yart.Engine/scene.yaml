@@ -1,5 +1,5 @@
 config:
-  iterations: 16
+  iterations: 8
   backgroundColor: [0]
   colorClamp: [0, 1]
 
@@ -10,7 +10,7 @@ camera:
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 16
+    subpixelCount: 4
 
 materials:
   - emissive:
@@ -65,9 +65,9 @@ materials:
   - phong:
       name: "Phong"
       ambientColor: [0.1]
-      diffuseColor: [0, 0, 1]
-      specularColor: [1]
-      shininess: 30
+      diffuseColor: [0, 0, 0.5]
+      specularColor: [0.6]
+      shininess: 25
 
 lights:
   #- directional:
@@ -78,202 +78,201 @@ lights:
   #    color: [1]
   #    position: [0, 19.9, 0]
 
-scene:
-  geometry:
-    geometryCollection:
-      children:
-        - parallelogram:
-            areaLight: true
-            material: "White Light"
-            position: [0, 19.9, -6]
-            edge1: [-1.4, 0, 0]
-            edge2: [0, 0, 1.4]
+geometry:
+  geometryCollection:
+    children:
+      - parallelogram:
+          areaLight: true
+          material: "White Light"
+          position: [0, 19.9, -6]
+          edge1: [-1.4, 0, 0]
+          edge2: [0, 0, 1.4]
 
-        #- disc:
-        #    areaLight: true
-        #    material: "White Light"
-        #    position: [0, 19.9, -6]
-        #    normal: [0, -1, 0]
-        #    radius: 0.65
+      #- disc:
+      #    areaLight: true
+      #    material: "White Light"
+      #    position: [0, 19.9, -6]
+      #    normal: [0, -1, 0]
+      #    radius: 0.65
 
-        - boundingGeometry:
-            child:
-              triangleMeshObj:
-                material: "White"
-                objFile: "../../../../Yart.Engine/teapot.obj"
-                transformation:
-                  - scale: [2]
-                  - rotate: [0, 90, 0]
-                  - translate: [0, -7, -10]
+      - boundingGeometry:
+          child:
+            triangleMeshObj:
+              material: "White"
+              objFile: "../../../../Yart.Engine/teapot.obj"
+              transformation:
+                - scale: [2]
+                - rotate: [0, 90, 0]
+                - translate: [0, -7, -10]
 
-        - triangle:
-            material: "White"
-            vertex0: [-4, 0, 10]
-            vertex1: [0, 4, 10]
-            vertex2: [4, 0, 10]
+      - triangle:
+          material: "White"
+          vertex0: [-4, 0, 10]
+          vertex1: [0, 4, 10]
+          vertex2: [4, 0, 10]
 
-        - disc:
-            material: "Light Blue"
-            position: [-14, 2, 10]
-            normal: [0, 0, 1]
-            radius: 3
+      - disc:
+          material: "Light Blue"
+          position: [-14, 2, 10]
+          normal: [0, 0, 1]
+          radius: 3
 
-        - axisAlignedBox:
-            material: "GGX"
-            minimum: [14, 8, 6]
-            maximum: [16, 10, 8]
+      - axisAlignedBox:
+          material: "GGX"
+          minimum: [14, 8, 6]
+          maximum: [16, 10, 8]
 
-        - cylinder:
-            material: "Light Blue"
-            start: [12, -1, 0]
-            end: [13, -5, 0]
-            radius: 3
+      - cylinder:
+          material: "Light Blue"
+          start: [12, -1, 0]
+          end: [13, -5, 0]
+          radius: 3
 
-        - transformed:
-            transformation:
-              - scale: [4, 8, 2]
-              - translate: [-3, 2, 0]
-            child:
-              sphere:
-                material: "Refractive"
-                position: [0, 0, 0]
-                radius: 1
+      - transformed:
+          transformation:
+            - scale: [4, 8, 2]
+            - translate: [-3, 2, 0]
+          child:
+            sphere:
+              material: "Refractive"
+              position: [0, 0, 0]
+              radius: 1
 
-        - plane:
-            material: "Red"
-            normal: [0, 0, -1]
-            point: [0, 0, 20]
-        - plane:
-            material: "Green"
-            normal: [0, 0, 1]
-            point: [0, 0, -40]
-        - plane:
-            material: "Blue"
-            normal: [0, -1, 0]
-            point: [0, 20, 0]
-        - plane:
-            material: "Orange"
-            normal: [0, 1, 0]
-            point: [0, -20, 0]
-        - plane:
-            material: "Pink"
-            normal: [-1, 0, 0]
-            point: [20, 0, 0]
-        - plane:
-            material: "Yellow"
-            normal: [1, 0, 0]
-            point: [-20, 0, 0]
+      - plane:
+          material: "Red"
+          normal: [0, 0, -1]
+          point: [0, 0, 20]
+      - plane:
+          material: "Green"
+          normal: [0, 0, 1]
+          point: [0, 0, -40]
+      - plane:
+          material: "Blue"
+          normal: [0, -1, 0]
+          point: [0, 20, 0]
+      - plane:
+          material: "Orange"
+          normal: [0, 1, 0]
+          point: [0, -20, 0]
+      - plane:
+          material: "Pink"
+          normal: [-1, 0, 0]
+          point: [20, 0, 0]
+      - plane:
+          material: "Yellow"
+          normal: [1, 0, 0]
+          point: [-20, 0, 0]
           
-        - boundingGeometry:
-            boundingVolume:
-              axisAlignedBox:
-                material: "White"
-                minimum: [-19, -19, 14]
-                maximum: [19, 19, 20]
-            child:
-              geometryCollection:
-                children:
-                  - sphere:
-                      material: "White"
-                      position: [-16, 16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [-8, 16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [0, 16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [8, 16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [16, 16, 17]
-                      radius: 3
+      - boundingGeometry:
+          boundingVolume:
+            axisAlignedBox:
+              material: "White"
+              minimum: [-19, -19, 14]
+              maximum: [19, 19, 20]
+          child:
+            geometryCollection:
+              children:
+                - sphere:
+                    material: "White"
+                    position: [-16, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, 16, 17]
+                    radius: 3
 
-                  - sphere:
-                      material: "GGX"
-                      position: [-16, 8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "GGX"
-                      position: [-8, 8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "GGX"
-                      position: [0, 8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "GGX"
-                      position: [8, 8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "GGX"
-                      position: [16, 8, 17]
-                      radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [-16, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [-8, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [0, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [8, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [16, 8, 17]
+                    radius: 3
                   
-                  - sphere:
-                      material: "White"
-                      position: [-16, 0, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [-8, 0, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [0, 0, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [8, 0, 17]
-                      radius: 3
-                  - sphere:
-                      material: "White"
-                      position: [16, 0, 17]
-                      radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-16, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, 0, 17]
+                    radius: 3
 
-                  - sphere:
-                      material: "Reflective"
-                      position: [-16, -8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Reflective"
-                      position: [-8, -8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Reflective"
-                      position: [0, -8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Reflective"
-                      position: [8, -8, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Reflective"
-                      position: [16, -8, 17]
-                      radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [-16, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [-8, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [0, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [8, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [16, -8, 17]
+                    radius: 3
 
-                  - sphere:
-                      material: "Phong"
-                      position: [-16, -16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Phong"
-                      position: [-8, -16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Phong"
-                      position: [0, -16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Phong"
-                      position: [8, -16, 17]
-                      radius: 3
-                  - sphere:
-                      material: "Phong"
-                      position: [16, -16, 17]
-                      radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [-16, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [-8, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [0, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [8, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [16, -16, 17]
+                    radius: 3

@@ -31,27 +31,15 @@ using namespace Yart;
 class SceneData
 {
 public:
-    std::shared_ptr<Yaml::Config> SavedConfig{};
-    std::shared_ptr<Yaml::SceneConfig> SavedSceneConfig{};
-    std::shared_ptr<Yaml::MaterialMap> SavedMaterialMap{};
-    std::vector<std::shared_ptr<const Light>> Lights{};
+    std::shared_ptr<Yaml::YamlData> YamlData{};
     std::shared_ptr<Scene> SavedScene{};
-    std::shared_ptr<Camera> SavedCamera{};
 
     SceneData(
-        std::shared_ptr<Yaml::Config> savedConfig,
-        std::shared_ptr<Yaml::SceneConfig> savedSceneConfig,
-        std::shared_ptr<Yaml::MaterialMap> savedMaterialMap,
-        std::vector<std::shared_ptr<const Light>> lights,
-        std::shared_ptr<Scene> savedScene,
-        std::shared_ptr<Camera> savedCamera)
+        std::shared_ptr<Yaml::YamlData> yamlData,
+        std::shared_ptr<Scene> savedScene)
         :
-        SavedConfig{savedConfig},
-        SavedSceneConfig{savedSceneConfig},
-        SavedMaterialMap{savedMaterialMap},
-        Lights{lights},
-        SavedScene{savedScene},
-        SavedCamera{savedCamera}
+        YamlData{yamlData},
+        SavedScene{savedScene}
     {
 
     }
@@ -59,27 +47,22 @@ public:
 
 extern "C" __declspec(dllexport) void* __cdecl CreateScene()
 {
-    auto [config, camera, lights, sceneConfig, materialMap] = Yaml::LoadYaml();
+    auto yamlData = Yaml::LoadYaml();
+    auto scene = std::make_shared<Scene>(yamlData->GeometryData->Geometry, yamlData->Config->BackgroundColor);
 
-    auto scene = std::make_shared<Scene>(sceneConfig->Geometry, config->BackgroundColor);
-
-    for (const auto light : lights)
+    for (const auto light : yamlData->Lights)
     {
         scene->AddLight(light.get());
     }
 
-    for (const auto areaLight : sceneConfig->AreaLights)
+    for (const auto areaLight : yamlData->GeometryData->AreaLights)
     {
         scene->AddAreaLight(areaLight);
     }
 
     auto sceneData = new SceneData{
-        config,
-        sceneConfig,
-        materialMap,
-        lights,
-        scene,
-        camera};
+        yamlData,
+        scene};
 
     return sceneData;
 }
@@ -92,13 +75,13 @@ extern "C" __declspec(dllexport) void __cdecl DeleteScene(SceneData * sceneData)
 extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize, UIntVector2 inclusiveStartingPoint, UIntVector2 inclusiveEndingPoint, const SceneData * sceneData, float* pixelBuffer)
 {
     Random random{};
-    Camera& camera = *sceneData->SavedCamera;
+    Camera& camera = *sceneData->YamlData->Camera;
 
     int subpixelCountSquared = camera.SubpixelCount * camera.SubpixelCount;
-    Vector2 colorClamp = sceneData->SavedConfig->ColorClamp;
+    Vector2 colorClamp = sceneData->YamlData->Config->ColorClamp;
 
     // Execute ray tracing.
-    for (unsigned int count = 0; count < sceneData->SavedConfig->Iterations; count++)
+    for (unsigned int count = 0; count < sceneData->YamlData->Config->Iterations; count++)
     {
         for (unsigned int y = inclusiveStartingPoint.Y; y <= inclusiveEndingPoint.Y; y++)
         {
@@ -135,10 +118,10 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
     {
         for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
         {
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= static_cast<float>(sceneData->SavedConfig->Iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= static_cast<float>(sceneData->SavedConfig->Iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= static_cast<float>(sceneData->SavedConfig->Iterations);
-            pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= static_cast<float>(sceneData->SavedConfig->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 0] /= static_cast<float>(sceneData->YamlData->Config->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 1] /= static_cast<float>(sceneData->YamlData->Config->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 2] /= static_cast<float>(sceneData->YamlData->Config->Iterations);
+            pixelBuffer[((y * screenSize.X) + x) * 4 + 3] /= static_cast<float>(sceneData->YamlData->Config->Iterations);
         }
     }
 }
