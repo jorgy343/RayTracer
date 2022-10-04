@@ -210,7 +210,7 @@
     <ClCompile Include="BoundingBox.ixx">
       <Filter>Modules\Geometries\Bounding</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryForward.ixx">
+    <ClCompile Include="GeometryDecl.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
     <ClCompile Include="BoundingBoxHierarchy.ixx">

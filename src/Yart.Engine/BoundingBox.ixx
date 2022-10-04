@@ -1,5 +1,6 @@
 export module BoundingBox;
 
+import <limits>;
 import <vector>;
 
 import "Common.h";
@@ -19,6 +20,22 @@ namespace Yart
             : Minimum{minimum}, Maximum{maximum}
         {
 
+        }
+
+        static constexpr BoundingBoxT Infinity()
+        {
+            return BoundingBoxT{
+                Vector3T<T>(-std::numeric_limits<T>::infinity()),
+                Vector3T<T>(std::numeric_limits<T>::infinity()),
+            };
+        }
+
+        static constexpr BoundingBoxT ReverseInfinity()
+        {
+            return BoundingBoxT{
+                Vector3T<T>(std::numeric_limits<T>::infinity()),
+                Vector3T<T>(-std::numeric_limits<T>::infinity()),
+            };
         }
 
         /// @brief Increases (or decreases if sizeIncrease is negative) the size of the bounding box by sizeIncrease. Each axis

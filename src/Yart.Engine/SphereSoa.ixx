@@ -72,10 +72,9 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        BoundingBox CalculateBoundingBox() const override
         {
-            Vector3 minimum{std::numeric_limits<float>::infinity()};
-            Vector3 maximum{-std::numeric_limits<float>::infinity()};
+            BoundingBox boundingBox = BoundingBox::ReverseInfinity();
 
             for (int i = 0; i < 8; i++)
             {
@@ -84,16 +83,10 @@ namespace Yart
                     break;
                 }
 
-                Vector3 position = Vector3{_positionX[i], _positionY[i], _positionZ[i]};
-
-                minimum = minimum.Min(position - _radius[i]);
-                maximum = maximum.Max(position + _radius[i]);
+                boundingBox = boundingBox.Union(_geometries[i]->CalculateBoundingBox());
             }
 
-            return BoundingBox{
-                minimum,
-                maximum,
-            };
+            return boundingBox;
         }
 
         constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override

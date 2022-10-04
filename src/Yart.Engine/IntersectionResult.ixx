@@ -2,7 +2,7 @@ export module IntersectionResult;
 
 import "Common.h";
 
-import GeometryForward;
+import GeometryDecl;
 
 namespace Yart
 {

@@ -1,4 +1,4 @@
-export module GeometryForward;
+export module GeometryDecl;
 
 namespace Yart
 {

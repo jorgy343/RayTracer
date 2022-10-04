@@ -13,6 +13,7 @@ import "Common.h";
 
 import Alignment;
 import AxisAlignedBox;
+import BoundingBox;
 import GeometrySoa;
 import IntersectionResult;
 import IntersectionResultType;
@@ -82,6 +83,23 @@ namespace Yart
             _maximumZ[index] = geometry->Maximum.Z;
 
             _geometries[index] = geometry;
+        }
+
+        BoundingBox CalculateBoundingBox() const override
+        {
+            BoundingBox boundingBox = BoundingBox::ReverseInfinity();
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (!_geometries[i])
+                {
+                    break;
+                }
+
+                boundingBox = boundingBox.Union(_geometries[i]->CalculateBoundingBox());
+            }
+
+            return boundingBox;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override

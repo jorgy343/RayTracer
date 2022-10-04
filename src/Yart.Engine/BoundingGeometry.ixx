@@ -7,6 +7,7 @@ import <vector>;
 import "Common.h";
 
 import AxisAlignedBox;
+import BoundingBox;
 import IntersectableGeometry;
 import IntersectionResultType;
 import Math;
@@ -28,6 +29,11 @@ namespace Yart
             ChildGeometry{childGeometry}
         {
 
+        }
+
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            return BoundingVolume->CalculateBoundingBox();
         }
 
         inline IntersectionResult IntersectEntrance(const Ray& ray) const override

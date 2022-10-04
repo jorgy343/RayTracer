@@ -2,7 +2,7 @@ export module Geometry;
 
 import <concepts>;
 
-import GeometryForward;
+import GeometryDecl;
 import IntersectableGeometry;
 import Material;
 import Ray;

@@ -4,6 +4,7 @@ import <limits>;
 
 import "Common.h";
 
+import BoundingBox;
 import Geometry;
 import IntersectionResult;
 import IntersectionResultType;

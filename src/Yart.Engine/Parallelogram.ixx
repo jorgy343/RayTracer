@@ -3,6 +3,7 @@ export module Parallelogram;
 import <limits>;
 
 import AreaLight;
+import BoundingBox;
 import IntersectionResult;
 import IntersectionResultType;
 import Material;
