@@ -10,6 +10,7 @@ import <concepts>;
 
 import "Common.h";
 
+import Vec4f3;
 import Vec8f3;
 
 using namespace vcl;
@@ -286,6 +287,17 @@ namespace Yart
         }
     }
 
+    export inline Vec4f SimdDot(
+        Vec4f const aX,
+        Vec4f const aY,
+        Vec4f const aZ,
+        Vec4f const bX,
+        Vec4f const bY,
+        Vec4f const bZ)
+    {
+        return _mm_fmadd_ps(aX, bX, _mm_fmadd_ps(aY, bY, _mm_mul_ps(aZ, bZ)));
+    }
+
     export inline Vec8f SimdDot(
         Vec8f const aX,
         Vec8f const aY,
@@ -295,6 +307,22 @@ namespace Yart
         Vec8f const bZ)
     {
         return _mm256_fmadd_ps(aX, bX, _mm256_fmadd_ps(aY, bY, _mm256_mul_ps(aZ, bZ)));
+    }
+
+    export inline Vec4f3 SimdCrossProduct(
+        Vec4f const aX,
+        Vec4f const aY,
+        Vec4f const aZ,
+        Vec4f const bX,
+        Vec4f const bY,
+        Vec4f const bZ)
+    {
+        return
+        {
+            aY * bZ - aZ * bY,
+            aZ * bX - aX * bZ,
+            aX * bY - aY * bX,
+        };
     }
 
     export inline Vec8f3 SimdCrossProduct(

@@ -2,6 +2,8 @@ module;
 
 #include "range/v3/view/chunk.hpp"
 
+#include "Vcl.h"
+
 export module GeometrySoaUtilities;
 
 import <memory>;
@@ -79,7 +81,14 @@ namespace Yart
 
         if (triangles.size() > 0)
         {
-            CreateGeometrySoaStructure<Triangle, TriangleSoa>(triangles, outputGeometries, geometryPointers);
+            if (triangles.size() <= 4)
+            {
+                CreateGeometrySoaStructure<Triangle, TriangleSoa<4>>(triangles, outputGeometries, geometryPointers, 4);
+            }
+            else
+            {
+                CreateGeometrySoaStructure<Triangle, TriangleSoa<8>>(triangles, outputGeometries, geometryPointers, 8);
+            }
         }
     }
 }

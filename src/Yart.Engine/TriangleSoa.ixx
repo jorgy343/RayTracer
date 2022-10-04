@@ -23,27 +23,31 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) TriangleSoa : public GeometrySoa<Triangle>
+    export template <size_t Size = 8>
+        requires (Size == 4 || Size == 8)
+    class __declspec(dllexport) alignas(Size * 4) TriangleSoa : public GeometrySoa<Triangle>
     {
     private:
-        alignas(16) float _vertex0X[8];
-        alignas(16) float _vertex0Y[8];
-        alignas(16) float _vertex0Z[8];
+        alignas(Size * 4) float _vertex0X[Size];
+        alignas(Size * 4) float _vertex0Y[Size];
+        alignas(Size * 4) float _vertex0Z[Size];
 
-        alignas(16) float _vertex1X[8];
-        alignas(16) float _vertex1Y[8];
-        alignas(16) float _vertex1Z[8];
+        alignas(Size * 4) float _vertex1X[Size];
+        alignas(Size * 4) float _vertex1Y[Size];
+        alignas(Size * 4) float _vertex1Z[Size];
 
-        alignas(16) float _vertex2X[8];
-        alignas(16) float _vertex2Y[8];
-        alignas(16) float _vertex2Z[8];
+        alignas(Size * 4) float _vertex2X[Size];
+        alignas(Size * 4) float _vertex2Y[Size];
+        alignas(Size * 4) float _vertex2Z[Size];
 
-        alignas(16) const Triangle* _geometries[8];
+        const Triangle* _geometries[Size];
+
+        using VclVec = typename std::conditional<Size == 8, Vec8f, Vec4f>::type;
 
     public:
         constexpr TriangleSoa()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
                 _vertex0X[i] = std::numeric_limits<float>::infinity();
                 _vertex0Y[i] = std::numeric_limits<float>::infinity();
@@ -68,7 +72,7 @@ namespace Yart
 
             for (auto geometry : list)
             {
-                if (index >= 8)
+                if (index >= Size)
                 {
                     break;
                 }
@@ -79,7 +83,7 @@ namespace Yart
 
         constexpr void Insert(size_t index, const Triangle* geometry) override
         {
-            assert(index >= 0 && index < 8);
+            assert(index >= 0 && index < Size);
 
             _vertex0X[index] = geometry->Vertex0.X;
             _vertex0Y[index] = geometry->Vertex0.Y;
@@ -100,7 +104,7 @@ namespace Yart
         {
             BoundingBox boundingBox = BoundingBox::ReverseInfinity();
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!_geometries[i])
                 {
@@ -126,59 +130,59 @@ namespace Yart
     private:
         force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            Vec8f vertex0X = Vec8f{}.load_a(_vertex0X);
-            Vec8f vertex0Y = Vec8f{}.load_a(_vertex0Y);
-            Vec8f vertex0Z = Vec8f{}.load_a(_vertex0Z);
+            VclVec vertex0X = VclVec{}.load_a(_vertex0X);
+            VclVec vertex0Y = VclVec{}.load_a(_vertex0Y);
+            VclVec vertex0Z = VclVec{}.load_a(_vertex0Z);
 
-            Vec8f vertex1X = Vec8f{}.load_a(_vertex1X);
-            Vec8f vertex1Y = Vec8f{}.load_a(_vertex1Y);
-            Vec8f vertex1Z = Vec8f{}.load_a(_vertex1Z);
+            VclVec vertex1X = VclVec{}.load_a(_vertex1X);
+            VclVec vertex1Y = VclVec{}.load_a(_vertex1Y);
+            VclVec vertex1Z = VclVec{}.load_a(_vertex1Z);
 
-            Vec8f edge1X = vertex1X - vertex0X;
-            Vec8f edge1Y = vertex1Y - vertex0Y;
-            Vec8f edge1Z = vertex1Z - vertex0Z;
+            VclVec edge1X = vertex1X - vertex0X;
+            VclVec edge1Y = vertex1Y - vertex0Y;
+            VclVec edge1Z = vertex1Z - vertex0Z;
 
-            Vec8f vertex2X = Vec8f{}.load_a(_vertex2X);
-            Vec8f vertex2Y = Vec8f{}.load_a(_vertex2Y);
-            Vec8f vertex2Z = Vec8f{}.load_a(_vertex2Z);
+            VclVec vertex2X = VclVec{}.load_a(_vertex2X);
+            VclVec vertex2Y = VclVec{}.load_a(_vertex2Y);
+            VclVec vertex2Z = VclVec{}.load_a(_vertex2Z);
 
-            Vec8f edge2X = vertex2X - vertex0X;
-            Vec8f edge2Y = vertex2Y - vertex0Y;
-            Vec8f edge2Z = vertex2Z - vertex0Z;
+            VclVec edge2X = vertex2X - vertex0X;
+            VclVec edge2Y = vertex2Y - vertex0Y;
+            VclVec edge2Z = vertex2Z - vertex0Z;
 
-            Vec8f rayDirectionX{ray.Direction.X};
-            Vec8f rayDirectionY{ray.Direction.Y};
-            Vec8f rayDirectionZ{ray.Direction.Z};
+            VclVec rayDirectionX{ray.Direction.X};
+            VclVec rayDirectionY{ray.Direction.Y};
+            VclVec rayDirectionZ{ray.Direction.Z};
 
-            Vec8f3 h = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
-            Vec8f a = SimdDot(edge1X, edge1Y, edge1Z, h.X, h.Y, h.Z);
+            auto h = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
+            VclVec a = SimdDot(edge1X, edge1Y, edge1Z, h.X, h.Y, h.Z);
 
             // Normally you would check for a parallel ray here but we'll skip that check.
 
-            Vec8f f = approx_recipr(a);
+            VclVec f = approx_recipr(a);
 
-            Vec8f rayPositionX{ray.Position.X};
-            Vec8f rayPositionY{ray.Position.Y};
-            Vec8f rayPositionZ{ray.Position.Z};
+            VclVec rayPositionX{ray.Position.X};
+            VclVec rayPositionY{ray.Position.Y};
+            VclVec rayPositionZ{ray.Position.Z};
 
-            Vec8f sX = rayPositionX - vertex0X;
-            Vec8f sY = rayPositionY - vertex0Y;
-            Vec8f sZ = rayPositionZ - vertex0Z;
+            VclVec sX = rayPositionX - vertex0X;
+            VclVec sY = rayPositionY - vertex0Y;
+            VclVec sZ = rayPositionZ - vertex0Z;
 
-            Vec8f u = f * SimdDot(sX, sY, sZ, h.X, h.Y, h.Z);
-            Vec8f3 q = SimdCrossProduct(sX, sY, sZ, edge1X, edge1Y, edge1Z);
-            Vec8f v = f * SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z);
+            VclVec u = f * SimdDot(sX, sY, sZ, h.X, h.Y, h.Z);
+            auto q = SimdCrossProduct(sX, sY, sZ, edge1X, edge1Y, edge1Z);
+            VclVec v = f * SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z);
 
-            Vec8f entranceDistance = f * SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z);
+            VclVec entranceDistance = f * SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z);
 
-            // Make sure infinite8f() is second so nans are replaced with inf.
-            Vec8f clampedEntranceDistance = select(
-                u >= Vec8f(0.0f) && u <= Vec8f(1.0f) && v >= Vec8f(0.0f) && u + v <= Vec8f(1.0f) && entranceDistance >= Vec8f(0.0f),
+            // Make sure infinity is second so nans are replaced with inf.
+            VclVec clampedEntranceDistance = select(
+                u >= VclVec{0.0f} && u <= VclVec{1.0f} && v >= VclVec{0.0f} && u + v <= VclVec{1.0f} && entranceDistance >= VclVec{0.0f},
                 entranceDistance,
-                infinite8f());
+                VclVec{std::numeric_limits<float>::infinity()});
 
             float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+            int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedEntranceDistance);
 
             return {
                 _geometries[minimumIndex == -1 ? 0 : minimumIndex],

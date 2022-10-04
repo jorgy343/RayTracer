@@ -24,9 +24,10 @@ namespace Yart
     void CreateGeometrySoaStructure(
         const std::vector<const TGeometry*>& inputGeometries,
         std::vector<const IntersectableGeometry*>& outputGeometries,
-        std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
+        std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers,
+        size_t chunkSize = 8)
     {
-        auto chunks = inputGeometries | ranges::views::chunk(8);
+        auto chunks = inputGeometries | ranges::views::chunk(chunkSize);
         for (const auto& chunk : chunks)
         {
             if (chunk.size() == 1)

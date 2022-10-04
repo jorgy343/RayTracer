@@ -228,6 +228,9 @@
     <ClCompile Include="YamlLoader-Lights.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
+    <ClCompile Include="Vec4f3.ixx">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
