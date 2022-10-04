@@ -51,7 +51,7 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
+        constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
         {
             Vector3 distanceMinimum = (hitPosition - Minimum).Abs();
             Vector3 distanceMaxmimum = (hitPosition - Maximum).Abs();

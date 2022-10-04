@@ -35,9 +35,9 @@ namespace Yart
 			return ChildGeometry->GetMaterial();
 		}
 
-		constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
+		constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
 		{
-			Vector3 hitNormal = ChildGeometry->CalculateNormal(ray, hitPosition);
+			Vector3 hitNormal = ChildGeometry->CalculateNormal(ray, hitPosition, additionalData);
 			Vector4 transformedHitNormal = Vector4{hitNormal, 0.0f} *InverseTransposedTransform;
 
 			return Vector3{transformedHitNormal.X, transformedHitNormal.Y, transformedHitNormal.Z}.Normalize();

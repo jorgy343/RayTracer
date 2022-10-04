@@ -1,6 +1,7 @@
 export module Cylinder;
 
 import <limits>;
+import <tuple>;
 
 import "Common.h";
 
@@ -42,31 +43,40 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
         {
             Vector3 direction = (End - Start).Normalize();
-            float height = (End - Start).Length();
+            if (additionalData == std::numeric_limits<float>::infinity())
+            {
+                return direction;
+            }
+            else if (additionalData == -std::numeric_limits<float>::infinity())
+            {
+                return -direction;
+            }
+            else
+            {
+                Vector3 pointOnAxis = Start + direction * additionalData;
+                Vector3 normal = (hitPosition - pointOnAxis).Normalize();
 
-            Vector3 axisLine = Start + direction * height;
-            Vector3 v1 = hitPosition - Start;
-            Vector3 v2 = v1.ProjectOnto(direction) + Start;
-
-            Vector3 normal = (v1 - v2).Normalize();
-            return normal;
+                return normal;
+            }
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
-            return {this, Intersect<IntersectionResultType::Entrance>(ray)};
+            auto [distance, additionalData] = Intersect<IntersectionResultType::Entrance>(ray);
+            return {this, distance, additionalData};
         }
 
         IntersectionResult IntersectExit(const Ray& ray) const override
         {
-            return {this, Intersect< IntersectionResultType::Exit>(ray)};
+            auto [distance, additionalData] = Intersect< IntersectionResultType::Exit>(ray);
+            return {this, distance, additionalData};
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        force_inline constexpr float Intersect(const Ray& ray) const
+        force_inline constexpr std::tuple<float, float> Intersect(const Ray& ray) const
         {
             Vector3 ca = End - Start;
             Vector3 oc = ray.Position - Start;
@@ -82,7 +92,7 @@ namespace Yart
             float discriminant = b * b - a * c;
             if (discriminant < 0.0f)
             {
-                return std::numeric_limits<float>::infinity();
+                return std::make_tuple(std::numeric_limits<float>::infinity(), 0.0f);
             }
 
             float discriminantSqrt = Math::sqrt(discriminant);
@@ -107,20 +117,27 @@ namespace Yart
                 result = exitDistance;
             }
 
-            return exitDistance >= 0.0f && y > 0.0f && y < caca ? result : std::numeric_limits<float>::infinity();
-            // Normal = (hitPosition - ca * y / caca) / Radius
+            if (exitDistance >= 0.0f && y > 0.0f && y < caca)
+            {
+                return std::make_tuple(result, y);
+            }
+            else
+            {
+                // TODO: Remove this return statement when the caps work.
+                return std::make_tuple(std::numeric_limits<float>::infinity(), 0.0f);
 
-
-
-
-            // caps
-            //t = (((y < 0.0) ? 0.0 : caca) - caoc) / card;
-            //if (Math::abs(b + a * t) < h)
-            //{
-            //    return t;
-
-            //    // Normal = ca * sign(y) / caca
-            //}
+                // caps
+                float distance = ((y < 0.0f ? 0.0f : caca) - caoc) / card;
+                if (Math::abs(b + a * distance) < discriminantSqrt)
+                {
+                    float additionalData = y >= 0.0f ? std::numeric_limits<float>::infinity() : -std::numeric_limits<float>::infinity();
+                    return std::make_tuple(distance, additionalData);
+                }
+                else
+                {
+                    return std::make_tuple(std::numeric_limits<float>::infinity(), 0.0f);
+                }
+            }
         }
     };
 }

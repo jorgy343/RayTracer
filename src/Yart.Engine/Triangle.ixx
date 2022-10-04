@@ -79,7 +79,7 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
         {
             // Barycentric coordinate calculations from: https://gamedev.stackexchange.com/a/23745
             Vector3 v0 = Vertex1 - Vertex0;

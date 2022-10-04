@@ -41,9 +41,9 @@ namespace Yart
             refractionDirection.Normalize();
 
             Ray refractionRay = Ray{hitPosition, refractionDirection};
-            float exitDistance = hitGeometry->IntersectExit(refractionRay).HitDistance;
+            IntersectionResult exitIntersection = hitGeometry->IntersectExit(refractionRay);
 
-            Vector3 exitPosition = refractionRay.Position + exitDistance * refractionRay.Direction;
+            Vector3 exitPosition = refractionRay.Position + exitIntersection.HitDistance * refractionRay.Direction;
 
             // Reverse the refraction direction so that the CalculateNormal method will see the ray
             // as coming in towards the geometry rather than coming out of it.
@@ -51,7 +51,7 @@ namespace Yart
 
             // Because we flipped the refraction direction, the normal should be pointing away
             // from the geometry.
-            Vector3 exitNormal = hitGeometry->CalculateNormal(refractionRay, exitPosition);
+            Vector3 exitNormal = hitGeometry->CalculateNormal(refractionRay, exitPosition, exitIntersection.AdditionalData);
             exitPosition += exitNormal * NormalBump;
 
             // Create the outgoing ray. Use the non reversed refraction direction and the reversed

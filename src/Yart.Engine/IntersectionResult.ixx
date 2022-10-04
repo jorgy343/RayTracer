@@ -10,13 +10,14 @@ namespace Yart
     class IntersectionResultT
     {
     public:
-        const Geometry* HitGeometry{nullptr};
-        T HitDistance{0.0f};
+        const Geometry* HitGeometry{};
+        T HitDistance{};
+        T AdditionalData{};
 
 		inline constexpr IntersectionResultT() = default;
 
-        inline IntersectionResultT(const Geometry* hitGeometry, T hitDistance)
-            : HitGeometry{hitGeometry}, HitDistance{hitDistance}
+        inline IntersectionResultT(const Geometry* hitGeometry, T hitDistance, T additionalData = {})
+            : HitGeometry{hitGeometry}, HitDistance{hitDistance}, AdditionalData{additionalData}
         {
             
         }

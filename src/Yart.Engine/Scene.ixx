@@ -71,7 +71,7 @@ namespace Yart
                 const Material* material = intersection.HitGeometry->GetMaterial();
 
                 Vector3 hitPosition = ray.Position + intersection.HitDistance * ray.Direction;
-                Vector3 hitNormal = intersection.HitGeometry->CalculateNormal(ray, hitPosition);
+                Vector3 hitNormal = intersection.HitGeometry->CalculateNormal(ray, hitPosition, intersection.AdditionalData);
                 hitPosition += hitNormal * NormalBump;
 
                 outputColor = material->CalculateRenderingEquation(
