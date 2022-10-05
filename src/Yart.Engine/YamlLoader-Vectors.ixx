@@ -13,14 +13,14 @@ using namespace Yart;
 namespace YAML
 {
 	export template<>
-		struct convert<Vector2>
+		struct convert<FloatVector2>
 	{
-		static Node encode(const Vector2& rhs)
+		static Node encode(const FloatVector2& rhs)
 		{
 			return {};
 		}
 
-		static bool decode(const Node& node, Vector2& rhs)
+		static bool decode(const Node& node, FloatVector2& rhs)
 		{
 			if (!node.IsSequence())
 			{
@@ -45,6 +45,40 @@ namespace YAML
 			return true;
 		}
 	};
+
+    export template<>
+        struct convert<DoubleVector2>
+    {
+        static Node encode(const DoubleVector2& rhs)
+        {
+            return {};
+        }
+
+        static bool decode(const Node& node, DoubleVector2& rhs)
+        {
+            if (!node.IsSequence())
+            {
+                return false;
+            }
+
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<double>();
+                rhs.Y = node[0].as<double>();
+            }
+            else if (node.size() == 2)
+            {
+                rhs.X = node[0].as<double>();
+                rhs.Y = node[1].as<double>();
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+    };
 
 	export template<>
 		struct convert<IntVector2>
@@ -115,14 +149,14 @@ namespace YAML
 	};
 
 	export template<>
-		struct convert<Vector3>
+		struct convert<FloatVector3>
 	{
-		static Node encode(const Vector3& rhs)
+		static Node encode(const FloatVector3& rhs)
 		{
 			return {};
 		}
 
-		static bool decode(const Node& node, Vector3& rhs)
+		static bool decode(const Node& node, FloatVector3& rhs)
 		{
             if (!node.IsSequence())
             {
@@ -151,14 +185,14 @@ namespace YAML
 	};
 
     export template<>
-        struct convert<Vector3T<double>>
+        struct convert<DoubleVector3>
     {
-        static Node encode(const Vector3T<double>& rhs)
+        static Node encode(const DoubleVector3& rhs)
         {
             return {};
         }
 
-        static bool decode(const Node& node, Vector3T<double>& rhs)
+        static bool decode(const Node& node, DoubleVector3& rhs)
         {
             if (!node.IsSequence())
             {
@@ -259,14 +293,14 @@ namespace YAML
 	};
 
 	export template<>
-		struct convert<Vector4>
+		struct convert<FloatVector4>
 	{
-		static Node encode(const Vector4& rhs)
+		static Node encode(const FloatVector4& rhs)
 		{
 			return {};
 		}
 
-		static bool decode(const Node& node, Vector4& rhs)
+		static bool decode(const Node& node, FloatVector4& rhs)
 		{
             if (!node.IsSequence())
             {
@@ -295,6 +329,44 @@ namespace YAML
 			return true;
 		}
 	};
+
+    export template<>
+        struct convert<DoubleVector4>
+    {
+        static Node encode(const DoubleVector4& rhs)
+        {
+            return {};
+        }
+
+        static bool decode(const Node& node, DoubleVector4& rhs)
+        {
+            if (!node.IsSequence())
+            {
+                return false;
+            }
+
+            if (node.size() == 1)
+            {
+                rhs.X = node[0].as<double>();
+                rhs.Y = node[0].as<double>();
+                rhs.Z = node[0].as<double>();
+                rhs.W = node[0].as<double>();
+            }
+            else if (node.size() == 4)
+            {
+                rhs.X = node[0].as<double>();
+                rhs.Y = node[1].as<double>();
+                rhs.Z = node[2].as<double>();
+                rhs.W = node[3].as<double>();
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+    };
 
 	export template<>
 		struct convert<IntVector4>

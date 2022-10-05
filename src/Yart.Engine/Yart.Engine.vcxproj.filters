@@ -231,6 +231,9 @@
     <ClCompile Include="Vec4f3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="OrthographicCamera.ixx">
+      <Filter>Modules\Cameras</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

@@ -108,6 +108,7 @@
     <ClCompile Include="Math.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Matrix4x4.ixx" />
+    <ClCompile Include="OrthographicCamera.ixx" />
     <ClCompile Include="PhongMaterial.ixx" />
     <ClCompile Include="ReflectiveMaterial.ixx" />
     <ClCompile Include="MonteCarlo.ixx" />

@@ -15,7 +15,6 @@ import <functional>;
 import <memory>;
 import <string>;
 import <tuple>;
-import <unordered_map>;
 import <vector>;
 
 import :Materials;
