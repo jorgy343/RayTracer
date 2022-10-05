@@ -1,9 +1,10 @@
 export module PointLight;
 
+import "Common.h";
+
 import Light;
 import Math;
 import Scene;
-import Vector3;
 
 namespace Yart
 {

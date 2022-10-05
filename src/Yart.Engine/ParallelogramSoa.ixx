@@ -6,7 +6,6 @@ export module ParallelogramSoa;
 
 import <cassert>;
 import <initializer_list>;
-import <limits>;
 
 import "Common.h";
 

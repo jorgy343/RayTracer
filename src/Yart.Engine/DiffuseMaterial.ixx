@@ -1,9 +1,11 @@
 export module DiffuseMaterial;
 
+import "Common.h";
+
 import Material;
+import Math;
 import MonteCarlo;
 import Random;
-import Vector3;
 
 namespace Yart
 {

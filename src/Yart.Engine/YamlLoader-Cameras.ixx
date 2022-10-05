@@ -5,10 +5,6 @@ module;
 export module YamlLoader:Cameras;
 
 import <functional>;
-import <memory>;
-import <string>;
-import <tuple>;
-import <vector>;
 
 import "Common.h";
 
@@ -17,8 +13,6 @@ import Camera;
 import Math;
 import OrthographicCamera;
 import PerspectiveCamera;
-import Vector2;
-import Vector3;
 
 using namespace YAML;
 

@@ -1,6 +1,6 @@
 export module Alignment;
 
-import <vector>;
+import "Common.h";
 
 namespace Yart
 {

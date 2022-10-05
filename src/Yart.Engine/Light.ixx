@@ -1,6 +1,8 @@
 export module Light;
 
-import Vector3;
+import "Common.h";
+
+import Math;
 
 namespace Yart
 {

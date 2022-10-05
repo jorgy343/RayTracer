@@ -4,8 +4,7 @@ module;
 
 export module GeometrySoa;
 
-import <memory>;
-import <vector>;
+import "Common.h";
 
 import Geometry;
 import IntersectableGeometry;

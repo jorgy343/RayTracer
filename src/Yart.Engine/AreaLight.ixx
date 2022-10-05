@@ -1,8 +1,10 @@
 export module AreaLight;
 
+import "Common.h";
+
 import Geometry;
+import Math;
 import Random;
-import Vector3;
 
 namespace Yart
 {

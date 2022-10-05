@@ -51,10 +51,10 @@
     <ClCompile Include="Math.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix3x3.ixx">
+    <ClCompile Include="Math-Matrix3x3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix4x4.ixx">
+    <ClCompile Include="Math-Matrix4x4.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="MonteCarlo.ixx">
@@ -66,13 +66,13 @@
     <ClCompile Include="Vec8f3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Vector2.ixx">
+    <ClCompile Include="Math-Vector2.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Vector3.ixx">
+    <ClCompile Include="Math-Vector3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Vector4.ixx">
+    <ClCompile Include="Math-Vector4.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="YamlLoader.ixx">
@@ -233,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="OrthographicCamera.ixx">
       <Filter>Modules\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Basics.ixx">
+      <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

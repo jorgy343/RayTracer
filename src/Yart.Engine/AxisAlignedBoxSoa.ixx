@@ -5,9 +5,7 @@ module;
 export module AxisAlignedBoxSoa;
 
 import <cassert>;
-import <cmath>;
 import <initializer_list>;
-import <memory>;
 
 import "Common.h";
 

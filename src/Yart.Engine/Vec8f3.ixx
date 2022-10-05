@@ -4,6 +4,8 @@ module;
 
 export module Vec8f3;
 
+import "Common.h";
+
 using namespace vcl;
 
 namespace Yart

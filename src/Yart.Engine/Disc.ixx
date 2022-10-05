@@ -1,7 +1,5 @@
 export module Disc;
 
-import <limits>;
-
 import "Common.h";
 
 import AreaLight;
@@ -11,7 +9,6 @@ import Material;
 import Math;
 import Ray;
 import Scene;
-import Vector3;
 
 namespace Yart
 {

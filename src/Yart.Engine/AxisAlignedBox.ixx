@@ -4,9 +4,7 @@ module;
 
 export module AxisAlignedBox;
 
-import <cmath>;
-import <limits>;
-import <memory>;
+import "Common.h";
 
 import BoundingBox;
 import Geometry;
@@ -14,7 +12,6 @@ import IntersectionResult;
 import IntersectionResultType;
 import Material;
 import Math;
-import Vector3;
 
 using namespace vcl;
 

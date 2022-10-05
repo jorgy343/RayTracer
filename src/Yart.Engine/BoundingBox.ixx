@@ -1,11 +1,8 @@
 export module BoundingBox;
 
-import <limits>;
-import <vector>;
-
 import "Common.h";
 
-import Vector3;
+import Math;
 
 namespace Yart
 {

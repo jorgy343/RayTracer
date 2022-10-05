@@ -2,14 +2,12 @@ module;
 
 #include "Vcl.h"
 
-export module Matrix3x3;
-
-import <cmath>;
+export module Math:Matrix3x3;
 
 import "Common.h";
 
-import Math;
-import Vector3;
+import :Basics;
+import :Vector3;
 
 using namespace vcl;
 

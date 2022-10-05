@@ -1,12 +1,9 @@
-export module Vector3;
-
-import <cmath>;
-import <concepts>;
+export module Math:Vector3;
 
 import "Common.h";
 
-import Math;
-import Vector2;
+import :Basics;
+import :Vector2;
 
 namespace Yart
 {

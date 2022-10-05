@@ -1,10 +1,8 @@
-export module Vector2;
-
-import <cmath>;
+export module Math:Vector2;
 
 import "Common.h";
 
-import Math;
+import :Basics;
 
 namespace Yart
 {

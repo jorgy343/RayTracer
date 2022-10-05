@@ -1,8 +1,10 @@
 export module Camera;
 
+import "Common.h";
+
+import Math;
 import Random;
 import Ray;
-import Vector2;
 
 namespace Yart
 {

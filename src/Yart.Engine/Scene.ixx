@@ -4,11 +4,7 @@ module;
 
 export module Scene;
 
-import <cmath>;
-import <concepts>;
-import <memory>;
 import <utility>;
-import <vector>;
 
 import "Common.h";
 
@@ -21,7 +17,6 @@ import Material;
 import Math;
 import Random;
 import Ray;
-import Vector3;
 
 namespace Yart
 {

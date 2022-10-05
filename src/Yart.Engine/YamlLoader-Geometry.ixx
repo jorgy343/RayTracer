@@ -12,10 +12,8 @@ module;
 export module YamlLoader:Geometry;
 
 import <functional>;
-import <memory>;
-import <string>;
-import <tuple>;
-import <vector>;
+
+import "Common.h";
 
 import :Materials;
 import :Matrices;
@@ -32,6 +30,7 @@ import GeometrySoa;
 import GeometrySoaUtilities;
 import IntersectableGeometry;
 import Material;
+import Math;
 import Parallelogram;
 import ParallelogramSoa;
 import Plane;
@@ -41,7 +40,6 @@ import SphereSoa;
 import TransformedGeometry;
 import Triangle;
 import TriangleSoa;
-import Vector3;
 
 using namespace YAML;
 

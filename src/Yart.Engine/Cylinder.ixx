@@ -1,8 +1,5 @@
 export module Cylinder;
 
-import <limits>;
-import <tuple>;
-
 import "Common.h";
 
 import Geometry;
@@ -10,7 +7,6 @@ import IntersectionResult;
 import IntersectionResultType;
 import Material;
 import Math;
-import Vector3;
 
 namespace Yart
 {

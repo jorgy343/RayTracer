@@ -5,7 +5,6 @@ module;
 export module Random;
 
 import <concepts>;
-import <cstdint>;
 import <random>;
 
 import "Common.h";

@@ -105,9 +105,10 @@
     <ClCompile Include="LambertianMaterial.ixx" />
     <ClCompile Include="Light.ixx" />
     <ClCompile Include="Material.ixx" />
+    <ClCompile Include="Math-Basics.ixx" />
     <ClCompile Include="Math.ixx" />
-    <ClCompile Include="Matrix3x3.ixx" />
-    <ClCompile Include="Matrix4x4.ixx" />
+    <ClCompile Include="Math-Matrix3x3.ixx" />
+    <ClCompile Include="Math-Matrix4x4.ixx" />
     <ClCompile Include="OrthographicCamera.ixx" />
     <ClCompile Include="PhongMaterial.ixx" />
     <ClCompile Include="ReflectiveMaterial.ixx" />
@@ -131,9 +132,9 @@
     <ClCompile Include="TriangleSoa.ixx" />
     <ClCompile Include="Vec4f3.ixx" />
     <ClCompile Include="Vec8f3.ixx" />
-    <ClCompile Include="Vector2.ixx" />
-    <ClCompile Include="Vector3.ixx" />
-    <ClCompile Include="Vector4.ixx" />
+    <ClCompile Include="Math-Vector2.ixx" />
+    <ClCompile Include="Math-Vector3.ixx" />
+    <ClCompile Include="Math-Vector4.ixx" />
     <ClCompile Include="YamlLoader-Cameras.ixx" />
     <ClCompile Include="YamlLoader-Config.ixx" />
     <ClCompile Include="YamlLoader-Lights.ixx" />

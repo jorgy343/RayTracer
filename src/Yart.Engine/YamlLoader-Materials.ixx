@@ -4,12 +4,10 @@ module;
 
 export module YamlLoader:Materials;
 
+import "Common.h";
+
 import <functional>;
-import <memory>;
-import <string>;
-import <tuple>;
 import <unordered_map>;
-import <vector>;
 
 import :Vectors;
 import EmissiveMaterial;
@@ -21,7 +19,6 @@ import Math;
 import PhongMaterial;
 import ReflectiveMaterial;
 import RefractiveMaterial;
-import Vector3;
 
 using namespace YAML;
 

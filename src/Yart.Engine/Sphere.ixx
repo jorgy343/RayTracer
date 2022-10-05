@@ -9,7 +9,6 @@ import IntersectionResultType;
 import Material;
 import Math;
 import Ray;
-import Vector3;
 
 namespace Yart
 {

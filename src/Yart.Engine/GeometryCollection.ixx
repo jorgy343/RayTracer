@@ -1,8 +1,6 @@
 export module GeometryCollection;
 
 import <initializer_list>;
-import <limits>;
-import <vector>;
 
 import "Common.h";
 

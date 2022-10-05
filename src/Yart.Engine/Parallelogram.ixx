@@ -1,6 +1,6 @@
 export module Parallelogram;
 
-import <limits>;
+import "Common.h";
 
 import AreaLight;
 import BoundingBox;
@@ -9,7 +9,6 @@ import IntersectionResultType;
 import Material;
 import Math;
 import Scene;
-import Vector3;
 
 namespace Yart
 {

@@ -7,10 +7,6 @@ module;
 export module BoundingBoxHierarchy;
 
 import <cassert>;
-import <concepts>;
-import <limits>;
-import <memory>;
-import <vector>;
 
 import "Common.h";
 
@@ -23,8 +19,6 @@ import IntersectionResult;
 import IntersectionResultType;
 import Math;
 import Triangle;
-import Vector2;
-import Vector3;
 
 using namespace vcl;
 

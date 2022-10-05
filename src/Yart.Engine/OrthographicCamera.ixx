@@ -1,16 +1,11 @@
 export module OrthographicCamera;
 
-import <cmath>;
-import <vector>;
-
 import "Common.h";
 
 import Camera;
 import Math;
 import Random;
 import Ray;
-import Vector2;
-import Vector3;
 
 namespace Yart
 {

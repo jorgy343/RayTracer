@@ -4,6 +4,8 @@ module;
 
 export module YamlLoader:Loader;
 
+import "Common.h";
+
 import :Cameras;
 import :Config;
 import :Geometry;

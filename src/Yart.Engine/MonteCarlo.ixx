@@ -1,12 +1,8 @@
 export module MonteCarlo;
 
-import <cmath>;
-import <concepts>;
-
 import "Common.h";
 
 import Math;
-import Vector3;
 
 namespace Yart
 {

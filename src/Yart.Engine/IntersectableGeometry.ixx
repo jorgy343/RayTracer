@@ -1,7 +1,6 @@
 export module IntersectableGeometry;
 
-import <concepts>;
-import <limits>;
+import "Common.h";
 
 import BoundingBox;
 import IntersectionResult;

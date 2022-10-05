@@ -1,12 +1,12 @@
 export module Geometry;
 
-import <concepts>;
+import "Common.h";
 
 import GeometryDecl;
 import IntersectableGeometry;
 import Material;
+import Math;
 import Ray;
-import Vector3;
 
 namespace Yart
 {

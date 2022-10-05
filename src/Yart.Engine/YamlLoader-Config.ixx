@@ -4,11 +4,10 @@ module;
 
 export module YamlLoader:Config;
 
-import <memory>;
+import "Common.h";
 
 import :Vectors;
-import Vector2;
-import Vector3;
+import Math;
 
 using namespace YAML;
 

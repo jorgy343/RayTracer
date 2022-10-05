@@ -7,13 +7,10 @@ import IntersectableGeometry;
 import LambertianMaterial;
 import Light;
 import Math;
-import Matrix4x4;
 import Random;
 import Scene;
 import Triangle;
 import TriangleSoa;
-import Vector2;
-import Vector3;
 import YamlLoader;
 
 #include <cmath>

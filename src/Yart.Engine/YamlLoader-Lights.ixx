@@ -5,13 +5,14 @@ module;
 export module YamlLoader:Lights;
 
 import <functional>;
-import <memory>;
+
+import "Common.h";
 
 import :Vectors;
 import DirectionalLight;
 import Light;
+import Math;
 import PointLight;
-import Vector3;
 
 using namespace YAML;
 

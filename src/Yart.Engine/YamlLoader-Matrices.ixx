@@ -6,10 +6,10 @@ module;
 
 export module YamlLoader:Matrices;
 
+import "Common.h";
+
 import :Vectors;
 import Math;
-import Matrix3x3;
-import Matrix4x4;
 
 using namespace Yart;
 

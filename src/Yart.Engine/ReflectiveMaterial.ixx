@@ -4,10 +4,10 @@ import "Common.h";
 
 import Geometry;
 import Material;
+import Math;
 import Random;
 import Ray;
 import Scene;
-import Vector3;
 
 namespace Yart
 {

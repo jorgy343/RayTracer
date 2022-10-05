@@ -6,8 +6,7 @@ module;
 
 export module GeometrySoaUtilities;
 
-import <memory>;
-import <vector>;
+import "Common.h";
 
 import AxisAlignedBox;
 import AxisAlignedBoxSoa;

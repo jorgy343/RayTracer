@@ -4,9 +4,9 @@ module;
 
 export module YamlLoader:Vectors;
 
-import Vector2;
-import Vector3;
-import Vector4;
+import "Common.h";
+
+import Math;
 
 using namespace Yart;
 

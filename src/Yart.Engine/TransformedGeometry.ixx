@@ -6,10 +6,8 @@ import Geometry;
 import IntersectionResult;
 import IntersectionResultType;
 import Material;
-import Matrix4x4;
+import Math;
 import Ray;
-import Vector3;
-import Vector4;
 
 namespace Yart
 {

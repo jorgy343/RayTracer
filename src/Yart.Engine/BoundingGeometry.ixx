@@ -1,9 +1,5 @@
 export module BoundingGeometry;
 
-import <memory>;
-import <tuple>;
-import <vector>;
-
 import "Common.h";
 
 import AxisAlignedBox;

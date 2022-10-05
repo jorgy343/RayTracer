@@ -1,7 +1,9 @@
 export module Material;
 
+import "Common.h";
+
+import Math;
 import Random;
-import Vector3;
 
 namespace Yart
 {

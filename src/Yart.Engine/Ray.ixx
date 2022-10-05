@@ -6,7 +6,6 @@ import <limits>;
 import "Common.h";
 
 import Math;
-import Vector3;
 
 namespace Yart
 {

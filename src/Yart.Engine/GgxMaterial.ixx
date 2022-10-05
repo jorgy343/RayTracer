@@ -9,7 +9,6 @@ import MonteCarlo;
 import Random;
 import Ray;
 import Scene;
-import Vector3;
 
 namespace Yart
 {
