@@ -2,7 +2,7 @@ module;
 
 #include "Vcl.h"
 
-export module Vec8f3;
+export module Math:Vec8f3;
 
 import "Common.h";
 

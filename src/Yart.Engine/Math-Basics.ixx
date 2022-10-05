@@ -7,8 +7,8 @@ export module Math:Basics;
 
 import "Common.h";
 
-import Vec4f3;
-import Vec8f3;
+import :Vec4f3;
+import :Vec8f3;
 
 using namespace vcl;
 

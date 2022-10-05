@@ -63,7 +63,7 @@
     <ClCompile Include="Scene.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Vec8f3.ixx">
+    <ClCompile Include="Math-Vec8f3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Math-Vector2.ixx">
@@ -228,7 +228,7 @@
     <ClCompile Include="YamlLoader-Lights.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
-    <ClCompile Include="Vec4f3.ixx">
+    <ClCompile Include="Math-Vec4f3.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="OrthographicCamera.ixx">

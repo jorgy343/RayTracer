@@ -17,7 +17,6 @@ import IntersectionResultType;
 import Math;
 import Parallelogram;
 import Ray;
-import Vec8f3;
 
 using namespace vcl;
 

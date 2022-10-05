@@ -130,8 +130,8 @@
     <ClCompile Include="TransformedGeometry.ixx" />
     <ClCompile Include="Triangle.ixx" />
     <ClCompile Include="TriangleSoa.ixx" />
-    <ClCompile Include="Vec4f3.ixx" />
-    <ClCompile Include="Vec8f3.ixx" />
+    <ClCompile Include="Math-Vec4f3.ixx" />
+    <ClCompile Include="Math-Vec8f3.ixx" />
     <ClCompile Include="Math-Vector2.ixx" />
     <ClCompile Include="Math-Vector3.ixx" />
     <ClCompile Include="Math-Vector4.ixx" />

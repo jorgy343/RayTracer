@@ -17,7 +17,6 @@ import IntersectionResultType;
 import Math;
 import Ray;
 import Triangle;
-import Vec8f3;
 
 using namespace vcl;
 
