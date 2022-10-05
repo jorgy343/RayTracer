@@ -40,6 +40,9 @@
     <Filter Include="Modules\Geometries\Bounding">
       <UniqueIdentifier>{23832e26-4dfe-485a-8cc8-558a6a67d1c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Math">
+      <UniqueIdentifier>{d523b650-0dc6-4d20-9dd6-ab46e13d4216}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
@@ -48,31 +51,10 @@
     <ClCompile Include="Alignment.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Math.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Matrix3x3.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Matrix4x4.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="MonteCarlo.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="Scene.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vec8f3.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vector2.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vector3.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vector4.ixx">
       <Filter>Modules</Filter>
     </ClCompile>
     <ClCompile Include="YamlLoader.ixx">
@@ -228,14 +210,41 @@
     <ClCompile Include="YamlLoader-Lights.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
-    <ClCompile Include="Math-Vec4f3.ixx">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="OrthographicCamera.ixx">
       <Filter>Modules\Cameras</Filter>
     </ClCompile>
+    <ClCompile Include="Math.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
     <ClCompile Include="Math-Basics.ixx">
-      <Filter>Modules</Filter>
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Matrix3x3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Matrix4x4.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vector2.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vector3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vector4.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vec4f3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vec8f3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vec2d3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vec4d3.ixx">
+      <Filter>Modules\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
