@@ -363,13 +363,10 @@ namespace Yart
         };
     }
 
-    export inline Vec4f ConvertNanToInf(Vec4f const value)
+    // TODO: Restrain T using concepts.
+    export template<typename T>
+    inline T ConvertNanToInf(T const value)
     {
         return min(max(value, -infinite4f()), infinite4f());
-    }
-
-    export inline Vec8f ConvertNanToInf(Vec8f const value)
-    {
-        return min(max(value, -infinite8f()), infinite8f());
     }
 }
