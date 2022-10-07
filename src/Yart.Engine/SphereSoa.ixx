@@ -163,18 +163,7 @@ namespace Yart
                 VclVec discriminant = (b * b) - (a * c);
                 VclVec discriminantSqrt = sqrt(discriminant);
 
-                VclVec reciprocalA;
-                if constexpr (std::same_as<real, float>)
-                {
-                    // TODO: Make this work.
-                    //reciprocalA = approx_recipr(a);
-                    reciprocalA = VclVec{real{1.0}} / a;
-                }
-                else
-                {
-                    reciprocalA = VclVec{real{1.0}} / a;
-                }
-
+                VclVec reciprocalA = approx_recipr(a);
                 VclVec negativeB = -b;
 
                 VclVec exitDistance = (negativeB + discriminantSqrt) * reciprocalA;

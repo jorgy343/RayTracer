@@ -159,8 +159,7 @@ namespace Yart
 
             // Normally you would check for a parallel ray here but we'll skip that check.
 
-            //VclVec f = approx_recipr(a);
-            VclVec f = VclVec{real{1.0}} / a; // TODO: Fix reciprical for floats.
+            VclVec f = approx_recipr(a);
 
             VclVec rayPositionX{ray.Position.X};
             VclVec rayPositionY{ray.Position.Y};

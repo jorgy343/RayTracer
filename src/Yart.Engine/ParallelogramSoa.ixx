@@ -172,8 +172,7 @@ namespace Yart
                 VclVec edge1Z = VclVec{}.load_a(_edge1Z);
 
                 VclVec determinant = SimdDot(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
-                //VclVec invDeterminant = approx_recipr(determinant);
-                VclVec invDeterminant = VclVec{real{1.0}} / determinant; // TODO: Fix reciprical for floats.
+                VclVec invDeterminant = approx_recipr(determinant);
 
                 VclVec rayPositionX{ray.Position.X};
                 VclVec rayPositionY{ray.Position.Y};

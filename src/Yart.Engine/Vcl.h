@@ -5,3 +5,16 @@
 
 #include "vectorclass.h"
 #include "ranvec1.h"
+
+namespace vcl
+{
+    static inline Vec2d approx_recipr(Vec2d const a)
+    {
+        return Vec2d{1.0} / a;
+    }
+
+    static inline Vec4d approx_recipr(Vec4d const a)
+    {
+        return Vec4d{1.0} / a;
+    }
+}

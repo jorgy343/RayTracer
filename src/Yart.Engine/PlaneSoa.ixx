@@ -109,8 +109,7 @@ namespace Yart
             VclVec normalDotRayPosition = SimdDot(normalX, normalY, normalZ, rayPositionX, rayPositionY, rayPositionZ);
 
             VclVec distance = VclVec{}.load_a(_distance);
-            //VclVec entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
-            VclVec entranceDistance = -(distance + normalDotRayPosition) * (VclVec{real{1.0}} / normalDotDirection); // TODO: Fix reciprical for floats.
+            VclVec entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
 
             // Make sure infinite8f() is second so nans are replaced with inf.
             VclVec clampedEntranceDistance = select(entranceDistance >= VclVec{real{0.0}}, entranceDistance, VclVec{std::numeric_limits<real>::infinity()});
