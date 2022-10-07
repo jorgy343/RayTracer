@@ -15,7 +15,7 @@ namespace Yart
     public:
         Vector3 Start{};
         Vector3 End{};
-        float Radius{};
+        real Radius{};
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Cylinder() = default;
@@ -23,7 +23,7 @@ namespace Yart
         inline constexpr Cylinder(
             const Vector3& start,
             const Vector3& end,
-            float radius,
+            real radius,
             const Material* appliedMaterial)
             :
             Start{start},
@@ -39,14 +39,14 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             Vector3 direction = (End - Start).Normalize();
-            if (additionalData == std::numeric_limits<float>::infinity())
+            if (additionalData == std::numeric_limits<real>::infinity())
             {
                 return direction;
             }
-            else if (additionalData == -std::numeric_limits<float>::infinity())
+            else if (additionalData == -std::numeric_limits<real>::infinity())
             {
                 return -direction;
             }
@@ -72,37 +72,37 @@ namespace Yart
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        force_inline constexpr std::tuple<float, float> Intersect(const Ray& ray) const
+        force_inline constexpr std::tuple<real, real> Intersect(const Ray& ray) const
         {
             Vector3 ca = End - Start;
             Vector3 oc = ray.Position - Start;
 
-            float caca = ca * ca;
-            float card = ca * ray.Direction;
-            float caoc = ca * oc;
+            real caca = ca * ca;
+            real card = ca * ray.Direction;
+            real caoc = ca * oc;
 
-            float a = caca - card * card;
-            float b = caca * (oc * ray.Direction) - caoc * card;
-            float c = caca * (oc * oc) - caoc * caoc - Radius * Radius * caca;
+            real a = caca - card * card;
+            real b = caca * (oc * ray.Direction) - caoc * card;
+            real c = caca * (oc * oc) - caoc * caoc - Radius * Radius * caca;
 
-            float discriminant = b * b - a * c;
-            if (discriminant < 0.0f)
+            real discriminant = b * b - a * c;
+            if (discriminant < real{0.0})
             {
-                return std::make_tuple(std::numeric_limits<float>::infinity(), 0.0f);
+                return std::make_tuple(std::numeric_limits<real>::infinity(), real{0.0});
             }
 
-            float discriminantSqrt = Math::sqrt(discriminant);
+            real discriminantSqrt = Math::sqrt(discriminant);
             
-            float inverseA = Math::rcp(a);
-            float exitDistance = (-b + discriminantSqrt) * inverseA;
+            real inverseA = Math::rcp(a);
+            real exitDistance = (-b + discriminantSqrt) * inverseA;
 
             // body
-            float result;
-            float y;
+            real result;
+            real y;
 
             if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
-                float entranceDistance = (-b - discriminantSqrt) * inverseA;
+                real entranceDistance = (-b - discriminantSqrt) * inverseA;
 
                 y = caoc + entranceDistance * card;
                 result = entranceDistance;
@@ -113,25 +113,25 @@ namespace Yart
                 result = exitDistance;
             }
 
-            if (exitDistance >= 0.0f && y > 0.0f && y < caca)
+            if (exitDistance >= real{0.0} && y > real{0.0} && y < caca)
             {
                 return std::make_tuple(result, y);
             }
             else
             {
                 // TODO: Remove this return statement when the caps work.
-                return std::make_tuple(std::numeric_limits<float>::infinity(), 0.0f);
+                return std::make_tuple(std::numeric_limits<real>::infinity(), real{0.0});
 
                 // caps
-                float distance = ((y < 0.0f ? 0.0f : caca) - caoc) / card;
+                real distance = ((y < real{0.0} ? real{0.0} : caca) - caoc) / card;
                 if (Math::abs(b + a * distance) < discriminantSqrt)
                 {
-                    float additionalData = y >= 0.0f ? std::numeric_limits<float>::infinity() : -std::numeric_limits<float>::infinity();
+                    real additionalData = y >= real{0.0} ? std::numeric_limits<real>::infinity() : -std::numeric_limits<real>::infinity();
                     return std::make_tuple(distance, additionalData);
                 }
                 else
                 {
-                    return std::make_tuple(std::numeric_limits<float>::infinity(), 0.0f);
+                    return std::make_tuple(std::numeric_limits<real>::infinity(), real{0.0});
                 }
             }
         }

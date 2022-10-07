@@ -16,12 +16,12 @@ namespace Yart
     {
     public:
         Vector3 Position{};
-        float Radius{0.0f};
+        real Radius{real{0.0}};
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Sphere() = default;
 
-        inline constexpr Sphere(const Vector3& position, float radius, const Material* appliedMaterial)
+        inline constexpr Sphere(const Vector3& position, real radius, const Material* appliedMaterial)
             : Position{position}, Radius{radius}, AppliedMaterial{appliedMaterial}
         {
 
@@ -40,7 +40,7 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             return (hitPosition - Position).Normalize();
         }
@@ -56,31 +56,31 @@ namespace Yart
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline constexpr float Intersect(const Ray& ray) const
+        inline constexpr real Intersect(const Ray& ray) const
         {
             Vector3 v = ray.Position - Position;
 
-            float a = ray.Direction * ray.Direction;
-            float b = v * ray.Direction;
-            float c = (v * v) - (Radius * Radius);
+            real a = ray.Direction * ray.Direction;
+            real b = v * ray.Direction;
+            real c = (v * v) - (Radius * Radius);
 
-            float discriminant = (b * b) - (a * c);
-            if (discriminant < 0.0f)
+            real discriminant = (b * b) - (a * c);
+            if (discriminant < real{0.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
-            float discriminantSqrt = Math::sqrt(discriminant);
+            real discriminantSqrt = Math::sqrt(discriminant);
 
-            float reciprocalA = Math::rcp(a);
-            float negativeB = -b;
+            real reciprocalA = Math::rcp(a);
+            real negativeB = -b;
 
-            float exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
+            real exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
 
-            float result;
+            real result;
             if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
-                float entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+                real entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
                 result = entranceDistance;
             }
             else
@@ -88,7 +88,7 @@ namespace Yart
                 result = exitDistance;
             }
 
-            return exitDistance >= 0.0f ? result : std::numeric_limits<float>::infinity();
+            return exitDistance >= real{0.0} ? result : std::numeric_limits<real>::infinity();
         }
     };
 }

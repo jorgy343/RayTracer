@@ -24,53 +24,58 @@ namespace Yart
 {
     export class __declspec(dllexport) alignas(64) AxisAlignedBoxSoa : public GeometrySoa<AxisAlignedBox>
     {
+    public:
+        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+
     private:
-        alignas(16) float _minimumX[8];
-        alignas(16) float _minimumY[8];
-        alignas(16) float _minimumZ[8];
+        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
 
-        alignas(16) float _maximumX[8];
-        alignas(16) float _maximumY[8];
-        alignas(16) float _maximumZ[8];
+        alignas(sizeof(real) * 4) real _minimumX[Size];
+        alignas(sizeof(real) * 4) real _minimumY[Size];
+        alignas(sizeof(real) * 4) real _minimumZ[Size];
 
-        alignas(16) const AxisAlignedBox* _geometries[8];
+        alignas(sizeof(real) * 4) real _maximumX[Size];
+        alignas(sizeof(real) * 4) real _maximumY[Size];
+        alignas(sizeof(real) * 4) real _maximumZ[Size];
+
+        alignas(16) const AxisAlignedBox* _geometries[Size];
 
     public:
         constexpr AxisAlignedBoxSoa()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
-                _minimumX[i] = std::numeric_limits<float>::infinity();
-                _minimumY[i] = std::numeric_limits<float>::infinity();
-                _minimumZ[i] = std::numeric_limits<float>::infinity();
+                _minimumX[i] = std::numeric_limits<real>::infinity();
+                _minimumY[i] = std::numeric_limits<real>::infinity();
+                _minimumZ[i] = std::numeric_limits<real>::infinity();
 
-                _maximumX[i] = std::numeric_limits<float>::infinity();
-                _maximumY[i] = std::numeric_limits<float>::infinity();
-                _maximumZ[i] = std::numeric_limits<float>::infinity();
+                _maximumX[i] = std::numeric_limits<real>::infinity();
+                _maximumY[i] = std::numeric_limits<real>::infinity();
+                _maximumZ[i] = std::numeric_limits<real>::infinity();
 
                 _geometries[i] = nullptr;
             }
         }
 
-		constexpr explicit AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
-			: AxisAlignedBoxSoa{}
-		{
-			size_t index = 0;
+        constexpr explicit AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
+            : AxisAlignedBoxSoa{}
+        {
+            size_t index = 0;
 
-			for (auto geometry : list)
-			{
-				if (index >= 8)
-				{
-					break;
-				}
+            for (auto geometry : list)
+            {
+                if (index >= Size)
+                {
+                    break;
+                }
 
-				Insert(index++, geometry);
-			}
-		}
+                Insert(index++, geometry);
+            }
+        }
 
         constexpr void Insert(size_t index, const AxisAlignedBox* geometry) override
         {
-			assert(index >= 0 && index < 8);
+            assert(index >= 0 && index < Size);
 
             _minimumX[index] = geometry->Minimum.X;
             _minimumY[index] = geometry->Minimum.Y;
@@ -83,11 +88,11 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        BoundingBox CalculateBoundingBox() const override
+        BoundingBoxT<real> CalculateBoundingBox() const override
         {
-            BoundingBox boundingBox = BoundingBox::ReverseInfinity();
+            BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!_geometries[i])
                 {
@@ -114,34 +119,34 @@ namespace Yart
         template <IntersectionResultType TIntersectionResultType>
         force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            Vec8f minimumX = Vec8f{}.load_a(_minimumX);
-            Vec8f minimumY = Vec8f{}.load_a(_minimumY);
-            Vec8f minimumZ = Vec8f{}.load_a(_minimumZ);
+            VclVec minimumX = VclVec{}.load_a(_minimumX);
+            VclVec minimumY = VclVec{}.load_a(_minimumY);
+            VclVec minimumZ = VclVec{}.load_a(_minimumZ);
 
-            Vec8f rayPositionX{ray.Position.X};
-            Vec8f rayPositionY{ray.Position.Y};
-            Vec8f rayPositionZ{ray.Position.Z};
+            VclVec rayPositionX{ray.Position.X};
+            VclVec rayPositionY{ray.Position.Y};
+            VclVec rayPositionZ{ray.Position.Z};
 
-            Vec8f rayInverseDirectionX{ray.InverseDirection.X};
-            Vec8f rayInverseDirectionY{ray.InverseDirection.Y};
-            Vec8f rayInverseDirectionZ{ray.InverseDirection.Z};
+            VclVec rayInverseDirectionX{ray.InverseDirection.X};
+            VclVec rayInverseDirectionY{ray.InverseDirection.Y};
+            VclVec rayInverseDirectionZ{ray.InverseDirection.Z};
 
-            Vec8f minX = ConvertNanToInf((minimumX - rayPositionX) * rayInverseDirectionX);
-            Vec8f minY = ConvertNanToInf((minimumY - rayPositionY) * rayInverseDirectionY);
-            Vec8f minZ = ConvertNanToInf((minimumZ - rayPositionZ) * rayInverseDirectionZ);
+            VclVec minX = ConvertNanToInf((minimumX - rayPositionX) * rayInverseDirectionX);
+            VclVec minY = ConvertNanToInf((minimumY - rayPositionY) * rayInverseDirectionY);
+            VclVec minZ = ConvertNanToInf((minimumZ - rayPositionZ) * rayInverseDirectionZ);
 
-            Vec8f maximumX = Vec8f{}.load_a(_maximumX);
-            Vec8f maximumY = Vec8f{}.load_a(_maximumY);
-            Vec8f maximumZ = Vec8f{}.load_a(_maximumZ);
+            VclVec maximumX = VclVec{}.load_a(_maximumX);
+            VclVec maximumY = VclVec{}.load_a(_maximumY);
+            VclVec maximumZ = VclVec{}.load_a(_maximumZ);
 
-            Vec8f maxX = ConvertNanToInf((maximumX - rayPositionX) * rayInverseDirectionX);
-            Vec8f maxY = ConvertNanToInf((maximumY - rayPositionY) * rayInverseDirectionY);
-            Vec8f maxZ = ConvertNanToInf((maximumZ - rayPositionZ) * rayInverseDirectionZ);
+            VclVec maxX = ConvertNanToInf((maximumX - rayPositionX) * rayInverseDirectionX);
+            VclVec maxY = ConvertNanToInf((maximumY - rayPositionY) * rayInverseDirectionY);
+            VclVec maxZ = ConvertNanToInf((maximumZ - rayPositionZ) * rayInverseDirectionZ);
 
-            Vec8f exitDistance = vcl::min(vcl::min(vcl::max(minX, maxX), vcl::max(minY, maxY)), vcl::max(minZ, maxZ));
-            Vec8f entranceDistance = vcl::max(vcl::max(vcl::min(minX, maxX), vcl::min(minY, maxY)), vcl::min(minZ, maxZ));
+            VclVec exitDistance = vcl::min(vcl::min(vcl::max(minX, maxX), vcl::max(minY, maxY)), vcl::max(minZ, maxZ));
+            VclVec entranceDistance = vcl::max(vcl::max(vcl::min(minX, maxX), vcl::min(minY, maxY)), vcl::min(minZ, maxZ));
 
-            Vec8f result;
+            VclVec result;
             if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
                 result = entranceDistance;
@@ -151,10 +156,10 @@ namespace Yart
                 result = exitDistance;
             }
 
-            Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0.0f) & entranceDistance <= exitDistance, result, infinite8f());
-            
-            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+            VclVec clampedEntranceDistance = select(exitDistance >= VclVec{real{0.0}} &entranceDistance <= exitDistance, result, VclVec{std::numeric_limits<real>::infinity()});
+
+            real minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+            int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedEntranceDistance);
 
             return {
                 _geometries[minimumIndex == -1 ? 0 : minimumIndex],

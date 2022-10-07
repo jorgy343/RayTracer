@@ -28,14 +28,14 @@ namespace Yart
         inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& directionToLight) const override
         {
             Vector3 directionToLight2 = Position - hitPosition;
-            float distanceToLightSquared = directionToLight2.Length();
+            real distanceToLightSquared = directionToLight2.Length();
 
             directionToLight2.Normalize();
 
             Ray ray{hitPosition, directionToLight2};
-            float distance = scene.CastRayDistance(ray);
+            real distance = scene.CastRayDistance(ray);
 
-            return distance >= distanceToLightSquared - 0.01f ? false : true;
+            return distance >= distanceToLightSquared - real{0.01} ? false : true;
         }
     };
 }

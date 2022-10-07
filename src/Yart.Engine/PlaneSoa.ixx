@@ -24,50 +24,58 @@ namespace Yart
 {
     export class __declspec(dllexport) alignas(64) PlaneSoa : public GeometrySoa<Plane>
     {
+    public:
+        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+
     private:
-        alignas(16) float _normalX[8];
-        alignas(16) float _normalY[8];
-        alignas(16) float _normalZ[8];
-        alignas(16) float _distance[8];
-        alignas(16) const Plane* _geometries[8];
+        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
+
+        alignas(sizeof(real) * 4) real _normalX[Size];
+        alignas(sizeof(real) * 4) real _normalY[Size];
+        alignas(sizeof(real) * 4) real _normalZ[Size];
+        alignas(sizeof(real) * 4) real _distance[Size];
+
+        alignas(sizeof(real) * 4) const Plane* _geometries[Size];
 
     public:
         constexpr PlaneSoa()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
-                _normalX[i] = std::numeric_limits<float>::infinity();
-                _normalY[i] = std::numeric_limits<float>::infinity();
-                _normalZ[i] = std::numeric_limits<float>::infinity();
-                _distance[i] = std::numeric_limits<float>::infinity();
+                _normalX[i] = std::numeric_limits<real>::infinity();
+                _normalY[i] = std::numeric_limits<real>::infinity();
+                _normalZ[i] = std::numeric_limits<real>::infinity();
+                _distance[i] = std::numeric_limits<real>::infinity();
+
                 _geometries[i] = nullptr;
             }
         }
 
         constexpr explicit PlaneSoa(std::initializer_list<const Plane*> list)
-			: PlaneSoa{}
-		{
-			size_t index = 0;
+            : PlaneSoa{}
+        {
+            size_t index = 0;
 
-			for (auto geometry : list)
-			{
-				if (index >= 8)
-				{
-					break;
-				}
+            for (auto geometry : list)
+            {
+                if (index >= Size)
+                {
+                    break;
+                }
 
-				Insert(index++, geometry);
-			}
-		}
+                Insert(index++, geometry);
+            }
+        }
 
         constexpr void Insert(size_t index, const Plane* geometry) override
         {
-            assert(index >= 0 && index < 8);
+            assert(index >= 0 && index < Size);
 
             _normalX[index] = geometry->Normal.X;
             _normalY[index] = geometry->Normal.Y;
             _normalZ[index] = geometry->Normal.Z;
             _distance[index] = geometry->Distance;
+
             _geometries[index] = geometry;
         }
 
@@ -84,30 +92,31 @@ namespace Yart
     private:
         force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            Vec8f rayDirectionX{ray.Direction.X};
-            Vec8f rayDirectionY{ray.Direction.Y};
-            Vec8f rayDirectionZ{ray.Direction.Z};
+            VclVec rayDirectionX{ray.Direction.X};
+            VclVec rayDirectionY{ray.Direction.Y};
+            VclVec rayDirectionZ{ray.Direction.Z};
 
-            Vec8f normalX = Vec8f{}.load_a(_normalX);
-            Vec8f normalY = Vec8f{}.load_a(_normalY);
-            Vec8f normalZ = Vec8f{}.load_a(_normalZ);
+            VclVec normalX = VclVec{}.load_a(_normalX);
+            VclVec normalY = VclVec{}.load_a(_normalY);
+            VclVec normalZ = VclVec{}.load_a(_normalZ);
 
-            Vec8f normalDotDirection = SimdDot(normalX, normalY, normalZ, rayDirectionX, rayDirectionY, rayDirectionZ);
+            VclVec normalDotDirection = SimdDot(normalX, normalY, normalZ, rayDirectionX, rayDirectionY, rayDirectionZ);
 
-            Vec8f rayPositionX{ray.Position.X};
-            Vec8f rayPositionY{ray.Position.Y};
-            Vec8f rayPositionZ{ray.Position.Z};
+            VclVec rayPositionX{ray.Position.X};
+            VclVec rayPositionY{ray.Position.Y};
+            VclVec rayPositionZ{ray.Position.Z};
 
-            Vec8f normalDotRayPosition = SimdDot(normalX, normalY, normalZ, rayPositionX, rayPositionY, rayPositionZ);
+            VclVec normalDotRayPosition = SimdDot(normalX, normalY, normalZ, rayPositionX, rayPositionY, rayPositionZ);
 
-            Vec8f distance = Vec8f{}.load_a(_distance);
-            Vec8f entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
+            VclVec distance = VclVec{}.load_a(_distance);
+            //VclVec entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);
+            VclVec entranceDistance = -(distance + normalDotRayPosition) * (VclVec{real{1.0}} / normalDotDirection); // TODO: Fix reciprical for floats.
 
             // Make sure infinite8f() is second so nans are replaced with inf.
-            Vec8f clampedEntranceDistance = select(entranceDistance >= Vec8f(0.0f), entranceDistance, infinite8f());
+            VclVec clampedEntranceDistance = select(entranceDistance >= VclVec{real{0.0}}, entranceDistance, VclVec{std::numeric_limits<real>::infinity()});
 
-            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-            int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+            real minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+            int minimumIndex = horizontal_find_first(VclVec(minimumEntranceDistance) == clampedEntranceDistance);
 
             return {
                 _geometries[minimumIndex == -1 ? 0 : minimumIndex],

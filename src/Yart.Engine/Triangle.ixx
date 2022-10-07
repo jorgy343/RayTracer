@@ -79,28 +79,28 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             // Barycentric coordinate calculations from: https://gamedev.stackexchange.com/a/23745
             Vector3 v0 = Vertex1 - Vertex0;
             Vector3 v1 = Vertex2 - Vertex0;
             Vector3 v2 = hitPosition - Vertex0;
 
-            float d00 = v0 * v0;
-            float d01 = v0 * v1;
-            float d11 = v1 * v1;
-            float d20 = v2 * v0;
-            float d21 = v2 * v1;
+            real d00 = v0 * v0;
+            real d01 = v0 * v1;
+            real d11 = v1 * v1;
+            real d20 = v2 * v0;
+            real d21 = v2 * v1;
 
-            float inverseDenom = Math::rcp(d00 * d11 - d01 * d01);
+            real inverseDenom = Math::rcp(d00 * d11 - d01 * d01);
 
-            float v = (d11 * d20 - d01 * d21) * inverseDenom;
-            float w = (d00 * d21 - d01 * d20) * inverseDenom;
-            float u = 1.0f - v - w;
+            real v = (d11 * d20 - d01 * d21) * inverseDenom;
+            real w = (d00 * d21 - d01 * d20) * inverseDenom;
+            real u = real{1.0} - v - w;
 
             Vector3 normal = (Normal0 * u + Normal1 * v + Normal2 * w).Normalize();
 
-            return (ray.Direction * normal) < 0.0f ? normal : -normal;
+            return (ray.Direction * normal) < real{0.0} ? normal : -normal;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override
@@ -113,36 +113,36 @@ namespace Yart
             return {this, Intersect(ray)};
         }
 
-        force_inline constexpr float Intersect(const Ray& ray) const
+        force_inline constexpr real Intersect(const Ray& ray) const
         {
             // From: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
             Vector3 edge1 = Vertex1 - Vertex0;
             Vector3 edge2 = Vertex2 - Vertex0;
 
             Vector3 h = ray.Direction % edge2;
-            float a = edge1 * h;
+            real a = edge1 * h;
 
             // Normally you would check for a parallel ray here but we'll skip that check.
 
-            float f = Math::rcp(a);
+            real f = Math::rcp(a);
             Vector3 s = ray.Position - Vertex0;
-            float u = f * (s * h);
+            real u = f * (s * h);
 
-            if (u < 0.0f || u > 1.0f)
+            if (u < real{0.0} || u > real{1.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
             Vector3 q = s % edge1;
-            float v = f * (ray.Direction * q);
+            real v = f * (ray.Direction * q);
 
-            if (v < 0.0f || u + v > 1.0f)
+            if (v < real{0.0} || u + v > real{1.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
-            float entranceDistance = f * (edge2 * q);
-            return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+            real entranceDistance = f * (edge2 * q);
+            return entranceDistance >= real{0.0} ? entranceDistance : std::numeric_limits<real>::infinity();
         }
     };
 }

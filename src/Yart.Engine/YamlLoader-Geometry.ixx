@@ -249,7 +249,7 @@ namespace Yart::Yaml
     const TransformedGeometry* ParseTransformedGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto [childGeometry, ignored] = ParseGeometryNode(node["child"], materialMap, parseGeometryResults, nullptr, true);
-        auto matrix = ParseTransformationSequence<float>(node["transformation"]);
+        auto matrix = ParseTransformationSequence<real>(node["transformation"]);
 
         auto geometry = std::make_shared<const TransformedGeometry>(reinterpret_cast<const Geometry*>(childGeometry), matrix);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -267,7 +267,7 @@ namespace Yart::Yaml
         auto transformationNode = node["transformation"];
         if (transformationNode)
         {
-            transformation = ParseTransformationSequence<float>(node["transformation"]);
+            transformation = ParseTransformationSequence<real>(node["transformation"]);
         }
 
         // Read the geometry from the obj file.

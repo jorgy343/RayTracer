@@ -115,10 +115,10 @@ namespace Yart
             }
             else if constexpr (std::same_as<double, T>)
             {
-                __m128 mmLeft1 = _mm_load_sd(&left);
-                __m128 mmRight2 = _mm_load_sd(&right);
+                __m128d mmLeft1 = _mm_load_sd(&left);
+                __m128d mmRight2 = _mm_load_sd(&right);
 
-                float result;
+                double result;
                 _mm_store_sd(&result, _mm_min_sd(mmLeft1, mmRight2));
 
                 return result;
@@ -148,10 +148,10 @@ namespace Yart
             }
             else if constexpr (std::same_as<double, T>)
             {
-                __m128 mmLeft1 = _mm_load_sd(&left);
-                __m128 mmRight2 = _mm_load_sd(&right);
+                __m128d mmLeft1 = _mm_load_sd(&left);
+                __m128d mmRight2 = _mm_load_sd(&right);
 
-                float result;
+                double result;
                 _mm_store_sd(&result, _mm_max_sd(mmLeft1, mmRight2));
 
                 return result;
@@ -299,38 +299,6 @@ namespace Yart
         return mul_add(aX, bX, mul_add(aY, bY, aZ * bZ));
     }
 
-    export inline Vec2d3 SimdCrossProduct(
-        Vec2d const aX,
-        Vec2d const aY,
-        Vec2d const aZ,
-        Vec2d const bX,
-        Vec2d const bY,
-        Vec2d const bZ)
-    {
-        return
-        {
-            aY * bZ - aZ * bY,
-            aZ * bX - aX * bZ,
-            aX * bY - aY * bX,
-        };
-    }
-
-    export inline Vec4d3 SimdCrossProduct(
-        Vec4d const aX,
-        Vec4d const aY,
-        Vec4d const aZ,
-        Vec4d const bX,
-        Vec4d const bY,
-        Vec4d const bZ)
-    {
-        return
-        {
-            aY * bZ - aZ * bY,
-            aZ * bX - aX * bZ,
-            aX * bY - aY * bX,
-        };
-    }
-
     export inline Vec4f3 SimdCrossProduct(
         Vec4f const aX,
         Vec4f const aY,
@@ -363,6 +331,38 @@ namespace Yart
         };
     }
 
+    export inline Vec2d3 SimdCrossProduct(
+        Vec2d const aX,
+        Vec2d const aY,
+        Vec2d const aZ,
+        Vec2d const bX,
+        Vec2d const bY,
+        Vec2d const bZ)
+    {
+        return
+        {
+            aY * bZ - aZ * bY,
+            aZ * bX - aX * bZ,
+            aX * bY - aY * bX,
+        };
+    }
+
+    export inline Vec4d3 SimdCrossProduct(
+        Vec4d const aX,
+        Vec4d const aY,
+        Vec4d const aZ,
+        Vec4d const bX,
+        Vec4d const bY,
+        Vec4d const bZ)
+    {
+        return
+        {
+            aY * bZ - aZ * bY,
+            aZ * bX - aX * bZ,
+            aX * bY - aY * bX,
+        };
+    }
+
     export inline Vec4f ConvertNanToInf(Vec4f const value)
     {
         return min(max(value, -infinite4f()), infinite4f());
@@ -371,5 +371,15 @@ namespace Yart
     export inline Vec8f ConvertNanToInf(Vec8f const value)
     {
         return min(max(value, -infinite8f()), infinite8f());
+    }
+
+    export inline Vec2d ConvertNanToInf(Vec2d const value)
+    {
+        return min(max(value, -infinite2d()), infinite2d());
+    }
+
+    export inline Vec4d ConvertNanToInf(Vec4d const value)
+    {
+        return min(max(value, -infinite4d()), infinite4d());
     }
 }

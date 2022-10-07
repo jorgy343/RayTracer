@@ -24,17 +24,23 @@ using namespace vcl;
 
 namespace Yart
 {
-    export template <real_number T, size_t NumberOfLeafs>
+    export template <real_number T>
         class alignas(64) BoundingBoxHierarchyT : public IntersectableGeometry
     {
-    protected:
-        alignas(32) T MinimumX[NumberOfLeafs];
-        alignas(32) T MinimumY[NumberOfLeafs];
-        alignas(32) T MinimumZ[NumberOfLeafs];
+    private:
+        using VclVec = typename std::conditional<std::same_as<T, float>, Vec8f, Vec4d>::type;
 
-        alignas(32) T MaximumX[NumberOfLeafs];
-        alignas(32) T MaximumY[NumberOfLeafs];
-        alignas(32) T MaximumZ[NumberOfLeafs];
+    public:
+        static constexpr size_t NumberOfLeafs = std::same_as<T, float> ? 8 : 4;
+
+    protected:
+        alignas(sizeof(T) * 4) T MinimumX[NumberOfLeafs];
+        alignas(sizeof(T) * 4) T MinimumY[NumberOfLeafs];
+        alignas(sizeof(T) * 4) T MinimumZ[NumberOfLeafs];
+
+        alignas(sizeof(T) * 4) T MaximumX[NumberOfLeafs];
+        alignas(sizeof(T) * 4) T MaximumY[NumberOfLeafs];
+        alignas(sizeof(T) * 4) T MaximumZ[NumberOfLeafs];
 
         const IntersectableGeometry* Children[NumberOfLeafs];
 
@@ -129,7 +135,7 @@ namespace Yart
             //    float closestDistance = std::numeric_limits<float>::infinity();
             //    const Sphere* closestGeometry = nullptr;
 
-            //    for (int i = 0; i < 8; i++)
+            //    for (int i = 0; i < NumberOfLeafs; i++)
             //    {
             //        auto geometry = _geometries[i];
 
@@ -150,70 +156,66 @@ namespace Yart
             //    return {closestGeometry, closestDistance};
             //}
 
+            VclVec minimumX = VclVec{}.load_a(MinimumX);
+            VclVec minimumY = VclVec{}.load_a(MinimumY);
+            VclVec minimumZ = VclVec{}.load_a(MinimumZ);
 
-            if constexpr (std::same_as<float, T> && NumberOfLeafs == 8)
+            VclVec rayPositionX{ray.Position.X};
+            VclVec rayPositionY{ray.Position.Y};
+            VclVec rayPositionZ{ray.Position.Z};
+
+            VclVec rayInverseDirectionX{ray.InverseDirection.X};
+            VclVec rayInverseDirectionY{ray.InverseDirection.Y};
+            VclVec rayInverseDirectionZ{ray.InverseDirection.Z};
+
+            VclVec minX = ConvertNanToInf((minimumX - rayPositionX) * rayInverseDirectionX);
+            VclVec minY = ConvertNanToInf((minimumY - rayPositionY) * rayInverseDirectionY);
+            VclVec minZ = ConvertNanToInf((minimumZ - rayPositionZ) * rayInverseDirectionZ);
+
+            VclVec maximumX = VclVec{}.load_a(MaximumX);
+            VclVec maximumY = VclVec{}.load_a(MaximumY);
+            VclVec maximumZ = VclVec{}.load_a(MaximumZ);
+
+            VclVec maxX = ConvertNanToInf((maximumX - rayPositionX) * rayInverseDirectionX);
+            VclVec maxY = ConvertNanToInf((maximumY - rayPositionY) * rayInverseDirectionY);
+            VclVec maxZ = ConvertNanToInf((maximumZ - rayPositionZ) * rayInverseDirectionZ);
+
+            VclVec exitDistance = vcl::min(vcl::min(vcl::max(minX, maxX), vcl::max(minY, maxY)), vcl::max(minZ, maxZ));
+            VclVec entranceDistance = vcl::max(vcl::max(vcl::min(minX, maxX), vcl::min(minY, maxY)), vcl::min(minZ, maxZ));
+
+            VclVec clampedEntranceDistance = select(exitDistance >= VclVec{real{0.0}} &entranceDistance <= exitDistance, entranceDistance, VclVec{std::numeric_limits<real>::infinity()});
+
+            alignas(sizeof(T) * 4) T distances[NumberOfLeafs];
+            clampedEntranceDistance.store_a(distances);
+
+            IntersectionResult closestIntersection{nullptr, std::numeric_limits<float>::infinity()};
+            for (size_t i = 0; i < NumberOfLeafs; i++)
             {
-                Vec8f minimumX = Vec8f{}.load_a(MinimumX);
-                Vec8f minimumY = Vec8f{}.load_a(MinimumY);
-                Vec8f minimumZ = Vec8f{}.load_a(MinimumZ);
-
-                Vec8f rayPositionX{ray.Position.X};
-                Vec8f rayPositionY{ray.Position.Y};
-                Vec8f rayPositionZ{ray.Position.Z};
-
-                Vec8f rayInverseDirectionX{ray.InverseDirection.X};
-                Vec8f rayInverseDirectionY{ray.InverseDirection.Y};
-                Vec8f rayInverseDirectionZ{ray.InverseDirection.Z};
-
-                Vec8f minX = ConvertNanToInf((minimumX - rayPositionX) * rayInverseDirectionX);
-                Vec8f minY = ConvertNanToInf((minimumY - rayPositionY) * rayInverseDirectionY);
-                Vec8f minZ = ConvertNanToInf((minimumZ - rayPositionZ) * rayInverseDirectionZ);
-
-                Vec8f maximumX = Vec8f{}.load_a(MaximumX);
-                Vec8f maximumY = Vec8f{}.load_a(MaximumY);
-                Vec8f maximumZ = Vec8f{}.load_a(MaximumZ);
-
-                Vec8f maxX = ConvertNanToInf((maximumX - rayPositionX) * rayInverseDirectionX);
-                Vec8f maxY = ConvertNanToInf((maximumY - rayPositionY) * rayInverseDirectionY);
-                Vec8f maxZ = ConvertNanToInf((maximumZ - rayPositionZ) * rayInverseDirectionZ);
-
-                Vec8f exitDistance = vcl::min(vcl::min(vcl::max(minX, maxX), vcl::max(minY, maxY)), vcl::max(minZ, maxZ));
-                Vec8f entranceDistance = vcl::max(vcl::max(vcl::min(minX, maxX), vcl::min(minY, maxY)), vcl::min(minZ, maxZ));
-
-                Vec8f clampedEntranceDistance = select(exitDistance >= Vec8f(0.0f) & entranceDistance <= exitDistance, entranceDistance, infinite8f());
-
-                alignas(32) float distances[8];
-                clampedEntranceDistance.store_a(distances);
-
-                IntersectionResult closestIntersection{nullptr, std::numeric_limits<float>::infinity()};
-                for (size_t i = 0; i < 8; i++)
+                if (distances[i] != std::numeric_limits<float>::infinity() && Children[i])
                 {
-                    if (distances[i] != std::numeric_limits<float>::infinity() && Children[i])
+                    IntersectionResult result;
+
+                    if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
                     {
-                        IntersectionResult result;
+                        result = Children[i]->IntersectEntrance(ray);
+                    }
+                    else
+                    {
+                        result = Children[i]->IntersectExit(ray);
+                    }
 
-                        if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
-                        {
-                            result = Children[i]->IntersectEntrance(ray);
-                        }
-                        else
-                        {
-                            result = Children[i]->IntersectExit(ray);
-                        }
-
-                        if (result.HitDistance < closestIntersection.HitDistance)
-                        {
-                            closestIntersection = result;
-                        }
+                    if (result.HitDistance < closestIntersection.HitDistance)
+                    {
+                        closestIntersection = result;
                     }
                 }
-
-                return closestIntersection;
             }
+
+            return closestIntersection;
         }
     };
 
-    export using BoundingBoxHierarchy = BoundingBoxHierarchyT<real, 8>;
+    export using BoundingBoxHierarchy = BoundingBoxHierarchyT<real>;
 
     export class BoundingBoxBuildParameters
     {
@@ -234,6 +236,7 @@ namespace Yart
         }
     };
 
+    // TODO: Make this work for doubles.
     const BoundingBoxHierarchy* BuildUniformBoundingBoxHierarchy(
         size_t currentDepth,
         const BoundingBoxBuildParameters& parameters,
@@ -308,18 +311,21 @@ namespace Yart
         return BuildUniformBoundingBoxHierarchy(1, parameters, inputGeometries, geometryPointers);
     }
 
-    const BoundingBoxHierarchy* BuildSplitByLongAxisBoundingBoxHierarchy(
+    template<real_number T>
+    const BoundingBoxHierarchyT<T>* BuildSplitByLongAxisBoundingBoxHierarchy(
         size_t currentDepth,
         const BoundingBoxBuildParameters& parameters,
         std::vector<const IntersectableGeometry*>& inputGeometries,
         std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
     {
-        auto hierarchy = std::shared_ptr<BoundingBoxHierarchy>(new BoundingBoxHierarchy{});
+        constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+
+        auto hierarchy = std::shared_ptr<BoundingBoxHierarchyT<T>>(new BoundingBoxHierarchyT<T>{});
         geometryPointers.push_back(hierarchy);
 
         BoundingBox totalBoundingBox{
-            Vector3{std::numeric_limits<float>::infinity()},
-            Vector3{-std::numeric_limits<float>::infinity()},
+            Vector3{std::numeric_limits<T>::infinity()},
+            Vector3{-std::numeric_limits<T>::infinity()},
         };
 
         for (const auto* inputGeometry : inputGeometries)
@@ -329,16 +335,16 @@ namespace Yart
 
         // Determine which axis is the longest.
         Vector3 axisLengths = totalBoundingBox.Maximum - totalBoundingBox.Minimum;
-        float longerLengthBetweenXAndY = Math::max(axisLengths.X, axisLengths.Y);
+        T longerLengthBetweenXAndY = Math::max(axisLengths.X, axisLengths.Y);
 
         size_t longestAxis = axisLengths.X > axisLengths.Y ? 0 : 1;
         longestAxis = longerLengthBetweenXAndY > axisLengths.Z ? longestAxis : 2;
 
         // Sort the input geometries by their longest axis and chunk them together.
-        size_t geometriesPerNode = Math::max(static_cast<size_t>(1), static_cast<size_t>(Math::ceil(inputGeometries.size() / 8.0)));
+        size_t geometriesPerNode = Math::max(static_cast<size_t>(1), static_cast<size_t>(Math::ceil(inputGeometries.size() / static_cast<real>(Size))));
         auto geometryChunks = ranges::actions::sort(inputGeometries, {}, [&](const auto& x) { return x->CalculateBoundingBox().CalculateCenterPoint()[longestAxis]; }) | ranges::views::chunk(geometriesPerNode);
 
-        for (size_t i = 0; i < 8; i++)
+        for (size_t i = 0; i < Size; i++)
         {
             if (i >= geometryChunks.size())
             {
@@ -348,8 +354,8 @@ namespace Yart
             auto intersectedGeometries = geometryChunks[i] | ranges::to<std::vector>();
 
             BoundingBox nodeBoundingBox{
-                Vector3{std::numeric_limits<float>::infinity()},
-                Vector3{-std::numeric_limits<float>::infinity()},
+                Vector3{std::numeric_limits<T>::infinity()},
+                Vector3{-std::numeric_limits<T>::infinity()},
             };
 
             for (const auto* nodeGeometry : intersectedGeometries)
@@ -363,7 +369,7 @@ namespace Yart
             }
             else if (currentDepth < parameters.MaxDepth && intersectedGeometries.size() > parameters.PreferredNodeSize.X)
             {
-                auto childHierarchy = BuildSplitByLongAxisBoundingBoxHierarchy(currentDepth + 1, parameters, intersectedGeometries, geometryPointers);
+                auto childHierarchy = BuildSplitByLongAxisBoundingBoxHierarchy<T>(currentDepth + 1, parameters, intersectedGeometries, geometryPointers);
                 hierarchy->SetChild(i, nodeBoundingBox, childHierarchy);
             }
             else
@@ -388,11 +394,12 @@ namespace Yart
         return hierarchy.get();
     }
 
-    export const BoundingBoxHierarchy* BuildSplitByLongAxisBoundingBoxHierarchy(
-        const BoundingBoxBuildParameters& parameters,
-        std::vector<const IntersectableGeometry*>& inputGeometries,
-        std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
+    export template<real_number T = real>
+        const BoundingBoxHierarchyT<T>* BuildSplitByLongAxisBoundingBoxHierarchy(
+            const BoundingBoxBuildParameters& parameters,
+            std::vector<const IntersectableGeometry*>& inputGeometries,
+            std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
     {
-        return BuildSplitByLongAxisBoundingBoxHierarchy(1, parameters, inputGeometries, geometryPointers);
+        return BuildSplitByLongAxisBoundingBoxHierarchy<T>(1, parameters, inputGeometries, geometryPointers);
     }
 }

@@ -257,7 +257,7 @@ namespace Yart
 
         inline constexpr Vector3T Reflect(const Vector3T& normal) const
         {
-            return *this - 2.0f * (*this * normal) * normal;
+            return *this - T{2.0} *(*this * normal) * normal;
         }
 
         static constexpr Vector3T Refract(const Vector3T& incomingDirection, const Vector3T& normal, T fromIndex, T toIndex)

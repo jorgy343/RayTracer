@@ -28,9 +28,9 @@ namespace Yart
         inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& directionToLight) const override
         {
             Ray ray{hitPosition, Direction};
-            float distance = scene.CastRayDistance(ray);
+            real distance = scene.CastRayDistance(ray);
 
-            return distance == std::numeric_limits<float>::infinity() ? false : true;
+            return distance == std::numeric_limits<real>::infinity() ? false : true;
         }
     };
 }

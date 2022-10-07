@@ -14,10 +14,10 @@ namespace Yart
     export class RefractiveMaterial : public Material
     {
     protected:
-        float RefractionIndex{};
+        real RefractionIndex{};
 
     public:
-        inline constexpr RefractiveMaterial(float refractionIndex)
+        inline constexpr RefractiveMaterial(real refractionIndex)
             : RefractionIndex{refractionIndex}
         {
 
@@ -32,8 +32,8 @@ namespace Yart
             const Vector3& hitNormal,
             const Vector3& incomingDirection) const override
         {
-            Vector3 refractionDirection = Vector3::Refract(incomingDirection, hitNormal, 1.0f, RefractionIndex);
-            if (refractionDirection.LengthSquared() < 0.01f)
+            Vector3 refractionDirection = Vector3::Refract(incomingDirection, hitNormal, real{1.0}, RefractionIndex);
+            if (refractionDirection.LengthSquared() < real{0.01})
             {
                 return Vector3{};
             }
@@ -56,8 +56,8 @@ namespace Yart
 
             // Create the outgoing ray. Use the non reversed refraction direction and the reversed
             // exit normal.
-            Vector3 outgoingDirection = Vector3::Refract(refractionDirection, -exitNormal, RefractionIndex, 1.0f);
-            if (outgoingDirection.LengthSquared() < 0.01f)
+            Vector3 outgoingDirection = Vector3::Refract(refractionDirection, -exitNormal, RefractionIndex, real{1.0});
+            if (outgoingDirection.LengthSquared() < real{0.01})
             {
                 return Vector3{};
             }

@@ -15,12 +15,12 @@ namespace Yart
     {
     public:
         Vector3 Normal{};
-        float Distance{};
+        real Distance{};
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Plane() = default;
 
-        inline constexpr Plane(const Vector3& normal, float distance, const Material* appliedMaterial)
+        inline constexpr Plane(const Vector3& normal, real distance, const Material* appliedMaterial)
             : Normal{normal}, Distance{distance}, AppliedMaterial{appliedMaterial}
         {
 
@@ -37,9 +37,9 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
-            return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
+            return (ray.Direction * Normal) < real{0.0} ? Normal : -Normal;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override
@@ -52,14 +52,14 @@ namespace Yart
             return {this, Intersect(ray)};
         }
 
-        inline constexpr float Intersect(const Ray& ray) const
+        inline constexpr real Intersect(const Ray& ray) const
         {
-            float normalDotDirection = Normal * ray.Direction;
-            float normalDotRayPosition = Normal * ray.Position;
+            real normalDotDirection = Normal * ray.Direction;
+            real normalDotRayPosition = Normal * ray.Position;
 
-            float entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
+            real entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
 
-            return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+            return entranceDistance >= real{0.0} ? entranceDistance : std::numeric_limits<real>::infinity();
         }
     };
 }

@@ -19,7 +19,7 @@ namespace Yart
         Vector3 Edge1{};
         Vector3 Edge2{};
         Vector3 Normal{};
-        float Area{};
+        real Area{};
         const Material* AppliedMaterial{nullptr};
 
     public:
@@ -48,9 +48,9 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
-            return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
+            return (ray.Direction * Normal) < real{0.0} ? Normal : -Normal;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override
@@ -63,36 +63,36 @@ namespace Yart
             return {this, Intersect(ray)};
         }
 
-        inline constexpr float Intersect(const Ray& ray) const
+        inline constexpr real Intersect(const Ray& ray) const
         {
             Vector3 p = ray.Direction % Edge2;
-            float determinant = Edge1 * p;
+            real determinant = Edge1 * p;
 
-            if (Math::abs(determinant) < 0.0f)
+            if (Math::abs(determinant) < real{0.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
-            float invDeterminant = Math::rcp(determinant);
+            real invDeterminant = Math::rcp(determinant);
 
             Vector3 t = ray.Position - Position;
-            float a = (t * p) * invDeterminant;
+            real a = (t * p) * invDeterminant;
 
-            if (a < 0.0f || a > 1.0f)
+            if (a < real{0.0} || a > real{1.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
             Vector3 q = t % Edge1;
-            float b = (ray.Direction * q) * invDeterminant;
+            real b = (ray.Direction * q) * invDeterminant;
 
-            if (b < 0.0f || b > 1.0f)
+            if (b < real{0.0} || b > real{1.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
-            float entranceDistance = (Edge2 * q) * invDeterminant;
-            return entranceDistance >= 0.0f ? entranceDistance : std::numeric_limits<float>::infinity();
+            real entranceDistance = (Edge2 * q) * invDeterminant;
+            return entranceDistance >= real{0.0} ? entranceDistance : std::numeric_limits<real>::infinity();
         }
 
         inline Vector3 GetDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
@@ -105,24 +105,24 @@ namespace Yart
 
         inline Vector3 GetPointOnLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
-            Vector3 randomPointOnLight = Position + (Edge1 * random.GetNormalizedFloat()) + (Edge2 * random.GetNormalizedFloat());
+            Vector3 randomPointOnLight = Position + (Edge1 * random.GetNormalized()) + (Edge2 * random.GetNormalized());
             return randomPointOnLight;
         }
 
         inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& positionOnLight) const override
         {
             Vector3 directionToLight = positionOnLight - hitPosition;
-            float distanceToLight = directionToLight.Length();
+            real distanceToLight = directionToLight.Length();
 
             directionToLight.Normalize();
 
             Ray ray{hitPosition, directionToLight};
-            float distance = scene.CastRayDistance(ray);
+            real distance = scene.CastRayDistance(ray);
 
-            return distance >= distanceToLight - 0.01f ? false : true;
+            return distance >= distanceToLight - real{0.01} ? false : true;
         }
 
-        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
+        inline constexpr real CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
         {
             return Area;
         }

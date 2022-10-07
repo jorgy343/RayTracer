@@ -60,34 +60,27 @@ namespace Yart
 
         if (axisAlignedBoxes.size() > 0)
         {
-            CreateGeometrySoaStructure<AxisAlignedBox, AxisAlignedBoxSoa>(axisAlignedBoxes, outputGeometries, geometryPointers);
+            CreateGeometrySoaStructure<AxisAlignedBox, AxisAlignedBoxSoa>(axisAlignedBoxes, outputGeometries, geometryPointers, AxisAlignedBoxSoa::Size);
         }
 
         if (parallelograms.size() > 0)
         {
-            CreateGeometrySoaStructure<Parallelogram, ParallelogramSoa>(parallelograms, outputGeometries, geometryPointers);
+            CreateGeometrySoaStructure<Parallelogram, ParallelogramSoa>(parallelograms, outputGeometries, geometryPointers, ParallelogramSoa::Size);
         }
 
         if (planes.size() > 0)
         {
-            CreateGeometrySoaStructure<Plane, PlaneSoa>(planes, outputGeometries, geometryPointers);
+            CreateGeometrySoaStructure<Plane, PlaneSoa>(planes, outputGeometries, geometryPointers, PlaneSoa::Size);
         }
 
         if (spheres.size() > 0)
         {
-            CreateGeometrySoaStructure<Sphere, SphereSoa>(spheres, outputGeometries, geometryPointers);
+            CreateGeometrySoaStructure<Sphere, SphereSoa>(spheres, outputGeometries, geometryPointers, SphereSoa::Size);
         }
 
         if (triangles.size() > 0)
         {
-            if (triangles.size() <= 4)
-            {
-                CreateGeometrySoaStructure<Triangle, TriangleSoa<4>>(triangles, outputGeometries, geometryPointers, 4);
-            }
-            else
-            {
-                CreateGeometrySoaStructure<Triangle, TriangleSoa<8>>(triangles, outputGeometries, geometryPointers, 8);
-            }
+            CreateGeometrySoaStructure<Triangle, TriangleSoa>(triangles, outputGeometries, geometryPointers, TriangleSoa::Size);
         }
     }
 }

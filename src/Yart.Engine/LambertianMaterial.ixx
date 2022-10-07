@@ -31,14 +31,14 @@ namespace Yart
             const Vector3& hitNormal,
             const Vector3& incomingDirection) const override
 		{
-			float roulettePower{1.0f};
+			real roulettePower{real{1.0}};
 			if constexpr (EnableRoulette)
 			{
 				if (currentDepth > 3)
 				{
-					constexpr float stoppingCutoff = 0.7f;
+                    constexpr real stoppingCutoff = real{0.7};
 
-					float stoppingProbability = random.GetNormalizedFloat();
+					real stoppingProbability = random.GetNormalized();
 					if (stoppingProbability > stoppingCutoff)
 					{
 						return {};
@@ -50,16 +50,16 @@ namespace Yart
 				}
 			}
 
-			float whereToShootRay = random.GetNormalizedFloat();
+			real whereToShootRay = random.GetNormalized();
 
-			if (whereToShootRay > 0.5f)
+            if (whereToShootRay > real{0.5})
 			{
 				// Indirect light sample according to material.
 				Vector3 outgoingDirection = GenerateCosineWeightedHemisphereSample(random, hitNormal);
 				Ray outgoingRay = Ray{hitPosition, outgoingDirection};
 
 				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
-				Vector3 outputColor = DiffuseColor.ComponentwiseMultiply(colorSample) * roulettePower * 2.0f;
+				Vector3 outputColor = DiffuseColor.ComponentwiseMultiply(colorSample) * roulettePower * real{2.0};
 
 				return outputColor;
 			}
@@ -74,19 +74,19 @@ namespace Yart
 
 				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
 
-				float brdf = OneOverPi;
-				float inversePdf = light->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, outgoingDirection);
-				float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
+				real brdf = OneOverPi;
+				real inversePdf = light->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, outgoingDirection);
+				real cosineTheta = Math::max(real{0.0}, hitNormal * outgoingDirection);
 
-				Vector3 outputColor = brdf * DiffuseColor.ComponentwiseMultiply(colorSample) * inversePdf * cosineTheta * roulettePower * 2.0f;
+				Vector3 outputColor = brdf * DiffuseColor.ComponentwiseMultiply(colorSample) * inversePdf * cosineTheta * roulettePower * real{2.0};
 				return outputColor;
 			}
 		}
 
-		inline constexpr float CalculateInversePdf(const Vector3& hitNormal, const Vector3& outgoingDirection) const
+		inline constexpr real CalculateInversePdf(const Vector3& hitNormal, const Vector3& outgoingDirection) const
 		{
-			float cosineTheta = Math::max(0.0f, hitNormal * outgoingDirection);
-			float inverseCosineTheta = cosineTheta == 0.0f ? 0.0f : Math::rcp(cosineTheta);
+			real cosineTheta = Math::max(real{0.0}, hitNormal * outgoingDirection);
+			real inverseCosineTheta = cosineTheta == real{0.0} ? real{0.0} : Math::rcp(cosineTheta);
 
 			return Pi * inverseCosineTheta;
 		}

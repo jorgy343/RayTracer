@@ -17,10 +17,10 @@ namespace Yart
     public:
         Vector3 Position{};
         Vector3 Normal{};
-        float Distance{};
-        float Radius{};
-        float RadiusSquared{};
-        float Area{};
+        real Distance{};
+        real Radius{};
+        real RadiusSquared{};
+        real Area{};
         const Material* AppliedMaterial{nullptr};
 
         inline constexpr Disc() = default;
@@ -28,7 +28,7 @@ namespace Yart
         inline constexpr Disc(
             const Vector3& position,
             const Vector3& normal,
-            const float radius,
+            const real radius,
             const Material* appliedMaterial)
             :
             Position{position},
@@ -47,9 +47,9 @@ namespace Yart
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
-            return (ray.Direction * Normal) < 0.0f ? Normal : -Normal;
+            return (ray.Direction * Normal) < real{0.0} ? Normal : -Normal;
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override
@@ -62,32 +62,32 @@ namespace Yart
             return {this, Intersect(ray)};
         }
 
-        inline constexpr float Intersect(const Ray& ray) const
+        inline constexpr real Intersect(const Ray& ray) const
         {
-            float normalDotDirection = Normal * ray.Direction;
-            float normalDotRayPosition = Normal * ray.Position;
+            real normalDotDirection = Normal * ray.Direction;
+            real normalDotRayPosition = Normal * ray.Position;
 
-            float entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
+            real entranceDistance = -(Distance + normalDotRayPosition) * Math::rcp(normalDotDirection);
 
-            if (entranceDistance < 0.0f)
+            if (entranceDistance < real{0.0})
             {
-                return std::numeric_limits<float>::infinity();
+                return std::numeric_limits<real>::infinity();
             }
 
             Vector3 hitPosition = ray.Position + entranceDistance * ray.Direction;
-            float distanceToCenterSquared = hitPosition.DistanceSquared(Position);
+            real distanceToCenterSquared = hitPosition.DistanceSquared(Position);
 
-            return distanceToCenterSquared <= RadiusSquared ? entranceDistance : std::numeric_limits<float>::infinity();
+            return distanceToCenterSquared <= RadiusSquared ? entranceDistance : std::numeric_limits<real>::infinity();
 
 
 
 
             // Source: https://iquilezles.org/articles/intersectors/
             //Vector3 o = ray.Position - Position;
-            //float t = -(Normal * o) / (ray.Direction * Normal);
+            //real t = -(Normal * o) / (ray.Direction * Normal);
             //Vector3 q = o + t * ray.Direction;
 
-            //return q * q < RadiusSquared ? t : std::numeric_limits<float>::infinity();
+            //return q * q < RadiusSquared ? t : std::numeric_limits<real>::infinity();
         }
 
         inline Vector3 GetDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
@@ -100,11 +100,11 @@ namespace Yart
 
         inline Vector3 GetPointOnLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
-            float distanceFromCenter = Radius * Math::sqrt(random.GetNormalizedFloat());
-            float theta = random.GetNormalizedFloat() * TwoPi;
+            real distanceFromCenter = Radius * Math::sqrt(random.GetNormalized());
+            real theta = random.GetNormalized() * TwoPi;
 
-            float dx = distanceFromCenter * Math::cos(theta);
-            float dy = distanceFromCenter * Math::sin(theta);
+            real dx = distanceFromCenter * Math::cos(theta);
+            real dy = distanceFromCenter * Math::sin(theta);
 
             Vector3 xDirection = Normal.BuildPerpendicularVector();
             Vector3 yDirection = Normal % xDirection;
@@ -116,17 +116,17 @@ namespace Yart
         inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& positionOnLight) const override
         {
             Vector3 directionToLight = positionOnLight - hitPosition;
-            float distanceToLightSquared = directionToLight.LengthSquared();
+            real distanceToLightSquared = directionToLight.LengthSquared();
 
             directionToLight.Normalize();
 
             Ray ray{hitPosition, directionToLight};
-            float distance = scene.CastRayDistance(ray);
+            real distance = scene.CastRayDistance(ray);
 
-            return distance * distance >= distanceToLightSquared - 0.01f ? false : true;
+            return distance * distance >= distanceToLightSquared - real{0.01} ? false : true;
         }
 
-        inline constexpr float CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
+        inline constexpr real CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
         {
             return Area;
         }

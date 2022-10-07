@@ -25,58 +25,66 @@ namespace Yart
 {
     export class __declspec(dllexport) alignas(64) SphereSoa : public GeometrySoa<Sphere>
     {
+    public:
+        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+
     private:
-        alignas(16) float _positionX[8];
-        alignas(16) float _positionY[8];
-        alignas(16) float _positionZ[8];
-        alignas(16) float _radius[8];
-        alignas(16) const Sphere* _geometries[8];
+        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
+
+        alignas(sizeof(real) * 4) real _positionX[Size];
+        alignas(sizeof(real) * 4) real _positionY[Size];
+        alignas(sizeof(real) * 4) real _positionZ[Size];
+        alignas(sizeof(real) * 4) real _radius[Size];
+
+        alignas(16) const Sphere* _geometries[Size];
 
     public:
         constexpr SphereSoa()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
-                _positionX[i] = std::numeric_limits<float>::infinity();
-                _positionY[i] = std::numeric_limits<float>::infinity();
-                _positionZ[i] = std::numeric_limits<float>::infinity();
-                _radius[i] = std::numeric_limits<float>::infinity();
+                _positionX[i] = std::numeric_limits<real>::infinity();
+                _positionY[i] = std::numeric_limits<real>::infinity();
+                _positionZ[i] = std::numeric_limits<real>::infinity();
+                _radius[i] = std::numeric_limits<real>::infinity();
+
                 _geometries[i] = nullptr;
             }
         }
 
         constexpr explicit SphereSoa(std::initializer_list<const Sphere*> list)
-			: SphereSoa{}
-		{
-			size_t index = 0;
+            : SphereSoa{}
+        {
+            size_t index = 0;
 
-			for (auto geometry : list)
-			{
-				if (index >= 8)
-				{
-					break;
-				}
+            for (auto geometry : list)
+            {
+                if (index >= Size)
+                {
+                    break;
+                }
 
-				Insert(index++, geometry);
-			}
-		}
+                Insert(index++, geometry);
+            }
+        }
 
         constexpr void Insert(size_t index, const Sphere* geometry) override
         {
-            assert(index >= 0 && index < 8);
+            assert(index >= 0 && index < Size);
 
             _positionX[index] = geometry->Position.X;
             _positionY[index] = geometry->Position.Y;
             _positionZ[index] = geometry->Position.Z;
             _radius[index] = geometry->Radius;
+
             _geometries[index] = geometry;
         }
 
-        BoundingBox CalculateBoundingBox() const override
+        BoundingBoxT<real> CalculateBoundingBox() const override
         {
-            BoundingBox boundingBox = BoundingBox::ReverseInfinity();
+            BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!_geometries[i])
                 {
@@ -105,10 +113,10 @@ namespace Yart
         {
             if (std::is_constant_evaluated())
             {
-                float closestDistance = std::numeric_limits<float>::infinity();
+                real closestDistance = std::numeric_limits<real>::infinity();
                 const Sphere* closestGeometry = nullptr;
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < Size; i++)
                 {
                     auto geometry = _geometries[i];
 
@@ -117,7 +125,7 @@ namespace Yart
                         continue;
                     }
 
-                    float distance = geometry->Intersect<TIntersectionResultType>(ray);
+                    real distance = geometry->Intersect<TIntersectionResultType>(ray);
 
                     if (distance < closestDistance)
                     {
@@ -130,40 +138,51 @@ namespace Yart
             }
             else
             {
-                Vec8f rayPositionX{ray.Position.X};
-                Vec8f rayPositionY{ray.Position.Y};
-                Vec8f rayPositionZ{ray.Position.Z};
+                VclVec rayPositionX{ray.Position.X};
+                VclVec rayPositionY{ray.Position.Y};
+                VclVec rayPositionZ{ray.Position.Z};
 
-                Vec8f spherePositionX = Vec8f{}.load_a(_positionX);
-                Vec8f spherePositionY = Vec8f{}.load_a(_positionY);
-                Vec8f spherePositionZ = Vec8f{}.load_a(_positionZ);
+                VclVec spherePositionX = VclVec{}.load_a(_positionX);
+                VclVec spherePositionY = VclVec{}.load_a(_positionY);
+                VclVec spherePositionZ = VclVec{}.load_a(_positionZ);
 
-                Vec8f vX = rayPositionX - spherePositionX;
-                Vec8f vY = rayPositionY - spherePositionY;
-                Vec8f vZ = rayPositionZ - spherePositionZ;
+                VclVec vX = rayPositionX - spherePositionX;
+                VclVec vY = rayPositionY - spherePositionY;
+                VclVec vZ = rayPositionZ - spherePositionZ;
 
-                Vec8f rayDirectionX{ray.Direction.X};
-                Vec8f rayDirectionY{ray.Direction.Y};
-                Vec8f rayDirectionZ{ray.Direction.Z};
+                VclVec rayDirectionX{ray.Direction.X};
+                VclVec rayDirectionY{ray.Direction.Y};
+                VclVec rayDirectionZ{ray.Direction.Z};
 
-                Vec8f sphereRadius = Vec8f{}.load_a(_radius);
+                VclVec sphereRadius = VclVec{}.load_a(_radius);
 
-                Vec8f a = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, rayDirectionX, rayDirectionY, rayDirectionZ);
-                Vec8f b = SimdDot(vX, vY, vZ, rayDirectionX, rayDirectionY, rayDirectionZ);
-                Vec8f c = SimdDot(vX, vY, vZ, vX, vY, vZ) - (sphereRadius * sphereRadius);
+                VclVec a = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, rayDirectionX, rayDirectionY, rayDirectionZ);
+                VclVec b = SimdDot(vX, vY, vZ, rayDirectionX, rayDirectionY, rayDirectionZ);
+                VclVec c = SimdDot(vX, vY, vZ, vX, vY, vZ) - (sphereRadius * sphereRadius);
 
-                Vec8f discriminant = (b * b) - (a * c);
-                Vec8f discriminantSqrt = sqrt(discriminant);
+                VclVec discriminant = (b * b) - (a * c);
+                VclVec discriminantSqrt = sqrt(discriminant);
 
-                Vec8f reciprocalA = approx_recipr(a);
-                Vec8f negativeB = -b;
+                VclVec reciprocalA;
+                if constexpr (std::same_as<real, float>)
+                {
+                    // TODO: Make this work.
+                    //reciprocalA = approx_recipr(a);
+                    reciprocalA = VclVec{real{1.0}} / a;
+                }
+                else
+                {
+                    reciprocalA = VclVec{real{1.0}} / a;
+                }
 
-                Vec8f exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
+                VclVec negativeB = -b;
 
-                Vec8f result;
+                VclVec exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
+
+                VclVec result;
                 if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
                 {
-                    Vec8f entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+                    VclVec entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
                     result = entranceDistance;
                 }
                 else
@@ -172,10 +191,10 @@ namespace Yart
                 }
 
                 // Make sure infinite8f() is second so nans are replaced with inf.
-                Vec8f clampedResult = select(exitDistance >= Vec8f(0.0f), result, infinite8f());
+                VclVec clampedResult = select(exitDistance >= VclVec{real{0.0}}, result, VclVec{std::numeric_limits<real>::infinity()});
 
-                float minimumEntranceDistance = horizontal_min1(clampedResult);
-                int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedResult);
+                real minimumEntranceDistance = horizontal_min1(clampedResult);
+                int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedResult);
 
                 return {
                     _geometries[minimumIndex == -1 ? 0 : minimumIndex],

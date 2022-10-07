@@ -22,43 +22,44 @@ using namespace vcl;
 
 namespace Yart
 {
-    export template <size_t Size = 8>
-        requires (Size == 4 || Size == 8)
-    class __declspec(dllexport) alignas(Size * 4) TriangleSoa : public GeometrySoa<Triangle>
+    export class __declspec(dllexport) alignas(64) TriangleSoa : public GeometrySoa<Triangle>
     {
+    public:
+        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+
     private:
-        alignas(Size * 4) float _vertex0X[Size];
-        alignas(Size * 4) float _vertex0Y[Size];
-        alignas(Size * 4) float _vertex0Z[Size];
+        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
 
-        alignas(Size * 4) float _vertex1X[Size];
-        alignas(Size * 4) float _vertex1Y[Size];
-        alignas(Size * 4) float _vertex1Z[Size];
+        alignas(Size * 4) real _vertex0X[Size];
+        alignas(Size * 4) real _vertex0Y[Size];
+        alignas(Size * 4) real _vertex0Z[Size];
 
-        alignas(Size * 4) float _vertex2X[Size];
-        alignas(Size * 4) float _vertex2Y[Size];
-        alignas(Size * 4) float _vertex2Z[Size];
+        alignas(Size * 4) real _vertex1X[Size];
+        alignas(Size * 4) real _vertex1Y[Size];
+        alignas(Size * 4) real _vertex1Z[Size];
+
+        alignas(Size * 4) real _vertex2X[Size];
+        alignas(Size * 4) real _vertex2Y[Size];
+        alignas(Size * 4) real _vertex2Z[Size];
 
         const Triangle* _geometries[Size];
-
-        using VclVec = typename std::conditional<Size == 8, Vec8f, Vec4f>::type;
 
     public:
         constexpr TriangleSoa()
         {
             for (int i = 0; i < Size; i++)
             {
-                _vertex0X[i] = std::numeric_limits<float>::infinity();
-                _vertex0Y[i] = std::numeric_limits<float>::infinity();
-                _vertex0Z[i] = std::numeric_limits<float>::infinity();
+                _vertex0X[i] = std::numeric_limits<real>::infinity();
+                _vertex0Y[i] = std::numeric_limits<real>::infinity();
+                _vertex0Z[i] = std::numeric_limits<real>::infinity();
 
-                _vertex1X[i] = std::numeric_limits<float>::infinity();
-                _vertex1Y[i] = std::numeric_limits<float>::infinity();
-                _vertex1Z[i] = std::numeric_limits<float>::infinity();
+                _vertex1X[i] = std::numeric_limits<real>::infinity();
+                _vertex1Y[i] = std::numeric_limits<real>::infinity();
+                _vertex1Z[i] = std::numeric_limits<real>::infinity();
 
-                _vertex2X[i] = std::numeric_limits<float>::infinity();
-                _vertex2Y[i] = std::numeric_limits<float>::infinity();
-                _vertex2Z[i] = std::numeric_limits<float>::infinity();
+                _vertex2X[i] = std::numeric_limits<real>::infinity();
+                _vertex2Y[i] = std::numeric_limits<real>::infinity();
+                _vertex2Z[i] = std::numeric_limits<real>::infinity();
 
                 _geometries[i] = nullptr;
             }
@@ -158,7 +159,8 @@ namespace Yart
 
             // Normally you would check for a parallel ray here but we'll skip that check.
 
-            VclVec f = approx_recipr(a);
+            //VclVec f = approx_recipr(a);
+            VclVec f = VclVec{real{1.0}} / a; // TODO: Fix reciprical for floats.
 
             VclVec rayPositionX{ray.Position.X};
             VclVec rayPositionY{ray.Position.Y};
@@ -178,9 +180,9 @@ namespace Yart
             VclVec clampedEntranceDistance = select(
                 u >= VclVec{0.0f} && u <= VclVec{1.0f} && v >= VclVec{0.0f} && u + v <= VclVec{1.0f} && entranceDistance >= VclVec{0.0f},
                 entranceDistance,
-                VclVec{std::numeric_limits<float>::infinity()});
+                VclVec{std::numeric_limits<real>::infinity()});
 
-            float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+            real minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
             int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedEntranceDistance);
 
             return {

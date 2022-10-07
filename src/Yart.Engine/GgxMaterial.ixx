@@ -17,19 +17,19 @@ namespace Yart
 	{
 	protected:
 		Vector3 SpecularColor{};
-		float Roughness{};
+		real Roughness{};
 
-		float DiffuseLuminance{};
-		float SpecularLuminance{};
+		real DiffuseLuminance{};
+		real SpecularLuminance{};
 
 	public:
-		GgxMaterial(const Vector3& diffuseColor, const Vector3& specularColor, float roughness)
+		GgxMaterial(const Vector3& diffuseColor, const Vector3& specularColor, real roughness)
 			:
 			DiffuseMaterial{diffuseColor},
 			SpecularColor{specularColor},
 			Roughness{roughness},
-			DiffuseLuminance{Math::max(0.01f, diffuseColor * Vector3{0.3f, 0.59f, 0.11f})},
-			SpecularLuminance{Math::max(0.01f, specularColor * Vector3{0.3f, 0.59f, 0.11f})}
+            DiffuseLuminance{Math::max(real{0.01}, diffuseColor * Vector3{real{0.3}, real{0.59}, real{0.11}})},
+            SpecularLuminance{Math::max(real{0.01}, specularColor * Vector3{real{0.3}, real{0.59}, real{0.11}})}
 		{
 
 		}
@@ -44,7 +44,7 @@ namespace Yart
             const Vector3& incomingDirection) const override
 		{
 			Vector3 V = -incomingDirection;
-			float NdotV = hitNormal * V;
+			real NdotV = hitNormal * V;
 
 
 
@@ -52,8 +52,8 @@ namespace Yart
 
 
 
-			float probDiffuse = ProbabilityToSampleDiffuse();
-			bool chooseDiffuse = random.GetNormalizedFloat() < probDiffuse;
+			real probDiffuse = ProbabilityToSampleDiffuse();
+			bool chooseDiffuse = random.GetNormalized() < probDiffuse;
 
 			if (chooseDiffuse)
 			{
@@ -71,78 +71,78 @@ namespace Yart
 				Vector3 H = GetGgxMicrofacet(random, hitNormal);
 
 				// Compute outgoing direction based on this (perfectly reflective) facet
-				Vector3 L = (2.0f * (V * H) * H - V).Normalize();
+                Vector3 L = (real{2.0} *(V * H) * H - V).Normalize();
 
 				// Compute our color by tracing a ray in this direction
 				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
 
 				// Compute some dot products needed for shading
-				float NdotL = Math::max(0.0f, hitNormal * L);
-				float NdotH = Math::max(0.0f, hitNormal * H);
-				float LdotH = Math::max(0.0f, L * H);
+				real NdotL = Math::max(real{0.0}, hitNormal * L);
+				real NdotH = Math::max(real{0.0}, hitNormal * H);
+				real LdotH = Math::max(real{0.0}, L * H);
 
 				// Evaluate our BRDF using a microfacet BRDF model
-				float D = NormalDistribution(NdotH);
-				float G = SchlickMaskingTerm(NdotL, NdotV);
+				real D = NormalDistribution(NdotH);
+				real G = SchlickMaskingTerm(NdotL, NdotV);
 				Vector3 F = SchlickFresnel(SpecularColor, LdotH);
-				Vector3 ggxTerm = D * G * F / (4.0f /** NdotL*/ * NdotV);
+                Vector3 ggxTerm = D * G * F / (real{4.0} /** NdotL*/ *NdotV);
 
-				float pdf = D * NdotH / (4.0f * LdotH);
+                real pdf = D * NdotH / (real{4.0} *LdotH);
 
-				Vector3 outputColor = bounceColor.ComponentwiseMultiply(ggxTerm) /** NdotL*/ / (pdf * (1.0f - probDiffuse));
+				Vector3 outputColor = bounceColor.ComponentwiseMultiply(ggxTerm) /** NdotL*/ / (pdf * (real{1.0} - probDiffuse));
 				return outputColor;
 			}
 		}
 
-		inline constexpr float NormalDistribution(float nDotH) const
+		inline constexpr real NormalDistribution(real nDotH) const
 		{
-			float a2 = Roughness * Roughness;
-			float d = ((nDotH * a2 - nDotH) * nDotH + 1);
+			real a2 = Roughness * Roughness;
+			real d = ((nDotH * a2 - nDotH) * nDotH + 1);
 
 			return a2 / (d * d * Pi);
 		}
 
-		inline constexpr float SchlickMaskingTerm(float nDotL, float nDotV) const
+		inline constexpr real SchlickMaskingTerm(real nDotL, real nDotV) const
 		{
-			float k = Roughness * Roughness / 2.0f;
+            real k = Roughness * Roughness / real{2.0};
 
-			float g_v = nDotV / (nDotV * (1.0f - k) + k);
-			float g_l = nDotL / (nDotL * (1.0f - k) + k);
+			real g_v = nDotV / (nDotV * (real{1.0} - k) + k);
+			real g_l = nDotL / (nDotL * (real{1.0} - k) + k);
 
 			return g_v * g_l;
 		}
 
-		inline constexpr Vector3 SchlickFresnel(const Vector3& f0, float lDotH) const
+		inline constexpr Vector3 SchlickFresnel(const Vector3& f0, real lDotH) const
 		{
-			float x = 1.0f - lDotH;
+			real x = real{1.0} - lDotH;
 
-			return f0 + (Vector3{1.0f} - f0) * x * x * x * x * x;
+			return f0 + (Vector3{real{1.0}} - f0) * x * x * x * x * x;
 		}
 
 		inline Vector3 GetGgxMicrofacet(const Random& random, const Vector3& hitNormal) const
 		{
-			float rand1 = random.GetNormalizedFloat();
-			float rand2 = random.GetNormalizedFloat();
+			real rand1 = random.GetNormalized();
+			real rand2 = random.GetNormalized();
 
 			Vector3 B = hitNormal.BuildPerpendicularVector();
 			Vector3 T = B % hitNormal;
 
-			float a2 = Roughness * Roughness;
-			float cosThetaH = Math::sqrt(Math::max(0.0f, (1.0f - rand1) / ((a2 - 1.0f) * rand1 + 1.0f)));
-			float sinThetaH = Math::sqrt(Math::max(0.0f, 1.0f - cosThetaH * cosThetaH));
-			float phiH = rand2 * Pi * 2.0f;
+			real a2 = Roughness * Roughness;
+			real cosThetaH = Math::sqrt(Math::max(real{0.0}, (real{1.0} - rand1) / ((a2 - real{1.0}) * rand1 + real{1.0})));
+			real sinThetaH = Math::sqrt(Math::max(real{0.0}, real{1.0} - cosThetaH * cosThetaH));
+            real phiH = rand2 * Pi * real{2.0};
 
 			return T * (sinThetaH * Math::cos(phiH)) +
 				B * (sinThetaH * Math::sin(phiH)) +
 				hitNormal * cosThetaH;
 		}
 
-		inline constexpr float ProbabilityToSampleDiffuse() const
+		inline constexpr real ProbabilityToSampleDiffuse() const
 		{
 			return DiffuseLuminance / (DiffuseLuminance + SpecularLuminance);
 		}
 
-		//inline constexpr float GetPdf(float D, float nDotH, float hDotV) const
+		//inline constexpr real GetPdf(real D, real nDotH, real hDotV) const
 		//{
 		//    return D * nDotH / (4 * hDotV);
 		//}

@@ -13,11 +13,6 @@ import Triangle;
 import TriangleSoa;
 import YamlLoader;
 
-#include <cmath>
-#include <limits>
-#include <memory>
-#include <vector>
-
 #include "range/v3/view/chunk.hpp"
 
 #include "Vcl.h"
@@ -93,19 +88,19 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
                         Ray ray = camera.CreateRay({x, y}, {subpixelX, subpixelY}, random);
                         Vector3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);
 
-                        sampledColor.X = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.X) ? 0.0f : sampledColor.X));
-                        sampledColor.Y = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Y) ? 0.0f : sampledColor.Y));
-                        sampledColor.Z = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Z) ? 0.0f : sampledColor.Z));
+                        sampledColor.X = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.X) ? real{0.0} : sampledColor.X));
+                        sampledColor.Y = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Y) ? real{0.0} : sampledColor.Y));
+                        sampledColor.Z = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Z) ? real{0.0} : sampledColor.Z));
 
                         color += sampledColor;
                     }
                 }
 
-                color /= static_cast<float>(subpixelCountSquared);
+                color /= static_cast<real>(subpixelCountSquared);
 
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += color.X;
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += color.Y;
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += color.Z;
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += static_cast<float>(color.X);
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += static_cast<float>(color.Y);
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += static_cast<float>(color.Z);
                 pixelBuffer[((y * screenSize.X) + x) * 4 + 3] += 0.0f;
             }
         }

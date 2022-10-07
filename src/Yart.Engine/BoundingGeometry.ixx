@@ -68,7 +68,7 @@ namespace Yart
 
     export const BoundingGeometry* CreateBoundingGeometryFromGeometry(const IntersectableGeometry* geometry, std::vector<std::shared_ptr<const IntersectableGeometry>>& geometryPointers)
     {
-        auto boundingBox = geometry->CalculateBoundingBox().AddMargin(Vector3{0.01f});
+        auto boundingBox = geometry->CalculateBoundingBox().AddMargin(Vector3{real{0.01}});
         auto axisAlignedBox = std::make_shared<const AxisAlignedBox>(boundingBox, nullptr);
 
         auto boundingGeometry = std::make_shared<const BoundingGeometry>(axisAlignedBox.get(), geometry);

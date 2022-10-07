@@ -23,7 +23,7 @@ namespace Yart
     export class Scene
     {
     private:
-        Vector3 _backgroundColor{0.0f};
+        Vector3 _backgroundColor{real{0.0}};
 
     public:
         const IntersectableGeometry* RootGeometry{};
@@ -82,10 +82,10 @@ namespace Yart
             return outputColor;
         }
 
-        float CastRayDistance(const Ray& ray) const
+        real CastRayDistance(const Ray& ray) const
         {
             IntersectionResult intersection = RootGeometry->IntersectEntrance(ray);
-            return Math::max(0.0f, intersection.HitDistance);
+            return Math::max(real{0.0}, intersection.HitDistance);
         }
     };
 }

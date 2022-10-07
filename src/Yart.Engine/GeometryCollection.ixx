@@ -43,7 +43,7 @@ namespace Yart
 		template <IntersectionResultType TIntersectionResultType>
 		force_inline IntersectionResult Intersect(const Ray& ray) const
 		{
-			IntersectionResult closestResult{nullptr, std::numeric_limits<float>::infinity()};
+			IntersectionResult closestResult{nullptr, std::numeric_limits<real>::infinity()};
 
 			for (auto geometry : ChildGeometries)
 			{

@@ -22,8 +22,8 @@ namespace Yart
 
 		inline Vector3 GenerateCosineWeightedHemisphereSample(const Random& random, const Vector3& hitNormal) const
 		{
-			float random1 = random.GetNormalizedFloat();
-			float random2 = random.GetNormalizedFloat();
+			real random1 = random.GetNormalized();
+			real random2 = random.GetNormalized();
 
 			Vector3 randomHemisphereVector = CosineWeightedSampleHemisphere(random1, random2);
 			Vector3 outgoingDirection = TransformFromTangentSpaceToWorldSpace(hitNormal, randomHemisphereVector);

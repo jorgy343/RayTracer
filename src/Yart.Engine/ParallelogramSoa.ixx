@@ -24,61 +24,66 @@ namespace Yart
 {
     export class alignas(64) ParallelogramSoa : public GeometrySoa<Parallelogram>
     {
+    public:
+        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+
     private:
-        alignas(16) float _positionX[8];
-        alignas(16) float _positionY[8];
-        alignas(16) float _positionZ[8];
+        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
 
-        alignas(16) float _edge1X[8];
-        alignas(16) float _edge1Y[8];
-        alignas(16) float _edge1Z[8];
+        alignas(sizeof(real) * 4) real _positionX[Size];
+        alignas(sizeof(real) * 4) real _positionY[Size];
+        alignas(sizeof(real) * 4) real _positionZ[Size];
 
-        alignas(16) float _edge2X[8];
-        alignas(16) float _edge2Y[8];
-        alignas(16) float _edge2Z[8];
+        alignas(sizeof(real) * 4) real _edge1X[Size];
+        alignas(sizeof(real) * 4) real _edge1Y[Size];
+        alignas(sizeof(real) * 4) real _edge1Z[Size];
 
-        alignas(16) const Parallelogram* _geometries[8];
+        alignas(sizeof(real) * 4) real _edge2X[Size];
+        alignas(sizeof(real) * 4) real _edge2Y[Size];
+        alignas(sizeof(real) * 4) real _edge2Z[Size];
+
+        alignas(16) const Parallelogram* _geometries[Size];
 
     public:
         constexpr ParallelogramSoa()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
-                _positionX[i] = std::numeric_limits<float>::infinity();
-                _positionY[i] = std::numeric_limits<float>::infinity();
-                _positionZ[i] = std::numeric_limits<float>::infinity();
+                _positionX[i] = std::numeric_limits<real>::infinity();
+                _positionY[i] = std::numeric_limits<real>::infinity();
+                _positionZ[i] = std::numeric_limits<real>::infinity();
 
-                _edge1X[i] = std::numeric_limits<float>::infinity();
-                _edge1Y[i] = std::numeric_limits<float>::infinity();
-                _edge1Z[i] = std::numeric_limits<float>::infinity();
+                _edge1X[i] = std::numeric_limits<real>::infinity();
+                _edge1Y[i] = std::numeric_limits<real>::infinity();
+                _edge1Z[i] = std::numeric_limits<real>::infinity();
 
-                _edge2X[i] = std::numeric_limits<float>::infinity();
-                _edge2Y[i] = std::numeric_limits<float>::infinity();
-                _edge2Z[i] = std::numeric_limits<float>::infinity();
+                _edge2X[i] = std::numeric_limits<real>::infinity();
+                _edge2Y[i] = std::numeric_limits<real>::infinity();
+                _edge2Z[i] = std::numeric_limits<real>::infinity();
 
                 _geometries[i] = nullptr;
             }
         }
 
         constexpr explicit ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
-			: ParallelogramSoa{}
-		{
-			size_t index = 0;
+            : ParallelogramSoa{}
+        {
+            size_t index = 0;
 
-			for (auto geometry : list)
-			{
-				if (index >= 8)
-				{
-					break;
-				}
+            for (auto geometry : list)
+            {
+                if (index >= Size)
+                {
+                    break;
+                }
 
-				Insert(index++, geometry);
-			}
-		}
+                Insert(index++, geometry);
+            }
+        }
 
         constexpr void Insert(size_t index, const Parallelogram* geometry) override
         {
-            assert(index >= 0 && index < 8);
+            assert(index >= 0 && index < Size);
 
             _positionX[index] = geometry->Position.X;
             _positionY[index] = geometry->Position.Y;
@@ -99,7 +104,7 @@ namespace Yart
         {
             BoundingBox boundingBox = BoundingBox::ReverseInfinity();
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!_geometries[i])
                 {
@@ -127,10 +132,10 @@ namespace Yart
         {
             if (std::is_constant_evaluated())
             {
-                float closestDistance = std::numeric_limits<float>::infinity();
+                real closestDistance = std::numeric_limits<real>::infinity();
                 const Parallelogram* closestGeometry = nullptr;
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < Size; i++)
                 {
                     auto geometry = _geometries[i];
 
@@ -139,7 +144,7 @@ namespace Yart
                         continue;
                     }
 
-                    float distance = geometry->Intersect(ray);
+                    real distance = geometry->Intersect(ray);
 
                     if (distance < closestDistance)
                     {
@@ -152,53 +157,54 @@ namespace Yart
             }
             else
             {
-                Vec8f rayDirectionX{ray.Direction.X};
-                Vec8f rayDirectionY{ray.Direction.Y};
-                Vec8f rayDirectionZ{ray.Direction.Z};
+                VclVec rayDirectionX{ray.Direction.X};
+                VclVec rayDirectionY{ray.Direction.Y};
+                VclVec rayDirectionZ{ray.Direction.Z};
 
-                Vec8f edge2X = Vec8f{}.load_a(_edge2X);
-                Vec8f edge2Y = Vec8f{}.load_a(_edge2Y);
-                Vec8f edge2Z = Vec8f{}.load_a(_edge2Z);
+                VclVec edge2X = VclVec{}.load_a(_edge2X);
+                VclVec edge2Y = VclVec{}.load_a(_edge2Y);
+                VclVec edge2Z = VclVec{}.load_a(_edge2Z);
 
-                Vec8f3 p = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
+                auto p = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
 
-                Vec8f edge1X = Vec8f{}.load_a(_edge1X);
-                Vec8f edge1Y = Vec8f{}.load_a(_edge1Y);
-                Vec8f edge1Z = Vec8f{}.load_a(_edge1Z);
+                VclVec edge1X = VclVec{}.load_a(_edge1X);
+                VclVec edge1Y = VclVec{}.load_a(_edge1Y);
+                VclVec edge1Z = VclVec{}.load_a(_edge1Z);
 
-                Vec8f determinant = SimdDot(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
-                Vec8f invDeterminant = approx_recipr(determinant);
+                VclVec determinant = SimdDot(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
+                //VclVec invDeterminant = approx_recipr(determinant);
+                VclVec invDeterminant = VclVec{real{1.0}} / determinant; // TODO: Fix reciprical for floats.
 
-                Vec8f rayPositionX{ray.Position.X};
-                Vec8f rayPositionY{ray.Position.Y};
-                Vec8f rayPositionZ{ray.Position.Z};
+                VclVec rayPositionX{ray.Position.X};
+                VclVec rayPositionY{ray.Position.Y};
+                VclVec rayPositionZ{ray.Position.Z};
 
-                Vec8f positionX = Vec8f{}.load_a(_positionX);
-                Vec8f positionY = Vec8f{}.load_a(_positionY);
-                Vec8f positionZ = Vec8f{}.load_a(_positionZ);
+                VclVec positionX = VclVec{}.load_a(_positionX);
+                VclVec positionY = VclVec{}.load_a(_positionY);
+                VclVec positionZ = VclVec{}.load_a(_positionZ);
 
-                Vec8f tX = rayPositionX - positionX;
-                Vec8f tY = rayPositionY - positionY;
-                Vec8f tZ = rayPositionZ - positionZ;
+                VclVec tX = rayPositionX - positionX;
+                VclVec tY = rayPositionY - positionY;
+                VclVec tZ = rayPositionZ - positionZ;
 
-                Vec8f a = SimdDot(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
-                Vec8f3 q = SimdCrossProduct(tX, tY, tZ, edge1X, edge1Y, edge1Z);
-                Vec8f b = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
+                VclVec a = SimdDot(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
+                auto q = SimdCrossProduct(tX, tY, tZ, edge1X, edge1Y, edge1Z);
+                VclVec b = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
 
-                Vec8f entranceDistance = SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
+                VclVec entranceDistance = SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
 
-                Vec8fb comparison =
-                    entranceDistance >= Vec8f(0.0f) &&
-                    a >= Vec8f(0.0f) &&
-                    a <= Vec8f(1.0f) &&
-                    b >= Vec8f(0.0f) &&
-                    b <= Vec8f(1.0f);
+                auto comparison =
+                    entranceDistance >= VclVec(real{0.0}) &&
+                    a >= VclVec(real{0.0}) &&
+                    a <= VclVec(real{1.0}) &&
+                    b >= VclVec(real{0.0}) &&
+                    b <= VclVec(real{1.0});
 
                 // Make sure infinite8f() is second so nans are replaced with inf.
-                Vec8f clampedEntranceDistance = select(comparison, entranceDistance, infinite8f());
+                VclVec clampedEntranceDistance = select(comparison, entranceDistance, VclVec{std::numeric_limits<real>::infinity()});
 
-                float minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-                int minimumIndex = horizontal_find_first(Vec8f(minimumEntranceDistance) == clampedEntranceDistance);
+                real minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+                int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedEntranceDistance);
 
                 return {
                     _geometries[minimumIndex == -1 ? 0 : minimumIndex],

@@ -15,7 +15,7 @@ namespace Yart
     public:
         virtual constexpr const Material* GetMaterial() const = 0;
 
-        virtual constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const = 0;
+        virtual constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const = 0;
     };
 
     export template<typename T>

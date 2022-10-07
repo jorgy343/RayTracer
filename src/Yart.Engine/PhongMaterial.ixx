@@ -17,14 +17,14 @@ namespace Yart
         Vector3 DiffuseColor{};
         Vector3 SpecularColor{};
 
-        float Shininess{};
+        real Shininess{};
 
     public:
         constexpr PhongMaterial(
             const Vector3& ambientColor,
             const Vector3& diffuseColor,
             const Vector3& specularColor,
-            float shininess)
+            real shininess)
             :
             AmbientColor{ambientColor},
             DiffuseColor{diffuseColor},
@@ -56,15 +56,15 @@ namespace Yart
                     continue;
                 }
 
-                float lightDotNormal = directionToLight * hitNormal;
-                if (lightDotNormal >= 0.0f)
+                real lightDotNormal = directionToLight * hitNormal;
+                if (lightDotNormal >= real{0.0})
                 {
                     diffuseComponent += lightDotNormal * DiffuseColor.ComponentwiseMultiply(light->Color);
 
                     Vector3 reflectionDirection = directionToLight.Reflect(hitNormal);
-                    float reflectionDotView = reflectionDirection * incomingDirection;
+                    real reflectionDotView = reflectionDirection * incomingDirection;
 
-                    if (reflectionDotView >= 0.0f)
+                    if (reflectionDotView >= real{0.0})
                     {
                         specularComponent += Math::pow(reflectionDotView, Shininess) * SpecularColor.ComponentwiseMultiply(light->Color);
                     }
@@ -81,17 +81,17 @@ namespace Yart
                     continue;
                 }
 
-                float lightDotNormal = directionToLight * hitNormal;
-                float areaLightInversePdf = areaLight->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, directionToLight);
+                real lightDotNormal = directionToLight * hitNormal;
+                real areaLightInversePdf = areaLight->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, directionToLight);
 
-                if (lightDotNormal >= 0.0f)
+                if (lightDotNormal >= real{0.0})
                 {
                     diffuseComponent += lightDotNormal * areaLightInversePdf * DiffuseColor; // TODO: Multiply by the light's color. Not sure how to obtain the light's color right now.
 
                     Vector3 reflectionDirection = directionToLight.Reflect(hitNormal);
-                    float reflectionDotView = reflectionDirection * incomingDirection;
+                    real reflectionDotView = reflectionDirection * incomingDirection;
 
-                    if (reflectionDotView >= 0.0f)
+                    if (reflectionDotView >= real{0.0})
                     {
                         specularComponent += Math::pow(reflectionDotView, Shininess) * areaLightInversePdf * SpecularColor; // TODO: Multiply by the light's color. Not sure how to obtain the light's color right now.
                     }

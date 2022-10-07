@@ -17,8 +17,8 @@ namespace Yart
         virtual constexpr BoundingBox CalculateBoundingBox() const
         {
             return BoundingBox{
-                Vector3{-std::numeric_limits<float>::infinity()},
-                Vector3{std::numeric_limits<float>::infinity()},
+                Vector3{-std::numeric_limits<real>::infinity()},
+                Vector3{std::numeric_limits<real>::infinity()},
             };
         }
     };

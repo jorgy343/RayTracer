@@ -33,10 +33,10 @@ namespace Yart
 			return ChildGeometry->GetMaterial();
 		}
 
-		constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, float additionalData) const override
+		constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
 		{
 			Vector3 hitNormal = ChildGeometry->CalculateNormal(ray, hitPosition, additionalData);
-			Vector4 transformedHitNormal = Vector4{hitNormal, 0.0f} *InverseTransposedTransform;
+			Vector4 transformedHitNormal = Vector4{hitNormal, real{0.0}} *InverseTransposedTransform;
 
 			return Vector3{transformedHitNormal.X, transformedHitNormal.Y, transformedHitNormal.Z}.Normalize();
 		}
@@ -52,10 +52,10 @@ namespace Yart
 		}
 
 		template <IntersectionResultType TIntersectionResultType>
-		force_inline float Intersect(const Ray& ray) const
+		force_inline real Intersect(const Ray& ray) const
 		{
-			Vector4 transformedPosition = Vector4{ray.Position, 1.0f} *InversedTransform;
-			Vector4 transformedDirection = Vector4{ray.Direction, 0.0f} *InversedTransform;
+			Vector4 transformedPosition = Vector4{ray.Position, real{1.0}} *InversedTransform;
+			Vector4 transformedDirection = Vector4{ray.Direction, real{0.0}} *InversedTransform;
 
 			Ray transformedRay
 			{

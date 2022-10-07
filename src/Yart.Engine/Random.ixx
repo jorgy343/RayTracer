@@ -35,7 +35,7 @@ namespace Yart
             return _ranvec.random1f();
         }
 
-        template <real_number T>
+        template <real_number T = real>
         inline T GetNormalized() const
         {
             if constexpr (std::same_as<float, T>)
