@@ -22,25 +22,26 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) PlaneSoa : public GeometrySoa<Plane>
+    export template<SoaSize Size>
+        class __declspec(dllexport) alignas(64) PlaneSoa : public GeometrySoa<Plane>
     {
     public:
-        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+        static constexpr size_t Elements = std::same_as<real, float> ? (Size == SoaSize::_256 ? 8 : 4) : (Size == SoaSize::_256 ? 4 : 2);
 
     private:
-        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
+        using VclVec = std::conditional_t<std::same_as<real, float>, std::conditional_t<Size == SoaSize::_256, Vec8f, Vec4f>, std::conditional_t<Size == SoaSize::_256, Vec4d, Vec2d>>;
 
-        alignas(sizeof(real) * 4) real _normalX[Size];
-        alignas(sizeof(real) * 4) real _normalY[Size];
-        alignas(sizeof(real) * 4) real _normalZ[Size];
-        alignas(sizeof(real) * 4) real _distance[Size];
+        alignas(Elements * sizeof(real)) real _normalX[Elements];
+        alignas(Elements * sizeof(real)) real _normalY[Elements];
+        alignas(Elements * sizeof(real)) real _normalZ[Elements];
+        alignas(Elements * sizeof(real)) real _distance[Elements];
 
-        alignas(sizeof(real) * 4) const Plane* _geometries[Size];
+        const Plane* _geometries[Elements];
 
     public:
         constexpr PlaneSoa()
         {
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 _normalX[i] = std::numeric_limits<real>::infinity();
                 _normalY[i] = std::numeric_limits<real>::infinity();
@@ -58,7 +59,7 @@ namespace Yart
 
             for (auto geometry : list)
             {
-                if (index >= Size)
+                if (index >= Elements)
                 {
                     break;
                 }
@@ -69,7 +70,7 @@ namespace Yart
 
         constexpr void Insert(size_t index, const Plane* geometry) override
         {
-            assert(index >= 0 && index < Size);
+            assert(index >= 0 && index < Elements);
 
             _normalX[index] = geometry->Normal.X;
             _normalY[index] = geometry->Normal.Y;

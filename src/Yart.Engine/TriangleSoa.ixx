@@ -22,32 +22,33 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) TriangleSoa : public GeometrySoa<Triangle>
+    export template<SoaSize Size>
+        class __declspec(dllexport) alignas(64) TriangleSoa : public GeometrySoa<Triangle>
     {
     public:
-        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+        static constexpr size_t Elements = std::same_as<real, float> ? (Size == SoaSize::_256 ? 8 : 4) : (Size == SoaSize::_256 ? 4 : 2);
 
     private:
-        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
+        using VclVec = std::conditional_t<std::same_as<real, float>, std::conditional_t<Size == SoaSize::_256, Vec8f, Vec4f>, std::conditional_t<Size == SoaSize::_256, Vec4d, Vec2d>>;
 
-        alignas(Size * 4) real _vertex0X[Size];
-        alignas(Size * 4) real _vertex0Y[Size];
-        alignas(Size * 4) real _vertex0Z[Size];
+        alignas(Elements * sizeof(real)) real _vertex0X[Elements];
+        alignas(Elements * sizeof(real)) real _vertex0Y[Elements];
+        alignas(Elements * sizeof(real)) real _vertex0Z[Elements];
 
-        alignas(Size * 4) real _vertex1X[Size];
-        alignas(Size * 4) real _vertex1Y[Size];
-        alignas(Size * 4) real _vertex1Z[Size];
+        alignas(Elements * sizeof(real)) real _vertex1X[Elements];
+        alignas(Elements * sizeof(real)) real _vertex1Y[Elements];
+        alignas(Elements * sizeof(real)) real _vertex1Z[Elements];
 
-        alignas(Size * 4) real _vertex2X[Size];
-        alignas(Size * 4) real _vertex2Y[Size];
-        alignas(Size * 4) real _vertex2Z[Size];
+        alignas(Elements * sizeof(real)) real _vertex2X[Elements];
+        alignas(Elements * sizeof(real)) real _vertex2Y[Elements];
+        alignas(Elements * sizeof(real)) real _vertex2Z[Elements];
 
-        const Triangle* _geometries[Size];
+        const Triangle* _geometries[Elements];
 
     public:
         constexpr TriangleSoa()
         {
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 _vertex0X[i] = std::numeric_limits<real>::infinity();
                 _vertex0Y[i] = std::numeric_limits<real>::infinity();
@@ -72,7 +73,7 @@ namespace Yart
 
             for (auto geometry : list)
             {
-                if (index >= Size)
+                if (index >= Elements)
                 {
                     break;
                 }
@@ -83,7 +84,7 @@ namespace Yart
 
         constexpr void Insert(size_t index, const Triangle* geometry) override
         {
-            assert(index >= 0 && index < Size);
+            assert(index >= 0 && index < Elements);
 
             _vertex0X[index] = geometry->Vertex0.X;
             _vertex0Y[index] = geometry->Vertex0.Y;
@@ -104,7 +105,7 @@ namespace Yart
         {
             BoundingBox boundingBox = BoundingBox::ReverseInfinity();
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 if (!_geometries[i])
                 {

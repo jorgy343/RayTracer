@@ -60,27 +60,62 @@ namespace Yart
 
         if (axisAlignedBoxes.size() > 0)
         {
-            CreateGeometrySoaStructure<AxisAlignedBox, AxisAlignedBoxSoa>(axisAlignedBoxes, outputGeometries, geometryPointers, AxisAlignedBoxSoa::Size);
+            if (axisAlignedBoxes.size() <= AxisAlignedBoxSoa<SoaSize::_128>::Elements)
+            {
+                CreateGeometrySoaStructure<AxisAlignedBox, AxisAlignedBoxSoa<SoaSize::_128>>(axisAlignedBoxes, outputGeometries, geometryPointers, AxisAlignedBoxSoa<SoaSize::_128>::Elements);
+            }
+            else
+            {
+                CreateGeometrySoaStructure<AxisAlignedBox, AxisAlignedBoxSoa<SoaSize::_256>>(axisAlignedBoxes, outputGeometries, geometryPointers, AxisAlignedBoxSoa<SoaSize::_256>::Elements);
+            }
         }
 
         if (parallelograms.size() > 0)
         {
-            CreateGeometrySoaStructure<Parallelogram, ParallelogramSoa>(parallelograms, outputGeometries, geometryPointers, ParallelogramSoa::Size);
+            if (parallelograms.size() <= ParallelogramSoa<SoaSize::_128>::Elements)
+            {
+                CreateGeometrySoaStructure<Parallelogram, ParallelogramSoa<SoaSize::_128>>(parallelograms, outputGeometries, geometryPointers, ParallelogramSoa<SoaSize::_128>::Elements);
+            }
+            else
+            {
+                CreateGeometrySoaStructure<Parallelogram, ParallelogramSoa<SoaSize::_256>>(parallelograms, outputGeometries, geometryPointers, ParallelogramSoa<SoaSize::_256>::Elements);
+            }
         }
 
         if (planes.size() > 0)
         {
-            CreateGeometrySoaStructure<Plane, PlaneSoa>(planes, outputGeometries, geometryPointers, PlaneSoa::Size);
+            if (planes.size() <= PlaneSoa<SoaSize::_128>::Elements)
+            {
+                CreateGeometrySoaStructure<Plane, PlaneSoa<SoaSize::_128>>(planes, outputGeometries, geometryPointers, PlaneSoa<SoaSize::_128>::Elements);
+            }
+            else
+            {
+                CreateGeometrySoaStructure<Plane, PlaneSoa<SoaSize::_256>>(planes, outputGeometries, geometryPointers, PlaneSoa<SoaSize::_256>::Elements);
+            }
         }
 
         if (spheres.size() > 0)
         {
-            CreateGeometrySoaStructure<Sphere, SphereSoa>(spheres, outputGeometries, geometryPointers, SphereSoa::Size);
+            if (spheres.size() <= SphereSoa<SoaSize::_128>::Elements)
+            {
+                CreateGeometrySoaStructure<Sphere, SphereSoa<SoaSize::_128>>(spheres, outputGeometries, geometryPointers, SphereSoa<SoaSize::_128>::Elements);
+            }
+            else
+            {
+                CreateGeometrySoaStructure<Sphere, SphereSoa<SoaSize::_256>>(spheres, outputGeometries, geometryPointers, SphereSoa<SoaSize::_256>::Elements);
+            }
         }
 
         if (triangles.size() > 0)
         {
-            CreateGeometrySoaStructure<Triangle, TriangleSoa>(triangles, outputGeometries, geometryPointers, TriangleSoa::Size);
+            if (triangles.size() <= TriangleSoa<SoaSize::_128>::Elements)
+            {
+                CreateGeometrySoaStructure<Triangle, TriangleSoa<SoaSize::_128>>(triangles, outputGeometries, geometryPointers, TriangleSoa<SoaSize::_128>::Elements);
+            }
+            else
+            {
+                CreateGeometrySoaStructure<Triangle, TriangleSoa<SoaSize::_256>>(triangles, outputGeometries, geometryPointers, TriangleSoa<SoaSize::_256>::Elements);
+            }
         }
     }
 }

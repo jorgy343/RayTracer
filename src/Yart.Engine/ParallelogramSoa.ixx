@@ -22,32 +22,33 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class alignas(64) ParallelogramSoa : public GeometrySoa<Parallelogram>
+    export template<SoaSize Size>
+        class alignas(64) ParallelogramSoa : public GeometrySoa<Parallelogram>
     {
     public:
-        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+        static constexpr size_t Elements = std::same_as<real, float> ? (Size == SoaSize::_256 ? 8 : 4) : (Size == SoaSize::_256 ? 4 : 2);
 
     private:
-        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
+        using VclVec = std::conditional_t<std::same_as<real, float>, std::conditional_t<Size == SoaSize::_256, Vec8f, Vec4f>, std::conditional_t<Size == SoaSize::_256, Vec4d, Vec2d>>;
 
-        alignas(sizeof(real) * 4) real _positionX[Size];
-        alignas(sizeof(real) * 4) real _positionY[Size];
-        alignas(sizeof(real) * 4) real _positionZ[Size];
+        alignas(Elements * sizeof(real)) real _positionX[Elements];
+        alignas(Elements * sizeof(real)) real _positionY[Elements];
+        alignas(Elements * sizeof(real)) real _positionZ[Elements];
 
-        alignas(sizeof(real) * 4) real _edge1X[Size];
-        alignas(sizeof(real) * 4) real _edge1Y[Size];
-        alignas(sizeof(real) * 4) real _edge1Z[Size];
+        alignas(Elements * sizeof(real)) real _edge1X[Elements];
+        alignas(Elements * sizeof(real)) real _edge1Y[Elements];
+        alignas(Elements * sizeof(real)) real _edge1Z[Elements];
 
-        alignas(sizeof(real) * 4) real _edge2X[Size];
-        alignas(sizeof(real) * 4) real _edge2Y[Size];
-        alignas(sizeof(real) * 4) real _edge2Z[Size];
+        alignas(Elements * sizeof(real)) real _edge2X[Elements];
+        alignas(Elements * sizeof(real)) real _edge2Y[Elements];
+        alignas(Elements * sizeof(real)) real _edge2Z[Elements];
 
-        alignas(16) const Parallelogram* _geometries[Size];
+        const Parallelogram* _geometries[Elements];
 
     public:
         constexpr ParallelogramSoa()
         {
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 _positionX[i] = std::numeric_limits<real>::infinity();
                 _positionY[i] = std::numeric_limits<real>::infinity();
@@ -72,7 +73,7 @@ namespace Yart
 
             for (auto geometry : list)
             {
-                if (index >= Size)
+                if (index >= Elements)
                 {
                     break;
                 }
@@ -83,7 +84,7 @@ namespace Yart
 
         constexpr void Insert(size_t index, const Parallelogram* geometry) override
         {
-            assert(index >= 0 && index < Size);
+            assert(index >= 0 && index < Elements);
 
             _positionX[index] = geometry->Position.X;
             _positionY[index] = geometry->Position.Y;
@@ -104,7 +105,7 @@ namespace Yart
         {
             BoundingBox boundingBox = BoundingBox::ReverseInfinity();
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 if (!_geometries[i])
                 {
@@ -135,7 +136,7 @@ namespace Yart
                 real closestDistance = std::numeric_limits<real>::infinity();
                 const Parallelogram* closestGeometry = nullptr;
 
-                for (int i = 0; i < Size; i++)
+                for (int i = 0; i < Elements; i++)
                 {
                     auto geometry = _geometries[i];
 

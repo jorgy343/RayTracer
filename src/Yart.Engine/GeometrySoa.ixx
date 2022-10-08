@@ -11,6 +11,12 @@ import IntersectableGeometry;
 
 namespace Yart
 {
+    export enum class SoaSize
+    {
+        _128,
+        _256,
+    };
+
     export template<GeometryConcept TGeometry>
         class GeometrySoa : public IntersectableGeometry
     {

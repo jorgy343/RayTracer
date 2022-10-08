@@ -1,5 +1,5 @@
 config:
-  iterations: 4
+  iterations: 8
   backgroundColor: [0]
   colorClamp: [0, 1]
 

@@ -22,28 +22,29 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(64) AxisAlignedBoxSoa : public GeometrySoa<AxisAlignedBox>
+    export template<SoaSize Size>
+        class __declspec(dllexport) alignas(64) AxisAlignedBoxSoa : public GeometrySoa<AxisAlignedBox>
     {
     public:
-        static constexpr size_t Size = std::same_as<real, float> ? 8 : 4;
+        static constexpr size_t Elements = std::same_as<real, float> ? (Size == SoaSize::_256 ? 8 : 4) : (Size == SoaSize::_256 ? 4 : 2);
 
     private:
-        using VclVec = typename std::conditional<std::same_as<real, float>, Vec8f, Vec4d>::type;
+        using VclVec = std::conditional_t<std::same_as<real, float>, std::conditional_t<Size == SoaSize::_256, Vec8f, Vec4f>, std::conditional_t<Size == SoaSize::_256, Vec4d, Vec2d>>;
 
-        alignas(sizeof(real) * 4) real _minimumX[Size];
-        alignas(sizeof(real) * 4) real _minimumY[Size];
-        alignas(sizeof(real) * 4) real _minimumZ[Size];
+        alignas(Elements * sizeof(real)) real _minimumX[Elements];
+        alignas(Elements * sizeof(real)) real _minimumY[Elements];
+        alignas(Elements * sizeof(real)) real _minimumZ[Elements];
 
-        alignas(sizeof(real) * 4) real _maximumX[Size];
-        alignas(sizeof(real) * 4) real _maximumY[Size];
-        alignas(sizeof(real) * 4) real _maximumZ[Size];
+        alignas(Elements * sizeof(real)) real _maximumX[Elements];
+        alignas(Elements * sizeof(real)) real _maximumY[Elements];
+        alignas(Elements * sizeof(real)) real _maximumZ[Elements];
 
-        alignas(16) const AxisAlignedBox* _geometries[Size];
+        const AxisAlignedBox* _geometries[Elements];
 
     public:
         constexpr AxisAlignedBoxSoa()
         {
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 _minimumX[i] = std::numeric_limits<real>::infinity();
                 _minimumY[i] = std::numeric_limits<real>::infinity();
@@ -64,7 +65,7 @@ namespace Yart
 
             for (auto geometry : list)
             {
-                if (index >= Size)
+                if (index >= Elements)
                 {
                     break;
                 }
@@ -75,7 +76,7 @@ namespace Yart
 
         constexpr void Insert(size_t index, const AxisAlignedBox* geometry) override
         {
-            assert(index >= 0 && index < Size);
+            assert(index >= 0 && index < Elements);
 
             _minimumX[index] = geometry->Minimum.X;
             _minimumY[index] = geometry->Minimum.Y;
@@ -92,7 +93,7 @@ namespace Yart
         {
             BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Elements; i++)
             {
                 if (!_geometries[i])
                 {
