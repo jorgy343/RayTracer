@@ -1,0 +1,15 @@
+export module MissShader;
+
+import "Common.h";
+
+import Math;
+import Ray;
+
+namespace Yart
+{
+    export class MissShader
+    {
+    public:
+        virtual constexpr Vector3 CalculateColor(const Ray& ray) const = 0;
+    };
+}

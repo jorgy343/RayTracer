@@ -40,7 +40,7 @@ public:
 extern "C" __declspec(dllexport) void* __cdecl CreateScene()
 {
     auto yamlData = Yaml::LoadYaml();
-    auto scene = std::make_shared<Scene>(yamlData->GeometryData->Geometry, yamlData->Config->BackgroundColor);
+    auto scene = std::make_shared<Scene>(yamlData->GeometryData->Geometry, yamlData->MissShader.get());
 
     for (const auto light : yamlData->Lights)
     {

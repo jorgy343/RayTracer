@@ -43,6 +43,9 @@
     <Filter Include="Modules\Math">
       <UniqueIdentifier>{d523b650-0dc6-4d20-9dd6-ab46e13d4216}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\MissShaders">
+      <UniqueIdentifier>{9872fd4e-7835-4b7b-ab20-d84604face84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
@@ -246,6 +249,18 @@
     <ClCompile Include="Math-Vec4d3.ixx">
       <Filter>Modules\Math</Filter>
     </ClCompile>
+    <ClCompile Include="AtmosphereMissShader.ixx">
+      <Filter>Modules\MissShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="MissShader.ixx">
+      <Filter>Modules\MissShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantMissShader.ixx">
+      <Filter>Modules\MissShaders</Filter>
+    </ClCompile>
+    <ClCompile Include="YamlLoader-MissShaders.ixx">
+      <Filter>Modules\Yaml</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -266,6 +281,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="teapot.obj">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scene-atmosphere.yaml">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

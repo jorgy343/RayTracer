@@ -15,6 +15,7 @@ import IntersectableGeometry;
 import Light;
 import Material;
 import Math;
+import MissShader;
 import Random;
 import Ray;
 
@@ -23,15 +24,15 @@ namespace Yart
     export class Scene
     {
     private:
-        Vector3 _backgroundColor{real{0.0}};
+        const MissShader* _missShader{};
 
     public:
         const IntersectableGeometry* RootGeometry{};
         std::vector<const Light*> Lights{};
         std::vector<const AreaLight*> AreaLights{};
 
-        inline constexpr Scene(const IntersectableGeometry* rootGeometry, Vector3 backgroundColor)
-            : RootGeometry{rootGeometry}, _backgroundColor { backgroundColor }
+        inline constexpr Scene(const IntersectableGeometry* rootGeometry, const MissShader* missShader)
+            : RootGeometry{rootGeometry}, _missShader{missShader}
         {
 
         }
@@ -59,7 +60,7 @@ namespace Yart
             }
 
             IntersectionResult intersection = RootGeometry->IntersectEntrance(ray);
-            Vector3 outputColor = _backgroundColor;
+            Vector3 outputColor{};
 
             if (intersection.HitGeometry)
             {
@@ -77,6 +78,10 @@ namespace Yart
                     hitPosition,
                     hitNormal,
                     ray.Direction);
+            }
+            else
+            {
+                outputColor = _missShader->CalculateColor(ray);
             }
 
             return outputColor;

@@ -1,6 +1,6 @@
 export module Plane;
 
-import <limits>;
+import "Common.h";
 
 import Geometry;
 import IntersectionResult;

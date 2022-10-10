@@ -17,7 +17,6 @@ namespace Yart::Yaml
 	{
 	public:
 		unsigned int Iterations{};
-        Vector3 BackgroundColor{};
         Vector2 ColorClamp{};
 	};
 
@@ -25,7 +24,6 @@ namespace Yart::Yaml
     {
         auto config = std::shared_ptr<Config>{new Config{
             .Iterations = node["iterations"].as<unsigned int>(),
-            .BackgroundColor = node["backgroundColor"].as<Vector3>(),
             .ColorClamp = node["colorClamp"].as<Vector2>(),
         }};
 

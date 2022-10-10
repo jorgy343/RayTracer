@@ -20,8 +20,9 @@ camera:
   #  subpixelCount: 4
 
 missShader:
-  constant:
-    color: [0]
+  atmosphere:
+    sunDirection: [0, -1, 0]
+    origin: [0, 3958, 0]
 
 materials:
   - emissive:
@@ -150,29 +151,9 @@ geometry:
               radius: 1
 
       - plane:
-          material: "Red"
-          normal: [0, 0, -1]
-          point: [0, 0, 20]
-      - plane:
-          material: "Green"
-          normal: [0, 0, 1]
-          point: [0, 0, -40]
-      - plane:
           material: "Blue"
           normal: [0, -1, 0]
           point: [0, 20, 0]
-      - plane:
-          material: "Orange"
-          normal: [0, 1, 0]
-          point: [0, -20, 0]
-      - plane:
-          material: "Pink"
-          normal: [-1, 0, 0]
-          point: [20, 0, 0]
-      - plane:
-          material: "Yellow"
-          normal: [1, 0, 0]
-          point: [-20, 0, 0]
           
       - boundingGeometry:
           boundingVolume:

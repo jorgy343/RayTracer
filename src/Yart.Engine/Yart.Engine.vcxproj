@@ -81,12 +81,14 @@
   <ItemGroup>
     <ClCompile Include="Alignment.ixx" />
     <ClCompile Include="AreaLight.ixx" />
+    <ClCompile Include="AtmosphereMissShader.ixx" />
     <ClCompile Include="AxisAlignedBox.ixx" />
     <ClCompile Include="AxisAlignedBoxSoa.ixx" />
     <ClCompile Include="BoundingBoxHierarchy.ixx" />
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="BoundingBox.ixx" />
     <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="ConstantMissShader.ixx" />
     <ClCompile Include="Cylinder.ixx" />
     <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
@@ -109,6 +111,7 @@
     <ClCompile Include="Math.ixx" />
     <ClCompile Include="Math-Matrix3x3.ixx" />
     <ClCompile Include="Math-Matrix4x4.ixx" />
+    <ClCompile Include="MissShader.ixx" />
     <ClCompile Include="OrthographicCamera.ixx" />
     <ClCompile Include="PhongMaterial.ixx" />
     <ClCompile Include="ReflectiveMaterial.ixx" />
@@ -144,6 +147,7 @@
     <ClCompile Include="YamlLoader-Materials.ixx" />
     <ClCompile Include="YamlLoader-Matrices.ixx" />
     <ClCompile Include="YamlLoader-Geometry.ixx" />
+    <ClCompile Include="YamlLoader-MissShaders.ixx" />
     <ClCompile Include="YamlLoader-Vectors.ixx" />
     <ClCompile Include="YamlLoader.ixx" />
   </ItemGroup>
@@ -153,6 +157,7 @@
     <ClInclude Include="Vcl.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="scene-atmosphere.yaml" />
     <None Include="scene.yaml" />
     <None Include="teapot.mtl" />
   </ItemGroup>
