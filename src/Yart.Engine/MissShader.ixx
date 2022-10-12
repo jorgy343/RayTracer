@@ -3,6 +3,7 @@ export module MissShader;
 import "Common.h";
 
 import Math;
+import Random;
 import Ray;
 
 namespace Yart
@@ -10,6 +11,6 @@ namespace Yart
     export class MissShader
     {
     public:
-        virtual constexpr Vector3 CalculateColor(const Ray& ray) const = 0;
+        virtual constexpr Vector3 CalculateColor(const Ray& ray, const Random& random) const = 0;
     };
 }

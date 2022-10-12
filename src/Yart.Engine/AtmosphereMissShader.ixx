@@ -4,6 +4,7 @@ import "Common.h";
 
 import Math;
 import MissShader;
+import Random;
 import Ray;
 import Sphere;
 
@@ -13,7 +14,7 @@ namespace Yart
     {
     protected:
         Vector3 SunDirectionReversed{};
-        Vector3 Origin;
+        Vector3 Origin{};
         Sphere Atmosphere{};
 
         real AirAtmosphericDensity{7994.0};
@@ -31,6 +32,8 @@ namespace Yart
         static constexpr real Kr{(real{2} *Pi * Pi * (n * n - real{1}) * (n * n - real{1})) / (real{3} *Ns)};
         static constexpr Vector3 Br{FourPi * Kr * WavelengthPowFour.RecipricalConst()};
 
+        static constexpr Vector3 SunIntensity{real{50.0}};
+
     public:
         constexpr AtmosphereMissShader(const Vector3& sunDirection, const Vector3& origin)
             : SunDirectionReversed{-sunDirection}, Origin{origin}, Atmosphere{Vector3{-origin}, AtmosphericHeight, nullptr}
@@ -38,50 +41,35 @@ namespace Yart
 
         }
 
-        Vector3 CalculateColor(const Ray& ray) const override
+        Vector3 CalculateColor(const Ray& ray, const Random& random) const override
         {
             real viewRayDistance = Atmosphere.IntersectExit(ray).HitDistance;
             Vector3 viewRayPointOnAtmosphere = ray.Position + viewRayDistance * ray.Direction;
 
-            constexpr unsigned int viewRaySegments = 20;
-            constexpr unsigned int sunRaySegments = 8;
-
-            Vector3 viewRaySegmentIncrement = (viewRayPointOnAtmosphere - ray.Position) / static_cast<real>(viewRaySegments);
-
-            real cosTheta = ray.Direction * -SunDirectionReversed;
-
-            Vector3 viewRayRunningResult{};
-
-            Vector3 result{};
-            for (unsigned int viewRaySegmentIndex = 0; viewRaySegmentIndex < viewRaySegments; viewRaySegmentIndex++)
-            {
-                Vector3 viewRaySamplePoint = ray.Position + static_cast<real>(viewRaySegmentIndex) * viewRaySegmentIncrement;
-
-                real viewRaySamplePointDensity = Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
-
-                // Handle the sun ray.
-                Ray sunRay{viewRaySamplePoint, SunDirectionReversed};
-                real sunRayDistance = Atmosphere.IntersectExit(sunRay).HitDistance;
-                Vector3 sunRayPointOnAtmosphere = sunRay.Position + sunRayDistance * sunRay.Direction;
-
-                viewRayRunningResult += Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
-
-                Vector3 sunRayOpticalDepth = OpticalDepth(viewRaySamplePoint, sunRayPointOnAtmosphere, sunRaySegments);
-
-                Vector3 innerIntegral = -sunRayOpticalDepth - Br * viewRayRunningResult;
-                innerIntegral = Vector3{Math::exp(innerIntegral.X), Math::exp(innerIntegral.Y), Math::exp(innerIntegral.Z)};
-
-                result += viewRaySamplePointDensity * innerIntegral;
-            }
-
-            result *= viewRayDistance / static_cast<real>(viewRaySegments);
-
-            constexpr Vector3 sunIntensity{real{20.0}};
-
+            real cosTheta = ray.Direction * SunDirectionReversed;
             real viewRayRayleighPhaseFunction = RayleighPhase(cosTheta);
-            Vector3 color = sunIntensity.ComponentwiseMultiply((Kr * viewRayRayleighPhaseFunction) * WavelengthPowFour.RecipricalConst()).ComponentwiseMultiply(result);
 
-            return color;
+            real u = random.GetNormalized();
+            real x = ExponentialRandom(u, real{5});
+            real inverseViewRayPdf = viewRayDistance * ExponentialPdf(u, real{5});
+
+            Vector3 viewRaySamplePoint = ray.Position + x * viewRayDistance * ray.Direction;
+            real viewRaySamplePointDensity = Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
+
+            Ray sunRay{viewRaySamplePoint, SunDirectionReversed};
+            real sunRayDistance = Atmosphere.IntersectExit(sunRay).HitDistance;
+            Vector3 sunRayPointOnAtmosphere = sunRay.Position + sunRayDistance * sunRay.Direction;
+
+            real viewRayOpticalDepth = OpticalDepth(ray.Position, viewRaySamplePoint, random);
+            real sunRayOpticalDepth = OpticalDepth(viewRaySamplePoint, sunRayPointOnAtmosphere, random);
+
+            Vector3 opticalDepth = Br * (-sunRayOpticalDepth - viewRayOpticalDepth);
+            opticalDepth = Vector3{Math::exp(opticalDepth.X), Math::exp(opticalDepth.Y), Math::exp(opticalDepth.Z)};
+
+            Vector3 integralResult = viewRaySamplePointDensity * opticalDepth * inverseViewRayPdf;
+            Vector3 result = SunIntensity.ComponentwiseMultiply((Kr * viewRayRayleighPhaseFunction) * WavelengthPowFour.RecipricalConst()).ComponentwiseMultiply(integralResult);
+
+            return result;
         }
 
     protected:
@@ -92,25 +80,31 @@ namespace Yart
 
         inline constexpr real RayleighPhase(real cosTheta) const
         {
-            return (real{3} / real{4}) * (real{1} *cosTheta * cosTheta);
+            return (real{3} / real{4}) * (real{1} + cosTheta * cosTheta);
         }
 
-        inline constexpr Vector3 OpticalDepth(const Vector3& startingPoint, const Vector3& endingPoint, unsigned int segmentCount) const
+        inline real OpticalDepth(const Vector3& startingPoint, const Vector3& endingPoint, const Random& random) const
         {
-            real totalLength = (endingPoint - startingPoint).Length();
-            real segmentLength = totalLength / static_cast<real>(segmentCount);
+            real rayDistance = (endingPoint - startingPoint).Length();
 
-            Vector3 deltaSegment = (endingPoint - startingPoint).Normalize() * (totalLength / static_cast<real>(segmentCount));
+            real u = random.GetNormalized();
+            real x = ExponentialRandom(u, real{5});
+            real inversePdf = rayDistance * ExponentialPdf(u, real{5});
 
-            real result = Density(startingPoint.Length(), AirAtmosphericDensity) + Density(endingPoint.Length(), AirAtmosphericDensity);
-            for (unsigned int segmentIndex = 1; segmentIndex < segmentCount - 1; segmentIndex++)
-            {
-                Vector3 point = startingPoint + static_cast<real>(segmentIndex) * deltaSegment;
-                result = real{2} *Density(point.Length(), AirAtmosphericDensity);
-            }
+            Vector3 samplePoint = startingPoint + x * rayDistance * (endingPoint - startingPoint).Normalize();
+            real density = Density(samplePoint.Length(), AirAtmosphericDensity);
 
-            result *= segmentLength * real{0.5};
-            return Br * result;
+            return density * inversePdf;
+        }
+
+        force_inline constexpr real ExponentialRandom(real u, real lambda) const
+        {
+            return -Math::log(real{1} - (real{1} - Math::exp(-lambda)) * u) / lambda;
+        }
+
+        force_inline constexpr real ExponentialPdf(real u, real lambda) const
+        {
+            return (real{1} - Math::exp(lambda)) / (lambda * Math::exp(lambda) * (u - real{1}) - lambda * u);
         }
     };
 }

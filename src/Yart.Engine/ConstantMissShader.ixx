@@ -4,6 +4,7 @@ import "Common.h";
 
 import Math;
 import MissShader;
+import Random;
 import Ray;
 
 namespace Yart
@@ -20,7 +21,7 @@ namespace Yart
 
         }
 
-        Vector3 CalculateColor(const Ray& ray) const override
+        Vector3 CalculateColor(const Ray& ray, const Random& random) const override
         {
             return Color;
         }

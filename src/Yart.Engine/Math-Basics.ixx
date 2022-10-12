@@ -247,6 +247,19 @@ namespace Yart
             }
         }
 
+        export template <any_number T>
+            inline constexpr T log(T exponent)
+        {
+            if (std::is_constant_evaluated())
+            {
+                return gcem::log(exponent);
+            }
+            else
+            {
+                return std::log(exponent);
+            }
+        }
+
         export template <real_number T>
             inline constexpr T cos(T radians)
         {

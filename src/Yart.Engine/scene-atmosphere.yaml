@@ -9,11 +9,11 @@ camera:
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 4
+    subpixelCount: 8
 
 missShader:
   atmosphere:
-    sunDirection: [0, -1, 0]
+    sunDirection: [0, 0, -1]
     origin: [0, 3958, 0]
 
 materials:
@@ -76,12 +76,12 @@ materials:
 geometry:
   geometryCollection:
     children:
-      - plane:
-          material: "Green"
-          normal: [0, 1, 0]
-          point: [0, -20, 0]
-
       - sphere:
-          material: "Reflective"
-          position: [0, 0, 20]
-          radius: 5
+          material: "Green"
+          position: [0, -3958, 0]
+          radius: 3958
+
+      #- sphere:
+      #    material: "Reflective"
+      #    position: [0, 0, 20]
+      #    radius: 5

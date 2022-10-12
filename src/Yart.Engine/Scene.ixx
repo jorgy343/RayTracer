@@ -81,7 +81,7 @@ namespace Yart
             }
             else
             {
-                outputColor = _missShader->CalculateColor(ray);
+                outputColor = _missShader->CalculateColor(ray, random);
             }
 
             return outputColor;
