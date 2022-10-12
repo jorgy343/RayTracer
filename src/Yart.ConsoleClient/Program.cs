@@ -51,7 +51,9 @@ using (var image = new Image<Rgba32>(screenWidth, screenHeight))
         stopwatch.Start();
 
         uint completed = 0;
+
         Parallel.ForEach(patches, patch =>
+        //foreach (var patch in patches)
         {
             fixed (float* pixelBufferPointer = pixelBuffer)
             {

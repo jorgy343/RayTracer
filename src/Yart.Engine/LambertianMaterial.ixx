@@ -51,15 +51,16 @@ namespace Yart
 			}
 
 			real whereToShootRay = random.GetNormalized();
+            real probabilityFactor = scene.AreaLights.size() == 0 ? real{1.0} : real{2.0};
 
-            if (whereToShootRay > real{0.5})
+            if (scene.AreaLights.size() == 0 || whereToShootRay > real{0.5})
 			{
 				// Indirect light sample according to material.
 				Vector3 outgoingDirection = GenerateCosineWeightedHemisphereSample(random, hitNormal);
 				Ray outgoingRay = Ray{hitPosition, outgoingDirection};
 
 				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
-				Vector3 outputColor = DiffuseColor.ComponentwiseMultiply(colorSample) * roulettePower * real{2.0};
+				Vector3 outputColor = DiffuseColor.ComponentwiseMultiply(colorSample) * roulettePower * probabilityFactor;
 
 				return outputColor;
 			}
@@ -78,7 +79,7 @@ namespace Yart
 				real inversePdf = light->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, outgoingDirection);
 				real cosineTheta = Math::max(real{0.0}, hitNormal * outgoingDirection);
 
-				Vector3 outputColor = brdf * DiffuseColor.ComponentwiseMultiply(colorSample) * inversePdf * cosineTheta * roulettePower * real{2.0};
+				Vector3 outputColor = brdf * DiffuseColor.ComponentwiseMultiply(colorSample) * inversePdf * cosineTheta * roulettePower * probabilityFactor;
 				return outputColor;
 			}
 		}

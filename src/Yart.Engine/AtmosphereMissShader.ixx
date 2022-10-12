@@ -13,22 +13,27 @@ namespace Yart
     {
     protected:
         Vector3 SunDirectionReversed{};
+        Vector3 Origin;
         Sphere Atmosphere{};
-
-        real G{-0.9};
-        Vector3 K{real{5.5e-6}, real{13.0e-6}, real{22.4e-6}};
 
         real AirAtmosphericDensity{7994.0};
         real AerosolAtmosphericDensity{1200.0};
 
-        static constexpr real AtmosphericHeight{100'000};
+        static constexpr real AtmosphericHeight{real{100'000}};
 
-        static constexpr Vector3 Wavelength{700, 510, 450};
+        static constexpr Vector3 Wavelength{real{6.80e-7}, real{5.50e-7}, real{4.40e-7}};
         static constexpr Vector3 WavelengthPowFour = Wavelength.ComponentwiseMultiply(Wavelength).ComponentwiseMultiply(Wavelength).ComponentwiseMultiply(Wavelength);
+
+        //static constexpr real G{-0.9};
+
+        static constexpr real n{1.00031};
+        static constexpr real Ns{2.55e25};
+        static constexpr real Kr{(real{2} *Pi * Pi * (n * n - real{1}) * (n * n - real{1})) / (real{3} *Ns)};
+        static constexpr Vector3 Br{FourPi * Kr * WavelengthPowFour.RecipricalConst()};
 
     public:
         constexpr AtmosphereMissShader(const Vector3& sunDirection, const Vector3& origin)
-            : SunDirectionReversed{-sunDirection}, Atmosphere{-origin, AtmosphericHeight, nullptr}
+            : SunDirectionReversed{-sunDirection}, Origin{origin}, Atmosphere{Vector3{-origin}, AtmosphericHeight, nullptr}
         {
 
         }
@@ -38,39 +43,44 @@ namespace Yart
             real viewRayDistance = Atmosphere.IntersectExit(ray).HitDistance;
             Vector3 viewRayPointOnAtmosphere = ray.Position + viewRayDistance * ray.Direction;
 
-            constexpr unsigned int viewRaySegments = 10;
-            constexpr unsigned int sunRaySegments = 5;
+            constexpr unsigned int viewRaySegments = 20;
+            constexpr unsigned int sunRaySegments = 8;
 
             Vector3 viewRaySegmentIncrement = (viewRayPointOnAtmosphere - ray.Position) / static_cast<real>(viewRaySegments);
 
-            real result{};
+            real cosTheta = ray.Direction * -SunDirectionReversed;
+
+            Vector3 viewRayRunningResult{};
+
+            Vector3 result{};
             for (unsigned int viewRaySegmentIndex = 0; viewRaySegmentIndex < viewRaySegments; viewRaySegmentIndex++)
             {
                 Vector3 viewRaySamplePoint = ray.Position + static_cast<real>(viewRaySegmentIndex) * viewRaySegmentIncrement;
 
                 real viewRaySamplePointDensity = Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
-                result += viewRaySamplePointDensity;
 
                 // Handle the sun ray.
                 Ray sunRay{viewRaySamplePoint, SunDirectionReversed};
                 real sunRayDistance = Atmosphere.IntersectExit(sunRay).HitDistance;
                 Vector3 sunRayPointOnAtmosphere = sunRay.Position + sunRayDistance * sunRay.Direction;
 
-                Vector3 sunRaySegmentIncrement = (sunRayPointOnAtmosphere - sunRay.Position) / static_cast<real>(sunRaySegments);
+                viewRayRunningResult += Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
 
-                for (unsigned int sunRaySegmentIndex = 0; sunRaySegmentIndex < sunRaySegments; sunRaySegmentIndex++)
-                {
-                    Vector3 sunRaySamplePoint = sunRay.Position + static_cast<real>(sunRaySegmentIndex) * sunRay.Direction;
+                Vector3 sunRayOpticalDepth = OpticalDepth(viewRaySamplePoint, sunRayPointOnAtmosphere, sunRaySegments);
 
-                    // TODO: Calculate sun ray sample calculation.
-                }
+                Vector3 innerIntegral = -sunRayOpticalDepth - Br * viewRayRunningResult;
+                innerIntegral = Vector3{Math::exp(innerIntegral.X), Math::exp(innerIntegral.Y), Math::exp(innerIntegral.Z)};
+
+                result += viewRaySamplePointDensity * innerIntegral;
             }
 
             result *= viewRayDistance / static_cast<real>(viewRaySegments);
 
-            constexpr Vector3 sunIntensity{real{1.0}};
+            constexpr Vector3 sunIntensity{real{20.0}};
 
-            Vector3 color = sunIntensity.ComponentwiseMultiply(K) * result;
+            real viewRayRayleighPhaseFunction = RayleighPhase(cosTheta);
+            Vector3 color = sunIntensity.ComponentwiseMultiply((Kr * viewRayRayleighPhaseFunction) * WavelengthPowFour.RecipricalConst()).ComponentwiseMultiply(result);
+
             return color;
         }
 
@@ -80,16 +90,27 @@ namespace Yart
             return Math::exp(-altitude / scaleHeight);
         }
 
-        //inline constexpr real Phase(real theta) const
-        //{
-        //    return OneOverFourPi * ((real{1} - G * G) / Math::pow(real{1} + G * G - real{2} * G * Math::cos(theta), real{3.0 / 2.0}));
-        //}
+        inline constexpr real RayleighPhase(real cosTheta) const
+        {
+            return (real{3} / real{4}) * (real{1} *cosTheta * cosTheta);
+        }
 
-        //constexpr Vector3 Attenuation(const Vector3& point) const
-        //{
-        //    //Vector3 constant = WavelengthPowFour.RecipricalConst() * (-FourPi * K);
+        inline constexpr Vector3 OpticalDepth(const Vector3& startingPoint, const Vector3& endingPoint, unsigned int segmentCount) const
+        {
+            real totalLength = (endingPoint - startingPoint).Length();
+            real segmentLength = totalLength / static_cast<real>(segmentCount);
 
+            Vector3 deltaSegment = (endingPoint - startingPoint).Normalize() * (totalLength / static_cast<real>(segmentCount));
 
-        //}
+            real result = Density(startingPoint.Length(), AirAtmosphericDensity) + Density(endingPoint.Length(), AirAtmosphericDensity);
+            for (unsigned int segmentIndex = 1; segmentIndex < segmentCount - 1; segmentIndex++)
+            {
+                Vector3 point = startingPoint + static_cast<real>(segmentIndex) * deltaSegment;
+                result = real{2} *Density(point.Length(), AirAtmosphericDensity);
+            }
+
+            result *= segmentLength * real{0.5};
+            return Br * result;
+        }
     };
 }
