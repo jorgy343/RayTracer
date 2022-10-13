@@ -69,8 +69,8 @@ namespace Yart
         constexpr BoundingBox CalculateBoundingBox() const override
         {
             return BoundingBox{
-                Vertex0.Min(Vertex1.Min(Vertex2)),
-                Vertex0.Max(Vertex1.Max(Vertex2)),
+                Vector3::Min(Vertex0, Vector3::Min(Vertex1, Vertex2)),
+                Vector3::Max(Vertex0, Vector3::Max(Vertex1, Vertex2)),
             };
         }
 

@@ -63,8 +63,8 @@ namespace Yart
         constexpr BoundingBoxT Union(const BoundingBoxT& other) const
         {
             return BoundingBoxT{
-                Minimum.Min(other.Minimum),
-                Maximum.Max(other.Maximum),
+                Vector3::Min(Minimum, other.Minimum),
+                Vector3::Max(Maximum, other.Maximum),
             };
         }
 

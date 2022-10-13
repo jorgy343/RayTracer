@@ -59,14 +59,14 @@ namespace Yart
                 real lightDotNormal = directionToLight * hitNormal;
                 if (lightDotNormal >= real{0.0})
                 {
-                    diffuseComponent += lightDotNormal * DiffuseColor.ComponentwiseMultiply(light->Color);
+                    diffuseComponent += lightDotNormal * Vector3::ComponentwiseMultiply(DiffuseColor, light->Color);
 
                     Vector3 reflectionDirection = directionToLight.Reflect(hitNormal);
                     real reflectionDotView = reflectionDirection * incomingDirection;
 
                     if (reflectionDotView >= real{0.0})
                     {
-                        specularComponent += Math::pow(reflectionDotView, Shininess) * SpecularColor.ComponentwiseMultiply(light->Color);
+                        specularComponent += Math::pow(reflectionDotView, Shininess) * Vector3::ComponentwiseMultiply(SpecularColor, light->Color);
                     }
                 }
             }

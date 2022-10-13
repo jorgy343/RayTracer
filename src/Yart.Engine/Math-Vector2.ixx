@@ -35,90 +35,124 @@ namespace Yart
 			return *this;
 		}
 
-		inline constexpr bool Compare(const Vector2T& right, T maximumAllowedErrorPerComponent)
-		{
-			if constexpr (std::floating_point<T>)
-			{
-				bool areNansBad =
-					Math::isnan(X) ^ Math::isnan(right.X) ||
-					Math::isnan(Y) ^ Math::isnan(right.Y);
-
-				if (areNansBad)
-				{
-					return false;
-				}
-
-				bool areInfinitiesBad =
-					Math::isinf(X) ^ Math::isinf(right.X) ||
-					Math::isinf(Y) ^ Math::isinf(right.Y);
-
-				if (areInfinitiesBad)
-				{
-					return false;
-				}
-
-				return
-					(!Math::isfinite(X) || !Math::isfinite(right.X) || Math::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
-					(!Math::isfinite(Y) || !Math::isfinite(right.Y) || Math::abs(Y - right.Y) < maximumAllowedErrorPerComponent);
-			}
-			else
-			{
-				return
-					X == right.X &&
-					Y == right.Y;
-			}
-		}
-
-		inline constexpr Vector2T ComponentwiseMultiply(const Vector2T& right) const
-		{
-			return Vector2T
-			{
-				X * right.X,
-				Y * right.Y,
-			};
-		}
-
-		inline constexpr T Distance(const Vector2T& right) const
-		{
-			return Math::sqrt(DistanceSquared(right));
-		}
-
-		inline constexpr T DistanceSquared(const Vector2T& right) const
-		{
-			T x = X - right.X;
-			T y = Y - right.Y;
-
-			return x * x + y * y;
-		}
-
-		inline constexpr T Dot(const Vector2T& right) const
-		{
-			return (X * right.X) + (Y * right.Y);
-		}
-
-		inline constexpr T Length() const
-		{
-			return Math::sqrt(LengthSquared());
-		}
-
-		inline constexpr T LengthSquared() const
-		{
-			return (X * X) + (Y * Y);
-		}
-
-        inline constexpr Vector2T Max(const Vector2T& other) const
+        static inline constexpr Vector2T Abs(const Vector2T& value)
         {
-            return Vector2T{
-                Math::max(X, other.X),
-                Math::max(Y, other.Y),
+            Vector2T result = value;
+            return result.Abs();
+        }
+
+        static inline constexpr bool Compare(const Vector2T& left, const Vector2T& right, T maximumAllowedErrorPerComponent)
+        {
+            if constexpr (std::floating_point<T>)
+            {
+                bool areNansBad =
+                    Math::isnan(left.X) ^ Math::isnan(right.X) ||
+                    Math::isnan(left.Y) ^ Math::isnan(right.Y);
+
+                if (areNansBad)
+                {
+                    return false;
+                }
+
+                bool areInfinitiesBad =
+                    Math::isinf(left.X) ^ Math::isinf(right.X) ||
+                    Math::isinf(left.Y) ^ Math::isinf(right.Y);
+
+                if (areInfinitiesBad)
+                {
+                    return false;
+                }
+
+                return
+                    (!Math::isfinite(left.X) || !Math::isfinite(right.X) || Math::abs(left.X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(left.Y) || !Math::isfinite(right.Y) || Math::abs(left.Y - right.Y) < maximumAllowedErrorPerComponent);
+            }
+            else
+            {
+                return
+                    left.X == right.X &&
+                    left.Y == right.Y;
+            }
+        }
+
+        static inline constexpr Vector2T ComponentwiseMultiply(const Vector2T& left, const Vector2T& right)
+        {
+            return Vector2T
+            {
+                left.X * right.X,
+                left.Y * right.Y,
             };
         }
 
-        inline constexpr Vector2T Min(const Vector2T& other) const
+        static inline constexpr T Distance(const Vector2T& left, const Vector2T& right)
+        {
+            return Math::sqrt(DistanceSquared(left, right));
+        }
+
+        static inline constexpr T DistanceSquared(const Vector2T& left, const Vector2T& right)
+        {
+            T x = left.X - right.X;
+            T y = left.Y - right.Y;
+
+            return x * x + y * y;
+        }
+
+        static inline constexpr T Dot(const Vector2T& left, const Vector2T& right)
+        {
+            return (left.X * right.X) + (left.Y * right.Y);
+        }
+
+        inline constexpr Vector2T& Exp()
+        {
+            X = Math::exp(X);
+            Y = Math::exp(Y);
+
+            return *this;
+        }
+
+        static inline constexpr Vector2T Exp(const Vector2T& value)
+        {
+            Vector2T result = value;
+            return result.Exp();
+        }
+
+        inline constexpr T Length() const
+        {
+            return Math::sqrt(LengthSquared());
+        }
+
+        inline constexpr T LengthSquared() const
+        {
+            return (X * X) + (Y * Y);
+        }
+
+        inline constexpr Vector2T& Log()
+        {
+            X = Math::log(X);
+            Y = Math::log(Y);
+
+            return *this;
+        }
+
+        static inline constexpr Vector2T Log(const Vector2T& value)
+        {
+            Vector2T result = value;
+            return result.Log();
+        }
+
+        static inline constexpr Vector2T Max(const Vector2T& left, const Vector2T& right)
         {
             return Vector2T{
-                Math::min(X, other.X),
-                Math::min(Y, other.Y),
+                Math::max(left.X, right.X),
+                Math::max(left.Y, right.Y),
+            };
+        }
+
+        static inline constexpr Vector2T Min(const Vector2T& left, const Vector2T& right)
+        {
+            return Vector2T{
+                Math::min(left.X, right.X),
+                Math::min(left.Y, right.Y),
             };
         }
 
@@ -140,11 +174,11 @@ namespace Yart
 			return *this;
 		}
 
-		inline constexpr Vector2T NormalizeConst() const
-		{
-			Vector2T result = *this;
-			return result.Normalize();
-		}
+        static inline constexpr Vector2T Normalize(const Vector2T& value)
+        {
+            Vector2T result = value;
+            return result.Normalize();
+        }
 
 		inline constexpr Vector2T& Reciprical()
 		{
@@ -154,13 +188,11 @@ namespace Yart
 			return *this;
 		}
 
-		inline constexpr Vector2T RecipricalConst() const
-		{
-			Vector2T result = *this;
-			result.Reciprical();
-
-			return result;
-		}
+        static inline constexpr Vector2T Reciprical(const Vector2T& value)
+        {
+            Vector2T result = value;
+            return result.Reciprical();
+        }
 
         inline constexpr T& operator[](size_t index)
         {

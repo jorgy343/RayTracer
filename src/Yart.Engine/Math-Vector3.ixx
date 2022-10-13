@@ -48,34 +48,32 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Vector3T AbsConst() const
+        static inline constexpr Vector3T Abs(const Vector3T& value)
         {
-            Vector3T result = *this;
-            result.Abs();
-
-            return result;
+            Vector3T result = value;
+            return result.Abs();
         }
 
-        inline constexpr Vector3T BuildPerpendicularVector() const
+        static inline constexpr Vector3T BuildPerpendicularVector(const Vector3T& value)
         {
             // From: Efficient Construction of Perpendicular Vectors Without Branching.
-            Vector3T a = this->AbsConst();
+            Vector3T a = Vector3T::Abs(value);
 
             unsigned int xm = ((a.X - a.Y) < 0 && (a.X - a.Z) < 0) ? 1 : 0;
             unsigned int ym = (a.Y - a.Z) < 0 ? (1 ^ xm) : 0;
             unsigned int zm = 1 ^ (xm | ym);
 
-            return *this % Vector3T(static_cast<T>(xm), static_cast<T>(ym), static_cast<T>(zm));
+            return value % Vector3T(static_cast<T>(xm), static_cast<T>(ym), static_cast<T>(zm));
         }
 
-        inline constexpr bool Compare(const Vector3T& right, T maximumAllowedErrorPerComponent)
+        static inline constexpr bool Compare(const Vector3T& left, const Vector3T& right, T maximumAllowedErrorPerComponent)
         {
             if constexpr (std::floating_point<T>)
             {
                 bool areNansBad =
-                    Math::isnan(X) ^ Math::isnan(right.X) ||
-                    Math::isnan(Y) ^ Math::isnan(right.Y) ||
-                    Math::isnan(Z) ^ Math::isnan(right.Z);
+                    Math::isnan(left.X) ^ Math::isnan(right.X) ||
+                    Math::isnan(left.Y) ^ Math::isnan(right.Y) ||
+                    Math::isnan(left.Z) ^ Math::isnan(right.Z);
 
                 if (areNansBad)
                 {
@@ -83,9 +81,9 @@ namespace Yart
                 }
 
                 bool areInfinitiesBad =
-                    Math::isinf(X) ^ Math::isinf(right.X) ||
-                    Math::isinf(Y) ^ Math::isinf(right.Y) ||
-                    Math::isinf(Z) ^ Math::isinf(right.Z);
+                    Math::isinf(left.X) ^ Math::isinf(right.X) ||
+                    Math::isinf(left.Y) ^ Math::isinf(right.Y) ||
+                    Math::isinf(left.Z) ^ Math::isinf(right.Z);
 
                 if (areInfinitiesBad)
                 {
@@ -93,56 +91,71 @@ namespace Yart
                 }
 
                 return
-                    (!Math::isfinite(X) || !Math::isfinite(right.X) || Math::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
-                    (!Math::isfinite(Y) || !Math::isfinite(right.Y) || Math::abs(Y - right.Y) < maximumAllowedErrorPerComponent) &&
-                    (!Math::isfinite(Z) || !Math::isfinite(right.Z) || Math::abs(Z - right.Z) < maximumAllowedErrorPerComponent);
+                    (!Math::isfinite(left.X) || !Math::isfinite(right.X) || Math::abs(left.X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(left.Y) || !Math::isfinite(right.Y) || Math::abs(left.Y - right.Y) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(left.Z) || !Math::isfinite(right.Z) || Math::abs(left.Z - right.Z) < maximumAllowedErrorPerComponent);
             }
             else
             {
                 return
-                    X == right.X &&
-                    Y == right.Y &&
-                    Z == right.Z;
+                    left.X == right.X &&
+                    left.Y == right.Y &&
+                    left.Z == right.Z;
             }
         }
 
-        inline constexpr Vector3T ComponentwiseMultiply(const Vector3T& right) const
+        static inline constexpr Vector3T ComponentwiseMultiply(const Vector3T& left, const Vector3T& right)
         {
             return Vector3T
             {
-                X * right.X,
-                Y * right.Y,
-                Z * right.Z,
+                left.X * right.X,
+                left.Y * right.Y,
+                left.Z * right.Z,
             };
         }
 
-        inline constexpr Vector3T CrossProduct(const Vector3T& right) const
+        static inline constexpr Vector3T Cross(const Vector3T& left, const Vector3T& right)
         {
             return Vector3T
             {
-                Y * right.Z - Z * right.Y,
-                Z * right.X - X * right.Z,
-                X * right.Y - Y * right.X
+                left.Y * right.Z - left.Z * right.Y,
+                left.Z * right.X - left.X * right.Z,
+                left.X * right.Y - left.Y * right.X,
             };
         }
 
-        inline constexpr T Distance(const Vector3T& right) const
+        static inline constexpr T Distance(const Vector3T& left, const Vector3T& right)
         {
-            return Math::sqrt(DistanceSquared(right));
+            return Math::sqrt(DistanceSquared(left, right));
         }
 
-        inline constexpr T DistanceSquared(const Vector3T& right) const
+        static inline constexpr T DistanceSquared(const Vector3T& left, const Vector3T& right)
         {
-            T x = X - right.X;
-            T y = Y - right.Y;
-            T z = Z - right.Z;
+            T x = left.X - right.X;
+            T y = left.Y - right.Y;
+            T z = left.Z - right.Z;
 
             return x * x + y * y + z * z;
         }
 
-        inline constexpr T Dot(const Vector3T& right) const
+        static inline constexpr T Dot(const Vector3T& left, const Vector3T& right)
         {
-            return (X * right.X) + (Y * right.Y) + (Z * right.Z);
+            return (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z);
+        }
+
+        inline constexpr Vector3T& Exp()
+        {
+            X = Math::exp(X);
+            Y = Math::exp(Y);
+            Z = Math::exp(Z);
+
+            return *this;
+        }
+
+        static inline constexpr Vector3T Exp(const Vector3T& value)
+        {
+            Vector3T result = value;
+            return result.Exp();
         }
 
         //static constexpr void Fresnel(const Vector3T& direction, const Vector3T& normal, T fromIndex, T toIndex, Vector3T* reflection, Vector3T* refraction, T* reflectionCoefficient, T* refractionCoefficient)
@@ -190,21 +203,36 @@ namespace Yart
             return (X * X) + (Y * Y) + (Z * Z);
         }
 
-        inline constexpr Vector3T Max(const Vector3T& other) const
+        inline constexpr Vector3T& Log()
+        {
+            X = Math::log(X);
+            Y = Math::log(Y);
+            Z = Math::log(Z);
+
+            return *this;
+        }
+
+        static inline constexpr Vector3T Log(const Vector3T& value)
+        {
+            Vector3T result = value;
+            return result.Log();
+        }
+
+        static inline constexpr Vector3T Max(const Vector3T& left, const Vector3T& right)
         {
             return Vector3T{
-                Math::max(X, other.X),
-                Math::max(Y, other.Y),
-                Math::max(Z, other.Z),
+                Math::max(left.X, right.X),
+                Math::max(left.Y, right.Y),
+                Math::max(left.Z, right.Z),
             };
         }
 
-        inline constexpr Vector3T Min(const Vector3T& other) const
+        static inline constexpr Vector3T Min(const Vector3T& left, const Vector3T& right)
         {
             return Vector3T{
-                Math::min(X, other.X),
-                Math::min(Y, other.Y),
-                Math::min(Z, other.Z),
+                Math::min(left.X, right.X),
+                Math::min(left.Y, right.Y),
+                Math::min(left.Z, right.Z),
             };
         }
 
@@ -227,9 +255,9 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Vector3T NormalizeConst() const
+        static inline constexpr Vector3T Normalize(const Vector3T& value)
         {
-            Vector3T result = *this;
+            Vector3T result = value;
             return result.Normalize();
         }
 
@@ -247,12 +275,10 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Vector3T RecipricalConst() const
+        static inline constexpr Vector3T Reciprical(const Vector3T& value)
         {
-            Vector3T result = *this;
-            result.Reciprical();
-
-            return result;
+            Vector3T result = value;
+            return result.Reciprical();
         }
 
         inline constexpr Vector3T Reflect(const Vector3T& normal) const
@@ -369,12 +395,12 @@ namespace Yart
 
         inline constexpr T operator*(const Vector3T& right) const
         {
-            return Dot(right);
+            return Dot(*this, right);
         }
 
         inline constexpr Vector3T operator%(const Vector3T& right) const
         {
-            return CrossProduct(right);
+            return Cross(*this, right);
         }
 
         inline constexpr Vector3T operator+(T right) const

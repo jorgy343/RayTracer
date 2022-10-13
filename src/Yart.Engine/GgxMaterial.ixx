@@ -63,7 +63,7 @@ namespace Yart
 
 				// Accumulate the color: (NdotL * incomingLight * dif / pi)
 				// Probability of sampling this ray:  (NdotL / pi) * probDiffuse
-				Vector3 outputColor = bounceColor.ComponentwiseMultiply(DiffuseColor) / probDiffuse;
+				Vector3 outputColor = Vector3::ComponentwiseMultiply(bounceColor, DiffuseColor) / probDiffuse;
 				return outputColor;
 			}
 			else
@@ -89,7 +89,7 @@ namespace Yart
 
                 real pdf = D * NdotH / (real{4.0} *LdotH);
 
-				Vector3 outputColor = bounceColor.ComponentwiseMultiply(ggxTerm) /** NdotL*/ / (pdf * (real{1.0} - probDiffuse));
+				Vector3 outputColor = Vector3::ComponentwiseMultiply(bounceColor, ggxTerm) /** NdotL*/ / (pdf * (real{1.0} - probDiffuse));
 				return outputColor;
 			}
 		}
@@ -124,7 +124,7 @@ namespace Yart
 			real rand1 = random.GetNormalized();
 			real rand2 = random.GetNormalized();
 
-			Vector3 B = hitNormal.BuildPerpendicularVector();
+			Vector3 B = Vector3::BuildPerpendicularVector(hitNormal);
 			Vector3 T = B % hitNormal;
 
 			real a2 = Roughness * Roughness;

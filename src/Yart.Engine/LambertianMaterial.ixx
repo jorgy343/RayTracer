@@ -60,7 +60,7 @@ namespace Yart
 				Ray outgoingRay = Ray{hitPosition, outgoingDirection};
 
 				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
-				Vector3 outputColor = DiffuseColor.ComponentwiseMultiply(colorSample) * roulettePower * probabilityFactor;
+				Vector3 outputColor = Vector3::ComponentwiseMultiply(DiffuseColor, colorSample) * roulettePower * probabilityFactor;
 
 				return outputColor;
 			}
@@ -79,7 +79,7 @@ namespace Yart
 				real inversePdf = light->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, outgoingDirection);
 				real cosineTheta = Math::max(real{0.0}, hitNormal * outgoingDirection);
 
-				Vector3 outputColor = brdf * DiffuseColor.ComponentwiseMultiply(colorSample) * inversePdf * cosineTheta * roulettePower * probabilityFactor;
+				Vector3 outputColor = brdf * Vector3::ComponentwiseMultiply(DiffuseColor, colorSample) * inversePdf * cosineTheta * roulettePower * probabilityFactor;
 				return outputColor;
 			}
 		}

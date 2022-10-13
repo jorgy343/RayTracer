@@ -23,16 +23,19 @@ namespace Yart
         static constexpr real AtmosphericHeight{real{100'000}};
 
         static constexpr Vector3 Wavelength{real{6.80e-7}, real{5.50e-7}, real{4.40e-7}};
-        static constexpr Vector3 WavelengthPowFour = Wavelength.ComponentwiseMultiply(Wavelength).ComponentwiseMultiply(Wavelength).ComponentwiseMultiply(Wavelength);
+        static constexpr Vector3 WavelengthPowFour = Vector3::ComponentwiseMultiply(Wavelength, Vector3::ComponentwiseMultiply(Wavelength, Vector3::ComponentwiseMultiply(Wavelength, Wavelength)));
 
         //static constexpr real G{-0.9};
 
         static constexpr real n{1.00031};
         static constexpr real Ns{2.55e25};
         static constexpr real Kr{(real{2} *Pi * Pi * (n * n - real{1}) * (n * n - real{1})) / (real{3} *Ns)};
-        static constexpr Vector3 Br{FourPi * Kr * WavelengthPowFour.RecipricalConst()};
+
+        static constexpr Vector3 Br{FourPi * Kr * Vector3::Reciprical(WavelengthPowFour)};
+        static constexpr Vector3 Bm{FourPi * Kr};
 
         static constexpr Vector3 SunIntensity{real{50.0}};
+        static constexpr real Lambda{8};
 
     public:
         constexpr AtmosphereMissShader(const Vector3& sunDirection, const Vector3& origin)
@@ -50,8 +53,8 @@ namespace Yart
             real viewRayRayleighPhaseFunction = RayleighPhase(cosTheta);
 
             real u = random.GetNormalized();
-            real x = ExponentialRandom(u, real{5});
-            real inverseViewRayPdf = viewRayDistance * ExponentialPdf(u, real{5});
+            real x = ExponentialRandom(u, Lambda);
+            real inverseViewRayPdf = viewRayDistance * ExponentialPdf(u, Lambda);
 
             Vector3 viewRaySamplePoint = ray.Position + x * viewRayDistance * ray.Direction;
             real viewRaySamplePointDensity = Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
@@ -67,7 +70,7 @@ namespace Yart
             opticalDepth = Vector3{Math::exp(opticalDepth.X), Math::exp(opticalDepth.Y), Math::exp(opticalDepth.Z)};
 
             Vector3 integralResult = viewRaySamplePointDensity * opticalDepth * inverseViewRayPdf;
-            Vector3 result = SunIntensity.ComponentwiseMultiply((Kr * viewRayRayleighPhaseFunction) * WavelengthPowFour.RecipricalConst()).ComponentwiseMultiply(integralResult);
+            Vector3 result = Vector3::ComponentwiseMultiply(Vector3::ComponentwiseMultiply(SunIntensity, (Kr * viewRayRayleighPhaseFunction) * Vector3::Reciprical(WavelengthPowFour)), integralResult);
 
             return result;
         }
@@ -88,8 +91,8 @@ namespace Yart
             real rayDistance = (endingPoint - startingPoint).Length();
 
             real u = random.GetNormalized();
-            real x = ExponentialRandom(u, real{5});
-            real inversePdf = rayDistance * ExponentialPdf(u, real{5});
+            real x = ExponentialRandom(u, Lambda);
+            real inversePdf = rayDistance * ExponentialPdf(u, Lambda);
 
             Vector3 samplePoint = startingPoint + x * rayDistance * (endingPoint - startingPoint).Normalize();
             real density = Density(samplePoint.Length(), AirAtmosphericDensity);

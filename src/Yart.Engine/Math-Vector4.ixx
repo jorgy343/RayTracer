@@ -53,15 +53,21 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr bool Compare(const Vector4T& right, T maximumAllowedErrorPerComponent)
+        static inline constexpr Vector4T Abs(const Vector4T& value)
+        {
+            Vector4T result = value;
+            return result.Abs();
+        }
+
+        static inline constexpr bool Compare(const Vector4T& left, const Vector4T& right, T maximumAllowedErrorPerComponent)
         {
             if constexpr (std::floating_point<T>)
             {
                 bool areNansBad =
-                    Math::isnan(X) ^ Math::isnan(right.X) ||
-                    Math::isnan(Y) ^ Math::isnan(right.Y) ||
-                    Math::isnan(Z) ^ Math::isnan(right.Z) ||
-                    Math::isnan(W) ^ Math::isnan(right.W);
+                    Math::isnan(left.X) ^ Math::isnan(right.X) ||
+                    Math::isnan(left.Y) ^ Math::isnan(right.Y) ||
+                    Math::isnan(left.Z) ^ Math::isnan(right.Z) ||
+                    Math::isnan(left.W) ^ Math::isnan(right.W);
 
                 if (areNansBad)
                 {
@@ -69,10 +75,10 @@ namespace Yart
                 }
 
                 bool areInfinitiesBad =
-                    Math::isinf(X) ^ Math::isinf(right.X) ||
-                    Math::isinf(Y) ^ Math::isinf(right.Y) ||
-                    Math::isinf(Z) ^ Math::isinf(right.Z) ||
-                    Math::isinf(W) ^ Math::isinf(right.W);
+                    Math::isinf(left.X) ^ Math::isinf(right.X) ||
+                    Math::isinf(left.Y) ^ Math::isinf(right.Y) ||
+                    Math::isinf(left.Z) ^ Math::isinf(right.Z) ||
+                    Math::isinf(left.W) ^ Math::isinf(right.W);
 
                 if (areInfinitiesBad)
                 {
@@ -80,50 +86,66 @@ namespace Yart
                 }
 
                 return
-                    (!Math::isfinite(X) || !Math::isfinite(right.X) || Math::abs(X - right.X) < maximumAllowedErrorPerComponent) &&
-                    (!Math::isfinite(Y) || !Math::isfinite(right.Y) || Math::abs(Y - right.Y) < maximumAllowedErrorPerComponent) &&
-                    (!Math::isfinite(Z) || !Math::isfinite(right.Z) || Math::abs(Z - right.Z) < maximumAllowedErrorPerComponent) &&
-                    (!Math::isfinite(W) || !Math::isfinite(right.W) || Math::abs(W - right.W) < maximumAllowedErrorPerComponent);
+                    (!Math::isfinite(left.X) || !Math::isfinite(right.X) || Math::abs(left.X - right.X) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(left.Y) || !Math::isfinite(right.Y) || Math::abs(left.Y - right.Y) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(left.Z) || !Math::isfinite(right.Z) || Math::abs(left.Z - right.Z) < maximumAllowedErrorPerComponent) &&
+                    (!Math::isfinite(left.W) || !Math::isfinite(right.W) || Math::abs(left.W - right.W) < maximumAllowedErrorPerComponent);
             }
             else
             {
                 return
-                    X == right.X &&
-                    Y == right.Y &&
-                    Z == right.Z &&
-                    W == right.W;
+                    left.X == right.X &&
+                    left.Y == right.Y &&
+                    left.Z == right.Z &&
+                    left.W == right.W;
             }
         }
 
-        inline constexpr Vector4T ComponentwiseMultiply(const Vector4T& right) const
+        static inline constexpr Vector4T ComponentwiseMultiply(const Vector4T& left, const Vector4T& right)
         {
             return Vector4T
             {
-                X * right.X,
-                Y * right.Y,
-                Z * right.Z,
-                W * right.W,
+                left.X * right.X,
+                left.Y * right.Y,
+                left.Z * right.Z,
+                left.W * right.W,
             };
         }
 
-        inline constexpr T Distance(const Vector4T& right) const
+        static inline constexpr T Distance(const Vector4T& left, const Vector4T& right)
         {
-            return Math::sqrt(DistanceSquared(right));
+            return Math::sqrt(DistanceSquared(left, right));
         }
 
-        inline constexpr T DistanceSquared(const Vector4T& right) const
+        static inline constexpr T DistanceSquared(const Vector4T& left, const Vector4T& right)
         {
-            T x = X - right.X;
-            T y = Y - right.Y;
-            T z = Z - right.Z;
-            T w = W - right.W;
+            T x = left.X - right.X;
+            T y = left.Y - right.Y;
+            T z = left.Z - right.Z;
+            T w = left.W - right.W;
 
             return x * x + y * y + z * z + w * w;
         }
 
-        inline constexpr T Dot(const Vector4T& right) const
+        static inline constexpr T Dot(const Vector4T& left, const Vector4T& right)
         {
-            return (X * right.X) + (Y * right.Y) + (Z * right.Z) + (W * right.W);
+            return (left.X * right.X) + (left.Y * right.Y) + (left.Z * right.Z) + (left.W * right.W);
+        }
+
+        inline constexpr Vector4T& Exp()
+        {
+            X = Math::exp(X);
+            Y = Math::exp(Y);
+            Z = Math::exp(Z);
+            W = Math::exp(W);
+
+            return *this;
+        }
+
+        static inline constexpr Vector4T Exp(const Vector4T& value)
+        {
+            Vector4T result = value;
+            return result.Exp();
         }
 
         inline constexpr T Length() const
@@ -136,23 +158,39 @@ namespace Yart
             return (X * X) + (Y * Y) + (Z * Z) + (W * W);
         }
 
-        inline constexpr Vector4T Max(const Vector4T& other) const
+        inline constexpr Vector4T& Log()
+        {
+            X = Math::log(X);
+            Y = Math::log(Y);
+            Z = Math::log(Z);
+            W = Math::log(W);
+
+            return *this;
+        }
+
+        static inline constexpr Vector4T Log(const Vector4T& value)
+        {
+            Vector4T result = value;
+            return result.Log();
+        }
+
+        static inline constexpr Vector4T Max(const Vector4T& left, const Vector4T& right)
         {
             return Vector4T{
-                Math::max(X, other.X),
-                Math::max(Y, other.Y),
-                Math::max(Z, other.Z),
-                Math::max(W, other.W),
+                Math::max(left.X, right.X),
+                Math::max(left.Y, right.Y),
+                Math::max(left.Z, right.Z),
+                Math::max(left.W, right.W),
             };
         }
 
-        inline constexpr Vector4T Min(const Vector4T& other) const
+        static inline constexpr Vector4T Min(const Vector4T& left, const Vector4T& right)
         {
             return Vector4T{
-                Math::min(X, other.X),
-                Math::min(Y, other.Y),
-                Math::min(Z, other.Z),
-                Math::min(W, other.W),
+                Math::min(left.X, right.X),
+                Math::min(left.Y, right.Y),
+                Math::min(left.Z, right.Z),
+                Math::min(left.W, right.W),
             };
         }
 
@@ -176,9 +214,9 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Vector4T NormalizeConst() const
+        static inline constexpr Vector4T Normalize(const Vector4T& value)
         {
-            Vector4T result = *this;
+            Vector4T result = value;
             return result.Normalize();
         }
 
@@ -192,12 +230,10 @@ namespace Yart
             return *this;
         }
 
-        inline constexpr Vector4T RecipricalConst() const
+        static inline constexpr Vector4T Reciprical(const Vector4T& value)
         {
-            Vector4T result = *this;
-            result.Reciprical();
-
-            return result;
+            Vector4T result = value;
+            return result.Reciprical();
         }
 
         inline constexpr T& operator[](size_t index)
@@ -290,7 +326,7 @@ namespace Yart
 
         inline constexpr T operator*(const Vector4T& right) const
         {
-            return Dot(right);
+            return Dot(*this, right);
         }
 
         inline constexpr Vector4T operator+(T right) const

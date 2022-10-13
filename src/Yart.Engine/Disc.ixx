@@ -75,7 +75,7 @@ namespace Yart
             }
 
             Vector3 hitPosition = ray.Position + entranceDistance * ray.Direction;
-            real distanceToCenterSquared = hitPosition.DistanceSquared(Position);
+            real distanceToCenterSquared = Vector3::DistanceSquared(hitPosition, Position);
 
             return distanceToCenterSquared <= RadiusSquared ? entranceDistance : std::numeric_limits<real>::infinity();
 
@@ -106,7 +106,7 @@ namespace Yart
             real dx = distanceFromCenter * Math::cos(theta);
             real dy = distanceFromCenter * Math::sin(theta);
 
-            Vector3 xDirection = Normal.BuildPerpendicularVector();
+            Vector3 xDirection = Vector3::BuildPerpendicularVector(Normal);
             Vector3 yDirection = Normal % xDirection;
 
             Vector3 randomPointOnLight = Position + xDirection * dx + yDirection * dy;

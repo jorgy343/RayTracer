@@ -38,8 +38,8 @@ namespace Yart
             Vector3 point3 = Position + Edge1 + Edge2;
 
             return BoundingBox{
-                Position.Min(point1.Min(point2.Min(point3))),
-                Position.Max(point1.Max(point2.Max(point3))),
+                Vector3::Min(Position, Vector3::Min(point1, Vector3::Min(point2, point3))),
+                Vector3::Max(Position, Vector3::Max(point1, Vector3::Max(point2, point3))),
             };
         }
 
