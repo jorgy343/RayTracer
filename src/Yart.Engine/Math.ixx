@@ -1,6 +1,8 @@
 export module Math;
 
 export import :Basics;
+export import :Color3;
+export import :Color4;
 export import :Matrix3x3;
 export import :Matrix4x4;
 export import :Vec2d3;

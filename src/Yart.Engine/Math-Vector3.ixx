@@ -3,7 +3,9 @@ export module Math:Vector3;
 import "Common.h";
 
 import :Basics;
+import :Color3Decl;
 import :Vector2;
+import :Vector3Decl;
 
 namespace Yart
 {
@@ -475,6 +477,11 @@ namespace Yart
             Z /= other;
 
             return *this;
+        }
+
+        inline constexpr explicit operator Color3T<T>() const
+        {
+            return Color3T<T>{X, Y, Z};
         }
 
         template <any_number U>

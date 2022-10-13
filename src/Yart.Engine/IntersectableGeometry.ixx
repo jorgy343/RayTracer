@@ -4,6 +4,7 @@ import "Common.h";
 
 import BoundingBox;
 import IntersectionResult;
+import Math;
 import Ray;
 
 namespace Yart

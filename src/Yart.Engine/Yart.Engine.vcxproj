@@ -88,6 +88,9 @@
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="BoundingBox.ixx" />
     <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="Math-Color3.ixx" />
+    <ClCompile Include="Math-Color3Decl.ixx" />
+    <ClCompile Include="Math-Color4.ixx" />
     <ClCompile Include="ConstantMissShader.ixx" />
     <ClCompile Include="Cylinder.ixx" />
     <ClCompile Include="DiffuseMaterial.ixx" />
@@ -108,6 +111,10 @@
     <ClCompile Include="Light.ixx" />
     <ClCompile Include="Material.ixx" />
     <ClCompile Include="Math-Basics.ixx" />
+    <ClCompile Include="Math-Color4Decl.ixx" />
+    <ClCompile Include="Math-Vector2Decl.ixx" />
+    <ClCompile Include="Math-Vector3Decl.ixx" />
+    <ClCompile Include="Math-Vector4Decl.ixx" />
     <ClCompile Include="Math.ixx" />
     <ClCompile Include="Math-Matrix3x3.ixx" />
     <ClCompile Include="Math-Matrix4x4.ixx" />

@@ -261,6 +261,27 @@
     <ClCompile Include="YamlLoader-MissShaders.ixx">
       <Filter>Modules\Yaml</Filter>
     </ClCompile>
+    <ClCompile Include="Math-Color4.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Color3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vector3Decl.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vector4Decl.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Vector2Decl.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Color3Decl.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math-Color4Decl.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

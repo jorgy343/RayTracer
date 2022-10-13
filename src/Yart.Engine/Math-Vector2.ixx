@@ -3,6 +3,7 @@ export module Math:Vector2;
 import "Common.h";
 
 import :Basics;
+import :Vector2Decl;
 
 namespace Yart
 {

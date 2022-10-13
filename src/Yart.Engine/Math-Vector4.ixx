@@ -3,8 +3,10 @@ export module Math:Vector4;
 import "Common.h";
 
 import :Basics;
+import :Color4Decl;
 import :Vector2;
 import :Vector3;
+import :Vector4Decl;
 
 namespace Yart
 {
@@ -407,6 +409,11 @@ namespace Yart
             W /= other;
 
             return *this;
+        }
+
+        inline constexpr explicit operator Color4T<T>() const
+        {
+            return Color4T<T>{X, Y, Z, W};
         }
 
         template <any_number U>
