@@ -20,59 +20,71 @@ namespace Yart
         real AirAtmosphericDensity{7994.0};
         real AerosolAtmosphericDensity{1200.0};
 
-        static constexpr real AtmosphericHeight{real{100'000}};
+        static constexpr real EarthRadius{6'371'071};
+        static constexpr real AtmosphericHeight{100'000};
 
-        static constexpr Vector3 Wavelength{real{6.80e-7}, real{5.50e-7}, real{4.40e-7}};
-        static constexpr Vector3 WavelengthPowFour = Vector3::ComponentwiseMultiply(Wavelength, Vector3::ComponentwiseMultiply(Wavelength, Vector3::ComponentwiseMultiply(Wavelength, Wavelength)));
+        static constexpr Color3 Wavelength{real{6.80e-7}, real{5.50e-7}, real{4.40e-7}};
+        static constexpr Color3 WavelengthPowFour = Wavelength * Wavelength * Wavelength * Wavelength;
 
         //static constexpr real G{-0.9};
 
         static constexpr real n{1.00031};
         static constexpr real Ns{2.55e25};
+        static constexpr real Mu{0.75};
+        static constexpr real Mx = (real{5} / real{9}) * Mu + (real{125} / real{729}) * Mu * Mu * Mu + Math::pow((real{64} / real{27} - (real{325} / real{243}) * Mu * Mu + (real{1250} / real{2187}) * Mu * Mu * Mu * Mu), real{0.5});
+        //static constexpr real Mg = (real{5} / real{9}) * Mu - ((real{4} / real{3}) - (real{25} / real{81}) * Mu * Mu) * Math::pow(Mx, real{-1} / real{3}) + Math::pow(Mx, real{1} / real{3});
+        static constexpr real Mg{0.7};
+
         static constexpr real Kr{(real{2} *Pi * Pi * (n * n - real{1}) * (n * n - real{1})) / (real{3} *Ns)};
 
-        static constexpr Vector3 Br{FourPi * Kr * Vector3::Reciprical(WavelengthPowFour)};
-        static constexpr Vector3 Bm{FourPi * Kr};
+        static constexpr Color3 Br{FourPi * Kr * Color3::Reciprical(WavelengthPowFour)};
+        //static constexpr Color3 Br{real{5.8e-6}, real{13.5e-6}, real{33.1e-6}};
+        static constexpr Color3 Bm{real{21e-6}};
 
-        static constexpr Vector3 SunIntensity{real{50.0}};
+        static constexpr Color3 SunIntensity{real{20.0}};
         static constexpr real Lambda{8};
 
     public:
         constexpr AtmosphereMissShader(const Vector3& sunDirection, const Vector3& origin)
-            : SunDirectionReversed{-sunDirection}, Origin{origin}, Atmosphere{Vector3{-origin}, AtmosphericHeight, nullptr}
+            : SunDirectionReversed{-Vector3::Normalize(sunDirection)}, Origin{origin}, Atmosphere{Vector3{}, EarthRadius + AtmosphericHeight, nullptr}
         {
 
         }
 
         Vector3 CalculateColor(const Ray& ray, const Random& random) const override
         {
-            real viewRayDistance = Atmosphere.IntersectExit(ray).HitDistance;
-            Vector3 viewRayPointOnAtmosphere = ray.Position + viewRayDistance * ray.Direction;
-
             real cosTheta = ray.Direction * SunDirectionReversed;
-            real viewRayRayleighPhaseFunction = RayleighPhase(cosTheta);
 
-            real u = random.GetNormalized();
-            real x = ExponentialRandom(u, Lambda);
-            real inverseViewRayPdf = viewRayDistance * ExponentialPdf(u, Lambda);
+            // Calculate view ray.
+            real viewRayDistance = Atmosphere.IntersectExit(ray).HitDistance;
+            Vector3 viewRayStart = ray.Position;
+            Vector3 viewRayEnd = viewRayStart + viewRayDistance * ray.Direction;
 
-            Vector3 viewRaySamplePoint = ray.Position + x * viewRayDistance * ray.Direction;
-            real viewRaySamplePointDensity = Density(viewRaySamplePoint.Length(), AirAtmosphericDensity);
+            auto [viewRayRandomNumber, viewRayInversePdf] = random.GetExponentialRandomAndInversePdf(viewRayDistance, Lambda);
 
-            Ray sunRay{viewRaySamplePoint, SunDirectionReversed};
+            real viewRaySampleDistance = viewRayRandomNumber * viewRayDistance;
+            Vector3 viewRaySamplePoint = ray.Position + viewRaySampleDistance * ray.Direction;
+            real viewRaySamplePointHeight = viewRaySamplePoint.Length() - EarthRadius;
+
+            real viewRaySamplePointDensityR = Density(viewRaySamplePointHeight, AirAtmosphericDensity);
+            real viewRaySamplePointDensityM = Density(viewRaySamplePointHeight, AerosolAtmosphericDensity);
+
+            Color3 viewRayOpticalDepth = OpticalDepth(viewRayStart, viewRaySampleDistance, random);
+
+            // Calculate for the sun ray.
+            Vector3 sunRayStart = viewRaySamplePoint;
+            Ray sunRay{sunRayStart, SunDirectionReversed};
             real sunRayDistance = Atmosphere.IntersectExit(sunRay).HitDistance;
-            Vector3 sunRayPointOnAtmosphere = sunRay.Position + sunRayDistance * sunRay.Direction;
 
-            real viewRayOpticalDepth = OpticalDepth(ray.Position, viewRaySamplePoint, random);
-            real sunRayOpticalDepth = OpticalDepth(viewRaySamplePoint, sunRayPointOnAtmosphere, random);
+            Color3 sunRayOpticalDepth = OpticalDepth(sunRayStart, sunRayDistance, random);
 
-            Vector3 opticalDepth = Br * (-sunRayOpticalDepth - viewRayOpticalDepth);
-            opticalDepth = Vector3{Math::exp(opticalDepth.X), Math::exp(opticalDepth.Y), Math::exp(opticalDepth.Z)};
+            // Calculate final result.
+            Color3 coefficient = (Br * viewRaySamplePointDensityR * RayleighPhase(cosTheta)) + (Bm * viewRaySamplePointDensityM * MiePhase(cosTheta));
+            Color3 outScattering = (-sunRayOpticalDepth - viewRayOpticalDepth).Exp();
 
-            Vector3 integralResult = viewRaySamplePointDensity * opticalDepth * inverseViewRayPdf;
-            Vector3 result = Vector3::ComponentwiseMultiply(Vector3::ComponentwiseMultiply(SunIntensity, (Kr * viewRayRayleighPhaseFunction) * Vector3::Reciprical(WavelengthPowFour)), integralResult);
+            Color3 result = SunIntensity * coefficient * outScattering * viewRayInversePdf;
 
-            return result;
+            return static_cast<Vector3>(result);
         }
 
     protected:
@@ -83,21 +95,34 @@ namespace Yart
 
         inline constexpr real RayleighPhase(real cosTheta) const
         {
-            return (real{3} / real{4}) * (real{1} + cosTheta * cosTheta);
+            //real coefficient = real{3} / real{4};
+            real coefficient = real{3} / (real{16} * Pi);
+
+            return coefficient * (real{1} + cosTheta * cosTheta);
         }
 
-        inline real OpticalDepth(const Vector3& startingPoint, const Vector3& endingPoint, const Random& random) const
+        inline constexpr real MiePhase(real cosTheta) const
         {
-            real rayDistance = (endingPoint - startingPoint).Length();
+            real numerator = (real{1} - Mg * Mg) * (real{1} + cosTheta * cosTheta);
+            real denominator = (real{2} + Mg * Mg) * Math::pow(real{1} + Mg * Mg - real{2} *Mg * cosTheta, real{1.5});
 
-            real u = random.GetNormalized();
-            real x = ExponentialRandom(u, Lambda);
-            real inversePdf = rayDistance * ExponentialPdf(u, Lambda);
+            //real coefficient{1.5};
+            real coefficient = real{3} / EightPi;
 
-            Vector3 samplePoint = startingPoint + x * rayDistance * (endingPoint - startingPoint).Normalize();
-            real density = Density(samplePoint.Length(), AirAtmosphericDensity);
+            return coefficient * (numerator / denominator);
+        }
 
-            return density * inversePdf;
+        inline Color3 OpticalDepth(const Vector3& startingPoint, real distance, const Random& random) const
+        {
+            auto [randomNumber, inversePdf] = random.GetExponentialRandomAndInversePdf(distance, Lambda);
+
+            Vector3 samplePoint = startingPoint + randomNumber * distance * SunDirectionReversed;
+            real samplePointHeight = samplePoint.Length() - EarthRadius;
+
+            real densityR = Density(samplePointHeight, AirAtmosphericDensity);
+            real densityM = Density(samplePointHeight, AerosolAtmosphericDensity);
+
+            return ((densityR * Br) + (densityM * Bm)) * inversePdf;
         }
 
         force_inline constexpr real ExponentialRandom(real u, real lambda) const

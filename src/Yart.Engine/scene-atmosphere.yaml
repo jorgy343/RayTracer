@@ -1,20 +1,20 @@
 config:
-  iterations: 8
+  iterations: 6
   colorClamp: [0, 1]
 
 camera:
   perspective:
-    position: [0, 0, -39]
-    lookAt: [0, 10, 1]
+    position: [0, 6371076, 0]
+    lookAt: [0, 6371076.7, 1]
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 8
+    subpixelCount: 6
 
 missShader:
   atmosphere:
-    sunDirection: [0, 0, -1]
-    origin: [0, 3958, 0]
+    sunDirection: [0, -1, -1]
+    origin: [0, 6371071, 0]
 
 materials:
   - emissive:
@@ -78,8 +78,8 @@ geometry:
     children:
       - sphere:
           material: "Green"
-          position: [0, -3958, 0]
-          radius: 3958
+          position: [0, 0, 0]
+          radius: 6371071
 
       #- sphere:
       #    material: "Reflective"
