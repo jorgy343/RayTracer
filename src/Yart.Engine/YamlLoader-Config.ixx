@@ -24,7 +24,7 @@ namespace Yart::Yaml
     {
         auto config = std::shared_ptr<Config>{new Config{
             .Iterations = node["iterations"].as<unsigned int>(),
-            .ColorClamp = node["colorClamp"].as<Vector2>(),
+            .ColorClamp = ParseVector2(node["colorClamp"]),
         }};
 
         return config;

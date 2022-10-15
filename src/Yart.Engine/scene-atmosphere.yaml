@@ -5,7 +5,7 @@ config:
 camera:
   perspective:
     position: [0, 6371076, 0]
-    lookAt: [0, 6371076.7, 1]
+    lookAt: [0, 6371076.3, 1]
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
@@ -13,7 +13,8 @@ camera:
 
 missShader:
   atmosphere:
-    sunDirection: [0, -1, -1]
+    sunDirection:
+      normalize: [0, -0.2, -1]
     origin: [0, 6371071, 0]
 
 materials:

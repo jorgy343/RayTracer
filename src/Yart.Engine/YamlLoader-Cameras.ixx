@@ -20,11 +20,11 @@ namespace Yart::Yaml
 {
     std::shared_ptr<PerspectiveCamera<double, real>> ParsePerspectiveCamera(const Node& node)
     {
-        Vector3T<double> position = node["position"].as<Vector3T<double>>();
-        Vector3T<double> lookAt = node["lookAt"].as<Vector3T<double>>();
-        Vector3T<double> up = node["up"].as<Vector3T<double>>();
+        DoubleVector3 position = ParseVector3<double>(node["position"]);
+        DoubleVector3 lookAt = ParseVector3<double>(node["lookAt"]);
+        DoubleVector3 up = ParseVector3<double>(node["up"]);
         double fov = Math::deg_to_rad(node["fov"].as<double>());
-        UIntVector2 screenSize = node["screenSize"].as<UIntVector2>();
+        UIntVector2 screenSize = ParseVector2<unsigned int>(node["screenSize"]);
         unsigned int subpixelCount = node["subpixelCount"].as<unsigned int>();
 
         return std::make_unique<PerspectiveCamera<double, real>>(position, lookAt, up, subpixelCount, screenSize, fov);
@@ -32,11 +32,11 @@ namespace Yart::Yaml
 
     std::shared_ptr<OrthographicCamera<double, real>> ParseOrthographicCamera(const Node& node)
     {
-        Vector3T<double> position = node["position"].as<Vector3T<double>>();
-        Vector3T<double> lookAt = node["lookAt"].as<Vector3T<double>>();
-        Vector3T<double> up = node["up"].as<Vector3T<double>>();
-        Vector2T<double> orthoSize = node["orthoSize"].as<Vector2T<double>>();
-        UIntVector2 screenSize = node["screenSize"].as<UIntVector2>();
+        DoubleVector3 position = ParseVector3<double>(node["position"]);
+        DoubleVector3 lookAt = ParseVector3<double>(node["lookAt"]);
+        DoubleVector3 up = ParseVector3<double>(node["up"]);
+        DoubleVector2 orthoSize = ParseVector2<double>(node["orthoSize"]);
+        UIntVector2 screenSize = ParseVector2<unsigned int>(node["screenSize"]);
         unsigned int subpixelCount = node["subpixelCount"].as<unsigned int>();
 
         return std::make_unique<OrthographicCamera<double, real>>(position, lookAt, up, subpixelCount, screenSize, orthoSize);

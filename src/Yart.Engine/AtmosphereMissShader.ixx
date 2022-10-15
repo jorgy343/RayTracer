@@ -33,7 +33,7 @@ namespace Yart
         static constexpr real Mu{0.75};
         static constexpr real Mx = (real{5} / real{9}) * Mu + (real{125} / real{729}) * Mu * Mu * Mu + Math::pow((real{64} / real{27} - (real{325} / real{243}) * Mu * Mu + (real{1250} / real{2187}) * Mu * Mu * Mu * Mu), real{0.5});
         //static constexpr real Mg = (real{5} / real{9}) * Mu - ((real{4} / real{3}) - (real{25} / real{81}) * Mu * Mu) * Math::pow(Mx, real{-1} / real{3}) + Math::pow(Mx, real{1} / real{3});
-        static constexpr real Mg{0.7};
+        static constexpr real Mg{0.85};
 
         static constexpr real Kr{(real{2} *Pi * Pi * (n * n - real{1}) * (n * n - real{1})) / (real{3} *Ns)};
 
@@ -42,11 +42,11 @@ namespace Yart
         static constexpr Color3 Bm{real{21e-6}};
 
         static constexpr Color3 SunIntensity{real{20.0}};
-        static constexpr real Lambda{8};
+        static constexpr real Lambda{30};
 
     public:
         constexpr AtmosphereMissShader(const Vector3& sunDirection, const Vector3& origin)
-            : SunDirectionReversed{-Vector3::Normalize(sunDirection)}, Origin{origin}, Atmosphere{Vector3{}, EarthRadius + AtmosphericHeight, nullptr}
+            : SunDirectionReversed{-sunDirection}, Origin{origin}, Atmosphere{Vector3{}, EarthRadius + AtmosphericHeight, nullptr}
         {
 
         }
@@ -103,11 +103,11 @@ namespace Yart
 
         inline constexpr real MiePhase(real cosTheta) const
         {
-            real numerator = (real{1} - Mg * Mg) * (real{1} + cosTheta * cosTheta);
-            real denominator = (real{2} + Mg * Mg) * Math::pow(real{1} + Mg * Mg - real{2} *Mg * cosTheta, real{1.5});
-
             //real coefficient{1.5};
             real coefficient = real{3} / EightPi;
+
+            real numerator = (real{1} - Mg * Mg) * (real{1} + cosTheta * cosTheta);
+            real denominator = (real{2} + Mg * Mg) * Math::pow(real{1} + Mg * Mg - real{2} *Mg * cosTheta, real{1.5});
 
             return coefficient * (numerator / denominator);
         }
@@ -123,16 +123,6 @@ namespace Yart
             real densityM = Density(samplePointHeight, AerosolAtmosphericDensity);
 
             return ((densityR * Br) + (densityM * Bm)) * inversePdf;
-        }
-
-        force_inline constexpr real ExponentialRandom(real u, real lambda) const
-        {
-            return -Math::log(real{1} - (real{1} - Math::exp(-lambda)) * u) / lambda;
-        }
-
-        force_inline constexpr real ExponentialPdf(real u, real lambda) const
-        {
-            return (real{1} - Math::exp(lambda)) / (lambda * Math::exp(lambda) * (u - real{1}) - lambda * u);
         }
     };
 }

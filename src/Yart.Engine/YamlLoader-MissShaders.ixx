@@ -20,15 +20,15 @@ namespace Yart::Yaml
 {
     std::shared_ptr<ConstantMissShader> ParseConstantMissShader(const Node& node)
     {
-        Vector3 color = node["color"].as<Vector3>();
+        Vector3 color = ParseVector3(node["color"]);
 
         return std::make_unique<ConstantMissShader>(color);
     }
 
     std::shared_ptr<AtmosphereMissShader> ParseAtmosphereMissShader(const Node& node)
     {
-        Vector3 sunDirection = node["sunDirection"].as<Vector3>();
-        Vector3 origin = node["origin"].as<Vector3>();
+        Vector3 sunDirection = ParseVector3<real>(node["sunDirection"]);
+        Vector3 origin = ParseVector3(node["origin"]);
 
         return std::make_unique<AtmosphereMissShader>(sunDirection, origin);
     }

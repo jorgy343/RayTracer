@@ -62,7 +62,7 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto position = node["position"].as<Vector3>();
+        auto position = ParseVector3(node["position"]);
         auto radius = node["radius"].as<float>();
 
         auto geometry = std::make_shared<const Sphere>(position, radius, material);
@@ -81,8 +81,8 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto normal = node["normal"].as<Vector3>();
-        auto point = node["point"].as<Vector3>();
+        auto normal = ParseVector3(node["normal"]);
+        auto point = ParseVector3(node["point"]);
 
         auto geometry = std::make_shared<const Plane>(normal, point, material);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -102,9 +102,9 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto position = node["position"].as<Vector3>();
-        auto edge1 = node["edge1"].as<Vector3>();
-        auto edge2 = node["edge2"].as<Vector3>();
+        auto position = ParseVector3(node["position"]);
+        auto edge1 = ParseVector3(node["edge1"]);
+        auto edge2 = ParseVector3(node["edge2"]);
 
         auto geometry = std::make_shared<const Parallelogram>(position, edge1, edge2, material);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -127,9 +127,9 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto vertex0 = node["vertex0"].as<Vector3>();
-        auto vertex1 = node["vertex1"].as<Vector3>();
-        auto vertex2 = node["vertex2"].as<Vector3>();
+        auto vertex0 = ParseVector3(node["vertex0"]);
+        auto vertex1 = ParseVector3(node["vertex1"]);
+        auto vertex2 = ParseVector3(node["vertex2"]);
 
         std::shared_ptr<const Triangle> geometry;
 
@@ -139,9 +139,9 @@ namespace Yart::Yaml
 
         if (normalNode0 && normalNode1 && normalNode2)
         {
-            auto normal0 = normalNode0.as<Vector3>();
-            auto normal1 = normalNode1.as<Vector3>();
-            auto normal2 = normalNode2.as<Vector3>();
+            auto normal0 = ParseVector3(normalNode0);
+            auto normal1 = ParseVector3(normalNode1);
+            auto normal2 = ParseVector3(normalNode2);
 
             geometry = std::make_shared<const Triangle>(vertex0, vertex1, vertex2, normal0, normal1, normal2, material);
         }
@@ -167,8 +167,8 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto position = node["position"].as<Vector3>();
-        auto normal = node["normal"].as<Vector3>();
+        auto position = ParseVector3(node["position"]);
+        auto normal = ParseVector3(node["normal"]);
         auto radius = node["radius"].as<float>();
 
         auto geometry = std::make_shared<const Disc>(position, normal, radius, material);
@@ -187,8 +187,8 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto minimum = node["minimum"].as<Vector3>();
-        auto maximum = node["maximum"].as<Vector3>();
+        auto minimum = ParseVector3(node["minimum"]);
+        auto maximum = ParseVector3(node["maximum"]);
 
         auto geometry = std::make_shared<const AxisAlignedBox>(minimum, maximum, material);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -206,8 +206,8 @@ namespace Yart::Yaml
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
 
-        auto start = node["start"].as<Vector3>();
-        auto end = node["end"].as<Vector3>();
+        auto start = ParseVector3(node["start"]);
+        auto end = ParseVector3(node["end"]);
         auto radius = node["radius"].as<float>();
 
         auto geometry = std::make_shared<const Cylinder>(start, end, radius, material);
@@ -249,7 +249,7 @@ namespace Yart::Yaml
     const TransformedGeometry* ParseTransformedGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto [childGeometry, ignored] = ParseGeometryNode(node["child"], materialMap, parseGeometryResults, nullptr, true);
-        auto matrix = ParseTransformationSequence<real>(node["transformation"]);
+        auto matrix = ParseMatrix4x4(node["transformation"]);
 
         auto geometry = std::make_shared<const TransformedGeometry>(reinterpret_cast<const Geometry*>(childGeometry), matrix);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -267,7 +267,7 @@ namespace Yart::Yaml
         auto transformationNode = node["transformation"];
         if (transformationNode)
         {
-            transformation = ParseTransformationSequence<real>(node["transformation"]);
+            transformation = ParseMatrix4x4(node["transformation"]);
         }
 
         // Read the geometry from the obj file.

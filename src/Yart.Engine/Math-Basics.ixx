@@ -162,7 +162,7 @@ namespace Yart
             }
         }
 
-        export template <real_number T>
+        export template <any_number T>
             inline constexpr T sqrt(T value)
         {
             if (std::is_constant_evaluated())
