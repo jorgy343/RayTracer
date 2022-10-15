@@ -16,13 +16,13 @@ namespace Yart
 		class LambertianMaterial : public DiffuseMaterial
 	{
 	public:
-		inline constexpr LambertianMaterial(const Vector3& diffuseColor)
+		inline constexpr LambertianMaterial(const Color3& diffuseColor)
 			: DiffuseMaterial{diffuseColor}
 		{
 
 		}
 
-		constexpr Vector3 CalculateRenderingEquation(
+		constexpr Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -59,8 +59,8 @@ namespace Yart
 				Vector3 outgoingDirection = GenerateCosineWeightedHemisphereSample(random, hitNormal);
 				Ray outgoingRay = Ray{hitPosition, outgoingDirection};
 
-				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
-				Vector3 outputColor = Vector3::ComponentwiseMultiply(DiffuseColor, colorSample) * roulettePower * probabilityFactor;
+                Color3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
+                Color3 outputColor = DiffuseColor * colorSample * roulettePower * probabilityFactor;
 
 				return outputColor;
 			}
@@ -73,13 +73,13 @@ namespace Yart
 				Vector3 outgoingDirection = light->GetDirectionTowardsLight(random, hitPosition, hitNormal);
 				Ray outgoingRay = Ray{hitPosition, outgoingDirection};
 
-				Vector3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
+                Color3 colorSample = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
 
 				real brdf = OneOverPi;
 				real inversePdf = light->CalculateInversePdf(random, hitPosition, hitNormal, incomingDirection, outgoingDirection);
 				real cosineTheta = Math::max(real{0.0}, hitNormal * outgoingDirection);
 
-				Vector3 outputColor = brdf * Vector3::ComponentwiseMultiply(DiffuseColor, colorSample) * inversePdf * cosineTheta * roulettePower * probabilityFactor;
+                Color3 outputColor = brdf * DiffuseColor * colorSample * inversePdf * cosineTheta * roulettePower * probabilityFactor;
 				return outputColor;
 			}
 		}

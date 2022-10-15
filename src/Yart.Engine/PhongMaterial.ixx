@@ -13,17 +13,17 @@ namespace Yart
     export class PhongMaterial : public Material
     {
     protected:
-        Vector3 AmbientColor{};
-        Vector3 DiffuseColor{};
-        Vector3 SpecularColor{};
+        Color3 AmbientColor{};
+        Color3 DiffuseColor{};
+        Color3 SpecularColor{};
 
         real Shininess{};
 
     public:
         constexpr PhongMaterial(
-            const Vector3& ambientColor,
-            const Vector3& diffuseColor,
-            const Vector3& specularColor,
+            const Color3& ambientColor,
+            const Color3& diffuseColor,
+            const Color3& specularColor,
             real shininess)
             :
             AmbientColor{ambientColor},
@@ -34,7 +34,7 @@ namespace Yart
 
         }
 
-        constexpr Vector3 CalculateRenderingEquation(
+        constexpr Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -43,9 +43,9 @@ namespace Yart
             const Vector3& hitNormal,
             const Vector3& incomingDirection) const override
         {
-            Vector3 ambientComponent = AmbientColor;
-            Vector3 diffuseComponent{};
-            Vector3 specularComponent{};
+            Color3 ambientComponent = AmbientColor;
+            Color3 diffuseComponent{};
+            Color3 specularComponent{};
 
             for (const auto& light : scene.Lights)
             {
@@ -59,14 +59,14 @@ namespace Yart
                 real lightDotNormal = directionToLight * hitNormal;
                 if (lightDotNormal >= real{0.0})
                 {
-                    diffuseComponent += lightDotNormal * Vector3::ComponentwiseMultiply(DiffuseColor, light->Color);
+                    diffuseComponent += lightDotNormal * DiffuseColor * light->Color;
 
                     Vector3 reflectionDirection = directionToLight.Reflect(hitNormal);
                     real reflectionDotView = reflectionDirection * incomingDirection;
 
                     if (reflectionDotView >= real{0.0})
                     {
-                        specularComponent += Math::pow(reflectionDotView, Shininess) * Vector3::ComponentwiseMultiply(SpecularColor, light->Color);
+                        specularComponent += Math::pow(reflectionDotView, Shininess) * SpecularColor * light->Color;
                     }
                 }
             }

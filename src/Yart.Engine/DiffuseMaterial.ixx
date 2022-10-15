@@ -12,9 +12,9 @@ namespace Yart
 	export class DiffuseMaterial : public Material
 	{
 	protected:
-		Vector3 DiffuseColor{};
+        Color3 DiffuseColor{};
 
-		inline constexpr DiffuseMaterial(const Vector3& diffuseColor)
+		inline constexpr DiffuseMaterial(const Color3& diffuseColor)
 			: DiffuseColor{diffuseColor}
 		{
 

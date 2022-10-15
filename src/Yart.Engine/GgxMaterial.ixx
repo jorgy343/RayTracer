@@ -16,25 +16,25 @@ namespace Yart
 	export class GgxMaterial : public DiffuseMaterial
 	{
 	protected:
-		Vector3 SpecularColor{};
+        Color3 SpecularColor{};
 		real Roughness{};
 
 		real DiffuseLuminance{};
 		real SpecularLuminance{};
 
 	public:
-		GgxMaterial(const Vector3& diffuseColor, const Vector3& specularColor, real roughness)
+		GgxMaterial(const Color3& diffuseColor, const Color3& specularColor, real roughness)
 			:
 			DiffuseMaterial{diffuseColor},
 			SpecularColor{specularColor},
 			Roughness{roughness},
-            DiffuseLuminance{Math::max(real{0.01}, diffuseColor * Vector3{real{0.3}, real{0.59}, real{0.11}})},
-            SpecularLuminance{Math::max(real{0.01}, specularColor * Vector3{real{0.3}, real{0.59}, real{0.11}})}
+            DiffuseLuminance{Math::max(real{0.01}, diffuseColor.Luminance())},
+            SpecularLuminance{Math::max(real{0.01}, specularColor.Luminance())}
 		{
 
 		}
 
-		inline Vector3 CalculateRenderingEquation(
+		inline Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -59,11 +59,11 @@ namespace Yart
 			{
 				// Shoot a randomly selected cosine-sampled diffuse ray.
 				Vector3 L = GenerateCosineWeightedHemisphereSample(random, hitNormal);
-				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
+                Color3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
 
 				// Accumulate the color: (NdotL * incomingLight * dif / pi)
 				// Probability of sampling this ray:  (NdotL / pi) * probDiffuse
-				Vector3 outputColor = Vector3::ComponentwiseMultiply(bounceColor, DiffuseColor) / probDiffuse;
+                Color3 outputColor = bounceColor * DiffuseColor / probDiffuse;
 				return outputColor;
 			}
 			else
@@ -74,7 +74,7 @@ namespace Yart
                 Vector3 L = (real{2.0} *(V * H) * H - V).Normalize();
 
 				// Compute our color by tracing a ray in this direction
-				Vector3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
+                Color3 bounceColor = scene.CastRayColor({hitPosition, L}, currentDepth + 1, random);
 
 				// Compute some dot products needed for shading
 				real NdotL = Math::max(real{0.0}, hitNormal * L);
@@ -84,12 +84,12 @@ namespace Yart
 				// Evaluate our BRDF using a microfacet BRDF model
 				real D = NormalDistribution(NdotH);
 				real G = SchlickMaskingTerm(NdotL, NdotV);
-				Vector3 F = SchlickFresnel(SpecularColor, LdotH);
-                Vector3 ggxTerm = D * G * F / (real{4.0} /** NdotL*/ *NdotV);
+                Color3 F = SchlickFresnel(SpecularColor, LdotH);
+                Color3 ggxTerm = D * G * F / (real{4.0} /** NdotL*/ *NdotV);
 
                 real pdf = D * NdotH / (real{4.0} *LdotH);
 
-				Vector3 outputColor = Vector3::ComponentwiseMultiply(bounceColor, ggxTerm) /** NdotL*/ / (pdf * (real{1.0} - probDiffuse));
+                Color3 outputColor = bounceColor * ggxTerm /** NdotL*/ / (pdf * (real{1.0} - probDiffuse));
 				return outputColor;
 			}
 		}
@@ -112,11 +112,11 @@ namespace Yart
 			return g_v * g_l;
 		}
 
-		inline constexpr Vector3 SchlickFresnel(const Vector3& f0, real lDotH) const
+		inline constexpr Color3 SchlickFresnel(const Color3& f0, real lDotH) const
 		{
 			real x = real{1.0} - lDotH;
 
-			return f0 + (Vector3{real{1.0}} - f0) * x * x * x * x * x;
+			return f0 + (Color3{real{1.0}} - f0) * x * x * x * x * x;
 		}
 
 		inline Vector3 GetGgxMicrofacet(const Random& random, const Vector3& hitNormal) const

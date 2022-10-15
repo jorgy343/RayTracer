@@ -14,7 +14,7 @@ namespace Yart
         Vector3 Direction{};
         Vector3 ReversedDirection{};
 
-        inline constexpr DirectionalLight(const Vector3& color, const Vector3& direction)
+        inline constexpr DirectionalLight(const Color3& color, const Vector3& direction)
             : Light{color}, Direction{direction}, ReversedDirection{-direction}
         {
 

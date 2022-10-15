@@ -13,7 +13,7 @@ namespace Yart
     export class Material
     {
     public:
-        virtual constexpr Vector3 CalculateRenderingEquation(
+        virtual constexpr Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,

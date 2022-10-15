@@ -13,7 +13,7 @@ namespace Yart
     public:
         Vector3 Position{};
 
-        inline constexpr PointLight(const Vector3& color, const Vector3& position)
+        inline constexpr PointLight(const Color3& color, const Vector3& position)
             : Light{color}, Position{position}
         {
 

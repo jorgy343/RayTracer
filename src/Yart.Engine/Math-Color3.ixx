@@ -75,6 +75,11 @@ namespace Yart
             return result.Log();
         }
 
+        inline constexpr real Luminance() const
+        {
+            return R * real{0.3} + G * real{0.59} + B * real{0.11};
+        }
+
         static inline constexpr Color3T Max(const Color3T& left, const Color3T& right)
         {
             return Color3T{

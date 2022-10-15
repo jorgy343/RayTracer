@@ -20,7 +20,7 @@ namespace Yart::Yaml
 {
     std::shared_ptr<ConstantMissShader> ParseConstantMissShader(const Node& node)
     {
-        Vector3 color = ParseVector3(node["color"]);
+        Color3 color = ParseColor3(node["color"]);
 
         return std::make_unique<ConstantMissShader>(color);
     }

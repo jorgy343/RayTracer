@@ -1,5 +1,5 @@
 config:
-  iterations: 6
+  iterations: 8
   colorClamp: [0, 1]
 
 camera:

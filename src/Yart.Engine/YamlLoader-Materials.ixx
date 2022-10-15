@@ -29,7 +29,7 @@ namespace Yart::Yaml
     void ParseEmissiveMaterial(const Node& node, MaterialMap& materialMap)
     {
         auto name = node["name"].as<std::string>();
-        auto emissiveColor = ParseVector3(node["emissiveColor"]);
+        auto emissiveColor = ParseColor3(node["emissiveColor"]);
 
         auto material = std::make_shared<EmissiveMaterial>(emissiveColor);
         materialMap[name] = material;
@@ -38,7 +38,7 @@ namespace Yart::Yaml
     void ParseLambertianMaterial(const Node& node, MaterialMap& materialMap)
     {
         auto name = node["name"].as<std::string>();
-        auto diffuseColor = ParseVector3(node["diffuseColor"]);
+        auto diffuseColor = ParseColor3(node["diffuseColor"]);
 
         auto material = std::make_shared<LambertianMaterial<false>>(diffuseColor);
         materialMap[name] = material;
@@ -47,8 +47,8 @@ namespace Yart::Yaml
     void ParseGgxMaterial(const Node& node, MaterialMap& materialMap)
     {
         auto name = node["name"].as<std::string>();
-        auto diffuseColor = ParseVector3(node["diffuseColor"]);
-        auto specularColor = ParseVector3(node["specularColor"]);
+        auto diffuseColor = ParseColor3(node["diffuseColor"]);
+        auto specularColor = ParseColor3(node["specularColor"]);
         float roughness = node["roughness"].as<float>();
 
         auto material = std::make_shared<GgxMaterial>(diffuseColor, specularColor, roughness);
@@ -76,9 +76,9 @@ namespace Yart::Yaml
     {
         auto name = node["name"].as<std::string>();
 
-        auto ambientColor = ParseVector3(node["ambientColor"]);
-        auto diffuseColor = ParseVector3(node["diffuseColor"]);
-        auto specularColor = ParseVector3(node["specularColor"]);
+        auto ambientColor = ParseColor3(node["ambientColor"]);
+        auto diffuseColor = ParseColor3(node["diffuseColor"]);
+        auto specularColor = ParseColor3(node["specularColor"]);
 
         auto shininess = node["shininess"].as<float>();
 

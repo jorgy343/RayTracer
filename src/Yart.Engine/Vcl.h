@@ -4,6 +4,7 @@
 #define MAX_VECTOR_SIZE 256
 
 #include "vectorclass.h"
+#include "vectormath_exp.h"
 #include "ranvec1.h"
 
 namespace vcl

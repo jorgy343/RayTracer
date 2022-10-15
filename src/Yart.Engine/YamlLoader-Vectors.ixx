@@ -86,6 +86,12 @@ namespace Yart::Yaml
     }
 
     export template<any_number T = real>
+        Color3T<T> ParseColor3(const Node& node)
+    {
+        return static_cast<Color3T<T>>(ParseVector3<T>(node));
+    }
+
+    export template<any_number T = real>
         Vector4T<T> ParseVector4(const Node& node)
     {
         if (node.IsSequence())
@@ -122,5 +128,11 @@ namespace Yart::Yaml
         }
 
         return Vector4T<T>{};
+    }
+
+    export template<any_number T = real>
+        Color4T<T> ParseColor4(const Node& node)
+    {
+        return static_cast<Color4T<T>>(ParseVector4<T>(node));
     }
 }

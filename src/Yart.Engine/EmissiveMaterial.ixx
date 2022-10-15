@@ -14,16 +14,16 @@ namespace Yart
     export class EmissiveMaterial : public Material
     {
 	protected:
-		Vector3 EmissiveColor{};
+        Color3 EmissiveColor{};
 
     public:
-        EmissiveMaterial(const Vector3& emissiveColor)
+        EmissiveMaterial(const Color3& emissiveColor)
             : EmissiveColor{emissiveColor}
         {
 
         }
 
-        inline constexpr Vector3 CalculateRenderingEquation(
+        inline constexpr Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,

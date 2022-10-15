@@ -24,6 +24,15 @@ concept real_number = std::same_as<float, T> || std::same_as<double, T>;
 template <typename T>
 concept any_number = std::integral<T> || real_number<T>;
 
+namespace vcl
+{
+    class Vec8f;
+    class Vec4d;
+}
+
+using RealVec = std::conditional_t<std::same_as<real, float>, vcl::Vec8f, vcl::Vec4d>;
+constexpr size_t RealVecElements = std::same_as<real, float> ? 8 : 4;
+
 namespace Yart
 {
     constexpr real Pi = real{3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132};

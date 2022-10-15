@@ -23,7 +23,7 @@ namespace Yart
 
         }
 
-        inline Vector3 CalculateRenderingEquation(
+        inline Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -35,7 +35,7 @@ namespace Yart
             Vector3 refractionDirection = Vector3::Refract(incomingDirection, hitNormal, real{1.0}, RefractionIndex);
             if (refractionDirection.LengthSquared() < real{0.01})
             {
-                return Vector3{};
+                return Color3{};
             }
 
             refractionDirection.Normalize();
@@ -59,13 +59,13 @@ namespace Yart
             Vector3 outgoingDirection = Vector3::Refract(refractionDirection, -exitNormal, RefractionIndex, real{1.0});
             if (outgoingDirection.LengthSquared() < real{0.01})
             {
-                return Vector3{};
+                return Color3{};
             }
 
             outgoingDirection.Normalize();
 
             Ray outgoingRay{exitPosition, outgoingDirection};
-            Vector3 outputColor = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
+            Color3 outputColor = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
 
             return outputColor;
         }

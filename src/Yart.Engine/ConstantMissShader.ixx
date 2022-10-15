@@ -12,16 +12,16 @@ namespace Yart
     export class ConstantMissShader : public MissShader
     {
     protected:
-        Vector3 Color;
+        Color3 Color;
 
     public:
-        constexpr ConstantMissShader(const Vector3& color)
+        constexpr ConstantMissShader(const Color3& color)
             : Color{color}
         {
 
         }
 
-        Vector3 CalculateColor(const Ray& ray, const Random& random) const override
+        Color3 CalculateColor(const Ray& ray, const Random& random) const override
         {
             return Color;
         }

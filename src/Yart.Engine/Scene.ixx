@@ -47,20 +47,20 @@ namespace Yart
             AreaLights.push_back(areaLight);
         }
 
-        inline Vector3 CastRayColor(const Ray& ray, const Random& random) const
+        inline Color3 CastRayColor(const Ray& ray, const Random& random) const
         {
             return CastRayColor(ray, 1, random);
         }
 
-        Vector3 CastRayColor(const Ray& ray, int depth, const Random& random) const
+        Color3 CastRayColor(const Ray& ray, int depth, const Random& random) const
         {
             if (depth > 7)
             {
-                return Vector3{};
+                return Color3{};
             }
 
             IntersectionResult intersection = RootGeometry->IntersectEntrance(ray);
-            Vector3 outputColor{};
+            Color3 outputColor{};
 
             if (intersection.HitGeometry)
             {

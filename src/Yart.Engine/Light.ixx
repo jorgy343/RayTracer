@@ -11,9 +11,9 @@ namespace Yart
     export class Light
     {
     public:
-        Vector3 Color{};
+        Color3 Color{};
 
-        constexpr Light(const Vector3& color)
+        constexpr Light(const Color3& color)
             : Color{color}
         {
 

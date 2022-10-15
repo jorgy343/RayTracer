@@ -14,7 +14,7 @@ namespace Yart
     export class ReflectiveMaterial : public Material
     {
     public:
-        inline Vector3 CalculateRenderingEquation(
+        inline Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -26,7 +26,7 @@ namespace Yart
             Vector3 reflectedDirection = incomingDirection.Reflect(hitNormal).Normalize();
             Ray outgoingRay = Ray{hitPosition, reflectedDirection};
 
-            Vector3 outputColor = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
+            Color3 outputColor = scene.CastRayColor(outgoingRay, currentDepth + 1, random);
             return outputColor;
         }
     };

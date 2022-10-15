@@ -20,7 +20,7 @@ namespace Yart::Yaml
 {
     std::shared_ptr<const Light> ParseDirectionalLight(const Node& node)
     {
-        auto color = ParseVector3(node["color"]);
+        auto color = ParseColor3(node["color"]);
         auto direction = ParseVector3(node["direction"]);
 
         return std::make_shared<const DirectionalLight>(color, direction);
@@ -28,7 +28,7 @@ namespace Yart::Yaml
 
     std::shared_ptr<const Light> ParsePointLight(const Node& node)
     {
-        auto color = ParseVector3(node["color"]);
+        auto color = ParseColor3(node["color"]);
         auto position = ParseVector3(node["position"]);
 
         return std::make_shared<const PointLight>(color, position);

@@ -79,18 +79,18 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
         {
             for (unsigned int x = inclusiveStartingPoint.X; x <= inclusiveEndingPoint.X; x++)
             {
-                Vector3 color{};
+                Color3 color{};
 
                 for (unsigned int subpixelY = 0; subpixelY < camera.SubpixelCount; subpixelY++)
                 {
                     for (unsigned int subpixelX = 0; subpixelX < camera.SubpixelCount; subpixelX++)
                     {
                         Ray ray = camera.CreateRay({x, y}, {subpixelX, subpixelY}, random);
-                        Vector3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);
+                        Color3 sampledColor = sceneData->SavedScene->CastRayColor(ray, random);
 
-                        sampledColor.X = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.X) ? real{0.0} : sampledColor.X));
-                        sampledColor.Y = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Y) ? real{0.0} : sampledColor.Y));
-                        sampledColor.Z = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.Z) ? real{0.0} : sampledColor.Z));
+                        sampledColor.R = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.R) ? real{0.0} : sampledColor.R));
+                        sampledColor.G = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.G) ? real{0.0} : sampledColor.G));
+                        sampledColor.B = Math::max(colorClamp.X, Math::min(colorClamp.Y, std::isnan(sampledColor.G) ? real{0.0} : sampledColor.B));
 
                         color += sampledColor;
                     }
@@ -98,9 +98,9 @@ extern "C" __declspec(dllexport) void __cdecl TraceScene(UIntVector2 screenSize,
 
                 color /= static_cast<real>(subpixelCountSquared);
 
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += static_cast<float>(color.X);
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += static_cast<float>(color.Y);
-                pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += static_cast<float>(color.Z);
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 0] += static_cast<float>(color.R);
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 1] += static_cast<float>(color.G);
+                pixelBuffer[((y * screenSize.X) + x) * 4 + 2] += static_cast<float>(color.B);
                 pixelBuffer[((y * screenSize.X) + x) * 4 + 3] += 0.0f;
             }
         }

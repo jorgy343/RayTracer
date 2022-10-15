@@ -11,6 +11,6 @@ namespace Yart
     export class MissShader
     {
     public:
-        virtual constexpr Vector3 CalculateColor(const Ray& ray, const Random& random) const = 0;
+        virtual constexpr Color3 CalculateColor(const Ray& ray, const Random& random) const = 0;
     };
 }

@@ -42,7 +42,7 @@ namespace Yart
         static constexpr Color3 Bm{real{21e-6}};
 
         static constexpr Color3 SunIntensity{real{20.0}};
-        static constexpr real Lambda{30};
+        static constexpr real Lambda{20};
 
     public:
         constexpr AtmosphereMissShader(const Vector3& sunDirection, const Vector3& origin)
@@ -51,7 +51,7 @@ namespace Yart
 
         }
 
-        Vector3 CalculateColor(const Ray& ray, const Random& random) const override
+        Color3 CalculateColor(const Ray& ray, const Random& random) const override
         {
             real cosTheta = ray.Direction * SunDirectionReversed;
 
@@ -83,8 +83,7 @@ namespace Yart
             Color3 outScattering = (-sunRayOpticalDepth - viewRayOpticalDepth).Exp();
 
             Color3 result = SunIntensity * coefficient * outScattering * viewRayInversePdf;
-
-            return static_cast<Vector3>(result);
+            return result;
         }
 
     protected:
@@ -123,6 +122,15 @@ namespace Yart
             real densityM = Density(samplePointHeight, AerosolAtmosphericDensity);
 
             return ((densityR * Br) + (densityM * Bm)) * inversePdf;
+        }
+
+        inline Color3 OpticalDepthVec(const Vector3& startingPoint, real distance, const Random& random) const
+        {
+            auto u = random.GetNormalizedVec();
+            auto x = random.ExponentialRandomVec(u, Lambda);
+            auto inversePdf = random.ExponentialRandomPdfVec(u, Lambda);
+
+            return Color3{};
         }
     };
 }
