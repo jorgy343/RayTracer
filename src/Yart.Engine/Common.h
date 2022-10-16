@@ -10,8 +10,6 @@
 
 #define force_inline __forceinline
 
-#define USE_DOUBLE
-
 #ifdef USE_DOUBLE
 using real = double;
 #else

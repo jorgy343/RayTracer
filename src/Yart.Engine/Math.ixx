@@ -12,3 +12,4 @@ export import :Vec8f3;
 export import :Vector2;
 export import :Vector3;
 export import :Vector4;
+export import :VectorVec3;

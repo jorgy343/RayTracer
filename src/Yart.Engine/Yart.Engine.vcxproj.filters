@@ -282,6 +282,9 @@
     <ClCompile Include="Math-Color4Decl.ixx">
       <Filter>Modules\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Math-VectorVec3.ixx">
+      <Filter>Modules\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

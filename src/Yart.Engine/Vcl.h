@@ -1,5 +1,7 @@
 #pragma once
 
+#include <concepts>
+
 #define VCL_NAMESPACE vcl
 #define MAX_VECTOR_SIZE 256
 
@@ -19,3 +21,12 @@ namespace vcl
         return Vec4d{1.0} / a;
     }
 }
+
+template <typename T>
+concept vec_type = std::same_as<vcl::Vec4f, T> || std::same_as<vcl::Vec8f, T> || std::same_as<vcl::Vec2d, T> || std::same_as<vcl::Vec4d, T>;
+
+#ifdef USE_DOUBLE
+using real_vec = vcl::Vec4d;
+#else
+using real_vec = vcl::Vec8f;
+#endif

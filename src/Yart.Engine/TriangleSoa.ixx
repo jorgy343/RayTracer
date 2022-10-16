@@ -131,50 +131,30 @@ namespace Yart
     private:
         force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            VclVec vertex0X = VclVec{}.load_a(_vertex0X);
-            VclVec vertex0Y = VclVec{}.load_a(_vertex0Y);
-            VclVec vertex0Z = VclVec{}.load_a(_vertex0Z);
+            VectorVec3<VclVec> vertex0{_vertex0X, _vertex0Y, _vertex0Z};
+            VectorVec3<VclVec> vertex1{_vertex1X, _vertex1Y, _vertex1Z};
+            VectorVec3<VclVec> vertex2{_vertex2X, _vertex2Y, _vertex2Z};
 
-            VclVec vertex1X = VclVec{}.load_a(_vertex1X);
-            VclVec vertex1Y = VclVec{}.load_a(_vertex1Y);
-            VclVec vertex1Z = VclVec{}.load_a(_vertex1Z);
+            VectorVec3<VclVec> edge1 = vertex1 - vertex0;
+            VectorVec3<VclVec> edge2 = vertex2 - vertex0;
 
-            VclVec edge1X = vertex1X - vertex0X;
-            VclVec edge1Y = vertex1Y - vertex0Y;
-            VclVec edge1Z = vertex1Z - vertex0Z;
+            VectorVec3<VclVec> rayDirection{ray.Direction};
+            VectorVec3<VclVec> rayPosition{ray.Position};
 
-            VclVec vertex2X = VclVec{}.load_a(_vertex2X);
-            VclVec vertex2Y = VclVec{}.load_a(_vertex2Y);
-            VclVec vertex2Z = VclVec{}.load_a(_vertex2Z);
-
-            VclVec edge2X = vertex2X - vertex0X;
-            VclVec edge2Y = vertex2Y - vertex0Y;
-            VclVec edge2Z = vertex2Z - vertex0Z;
-
-            VclVec rayDirectionX{ray.Direction.X};
-            VclVec rayDirectionY{ray.Direction.Y};
-            VclVec rayDirectionZ{ray.Direction.Z};
-
-            auto h = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
-            VclVec a = SimdDot(edge1X, edge1Y, edge1Z, h.X, h.Y, h.Z);
+            VectorVec3<VclVec> h = rayDirection % edge2;
+            VclVec a = VectorVec3<VclVec>::Dot(edge1, h);
 
             // Normally you would check for a parallel ray here but we'll skip that check.
 
             VclVec f = approx_recipr(a);
 
-            VclVec rayPositionX{ray.Position.X};
-            VclVec rayPositionY{ray.Position.Y};
-            VclVec rayPositionZ{ray.Position.Z};
+            VectorVec3<VclVec> s = rayPosition - vertex0;
 
-            VclVec sX = rayPositionX - vertex0X;
-            VclVec sY = rayPositionY - vertex0Y;
-            VclVec sZ = rayPositionZ - vertex0Z;
+            VclVec u = f * VectorVec3<VclVec>::Dot(s, h);
+            VectorVec3<VclVec> q = s % edge1;
+            VclVec v = f * VectorVec3<VclVec>::Dot(rayDirection, q);
 
-            VclVec u = f * SimdDot(sX, sY, sZ, h.X, h.Y, h.Z);
-            auto q = SimdCrossProduct(sX, sY, sZ, edge1X, edge1Y, edge1Z);
-            VclVec v = f * SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z);
-
-            VclVec entranceDistance = f * SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z);
+            VclVec entranceDistance = f * VectorVec3<VclVec>::Dot(edge2, q);
 
             // Make sure infinity is second so nans are replaced with inf.
             VclVec clampedEntranceDistance = select(

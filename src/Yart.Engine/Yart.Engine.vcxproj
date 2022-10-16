@@ -69,12 +69,14 @@
     <ClCompile>
       <AdditionalOptions>/constexpr:depth9999999 /constexpr:steps99999999 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>USE_DOUBLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>USE_DOUBLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link />
   </ItemDefinitionGroup>
@@ -147,6 +149,7 @@
     <ClCompile Include="Math-Vector4.ixx" />
     <ClCompile Include="Math-Vec2d3.ixx" />
     <ClCompile Include="Math-Vec4d3.ixx" />
+    <ClCompile Include="Math-VectorVec3.ixx" />
     <ClCompile Include="YamlLoader-Cameras.ixx" />
     <ClCompile Include="YamlLoader-Config.ixx" />
     <ClCompile Include="YamlLoader-Lights.ixx" />
