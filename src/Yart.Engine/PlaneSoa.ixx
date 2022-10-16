@@ -93,21 +93,12 @@ namespace Yart
     private:
         force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            VclVec rayDirectionX{ray.Direction.X};
-            VclVec rayDirectionY{ray.Direction.Y};
-            VclVec rayDirectionZ{ray.Direction.Z};
+            VectorVec3<VclVec> rayDirection{ray.Direction};
+            VectorVec3<VclVec> rayPosition{ray.Position};
+            VectorVec3<VclVec> normal{_normalX, _normalY, _normalZ};
 
-            VclVec normalX = VclVec{}.load_a(_normalX);
-            VclVec normalY = VclVec{}.load_a(_normalY);
-            VclVec normalZ = VclVec{}.load_a(_normalZ);
-
-            VclVec normalDotDirection = SimdDot(normalX, normalY, normalZ, rayDirectionX, rayDirectionY, rayDirectionZ);
-
-            VclVec rayPositionX{ray.Position.X};
-            VclVec rayPositionY{ray.Position.Y};
-            VclVec rayPositionZ{ray.Position.Z};
-
-            VclVec normalDotRayPosition = SimdDot(normalX, normalY, normalZ, rayPositionX, rayPositionY, rayPositionZ);
+            VclVec normalDotDirection = VectorVec3<VclVec>::Dot(normal, rayDirection);
+            VclVec normalDotRayPosition = VectorVec3<VclVec>::Dot(normal, rayPosition);
 
             VclVec distance = VclVec{}.load_a(_distance);
             VclVec entranceDistance = -(distance + normalDotRayPosition) * approx_recipr(normalDotDirection);

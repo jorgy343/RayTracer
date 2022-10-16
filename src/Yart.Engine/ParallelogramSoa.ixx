@@ -158,40 +158,25 @@ namespace Yart
             }
             else
             {
-                VclVec rayDirectionX{ray.Direction.X};
-                VclVec rayDirectionY{ray.Direction.Y};
-                VclVec rayDirectionZ{ray.Direction.Z};
+                VectorVec3<VclVec> rayDirection{ray.Direction};
+                VectorVec3<VclVec> rayPosition{ray.Position};
 
-                VclVec edge2X = VclVec{}.load_a(_edge2X);
-                VclVec edge2Y = VclVec{}.load_a(_edge2Y);
-                VclVec edge2Z = VclVec{}.load_a(_edge2Z);
+                VectorVec3<VclVec> position{_positionX, _positionY, _positionZ};
+                VectorVec3<VclVec> edge1{_edge1X, _edge1Y, _edge1Z};
+                VectorVec3<VclVec> edge2{_edge2X, _edge2Y, _edge2Z};
 
-                auto p = SimdCrossProduct(rayDirectionX, rayDirectionY, rayDirectionZ, edge2X, edge2Y, edge2Z);
+                VectorVec3<VclVec> p = rayDirection % edge2;
 
-                VclVec edge1X = VclVec{}.load_a(_edge1X);
-                VclVec edge1Y = VclVec{}.load_a(_edge1Y);
-                VclVec edge1Z = VclVec{}.load_a(_edge1Z);
-
-                VclVec determinant = SimdDot(edge1X, edge1Y, edge1Z, p.X, p.Y, p.Z);
+                VclVec determinant = VectorVec3<VclVec>::Dot(edge1, p);
                 VclVec invDeterminant = approx_recipr(determinant);
 
-                VclVec rayPositionX{ray.Position.X};
-                VclVec rayPositionY{ray.Position.Y};
-                VclVec rayPositionZ{ray.Position.Z};
+                VectorVec3<VclVec> t = rayPosition - position;
 
-                VclVec positionX = VclVec{}.load_a(_positionX);
-                VclVec positionY = VclVec{}.load_a(_positionY);
-                VclVec positionZ = VclVec{}.load_a(_positionZ);
+                VclVec a = VectorVec3<VclVec>::Dot(t, p) * invDeterminant;
+                VectorVec3<VclVec> q = t % edge1;
+                VclVec b = VectorVec3<VclVec>::Dot(rayDirection, q) * invDeterminant;
 
-                VclVec tX = rayPositionX - positionX;
-                VclVec tY = rayPositionY - positionY;
-                VclVec tZ = rayPositionZ - positionZ;
-
-                VclVec a = SimdDot(tX, tY, tZ, p.X, p.Y, p.Z) * invDeterminant;
-                auto q = SimdCrossProduct(tX, tY, tZ, edge1X, edge1Y, edge1Z);
-                VclVec b = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, q.X, q.Y, q.Z) * invDeterminant;
-
-                VclVec entranceDistance = SimdDot(edge2X, edge2Y, edge2Z, q.X, q.Y, q.Z) * invDeterminant;
+                VclVec entranceDistance = VectorVec3<VclVec>::Dot(edge2, q) * invDeterminant;
 
                 auto comparison =
                     entranceDistance >= VclVec(real{0.0}) &&

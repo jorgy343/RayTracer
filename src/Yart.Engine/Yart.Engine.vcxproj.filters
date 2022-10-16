@@ -237,18 +237,6 @@
     <ClCompile Include="Math-Vector4.ixx">
       <Filter>Modules\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Math-Vec4f3.ixx">
-      <Filter>Modules\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vec8f3.ixx">
-      <Filter>Modules\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vec2d3.ixx">
-      <Filter>Modules\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math-Vec4d3.ixx">
-      <Filter>Modules\Math</Filter>
-    </ClCompile>
     <ClCompile Include="AtmosphereMissShader.ixx">
       <Filter>Modules\MissShaders</Filter>
     </ClCompile>

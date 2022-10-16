@@ -139,27 +139,17 @@ namespace Yart
             }
             else
             {
-                VclVec rayPositionX{ray.Position.X};
-                VclVec rayPositionY{ray.Position.Y};
-                VclVec rayPositionZ{ray.Position.Z};
+                VectorVec3<VclVec> rayPosition{ray.Position};
+                VectorVec3<VclVec> rayDirection{ray.Direction};
 
-                VclVec spherePositionX = VclVec{}.load_a(_positionX);
-                VclVec spherePositionY = VclVec{}.load_a(_positionY);
-                VclVec spherePositionZ = VclVec{}.load_a(_positionZ);
+                VectorVec3<VclVec> position{_positionX, _positionY, _positionZ};
+                VclVec radius = VclVec{}.load_a(_radius);
 
-                VclVec vX = rayPositionX - spherePositionX;
-                VclVec vY = rayPositionY - spherePositionY;
-                VclVec vZ = rayPositionZ - spherePositionZ;
+                VectorVec3<VclVec> v = rayPosition - position;
 
-                VclVec rayDirectionX{ray.Direction.X};
-                VclVec rayDirectionY{ray.Direction.Y};
-                VclVec rayDirectionZ{ray.Direction.Z};
-
-                VclVec sphereRadius = VclVec{}.load_a(_radius);
-
-                VclVec a = SimdDot(rayDirectionX, rayDirectionY, rayDirectionZ, rayDirectionX, rayDirectionY, rayDirectionZ);
-                VclVec b = SimdDot(vX, vY, vZ, rayDirectionX, rayDirectionY, rayDirectionZ);
-                VclVec c = SimdDot(vX, vY, vZ, vX, vY, vZ) - (sphereRadius * sphereRadius);
+                VclVec a = VectorVec3<VclVec>::Dot(rayDirection, rayDirection);
+                VclVec b = VectorVec3<VclVec>::Dot(v, rayDirection);
+                VclVec c = VectorVec3<VclVec>::Dot(v, v) - (radius * radius);
 
                 VclVec discriminant = (b * b) - (a * c);
                 VclVec discriminantSqrt = sqrt(discriminant);

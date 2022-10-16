@@ -7,11 +7,6 @@ export module Math:Basics;
 
 import "Common.h";
 
-import :Vec2d3;
-import :Vec4d3;
-import :Vec4f3;
-import :Vec8f3;
-
 using namespace vcl;
 
 namespace Yart
@@ -310,83 +305,6 @@ namespace Yart
         {
             return radians * (T{180} / Pi);
         }
-    }
-
-    // TODO: Restrain T using concepts.
-    export template<typename T>
-    inline T SimdDot(
-        T const aX,
-        T const aY,
-        T const aZ,
-        T const bX,
-        T const bY,
-        T const bZ)
-    {
-        return mul_add(aX, bX, mul_add(aY, bY, aZ * bZ));
-    }
-
-    export inline Vec4f3 SimdCrossProduct(
-        Vec4f const aX,
-        Vec4f const aY,
-        Vec4f const aZ,
-        Vec4f const bX,
-        Vec4f const bY,
-        Vec4f const bZ)
-    {
-        return
-        {
-            aY * bZ - aZ * bY,
-            aZ * bX - aX * bZ,
-            aX * bY - aY * bX,
-        };
-    }
-
-    export inline Vec8f3 SimdCrossProduct(
-        Vec8f const aX,
-        Vec8f const aY,
-        Vec8f const aZ,
-        Vec8f const bX,
-        Vec8f const bY,
-        Vec8f const bZ)
-    {
-        return
-        {
-            aY * bZ - aZ * bY,
-            aZ * bX - aX * bZ,
-            aX * bY - aY * bX,
-        };
-    }
-
-    export inline Vec2d3 SimdCrossProduct(
-        Vec2d const aX,
-        Vec2d const aY,
-        Vec2d const aZ,
-        Vec2d const bX,
-        Vec2d const bY,
-        Vec2d const bZ)
-    {
-        return
-        {
-            aY * bZ - aZ * bY,
-            aZ * bX - aX * bZ,
-            aX * bY - aY * bX,
-        };
-    }
-
-    export inline Vec4d3 SimdCrossProduct(
-        Vec4d const aX,
-        Vec4d const aY,
-        Vec4d const aZ,
-        Vec4d const bX,
-        Vec4d const bY,
-        Vec4d const bZ)
-    {
-        return
-        {
-            aY * bZ - aZ * bY,
-            aZ * bX - aX * bZ,
-            aX * bY - aY * bX,
-        };
     }
 
     export inline Vec4f ConvertNanToInf(Vec4f const value)

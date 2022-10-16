@@ -101,19 +101,155 @@ namespace Yart
             };
         }
 
-        inline constexpr VectorVec3 operator+(const VectorVec3& right) const
+        inline VectorVec3 operator+() const
+        {
+            return {+X, +Y, +Z};
+        }
+
+        inline VectorVec3 operator-() const
+        {
+            return {-X, -Y, -Z};
+        }
+
+        inline VectorVec3& operator++()
+        {
+            X += T{1};
+            Y += T{1};
+            Z += T{1};
+
+            return *this;
+        }
+
+        inline VectorVec3& operator--()
+        {
+            X -= T{1};
+            Y -= T{1};
+            Z -= T{1};
+
+            return *this;
+        }
+
+        inline VectorVec3 operator++(int)
+        {
+            VectorVec3 temp = *this;
+
+            X += T{1};
+            Y += T{1};
+            Z += T{1};
+
+            return temp;
+        }
+
+        inline VectorVec3 operator--(int)
+        {
+            VectorVec3 temp = *this;
+
+            X -= T{1};
+            Y -= T{1};
+            Z -= T{1};
+
+            return temp;
+        }
+
+        inline VectorVec3 operator+(const VectorVec3& right) const
         {
             return VectorVec3{X + right.X, Y + right.Y, Z + right.Z};
         }
 
-        inline constexpr VectorVec3 operator-(const VectorVec3& right) const
+        inline VectorVec3 operator-(const VectorVec3& right) const
         {
             return VectorVec3{X - right.X, Y - right.Y, Z - right.Z};
         }
 
-        inline constexpr VectorVec3 operator%(const VectorVec3& right) const
+        inline VectorVec3 operator%(const VectorVec3& right) const
         {
             return Cross(*this, right);
         }
+
+        inline VectorVec3 operator+(T right) const
+        {
+            return VectorVec3{X + right, Y + right, Z + right};
+        }
+
+        inline VectorVec3 operator-(T right) const
+        {
+            return VectorVec3{X - right, Y - right, Z - right};
+        }
+
+        inline VectorVec3 operator*(T right) const
+        {
+            return VectorVec3{X * right, Y * right, Z * right};
+        }
+
+        inline VectorVec3 operator/(T right) const
+        {
+            return VectorVec3{X / right, Y / right, Z / right};
+        }
+
+        inline VectorVec3& operator+=(const VectorVec3& other)
+        {
+            X += other.X;
+            Y += other.Y;
+            Z += other.Z;
+
+            return *this;
+        }
+
+        inline VectorVec3& operator-=(const VectorVec3& other)
+        {
+            X -= other.X;
+            Y -= other.Y;
+            Z -= other.Z;
+
+            return *this;
+        }
+
+        inline VectorVec3& operator+=(T other)
+        {
+            X += other;
+            Y += other;
+            Z += other;
+
+            return *this;
+        }
+
+        inline VectorVec3& operator-=(T other)
+        {
+            X -= other;
+            Y -= other;
+            Z -= other;
+
+            return *this;
+        }
+
+        inline VectorVec3& operator*=(T other)
+        {
+            X *= other;
+            Y *= other;
+            Z *= other;
+
+            return *this;
+        }
+
+        inline VectorVec3& operator/=(T other)
+        {
+            X /= other;
+            Y /= other;
+            Z /= other;
+
+            return *this;
+        }
     };
+
+    export template <vec_type T>
+        inline constexpr VectorVec3<T> operator+(T left, const VectorVec3<T>& right)
+    {
+        return {left + right.X, left + right.Y, left + right.Z};
+    }
+
+    export template <vec_type T>
+        inline constexpr VectorVec3<T> operator*(T left, const VectorVec3<T>& right)
+    {
+        return {left * right.X, left * right.Y, left * right.Z};
+    }
 }
