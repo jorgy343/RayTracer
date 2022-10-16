@@ -17,7 +17,7 @@ using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) AxisAlignedBox : public Geometry
+    export class __declspec(dllexport) alignas(32) AxisAlignedBox : public Geometry
     {
     private:
         using VclVec = typename std::conditional<std::same_as<real, float>, Vec4f, Vec4d>::type;

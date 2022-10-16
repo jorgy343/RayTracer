@@ -12,7 +12,7 @@ import Ray;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Sphere : public Geometry
+    export class __declspec(dllexport) alignas(32) Sphere : public Geometry
     {
     public:
         Vector3 Position{};

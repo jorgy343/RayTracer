@@ -12,7 +12,7 @@ import Scene;
 
 namespace Yart
 {
-    export class alignas(16) Parallelogram : public AreaLight
+    export class alignas(32) Parallelogram : public AreaLight
     {
     public:
         Vector3 Position{};

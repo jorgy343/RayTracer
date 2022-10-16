@@ -11,7 +11,7 @@ import Ray;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Plane : public Geometry
+    export class __declspec(dllexport) alignas(32) Plane : public Geometry
     {
     public:
         Vector3 Normal{};

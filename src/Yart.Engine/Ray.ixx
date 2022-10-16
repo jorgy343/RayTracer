@@ -10,7 +10,7 @@ import Math;
 namespace Yart
 {
     export template <real_number T>
-        class __declspec(dllexport) alignas(16) RayT
+        class __declspec(dllexport) alignas(32) RayT
     {
     public:
         Vector3T<T> Position{};

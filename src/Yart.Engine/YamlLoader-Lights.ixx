@@ -50,6 +50,8 @@ namespace Yart::Yaml
                 return functionPointer(childNode);
             }
         }
+
+        return {};
     }
 
     export std::vector<std::shared_ptr<const Light>> ParseLightsNode(const Node& node)

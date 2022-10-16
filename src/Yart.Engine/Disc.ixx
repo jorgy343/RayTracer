@@ -12,7 +12,7 @@ import Scene;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(16) Disc : public AreaLight
+    export class __declspec(dllexport) alignas(32) Disc : public AreaLight
     {
     public:
         Vector3 Position{};

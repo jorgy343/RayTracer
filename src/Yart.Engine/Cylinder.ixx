@@ -10,7 +10,7 @@ import Math;
 
 namespace Yart
 {
-    export class alignas(16) Cylinder : public Geometry
+    export class alignas(32) Cylinder : public Geometry
     {
     public:
         Vector3 Start{};

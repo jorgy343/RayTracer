@@ -14,7 +14,7 @@ import Ray;
 
 namespace Yart
 {
-    export class alignas(16) Triangle : public Geometry
+    export class alignas(32) Triangle : public Geometry
     {
     public:
         Vector3 Vertex0{};
