@@ -498,9 +498,21 @@ namespace Yart
     }
 
     export template <any_number T>
+        inline constexpr Vector3T<T> operator-(T left, const Vector3T<T>& right)
+    {
+        return {left - right.X, left - right.Y, left - right.Z};
+    }
+
+    export template <any_number T>
         inline constexpr Vector3T<T> operator*(T left, const Vector3T<T>& right)
     {
         return {left * right.X, left * right.Y, left * right.Z};
+    }
+
+    export template <any_number T>
+        inline constexpr Vector3T<T> operator/(T left, const Vector3T<T>& right)
+    {
+        return {left / right.X, left / right.Y, left / right.Z};
     }
 
     export using Vector3 = Vector3T<real>;

@@ -357,11 +357,23 @@ namespace Yart
 		return {left + right.X, left + right.Y};
 	}
 
+    export template <any_number T>
+        inline constexpr Vector2T<T> operator-(T left, const Vector2T<T>& right)
+    {
+        return {left - right.X, left - right.Y};
+    }
+
 	export template <any_number T>
 	inline constexpr Vector2T<T> operator*(T left, const Vector2T<T>&right)
 	{
 		return {left * right.X, left * right.Y};
 	}
+
+    export template <any_number T>
+        inline constexpr Vector2T<T> operator/(T left, const Vector2T<T>& right)
+    {
+        return {left / right.X, left / right.Y};
+    }
 
 	export using Vector2 = Vector2T<real>;
     export using FloatVector2 = Vector2T<float>;
