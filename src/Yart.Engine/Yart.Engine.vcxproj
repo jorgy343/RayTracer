@@ -165,6 +165,7 @@
   <ItemGroup>
     <None Include="scene-atmosphere.yaml" />
     <None Include="scene.yaml" />
+    <None Include="scene1.yaml" />
     <None Include="teapot.mtl" />
   </ItemGroup>
   <ItemGroup>

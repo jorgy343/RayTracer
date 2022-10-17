@@ -42,6 +42,15 @@ namespace Yart
 
         }
 
+        // TODO: Bounding box code taken from the sphere version. Could optimize the bounding box to match the shape of a disc better.
+        constexpr BoundingBox CalculateBoundingBox() const override
+        {
+            return BoundingBox{
+                Position - Radius,
+                Position + Radius,
+            };
+        }
+
         inline constexpr const Material* GetMaterial() const override
         {
             return AppliedMaterial;

@@ -84,7 +84,7 @@ namespace Yart
             RayleighBeta{(real{8} *Pi * Pi * Pi * (IndexOfRefractionAtSeaLevel * IndexOfRefractionAtSeaLevel - real{1}) * (IndexOfRefractionAtSeaLevel * IndexOfRefractionAtSeaLevel - real{1})) / (real{3} *NumberDensityOfAirAtSeaLevel) * Color3::Reciprical(WavelengthPowFour)},
             MieBeta{(real{8} *Pi * Pi * Pi * (IndexOfRefractionAtSeaLevel * IndexOfRefractionAtSeaLevel - real{1}) * (IndexOfRefractionAtSeaLevel * IndexOfRefractionAtSeaLevel - real{1})) / (real{3} *NumberDensityOfAerosolsAtSeaLevel)}
         {
-            
+
         }
 
         Color3 CalculateColor(const Ray& ray, const Random& random) const override
@@ -156,6 +156,29 @@ namespace Yart
             real densityM = Density(samplePointHeight, MieScaleHeight);
 
             return ((densityR * RayleighBeta) + (densityM * MieBeta)) * inversePdf;
+        }
+
+        // TODO: Doesn't seem to work. Probably just vectorize the main CalculateColor function.
+        inline Color3 OpticalDepthVec(const Vector3& startingPoint, real distance, const Random& random) const
+        {
+            real_vec normalizedRandom = random.GetNormalizedVec();
+            real_vec randomNumber = random.ExponentialRandomVec(normalizedRandom, Lambda);
+            real_vec inversePdf = real_vec{distance} *random.ExponentialRandomPdfVec(normalizedRandom, Lambda);
+
+            VectorVec3<real_vec> samplePoint = VectorVec3<real_vec>{startingPoint} + randomNumber * real_vec{distance} *VectorVec3<real_vec>{SunDirectionReversed};
+            real_vec samplePointHeight = samplePoint.Length() - real_vec{PlanetRadius};
+
+            real_vec densityR = exp(-samplePointHeight / real_vec{RayleighScaleHeight});
+            real_vec densityM = exp(-samplePointHeight / real_vec{MieScaleHeight});
+
+            VectorVec3<real_vec> result = ((densityR * VectorVec3<real_vec>{RayleighBeta}) + (densityM * VectorVec3<real_vec>{MieBeta}))* inversePdf;
+
+            return
+            {
+                horizontal_add(result.X) / RealVecElements,
+                horizontal_add(result.Y) / RealVecElements,
+                horizontal_add(result.Z) / RealVecElements,
+            };
         }
 
         inline Color3 OpticalDepthTrapazoidal(const Vector3& startingPoint, const Vector3& direction, real distance, const Random& random) const

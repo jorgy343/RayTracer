@@ -298,5 +298,8 @@
     <None Include="scene-atmosphere.yaml">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="scene1.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

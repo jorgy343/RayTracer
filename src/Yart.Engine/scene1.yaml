@@ -1,0 +1,302 @@
+config:
+  iterations: 8
+  colorClamp: [0, 1]
+
+camera:
+  perspective:
+    position: [0, 0, -39]
+    lookAt: [0, 0, 1]
+    up: [0, 1, 0]
+    fov: 45
+    screenSize: [1920, 1080]
+    subpixelCount: 4
+
+  #orthographic:
+  #  position: [0, 0, -39]
+  #  lookAt: [0, 0, 1]
+  #  up: [0, 1, 0]
+  #  orthoSize: [1.5, 0.84375]
+  #  screenSize: [1920, 1080]
+  #  subpixelCount: 4
+
+missShader:
+  constant:
+    color: [0]
+
+  #atmosphere:
+  #  offset: [0, 6371071, 0]
+  #  sunDirection:
+  #    normalize: [0, -1, 0]
+  #  sunIntensity: [20]
+  #  lambda: 20
+  #  planetRadius: 6371071
+  #  atmosphereHeight: 60000
+  #  rayleighScaleHeight: 7994
+  #  mieScaleHeight: 1200
+  #  indexOfRefractionAtSeaLevel: 1.00031
+  #  numberDensityOfAirAtSeaLevel: 2.55e25
+  #  numberDensityOfAerosolsAtSeaLevel: 1.4
+  #  mieU: 0.8
+
+materials:
+  - emissive:
+      name: "White Light"
+      emissiveColor: [5]
+  - emissive:
+      name: "Soft White Light"
+      emissiveColor: [0.01]
+
+  - lambertian:
+      name: "White"
+      diffuseColor: [1]
+  - lambertian:
+      name: "Black"
+      diffuseColor: [0]
+  - lambertian:
+      name: "Red"
+      diffuseColor: [1, 0, 0]
+  - lambertian:
+      name: "Green"
+      diffuseColor: [0, 1, 0]
+  - lambertian:
+      name: "Blue"
+      diffuseColor: [0, 0, 1]
+  - lambertian:
+      name: "Orange"
+      diffuseColor: [1, 1, 0]
+  - lambertian:
+      name: "Pink"
+      diffuseColor: [1, 0, 1]
+  - lambertian:
+      name: "Yellow"
+      diffuseColor: [0, 1, 1]
+
+  - lambertian:
+      name: "Light Blue"
+      diffuseColor: [0.7, 0.7, 1]
+
+  - ggx:
+      name: "GGX"
+      diffuseColor: [1]
+      specularColor: [1]
+      roughness: 0.05
+
+  - reflective:
+      name: "Reflective"
+
+  - refractive:
+      name: "Refractive"
+      refractionIndex: 1.02
+
+  - phong:
+      name: "Phong"
+      ambientColor: [0.1]
+      diffuseColor: [0, 0, 0.5]
+      specularColor: [0.6]
+      shininess: 25
+
+lights:
+  #- directional:
+  #    color: [1]
+  #    direction: [0, -1, 0]
+
+  #- point:
+  #    color: [1]
+  #    position: [0, 19.9, 0]
+
+geometry:
+  geometryCollection:
+    children:
+      - parallelogram:
+          areaLight: true
+          material: "White Light"
+          position: [0, 19.9, -6]
+          edge1: [-1.4, 0, 0]
+          edge2: [0, 0, 1.4]
+
+      #- disc:
+      #    areaLight: true
+      #    material: "White Light"
+      #    position: [0, 19.9, -6]
+      #    normal: [0, -1, 0]
+      #    radius: 0.65
+
+      - boundingGeometry:
+          child:
+            triangleMeshObj:
+              material: "White"
+              objFile: "../../../../Yart.Engine/teapot.obj"
+              transformation:
+                build:
+                  - scale: [2]
+                  - rotate: [0, 90, 0]
+                  - translate: [0, -7, -10]
+
+      - triangle:
+          material: "White"
+          vertex0: [-4, 0, 10]
+          vertex1: [0, 4, 10]
+          vertex2: [4, 0, 10]
+
+      - disc:
+          material: "Light Blue"
+          position: [-14, 2, 10]
+          normal: [0, 0, 1]
+          radius: 3
+
+      - axisAlignedBox:
+          material: "GGX"
+          minimum: [14, 8, 6]
+          maximum: [16, 10, 8]
+
+      - cylinder:
+          material: "Light Blue"
+          start: [12, -1, 0]
+          end: [13, -5, 0]
+          radius: 3
+
+      - transformed:
+          transformation:
+            build:
+              - scale: [4, 8, 2]
+              - translate: [-3, 2, 0]
+          child:
+            sphere:
+              material: "Refractive"
+              position: [0, 0, 0]
+              radius: 1
+
+      - plane:
+          material: "Green"
+          normal: [0, 0, 1]
+          point: [0, 0, -40]
+      - plane:
+          material: "Blue"
+          normal: [0, -1, 0]
+          point: [0, 20, 0]
+      - plane:
+          material: "Orange"
+          normal: [0, 1, 0]
+          point: [0, -20, 0]
+      - plane:
+          material: "Pink"
+          normal: [-1, 0, 0]
+          point: [20, 0, 0]
+      - plane:
+          material: "Yellow"
+          normal: [1, 0, 0]
+          point: [-20, 0, 0]
+          
+      - boundingGeometry:
+          boundingVolume:
+            axisAlignedBox:
+              material: "White"
+              minimum: [-19, -19, 14]
+              maximum: [19, 19, 20]
+          child:
+            geometryCollection:
+              children:
+                - sphere:
+                    material: "White"
+                    position: [-16, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, 16, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, 16, 17]
+                    radius: 3
+
+                - sphere:
+                    material: "GGX"
+                    position: [-16, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [-8, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [0, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [8, 8, 17]
+                    radius: 3
+                - sphere:
+                    material: "GGX"
+                    position: [16, 8, 17]
+                    radius: 3
+                  
+                - sphere:
+                    material: "White"
+                    position: [-16, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [-8, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [0, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [8, 0, 17]
+                    radius: 3
+                - sphere:
+                    material: "White"
+                    position: [16, 0, 17]
+                    radius: 3
+
+                - sphere:
+                    material: "Reflective"
+                    position: [-16, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [-8, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [0, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [8, -8, 17]
+                    radius: 3
+                - sphere:
+                    material: "Reflective"
+                    position: [16, -8, 17]
+                    radius: 3
+
+                - sphere:
+                    material: "Phong"
+                    position: [-16, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [-8, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [0, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [8, -16, 17]
+                    radius: 3
+                - sphere:
+                    material: "Phong"
+                    position: [16, -16, 17]
+                    radius: 3
