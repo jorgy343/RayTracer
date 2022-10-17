@@ -4,6 +4,7 @@ module;
 
 export module Math:VectorVec3;
 
+import :Color3;
 import :Vector3;
 
 namespace Yart
@@ -58,6 +59,13 @@ namespace Yart
 
         }
 
+        inline VectorVec3(Color3T<float> value)
+            requires std::same_as<vcl::Vec4f, T> || std::same_as<vcl::Vec8f, T>
+        : X{value.R}, Y{value.G}, Z{value.B}
+        {
+
+        }
+
         inline VectorVec3(double value)
             requires std::same_as<vcl::Vec2d, T> || std::same_as<vcl::Vec4d, T>
         : X{value}, Y{value}, Z{value}
@@ -82,6 +90,13 @@ namespace Yart
         inline VectorVec3(Vector3T<double> value)
             requires std::same_as<vcl::Vec2d, T> || std::same_as<vcl::Vec4d, T>
         : X{value.X}, Y{value.Y}, Z{value.Z}
+        {
+
+        }
+
+        inline VectorVec3(Color3T<double> value)
+            requires std::same_as<vcl::Vec2d, T> || std::same_as<vcl::Vec4d, T>
+        : X{value.R}, Y{value.G}, Z{value.B}
         {
 
         }

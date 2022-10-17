@@ -4,8 +4,8 @@ config:
 
 camera:
   perspective:
-    position: [0, 6371076, 0]
-    lookAt: [0, 6371076.45, 1]
+    position: [0, 5, 0]
+    lookAt: [0, 5.5, 0.1]
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
@@ -13,9 +13,19 @@ camera:
 
 missShader:
   atmosphere:
+    offset: [0, 6371071, 0]
     sunDirection:
-      normalize: [0, -0.6, -1]
-    origin: [0, 6371071, 0]
+      normalize: [0, -1, 0]
+    sunIntensity: [20]
+    lambda: 20
+    planetRadius: 6371071
+    atmosphereHeight: 60000
+    rayleighScaleHeight: 7994
+    mieScaleHeight: 1200
+    indexOfRefractionAtSeaLevel: 1.00031
+    numberDensityOfAirAtSeaLevel: 2.55e25
+    numberDensityOfAerosolsAtSeaLevel: 1.4
+    mieU: 0.8
 
 materials:
   - emissive:
@@ -79,7 +89,7 @@ geometry:
     children:
       - sphere:
           material: "Green"
-          position: [0, 0, 0]
+          position: [0, -6371071, 0]
           radius: 6371071
 
       #- sphere:
