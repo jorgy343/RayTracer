@@ -20,6 +20,16 @@ namespace vcl
     {
         return Vec4d{1.0} / a;
     }
+
+    static inline Vec2d approx_rsqrt(Vec2d const a)
+    {
+        return Vec2d{1.0} / sqrt(a);
+    }
+
+    static inline Vec4d approx_rsqrt(Vec4d const a)
+    {
+        return Vec4d{1.0} / sqrt(a);
+    }
 }
 
 template <typename T>

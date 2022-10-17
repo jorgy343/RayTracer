@@ -98,12 +98,22 @@ namespace Yart
             requires std::same_as<vcl::Vec2d, T> || std::same_as<vcl::Vec4d, T>
         : X{value.R}, Y{value.G}, Z{value.B}
         {
-
+            
         }
 
-        static inline T Dot(VectorVec3 left, VectorVec3 right)
+        inline VectorVec3& Abs()
         {
-            return mul_add(left.X, right.X, mul_add(left.Y, right.Y, left.Z * right.Z));
+            X = vcl::abs(X);
+            Y = vcl::abs(Y);
+            Z = vcl::abs(Z);
+
+            return *this;
+        }
+
+        static inline VectorVec3 Abs(const VectorVec3& value)
+        {
+            VectorVec3 result = value;
+            return result.Abs();
         }
 
         static inline VectorVec3 Cross(VectorVec3 left, VectorVec3 right)
@@ -114,6 +124,117 @@ namespace Yart
                 left.Z * right.X - left.X * right.Z,
                 left.X * right.Y - left.Y * right.X,
             };
+        }
+
+        static inline T Distance(const VectorVec3& left, const VectorVec3& right)
+        {
+            return Math::sqrt(DistanceSquared(left, right));
+        }
+
+        static inline T DistanceSquared(const VectorVec3& left, const VectorVec3& right)
+        {
+            T x = left.X - right.X;
+            T y = left.Y - right.Y;
+            T z = left.Z - right.Z;
+
+            return x * x + y * y + z * z;
+        }
+
+        static inline T Dot(VectorVec3 left, VectorVec3 right)
+        {
+            return mul_add(left.X, right.X, mul_add(left.Y, right.Y, left.Z * right.Z));
+        }
+
+        inline VectorVec3& Exp()
+        {
+            X = vcl::exp(X);
+            Y = vcl::exp(Y);
+            Z = vcl::exp(Z);
+
+            return *this;
+        }
+
+        static inline VectorVec3 Exp(const VectorVec3& value)
+        {
+            VectorVec3 result = value;
+            return result.Exp();
+        }
+
+        inline T Length() const
+        {
+            return vcl::sqrt(LengthSquared());
+        }
+
+        inline T LengthSquared() const
+        {
+            return (X * X) + (Y * Y) + (Z * Z);
+        }
+
+        inline VectorVec3& Log()
+        {
+            X = vcl::log(X);
+            Y = vcl::log(Y);
+            Z = vcl::log(Z);
+
+            return *this;
+        }
+
+        static inline VectorVec3 Log(const VectorVec3& value)
+        {
+            VectorVec3 result = value;
+            return result.Log();
+        }
+
+        static inline VectorVec3 Max(const VectorVec3& left, const VectorVec3& right)
+        {
+            return
+            {
+                vcl::max(left.X, right.X),
+                vcl::max(left.Y, right.Y),
+                vcl::max(left.Z, right.Z),
+            };
+        }
+
+        static inline VectorVec3 Min(const VectorVec3& left, const VectorVec3& right)
+        {
+            return
+            {
+                vcl::min(left.X, right.X),
+                vcl::min(left.Y, right.Y),
+                vcl::min(left.Z, right.Z),
+            };
+        }
+
+        inline VectorVec3& Normalize()
+        {
+            T inverseLength = vcl::approx_rsqrt(LengthSquared());
+
+            X *= inverseLength;
+            Y *= inverseLength;
+            Z *= inverseLength;
+
+            return *this;
+        }
+
+        static inline VectorVec3 Normalize(const VectorVec3& value)
+        {
+            VectorVec3 result = value;
+            return result.Normalize();
+        }
+
+        inline constexpr VectorVec3& Reciprical()
+        {
+            X = vcl::approx_recipr(X);
+            Y = vcl::approx_recipr(Y);
+            Z = vcl::approx_recipr(Z);
+
+            return *this;
+        }
+
+        static inline constexpr VectorVec3 Reciprical(const VectorVec3& value)
+        {
+            VectorVec3 result = value;
+            return result.Reciprical();
         }
 
         inline VectorVec3 operator+() const
@@ -263,8 +384,20 @@ namespace Yart
     }
 
     export template <vec_type T>
+        inline constexpr VectorVec3<T> operator-(T left, const VectorVec3<T>& right)
+    {
+        return {left - right.X, left - right.Y, left - right.Z};
+    }
+
+    export template <vec_type T>
         inline constexpr VectorVec3<T> operator*(T left, const VectorVec3<T>& right)
     {
         return {left * right.X, left * right.Y, left * right.Z};
+    }
+
+    export template <vec_type T>
+        inline constexpr VectorVec3<T> operator/(T left, const VectorVec3<T>& right)
+    {
+        return {left / right.X, left / right.Y, left / right.Z};
     }
 }
