@@ -112,75 +112,47 @@ namespace Yart
         template <IntersectionResultType TIntersectionResultType>
         force_inline constexpr IntersectionResult Intersect(const Ray& ray) const
         {
-            if (std::is_constant_evaluated())
+            VectorVec3<VclVec> rayPosition{ray.Position};
+            VectorVec3<VclVec> rayDirection{ray.Direction};
+
+            VectorVec3<VclVec> position{_positionX, _positionY, _positionZ};
+            VclVec radius = VclVec{}.load_a(_radius);
+
+            VectorVec3<VclVec> v = rayPosition - position;
+
+            VclVec a = VectorVec3<VclVec>::Dot(rayDirection, rayDirection);
+            VclVec b = VectorVec3<VclVec>::Dot(v, rayDirection);
+            VclVec c = VectorVec3<VclVec>::Dot(v, v) - (radius * radius);
+
+            VclVec discriminant = (b * b) - (a * c);
+            VclVec discriminantSqrt = sqrt(discriminant);
+
+            VclVec reciprocalA = approx_recipr(a);
+            VclVec negativeB = -b;
+
+            VclVec exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
+
+            VclVec result;
+            if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
             {
-                real closestDistance = std::numeric_limits<real>::infinity();
-                const Sphere* closestGeometry = nullptr;
-
-                for (int i = 0; i < Elements; i++)
-                {
-                    auto geometry = _geometries[i];
-
-                    if (geometry == nullptr)
-                    {
-                        continue;
-                    }
-
-                    real distance = geometry->Intersect<TIntersectionResultType>(ray);
-
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestGeometry = geometry;
-                    }
-                }
-
-                return {closestGeometry, closestDistance};
+                VclVec entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
+                result = entranceDistance;
             }
             else
             {
-                VectorVec3<VclVec> rayPosition{ray.Position};
-                VectorVec3<VclVec> rayDirection{ray.Direction};
-
-                VectorVec3<VclVec> position{_positionX, _positionY, _positionZ};
-                VclVec radius = VclVec{}.load_a(_radius);
-
-                VectorVec3<VclVec> v = rayPosition - position;
-
-                VclVec a = VectorVec3<VclVec>::Dot(rayDirection, rayDirection);
-                VclVec b = VectorVec3<VclVec>::Dot(v, rayDirection);
-                VclVec c = VectorVec3<VclVec>::Dot(v, v) - (radius * radius);
-
-                VclVec discriminant = (b * b) - (a * c);
-                VclVec discriminantSqrt = sqrt(discriminant);
-
-                VclVec reciprocalA = approx_recipr(a);
-                VclVec negativeB = -b;
-
-                VclVec exitDistance = (negativeB + discriminantSqrt) * reciprocalA;
-
-                VclVec result;
-                if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)
-                {
-                    VclVec entranceDistance = (negativeB - discriminantSqrt) * reciprocalA;
-                    result = entranceDistance;
-                }
-                else
-                {
-                    result = exitDistance;
-                }
-
-                // Make sure infinite8f() is second so nans are replaced with inf.
-                VclVec clampedResult = select(exitDistance >= VclVec{real{0.0}}, result, VclVec{std::numeric_limits<real>::infinity()});
-
-                real minimumEntranceDistance = horizontal_min1(clampedResult);
-                int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedResult);
-
-                return {
-                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
-                    minimumEntranceDistance,
-                };
+                result = exitDistance;
             }
+
+            // Make sure infinite8f() is second so nans are replaced with inf.
+            VclVec clampedResult = select(exitDistance >= VclVec{real{0.0}}, result, VclVec{std::numeric_limits<real>::infinity()});
+
+            real minimumEntranceDistance = horizontal_min1(clampedResult);
+            int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedResult);
+
+            return {
+                _geometries[minimumIndex == -1 ? 0 : minimumIndex],
+                minimumEntranceDistance,
+            };
         }
     };
 }

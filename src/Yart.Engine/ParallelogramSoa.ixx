@@ -131,71 +131,43 @@ namespace Yart
     private:
         force_inline IntersectionResult Intersect(const Ray& ray) const
         {
-            if (std::is_constant_evaluated())
-            {
-                real closestDistance = std::numeric_limits<real>::infinity();
-                const Parallelogram* closestGeometry = nullptr;
+            VectorVec3<VclVec> rayDirection{ray.Direction};
+            VectorVec3<VclVec> rayPosition{ray.Position};
 
-                for (int i = 0; i < Elements; i++)
-                {
-                    auto geometry = _geometries[i];
+            VectorVec3<VclVec> position{_positionX, _positionY, _positionZ};
+            VectorVec3<VclVec> edge1{_edge1X, _edge1Y, _edge1Z};
+            VectorVec3<VclVec> edge2{_edge2X, _edge2Y, _edge2Z};
 
-                    if (geometry == nullptr)
-                    {
-                        continue;
-                    }
+            VectorVec3<VclVec> p = rayDirection % edge2;
 
-                    real distance = geometry->Intersect(ray);
+            VclVec determinant = VectorVec3<VclVec>::Dot(edge1, p);
+            VclVec invDeterminant = approx_recipr(determinant);
 
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestGeometry = geometry;
-                    }
-                }
+            VectorVec3<VclVec> t = rayPosition - position;
 
-                return {closestGeometry, closestDistance};
-            }
-            else
-            {
-                VectorVec3<VclVec> rayDirection{ray.Direction};
-                VectorVec3<VclVec> rayPosition{ray.Position};
+            VclVec a = VectorVec3<VclVec>::Dot(t, p) * invDeterminant;
+            VectorVec3<VclVec> q = t % edge1;
+            VclVec b = VectorVec3<VclVec>::Dot(rayDirection, q) * invDeterminant;
 
-                VectorVec3<VclVec> position{_positionX, _positionY, _positionZ};
-                VectorVec3<VclVec> edge1{_edge1X, _edge1Y, _edge1Z};
-                VectorVec3<VclVec> edge2{_edge2X, _edge2Y, _edge2Z};
+            VclVec entranceDistance = VectorVec3<VclVec>::Dot(edge2, q) * invDeterminant;
 
-                VectorVec3<VclVec> p = rayDirection % edge2;
+            auto comparison =
+                entranceDistance >= VclVec(real{0.0}) &&
+                a >= VclVec(real{0.0}) &&
+                a <= VclVec(real{1.0}) &&
+                b >= VclVec(real{0.0}) &&
+                b <= VclVec(real{1.0});
 
-                VclVec determinant = VectorVec3<VclVec>::Dot(edge1, p);
-                VclVec invDeterminant = approx_recipr(determinant);
+            // Make sure infinite8f() is second so nans are replaced with inf.
+            VclVec clampedEntranceDistance = select(comparison, entranceDistance, VclVec{std::numeric_limits<real>::infinity()});
 
-                VectorVec3<VclVec> t = rayPosition - position;
+            real minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
+            int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedEntranceDistance);
 
-                VclVec a = VectorVec3<VclVec>::Dot(t, p) * invDeterminant;
-                VectorVec3<VclVec> q = t % edge1;
-                VclVec b = VectorVec3<VclVec>::Dot(rayDirection, q) * invDeterminant;
-
-                VclVec entranceDistance = VectorVec3<VclVec>::Dot(edge2, q) * invDeterminant;
-
-                auto comparison =
-                    entranceDistance >= VclVec(real{0.0}) &&
-                    a >= VclVec(real{0.0}) &&
-                    a <= VclVec(real{1.0}) &&
-                    b >= VclVec(real{0.0}) &&
-                    b <= VclVec(real{1.0});
-
-                // Make sure infinite8f() is second so nans are replaced with inf.
-                VclVec clampedEntranceDistance = select(comparison, entranceDistance, VclVec{std::numeric_limits<real>::infinity()});
-
-                real minimumEntranceDistance = horizontal_min1(clampedEntranceDistance);
-                int minimumIndex = horizontal_find_first(VclVec{minimumEntranceDistance} == clampedEntranceDistance);
-
-                return {
-                    _geometries[minimumIndex == -1 ? 0 : minimumIndex],
-                    minimumEntranceDistance,
-                };
-            }
+            return {
+                _geometries[minimumIndex == -1 ? 0 : minimumIndex],
+                minimumEntranceDistance,
+            };
         }
     };
 }
