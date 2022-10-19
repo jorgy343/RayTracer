@@ -27,15 +27,15 @@ namespace Yart
         Vector3 Maximum{};
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr AxisAlignedBox() = default;
+        inline AxisAlignedBox() = default;
 
-        inline constexpr AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
+        inline AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
             : Minimum{minimum}, Maximum{maximum}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr AxisAlignedBox(const BoundingBox& boundingBox, const Material* appliedMaterial)
+        inline AxisAlignedBox(const BoundingBox& boundingBox, const Material* appliedMaterial)
             : Minimum{boundingBox.Minimum}, Maximum{boundingBox.Maximum}, AppliedMaterial{appliedMaterial}
         {
 

@@ -52,7 +52,7 @@ namespace Yart
         //static constexpr Color3 Bm{real{21e-6}};
 
     public:
-        constexpr AtmosphereMissShader(
+        AtmosphereMissShader(
             const Vector3& offset,
             const Vector3& sunDirection,
             const Color3& sunIntensity,

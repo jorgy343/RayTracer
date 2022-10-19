@@ -23,9 +23,9 @@ namespace Yart
         const Material* AppliedMaterial{nullptr};
 
     public:
-        inline constexpr Parallelogram() = default;
+        inline Parallelogram() = default;
 
-        inline constexpr Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const Material* appliedMaterial)
+        inline Parallelogram(const Vector3& position, const Vector3& edge1, const Vector3& edge2, const Material* appliedMaterial)
             : Position{position}, Edge1{edge1}, Edge2{edge2}, Normal{(edge1 % edge2).Normalize()}, AppliedMaterial{appliedMaterial}, Area{(edge1 % edge2).Length()}
         {
 

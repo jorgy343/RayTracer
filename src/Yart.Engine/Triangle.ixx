@@ -27,9 +27,9 @@ namespace Yart
 
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr Triangle() = default;
+        inline Triangle() = default;
 
-        inline constexpr Triangle(
+        inline Triangle(
             const Vector3& vertex0,
             const Vector3& vertex1,
             const Vector3& vertex2,
@@ -46,7 +46,7 @@ namespace Yart
 
         }
 
-        inline constexpr Triangle(
+        inline Triangle(
             const Vector3& vertex0,
             const Vector3& vertex1,
             const Vector3& vertex2,

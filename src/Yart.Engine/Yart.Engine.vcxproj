@@ -90,6 +90,7 @@
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="BoundingBox.ixx" />
     <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="SignedDistance.ixx" />
     <ClCompile Include="Math-Color3.ixx" />
     <ClCompile Include="Math-Color3Decl.ixx" />
     <ClCompile Include="Math-Color4.ixx" />
@@ -123,6 +124,7 @@
     <ClCompile Include="MissShader.ixx" />
     <ClCompile Include="OrthographicCamera.ixx" />
     <ClCompile Include="PhongMaterial.ixx" />
+    <ClCompile Include="RayMarcher.ixx" />
     <ClCompile Include="ReflectiveMaterial.ixx" />
     <ClCompile Include="MonteCarlo.ixx" />
     <ClCompile Include="Parallelogram.ixx" />
@@ -137,6 +139,7 @@
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="RefractiveMaterial.ixx" />
     <ClCompile Include="Scene.ixx" />
+    <ClCompile Include="SignedDistanceSphere.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />
     <ClCompile Include="TransformedGeometry.ixx" />

@@ -18,15 +18,15 @@ namespace Yart
         real Distance{};
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr Plane() = default;
+        inline Plane() = default;
 
-        inline constexpr Plane(const Vector3& normal, real distance, const Material* appliedMaterial)
+        inline Plane(const Vector3& normal, real distance, const Material* appliedMaterial)
             : Normal{normal}, Distance{distance}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
+        inline Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
             : Normal{normal}, Distance{-(normal * point)}, AppliedMaterial{appliedMaterial}
         {
 

@@ -23,9 +23,9 @@ namespace Yart
         real Area{};
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr Disc() = default;
+        inline Disc() = default;
 
-        inline constexpr Disc(
+        inline Disc(
             const Vector3& position,
             const Vector3& normal,
             const real radius,

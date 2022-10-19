@@ -123,6 +123,15 @@ geometry:
 
       - boundingGeometry:
           child:
+            rayMarcher:
+              children:
+                - sphere:
+                    material: "Light Blue"
+                    position: [-14, -4, 0]
+                    radius: 3
+
+      - boundingGeometry:
+          child:
             triangleMeshObj:
               material: "White"
               objFile: "../../../../Yart.Engine/teapot.obj"

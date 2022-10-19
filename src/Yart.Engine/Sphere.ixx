@@ -1,6 +1,6 @@
 export module Sphere;
 
-import <limits>;
+import "Common.h";
 
 import BoundingBox;
 import Geometry;
@@ -16,12 +16,12 @@ namespace Yart
     {
     public:
         Vector3 Position{};
-        real Radius{real{0.0}};
+        real Radius{};
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr Sphere() = default;
+        inline Sphere() = default;
 
-        inline constexpr Sphere(const Vector3& position, real radius, const Material* appliedMaterial)
+        inline Sphere(const Vector3& position, real radius, const Material* appliedMaterial)
             : Position{position}, Radius{radius}, AppliedMaterial{appliedMaterial}
         {
 

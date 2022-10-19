@@ -19,7 +19,7 @@ namespace Yart
 		Matrix4x4 InverseTransposedTransform{};
 
 	public:
-		inline constexpr TransformedGeometry(const Geometry* childGeometry, const Matrix4x4& transform)
+		inline TransformedGeometry(const Geometry* childGeometry, const Matrix4x4& transform)
 			:
 			ChildGeometry{childGeometry},
 			InversedTransform{transform.InvertConst()},

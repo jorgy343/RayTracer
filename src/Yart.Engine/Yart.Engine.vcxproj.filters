@@ -46,6 +46,9 @@
     <Filter Include="Modules\MissShaders">
       <UniqueIdentifier>{9872fd4e-7835-4b7b-ab20-d84604face84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\Geometries\RayMarching">
+      <UniqueIdentifier>{d6e15bdc-7c5f-4632-944b-d3cd67ebec39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DllMain.cpp">
@@ -272,6 +275,15 @@
     </ClCompile>
     <ClCompile Include="Math-VectorVec3.ixx">
       <Filter>Modules\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SignedDistance.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
+    <ClCompile Include="RayMarcher.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
+    <ClCompile Include="SignedDistanceSphere.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

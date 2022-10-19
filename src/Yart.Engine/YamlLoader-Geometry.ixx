@@ -35,6 +35,9 @@ import Parallelogram;
 import ParallelogramSoa;
 import Plane;
 import PlaneSoa;
+import RayMarcher;
+import SignedDistance;
+import SignedDistanceSphere;
 import Sphere;
 import SphereSoa;
 import TransformedGeometry;
@@ -51,11 +54,14 @@ namespace Yart::Yaml
         std::vector<std::shared_ptr<const IntersectableGeometry>> Geometries{};
         std::vector<const AreaLight*> AreaLights{};
 
+        std::vector<std::shared_ptr<const SignedDistance>> SignedDistances{};
+
         const IntersectableGeometry* Geometry{};
     };
 
     std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly);
     std::shared_ptr<std::vector<const IntersectableGeometry*>> ParseGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
+    std::shared_ptr<std::vector<const SignedDistance*>> ParseSignedDistanceGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
 
     const Sphere* ParseSphereNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
@@ -352,6 +358,30 @@ namespace Yart::Yaml
         //return BuildUniformBoundingBoxHierarchy(parameters, triangles, parseGeometryResults.Geometries);
     }
 
+    const RayMarcher* ParseRayMarcherNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto children = ParseSignedDistanceGeometrySequenceNode(node["children"], materialMap, parseGeometryResults);
+
+        auto geometry = std::make_shared<const RayMarcher>(*children);
+        parseGeometryResults.Geometries.push_back(geometry);
+
+        return geometry.get();
+    }
+
+    const SignedDistanceSphere* ParseSignedDistanceSphere(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto position = ParseVector3(node["position"]);
+        auto radius = node["radius"].as<float>();
+
+        auto signedDistance = std::make_shared<const SignedDistanceSphere>(position, radius, material);
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
     static std::vector<std::tuple<std::string, bool, bool, std::function<const IntersectableGeometry* (const Node&, const MaterialMap&, ParseGeometryResults&, std::vector<const IntersectableGeometry*>*)>>> GeometryMapFunctions
     {
         {"sphere", true, false, &ParseSphereNode},
@@ -365,6 +395,12 @@ namespace Yart::Yaml
         {"boundingGeometry", false, true, &ParseBoundingGeometryNode},
         {"transformed", true, true, &ParseTransformedGeometryNode},
         {"triangleMeshObj", true, true, &ParseTriangleMeshObjNode},
+        {"rayMarcher", false, true, ParseRayMarcherNode},
+    };
+
+    static std::vector<std::tuple<std::string, std::function<const SignedDistance* (const Node&, const MaterialMap&, ParseGeometryResults&)>>> SignedDistanceMapFunctions
+    {
+        {"sphere", &ParseSignedDistanceSphere},
     };
 
     std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly)
@@ -381,6 +417,21 @@ namespace Yart::Yaml
             {
                 auto geometry = functionPointer(childNode, materialMap, parseGeometryResults, sequenceGeometries);
                 return std::make_tuple(geometry, shouldInclude);
+            }
+        }
+
+        return std::make_tuple(nullptr, false);
+    }
+
+    std::tuple<const SignedDistance*, bool> ParseSignedDistanceGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    {
+        for (const auto& [nodeName, functionPointer] : SignedDistanceMapFunctions)
+        {
+            auto childNode = node[nodeName];
+            if (childNode)
+            {
+                auto geometry = functionPointer(childNode, materialMap, parseGeometryResults);
+                return std::make_tuple(geometry, true);
             }
         }
 
@@ -404,6 +455,22 @@ namespace Yart::Yaml
         CreateGeometrySoaStructures(sequenceGeometries, *geometries, parseGeometryResults.Geometries);
 
         return geometries;
+    }
+
+    std::shared_ptr<std::vector<const SignedDistance*>> ParseSignedDistanceGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    {
+        auto signedDistances = std::shared_ptr<std::vector<const SignedDistance*>>{new std::vector<const SignedDistance*>{}};
+
+        for (const Node& childNode : node)
+        {
+            auto [signedDistance, shouldInclude] = ParseSignedDistanceGeometryNode(childNode, materialMap, parseGeometryResults);
+            if (shouldInclude)
+            {
+                signedDistances->push_back(signedDistance);
+            }
+        }
+
+        return signedDistances;
     }
 
     export std::shared_ptr<ParseGeometryResults> ParseSceneNode(const Node& node, const MaterialMap& materialMap)

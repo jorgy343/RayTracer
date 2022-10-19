@@ -13,20 +13,32 @@ namespace Yart
 {
 	export class GeometryCollection : public IntersectableGeometry
 	{
-    public:
-		std::vector<const IntersectableGeometry*> ChildGeometries{};
+    protected:
+		std::vector<const IntersectableGeometry*> Children{};
 
 	public:
 		inline constexpr explicit GeometryCollection(std::initializer_list<const IntersectableGeometry*> childGeometries)
-			: ChildGeometries{childGeometries}
+			: Children{childGeometries}
 		{
 
 		}
 
         inline constexpr explicit GeometryCollection(std::vector<const IntersectableGeometry*> childGeometries)
-            : ChildGeometries{childGeometries}
+            : Children{childGeometries}
         {
 
+        }
+
+        BoundingBoxT<real> CalculateBoundingBox() const override
+        {
+            BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
+
+            for (const auto& child : Children)
+            {
+                boundingBox = boundingBox.Union(child->CalculateBoundingBox());
+            }
+
+            return boundingBox;
         }
 
 		inline IntersectionResult IntersectEntrance(const Ray& ray) const override
@@ -45,7 +57,7 @@ namespace Yart
 		{
 			IntersectionResult closestResult{nullptr, std::numeric_limits<real>::infinity()};
 
-			for (auto geometry : ChildGeometries)
+			for (auto geometry : Children)
 			{
 				IntersectionResult result;
 				if constexpr (TIntersectionResultType == IntersectionResultType::Entrance)

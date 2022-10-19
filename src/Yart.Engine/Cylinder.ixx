@@ -18,9 +18,9 @@ namespace Yart
         real Radius{};
         const Material* AppliedMaterial{nullptr};
 
-        inline constexpr Cylinder() = default;
+        inline Cylinder() = default;
 
-        inline constexpr Cylinder(
+        inline Cylinder(
             const Vector3& start,
             const Vector3& end,
             real radius,

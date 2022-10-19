@@ -64,7 +64,10 @@ namespace Yart
 
             if (intersection.HitGeometry)
             {
-                const Material* material = intersection.HitGeometry->GetMaterial();
+                // TODO: The material override feels a bit hacky. It's used to support signed distance field ray marching results.
+                const Material* material = intersection.MaterialOverride != nullptr ? intersection.MaterialOverride : intersection.HitGeometry->GetMaterial();
+
+
 
                 Vector3 hitPosition = ray.Position + intersection.HitDistance * ray.Direction;
                 Vector3 hitNormal = intersection.HitGeometry->CalculateNormal(ray, hitPosition, intersection.AdditionalData);
