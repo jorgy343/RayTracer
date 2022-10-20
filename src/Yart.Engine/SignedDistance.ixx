@@ -4,21 +4,15 @@ import "Common.h";
 
 import BoundingBox;
 import Geometry;
-import Math;
 import Material;
+import Math;
+import SignedDistanceResult;
 
 namespace Yart
 {
     export class SignedDistance
     {
     public:
-        const Material* AppliedMaterial{};
-
-        SignedDistance(const Material* appliedMaterial)
-            : AppliedMaterial{appliedMaterial}
-        {
-
-        }
 
         virtual constexpr BoundingBox CalculateBoundingBox() const
         {
@@ -28,6 +22,7 @@ namespace Yart
             };
         }
 
-        virtual real ClosestDistance(const Vector3& point) const = 0;
+        virtual constexpr const Material* GetMaterial() const = 0;
+        virtual SignedDistanceResult ClosestDistance(const Vector3& point) const = 0;
     };
 }

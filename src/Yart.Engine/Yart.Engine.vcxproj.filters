@@ -282,7 +282,19 @@
     <ClCompile Include="RayMarcher.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
-    <ClCompile Include="SignedDistanceSphere.ixx">
+    <ClCompile Include="SignedDistanceBinaryOperation.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
+    <ClCompile Include="SignedDistanceBinaryOperator.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
+    <ClCompile Include="MixedMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="SignedDistanceResult.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
+    <ClCompile Include="SignedDistanceSmoothBinaryOperation.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,10 +9,12 @@ import IntersectionResultType;
 import Material;
 import Math;
 import Ray;
+import SignedDistance;
+import SignedDistanceResult;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(32) Sphere : public Geometry
+    export class __declspec(dllexport) alignas(32) Sphere : virtual public Geometry, virtual public SignedDistance
     {
     public:
         Vector3 Position{};
@@ -89,6 +91,11 @@ namespace Yart
             }
 
             return exitDistance >= real{0.0} ? result : std::numeric_limits<real>::infinity();
+        }
+
+        SignedDistanceResult ClosestDistance(const Vector3& point) const override
+        {
+            return {Vector3::Distance(point, Position) - Radius, real{0}};
         }
     };
 }

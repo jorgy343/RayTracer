@@ -31,13 +31,16 @@ import GeometrySoaUtilities;
 import IntersectableGeometry;
 import Material;
 import Math;
+import MixedMaterial;
 import Parallelogram;
 import ParallelogramSoa;
 import Plane;
 import PlaneSoa;
 import RayMarcher;
 import SignedDistance;
-import SignedDistanceSphere;
+import SignedDistanceBinaryOperation;
+import SignedDistanceBinaryOperator;
+import SignedDistanceSmoothBinaryOperation;
 import Sphere;
 import SphereSoa;
 import TransformedGeometry;
@@ -55,15 +58,18 @@ namespace Yart::Yaml
         std::vector<const AreaLight*> AreaLights{};
 
         std::vector<std::shared_ptr<const SignedDistance>> SignedDistances{};
+        std::vector<std::shared_ptr<const Material>> AdditionalMaterials{};
 
         const IntersectableGeometry* Geometry{};
     };
 
-    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly);
-    std::shared_ptr<std::vector<const IntersectableGeometry*>> ParseGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
-    std::shared_ptr<std::vector<const SignedDistance*>> ParseSignedDistanceGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
+    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly);
+    std::shared_ptr<std::vector<const IntersectableGeometry*>> ParseGeometrySequenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
 
-    const Sphere* ParseSphereNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    std::tuple<const SignedDistance*, bool> ParseSignedDistanceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
+    std::shared_ptr<std::vector<const SignedDistance*>> ParseSignedDistanceGeometrySequenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults);
+
+    const Sphere* ParseSphereNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -82,7 +88,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Plane* ParsePlaneNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const Plane* ParsePlaneNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -101,7 +107,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Parallelogram* ParseParallelogramNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const Parallelogram* ParseParallelogramNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto areaLight = node["areaLight"].as<bool>(false);
 
@@ -128,7 +134,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Triangle* ParseTriangleNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const Triangle* ParseTriangleNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -166,7 +172,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Disc* ParseDiscNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const Disc* ParseDiscNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto areaLight = node["areaLight"].as<bool>(false);
 
@@ -188,7 +194,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -207,7 +213,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Cylinder* ParseCylinderNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const Cylinder* ParseCylinderNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -222,7 +228,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const GeometryCollection* ParseGeometryCollectionNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const GeometryCollection* ParseGeometryCollectionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto children = ParseGeometrySequenceNode(node["children"], materialMap, parseGeometryResults);
 
@@ -232,7 +238,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const BoundingGeometry* ParseBoundingGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const BoundingGeometry* ParseBoundingGeometryNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto [child, ignored1] = ParseGeometryNode(node["child"], materialMap, parseGeometryResults, nullptr, false);
 
@@ -252,7 +258,7 @@ namespace Yart::Yaml
         }
     }
 
-    const TransformedGeometry* ParseTransformedGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const TransformedGeometry* ParseTransformedGeometryNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto [childGeometry, ignored] = ParseGeometryNode(node["child"], materialMap, parseGeometryResults, nullptr, true);
         auto matrix = ParseMatrix4x4(node["transformation"]);
@@ -263,7 +269,7 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const IntersectableGeometry* ParseTriangleMeshObjNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const IntersectableGeometry* ParseTriangleMeshObjNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
         auto material = materialMap.at(materialName).get();
@@ -358,7 +364,7 @@ namespace Yart::Yaml
         //return BuildUniformBoundingBoxHierarchy(parameters, triangles, parseGeometryResults.Geometries);
     }
 
-    const RayMarcher* ParseRayMarcherNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    const RayMarcher* ParseRayMarcherNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto children = ParseSignedDistanceGeometrySequenceNode(node["children"], materialMap, parseGeometryResults);
 
@@ -368,21 +374,97 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const SignedDistanceSphere* ParseSignedDistanceSphere(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    const SignedDistance* ParseSignedDistanceBinaryOperationUnionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
-        auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
+        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
 
-        auto position = ParseVector3(node["position"]);
-        auto radius = node["radius"].as<float>();
+        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
+        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
 
-        auto signedDistance = std::make_shared<const SignedDistanceSphere>(position, radius, material);
+        auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Union>>(left, right, mixedMaterial.get());
         parseGeometryResults.SignedDistances.push_back(signedDistance);
 
         return signedDistance.get();
     }
 
-    static std::vector<std::tuple<std::string, bool, bool, std::function<const IntersectableGeometry* (const Node&, const MaterialMap&, ParseGeometryResults&, std::vector<const IntersectableGeometry*>*)>>> GeometryMapFunctions
+    const SignedDistance* ParseSignedDistanceBinaryOperationIntersectionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
+        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
+
+        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
+        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
+
+        auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Intersection>>(left, right, mixedMaterial.get());
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
+    const SignedDistance* ParseSignedDistanceBinaryOperationDifferenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
+        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
+
+        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
+        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
+
+        auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Difference>>(left, right, mixedMaterial.get());
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
+    const SignedDistance* ParseSignedSmoothDistanceBinaryOperationUnionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto smoothing = node["smoothing"].as<real>();
+
+        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
+        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
+
+        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
+        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
+
+        auto signedDistance = std::make_shared<const SignedDistanceSmoothBinaryOperation<SignedDistanceBinaryOperator::Union>>(smoothing, left, right, mixedMaterial.get());
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
+    const SignedDistance* ParseSignedSmoothDistanceBinaryOperationIntersectionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto smoothing = node["smoothing"].as<real>();
+
+        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
+        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
+
+        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
+        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
+
+        auto signedDistance = std::make_shared<const SignedDistanceSmoothBinaryOperation<SignedDistanceBinaryOperator::Intersection>>(smoothing, left, right, mixedMaterial.get());
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
+    const SignedDistance* ParseSignedSmoothDistanceBinaryOperationDifferenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto smoothing = node["smoothing"].as<real>();
+
+        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
+        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
+
+        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
+        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
+
+        auto signedDistance = std::make_shared<const SignedDistanceSmoothBinaryOperation<SignedDistanceBinaryOperator::Difference>>(smoothing, left, right, mixedMaterial.get());
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
+    static std::vector<std::tuple<std::string, bool, bool, std::function<const IntersectableGeometry* (const Node&, MaterialMap&, ParseGeometryResults&, std::vector<const IntersectableGeometry*>*)>>> GeometryMapFunctions
     {
         {"sphere", true, false, &ParseSphereNode},
         {"plane", true, false, &ParsePlaneNode},
@@ -398,12 +480,18 @@ namespace Yart::Yaml
         {"rayMarcher", false, true, ParseRayMarcherNode},
     };
 
-    static std::vector<std::tuple<std::string, std::function<const SignedDistance* (const Node&, const MaterialMap&, ParseGeometryResults&)>>> SignedDistanceMapFunctions
+    static std::vector<std::tuple<std::string, std::function<const SignedDistance* (const Node&, MaterialMap&, ParseGeometryResults&, std::vector<const IntersectableGeometry*>*)>>> SignedDistanceMapFunctions
     {
-        {"sphere", &ParseSignedDistanceSphere},
+        {"sphere", &ParseSphereNode},
+        {"union", &ParseSignedDistanceBinaryOperationUnionNode},
+        {"intersection", &ParseSignedDistanceBinaryOperationIntersectionNode},
+        {"difference", &ParseSignedDistanceBinaryOperationDifferenceNode},
+        {"smoothUnion", &ParseSignedSmoothDistanceBinaryOperationUnionNode},
+        {"smoothIntersection", &ParseSignedSmoothDistanceBinaryOperationIntersectionNode},
+        {"smoothDifference", &ParseSignedSmoothDistanceBinaryOperationDifferenceNode},
     };
 
-    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly)
+    std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly)
     {
         for (const auto& [nodeName, isGeometry, shouldInclude, functionPointer] : GeometryMapFunctions)
         {
@@ -423,14 +511,14 @@ namespace Yart::Yaml
         return std::make_tuple(nullptr, false);
     }
 
-    std::tuple<const SignedDistance*, bool> ParseSignedDistanceGeometryNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    std::tuple<const SignedDistance*, bool> ParseSignedDistanceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
     {
         for (const auto& [nodeName, functionPointer] : SignedDistanceMapFunctions)
         {
             auto childNode = node[nodeName];
             if (childNode)
             {
-                auto geometry = functionPointer(childNode, materialMap, parseGeometryResults);
+                auto geometry = functionPointer(childNode, materialMap, parseGeometryResults, nullptr);
                 return std::make_tuple(geometry, true);
             }
         }
@@ -438,7 +526,7 @@ namespace Yart::Yaml
         return std::make_tuple(nullptr, false);
     }
 
-    std::shared_ptr<std::vector<const IntersectableGeometry*>> ParseGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    std::shared_ptr<std::vector<const IntersectableGeometry*>> ParseGeometrySequenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
     {
         std::vector<const IntersectableGeometry*> sequenceGeometries{};
         auto geometries = std::shared_ptr<std::vector<const IntersectableGeometry*>>{new std::vector<const IntersectableGeometry*>{}};
@@ -457,13 +545,13 @@ namespace Yart::Yaml
         return geometries;
     }
 
-    std::shared_ptr<std::vector<const SignedDistance*>> ParseSignedDistanceGeometrySequenceNode(const Node& node, const MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
+    std::shared_ptr<std::vector<const SignedDistance*>> ParseSignedDistanceGeometrySequenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults)
     {
         auto signedDistances = std::shared_ptr<std::vector<const SignedDistance*>>{new std::vector<const SignedDistance*>{}};
 
         for (const Node& childNode : node)
         {
-            auto [signedDistance, shouldInclude] = ParseSignedDistanceGeometryNode(childNode, materialMap, parseGeometryResults);
+            auto [signedDistance, shouldInclude] = ParseSignedDistanceNode(childNode, materialMap, parseGeometryResults);
             if (shouldInclude)
             {
                 signedDistances->push_back(signedDistance);
@@ -473,7 +561,7 @@ namespace Yart::Yaml
         return signedDistances;
     }
 
-    export std::shared_ptr<ParseGeometryResults> ParseSceneNode(const Node& node, const MaterialMap& materialMap)
+    export std::shared_ptr<ParseGeometryResults> ParseSceneNode(const Node& node, MaterialMap& materialMap)
     {
         auto parseGeometryResults = std::shared_ptr<ParseGeometryResults>(new ParseGeometryResults{});
 

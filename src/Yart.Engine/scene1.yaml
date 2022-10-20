@@ -1,5 +1,5 @@
 config:
-  iterations: 8
+  iterations: 22
   colorClamp: [0, 1]
 
 camera:
@@ -9,7 +9,7 @@ camera:
     up: [0, 1, 0]
     fov: 45
     screenSize: [1920, 1080]
-    subpixelCount: 4
+    subpixelCount: 16
 
   #orthographic:
   #  position: [0, 0, -39]
@@ -125,10 +125,18 @@ geometry:
           child:
             rayMarcher:
               children:
-                - sphere:
-                    material: "Light Blue"
-                    position: [-14, -4, 0]
-                    radius: 3
+                - smoothUnion:
+                    smoothing: 3
+                    left:
+                      sphere:
+                        material: "Blue"
+                        position: [-9, -4, 0]
+                        radius: 3
+                    right:
+                      sphere:
+                        material: "Red"
+                        position: [-15, -4, 0]
+                        radius: 3
 
       - boundingGeometry:
           child:

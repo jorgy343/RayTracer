@@ -30,7 +30,8 @@ namespace Yart
             const Geometry* hitGeometry,
             const Vector3& hitPosition,
             const Vector3& hitNormal,
-            const Vector3& incomingDirection) const override
+            const Vector3& incomingDirection,
+            real mixAmount) const override
         {
             Vector3 refractionDirection = Vector3::Refract(incomingDirection, hitNormal, real{1.0}, RefractionIndex);
             if (refractionDirection.LengthSquared() < real{0.01})

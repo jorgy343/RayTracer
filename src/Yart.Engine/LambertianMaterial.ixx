@@ -29,7 +29,8 @@ namespace Yart
             const Geometry* hitGeometry,
             const Vector3& hitPosition,
             const Vector3& hitNormal,
-            const Vector3& incomingDirection) const override
+            const Vector3& incomingDirection,
+            real mixAmount) const override
 		{
 			real roulettePower{real{1.0}};
 			if constexpr (EnableRoulette)

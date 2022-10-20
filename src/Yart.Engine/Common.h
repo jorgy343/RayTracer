@@ -16,6 +16,14 @@ using real = double;
 using real = float;
 #endif
 
+#ifdef USE_DOUBLE
+constexpr real NormalBump{0.001};
+constexpr real Epsilon{0.0001};
+#else
+constexpr real NormalBump{0.05};
+constexpr real Epsilon{0.001};
+#endif
+
 template <typename T>
 concept real_number = std::same_as<float, T> || std::same_as<double, T>;
 
@@ -42,10 +50,4 @@ namespace Yart
     constexpr real OneOverTwoPi = real{0.1591549430918953357688837633725143620344596457404564487476673440588967976342265350901138027662530859560728427267};
     constexpr real OneOverFourPi = real{0.0795774715459476678844418816862571810172298228702282243738336720294483988171132675450569013831265429780364213633};
     constexpr real OneOverEightPi = real{0.0397887357729738339422209408431285905086149114351141121869168360};
-
-#ifdef USE_DOUBLE
-    constexpr real NormalBump = real{0.001};
-#else
-    constexpr real NormalBump = real{0.05};
-#endif
 }

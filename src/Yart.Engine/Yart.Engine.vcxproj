@@ -90,6 +90,7 @@
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="BoundingBox.ixx" />
     <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="MixedMaterial.ixx" />
     <ClCompile Include="SignedDistance.ixx" />
     <ClCompile Include="Math-Color3.ixx" />
     <ClCompile Include="Math-Color3Decl.ixx" />
@@ -139,7 +140,10 @@
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="RefractiveMaterial.ixx" />
     <ClCompile Include="Scene.ixx" />
-    <ClCompile Include="SignedDistanceSphere.ixx" />
+    <ClCompile Include="SignedDistanceBinaryOperation.ixx" />
+    <ClCompile Include="SignedDistanceBinaryOperator.ixx" />
+    <ClCompile Include="SignedDistanceResult.ixx" />
+    <ClCompile Include="SignedDistanceSmoothBinaryOperation.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />
     <ClCompile Include="TransformedGeometry.ixx" />
