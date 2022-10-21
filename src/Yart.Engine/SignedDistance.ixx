@@ -10,10 +10,9 @@ import SignedDistanceResult;
 
 namespace Yart
 {
-    export class SignedDistance
+    export __declspec(dllexport) class SignedDistance
     {
     public:
-
         virtual constexpr BoundingBox CalculateBoundingBox() const
         {
             return BoundingBox{

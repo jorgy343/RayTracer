@@ -180,9 +180,6 @@
     <ClCompile Include="physseed.cpp">
       <Filter>Source Files\Vcl</Filter>
     </ClCompile>
-    <ClCompile Include="Cylinder.ixx">
-      <Filter>Modules\Geometries</Filter>
-    </ClCompile>
     <ClCompile Include="Disc.ixx">
       <Filter>Modules\Geometries</Filter>
     </ClCompile>
@@ -292,6 +289,9 @@
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
     <ClCompile Include="SignedDistanceBinaryOperation.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
+    <ClCompile Include="SignedDistanceCylinder.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
   </ItemGroup>

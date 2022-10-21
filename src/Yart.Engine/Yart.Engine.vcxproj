@@ -96,7 +96,6 @@
     <ClCompile Include="Math-Color3Decl.ixx" />
     <ClCompile Include="Math-Color4.ixx" />
     <ClCompile Include="ConstantMissShader.ixx" />
-    <ClCompile Include="Cylinder.ixx" />
     <ClCompile Include="DiffuseMaterial.ixx" />
     <ClCompile Include="DirectionalLight.ixx" />
     <ClCompile Include="Disc.ixx" />
@@ -141,6 +140,7 @@
     <ClCompile Include="RefractiveMaterial.ixx" />
     <ClCompile Include="Scene.ixx" />
     <ClCompile Include="SignedDistanceBinaryOperator.ixx" />
+    <ClCompile Include="SignedDistanceCylinder.ixx" />
     <ClCompile Include="SignedDistanceResult.ixx" />
     <ClCompile Include="SignedDistanceBinaryOperation.ixx" />
     <ClCompile Include="Sphere.ixx" />

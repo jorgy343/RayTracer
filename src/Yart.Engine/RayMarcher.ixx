@@ -16,6 +16,12 @@ namespace Yart
 
     export class RayMarcher : public Geometry
     {
+    private:
+        Vector3 SampleXCoordinates{NormalEpsilon, -NormalEpsilon, -NormalEpsilon};
+        Vector3 SampleYCoordinates{-NormalEpsilon, NormalEpsilon, -NormalEpsilon};
+        Vector3 SampleZCoordinates{-NormalEpsilon, -NormalEpsilon, NormalEpsilon};
+        Vector3 SampleAllCoordinates{NormalEpsilon, NormalEpsilon, NormalEpsilon};
+
     protected:
         std::vector<const SignedDistance*> Children{};
 
@@ -45,16 +51,12 @@ namespace Yart
 
         Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
-            real distance = std::get<0>(ClosestDistance(hitPosition)).Distance;
+            Vector3 sampleX = SampleXCoordinates * std::get<0>(ClosestDistance(hitPosition + SampleXCoordinates)).Distance;
+            Vector3 sampleY = SampleYCoordinates * std::get<0>(ClosestDistance(hitPosition + SampleYCoordinates)).Distance;
+            Vector3 sampleZ = SampleZCoordinates * std::get<0>(ClosestDistance(hitPosition + SampleZCoordinates)).Distance;
+            Vector3 sampleAll = SampleAllCoordinates * std::get<0>(ClosestDistance(hitPosition + SampleAllCoordinates)).Distance;
 
-            Vector3 normal
-            {
-                std::get<0>(ClosestDistance(hitPosition + Vector3{NormalEpsilon, real{}, real{}})).Distance - std::get<0>(ClosestDistance(hitPosition - Vector3{NormalEpsilon, real{}, real{}})).Distance,
-                std::get<0>(ClosestDistance(hitPosition + Vector3{real{}, NormalEpsilon, real{}})).Distance - std::get<0>(ClosestDistance(hitPosition - Vector3{real{}, NormalEpsilon, real{}})).Distance,
-                std::get<0>(ClosestDistance(hitPosition + Vector3{real{}, real{}, NormalEpsilon})).Distance - std::get<0>(ClosestDistance(hitPosition - Vector3{real{}, real{}, NormalEpsilon})).Distance,
-            };
-
-            return normal.Normalize();
+            return (sampleX + sampleY + sampleZ + sampleAll).Normalize();
         }
 
         IntersectionResult IntersectEntrance(const Ray& ray) const override

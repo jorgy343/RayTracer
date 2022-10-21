@@ -164,6 +164,12 @@ namespace Yart
         }
 
         export template <any_number T>
+            inline constexpr T sign(T value)
+        {
+            return value < T{0} ? T{-1} : T{1};
+        }
+
+        export template <any_number T>
             inline constexpr T sqrt(T value)
         {
             if (std::is_constant_evaluated())

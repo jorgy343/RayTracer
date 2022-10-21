@@ -148,6 +148,16 @@ geometry:
 
       - boundingGeometry:
           child:
+            rayMarcher:
+              children:
+                - cylinder:
+                    material: "Light Blue"
+                    start: [12, -1, 0]
+                    end: [13, -5, 0]
+                    radius: 3
+
+      - boundingGeometry:
+          child:
             triangleMeshObj:
               material: "White"
               objFile: "../../../../Yart.Engine/teapot.obj"
@@ -173,12 +183,6 @@ geometry:
           material: "GGX"
           minimum: [14, 8, 6]
           maximum: [16, 10, 8]
-
-      - cylinder:
-          material: "Light Blue"
-          start: [12, -1, 0]
-          end: [13, -5, 0]
-          radius: 3
 
       - transformed:
           transformation:

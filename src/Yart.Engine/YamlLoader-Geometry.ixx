@@ -23,7 +23,6 @@ import AxisAlignedBox;
 import AxisAlignedBoxSoa;
 import BoundingBoxHierarchy;
 import BoundingGeometry;
-import Cylinder;
 import Disc;
 import GeometryCollection;
 import GeometrySoa;
@@ -40,6 +39,7 @@ import RayMarcher;
 import SignedDistance;
 import SignedDistanceBinaryOperation;
 import SignedDistanceBinaryOperator;
+import SignedDistanceCylinder;
 import Sphere;
 import SphereSoa;
 import TransformedGeometry;
@@ -212,21 +212,6 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
-    const Cylinder* ParseCylinderNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
-    {
-        auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
-
-        auto start = ParseVector3(node["start"]);
-        auto end = ParseVector3(node["end"]);
-        auto radius = node["radius"].as<float>();
-
-        auto geometry = std::make_shared<const Cylinder>(start, end, radius, material);
-        parseGeometryResults.Geometries.push_back(geometry);
-
-        return geometry.get();
-    }
-
     const GeometryCollection* ParseGeometryCollectionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto children = ParseGeometrySequenceNode(node["children"], materialMap, parseGeometryResults);
@@ -373,6 +358,21 @@ namespace Yart::Yaml
         return geometry.get();
     }
 
+    const SignedDistanceCylinder* ParseSignedDistanceCylinderNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto start = ParseVector3(node["start"]);
+        auto end = ParseVector3(node["end"]);
+        auto radius = node["radius"].as<float>();
+
+        auto signedDistance = std::make_shared<const SignedDistanceCylinder>(start, end, radius, material);
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
     const SignedDistance* ParseSignedDistanceBinaryOperationUnionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto smoothingAmount = node["smoothingAmount"].as<real>(real{0});
@@ -459,7 +459,6 @@ namespace Yart::Yaml
         {"triangle", true, false, &ParseTriangleNode},
         {"disc", true, true, &ParseDiscNode},
         {"axisAlignedBox", true, false, &ParseAxisAlignedBoxNode},
-        {"cylinder", true, true, &ParseCylinderNode},
         {"geometryCollection", false, true, &ParseGeometryCollectionNode},
         {"boundingGeometry", false, true, &ParseBoundingGeometryNode},
         {"transformed", true, true, &ParseTransformedGeometryNode},
@@ -471,6 +470,7 @@ namespace Yart::Yaml
     {
         {"sphere", &ParseSphereNode},
         {"axisAlignedBox", &ParseAxisAlignedBoxNode},
+        {"cylinder", &ParseSignedDistanceCylinderNode},
         {"union", &ParseSignedDistanceBinaryOperationUnionNode},
         {"intersection", &ParseSignedDistanceBinaryOperationIntersectionNode},
         {"difference", &ParseSignedDistanceBinaryOperationDifferenceNode},
