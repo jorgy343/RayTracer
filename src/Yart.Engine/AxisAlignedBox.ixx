@@ -12,12 +12,13 @@ import IntersectionResult;
 import IntersectionResultType;
 import Material;
 import Math;
+import SignedDistance;
 
 using namespace vcl;
 
 namespace Yart
 {
-    export class __declspec(dllexport) alignas(32) AxisAlignedBox : public Geometry
+    export class __declspec(dllexport) alignas(32) AxisAlignedBox : virtual public Geometry, virtual public SignedDistance
     {
     private:
         using VclVec = typename std::conditional<std::same_as<real, float>, Vec4f, Vec4d>::type;
@@ -146,6 +147,18 @@ namespace Yart
             }
 
             return entranceDistance <= exitDistance ? result : std::numeric_limits<real>::infinity();
+        }
+
+        SignedDistanceResult ClosestDistance(const Vector3& point) const override
+        {
+            // Source: https://stackoverflow.com/a/30545544/1078268
+            Vector3 distance = Vector3::Max(Minimum - point, point - Maximum);
+
+            return
+            {
+                (Vector3::Max(distance, Vector3{real{0}})).Length() + Math::min(Math::max(distance.X, Math::max(distance.Y, distance.Z)), real{0}),
+                real{0},
+            };
         }
     };
 }

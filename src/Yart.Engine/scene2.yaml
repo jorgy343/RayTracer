@@ -1,0 +1,147 @@
+config:
+  iterations: 8
+  colorClamp: [0, 1]
+
+camera:
+  perspective:
+    position: [0, 5, -10]
+    lookAt: [0, 0, 0]
+    up: [0, 1, 0]
+    fov: 45
+    screenSize: [1920, 1080]
+    subpixelCount: 4
+
+  #orthographic:
+  #  position: [0, 0, -39]
+  #  lookAt: [0, 0, 1]
+  #  up: [0, 1, 0]
+  #  orthoSize: [1.5, 0.84375]
+  #  screenSize: [1920, 1080]
+  #  subpixelCount: 4
+
+missShader:
+  constant:
+    color: [0]
+
+  #atmosphere:
+  #  offset: [0, 6371071, 0]
+  #  sunDirection:
+  #    normalize: [0, -1, 0]
+  #  sunIntensity: [20]
+  #  lambda: 20
+  #  planetRadius: 6371071
+  #  atmosphereHeight: 60000
+  #  rayleighScaleHeight: 7994
+  #  mieScaleHeight: 1200
+  #  indexOfRefractionAtSeaLevel: 1.00031
+  #  numberDensityOfAirAtSeaLevel: 2.55e25
+  #  numberDensityOfAerosolsAtSeaLevel: 1.4
+  #  mieU: 0.8
+
+materials:
+  - emissive:
+      name: "White Light"
+      emissiveColor: [5]
+  - emissive:
+      name: "Soft White Light"
+      emissiveColor: [0.01]
+
+  - lambertian:
+      name: "White"
+      diffuseColor: [1]
+  - lambertian:
+      name: "Black"
+      diffuseColor: [0]
+  - lambertian:
+      name: "Red"
+      diffuseColor: [1, 0, 0]
+  - lambertian:
+      name: "Green"
+      diffuseColor: [0, 1, 0]
+  - lambertian:
+      name: "Blue"
+      diffuseColor: [0, 0, 1]
+  - lambertian:
+      name: "Orange"
+      diffuseColor: [1, 1, 0]
+  - lambertian:
+      name: "Pink"
+      diffuseColor: [1, 0, 1]
+  - lambertian:
+      name: "Yellow"
+      diffuseColor: [0, 1, 1]
+
+  - lambertian:
+      name: "Light Blue"
+      diffuseColor: [0.7, 0.7, 1]
+
+  - ggx:
+      name: "GGX"
+      diffuseColor: [1]
+      specularColor: [1]
+      roughness: 0.05
+
+  - reflective:
+      name: "Reflective"
+
+  - refractive:
+      name: "Refractive"
+      refractionIndex: 1.02
+
+  - phong:
+      name: "Phong"
+      ambientColor: [0.1]
+      diffuseColor: [0, 0, 0.5]
+      specularColor: [0.6]
+      shininess: 25
+
+lights:
+  #- directional:
+  #    color: [1]
+  #    direction: [0, -1, 0]
+
+  #- point:
+  #    color: [1]
+  #    position: [0, 19.9, 0]
+
+geometry:
+  geometryCollection:
+    children:
+      - parallelogram:
+          areaLight: true
+          material: "White Light"
+          position: [0, 20, -6]
+          edge1: [-1.4, 0, 0]
+          edge2: [0, 0, 1.4]
+
+      - parallelogram:
+          areaLight: true
+          material: "White Light"
+          position: [0, -20, -6]
+          edge1: [-1.4, 0, 0]
+          edge2: [0, 0, 1.4]
+
+      - boundingGeometry:
+          child:
+            rayMarcher:
+              children:
+                - union:
+                    smoothingAmount: 1
+                    left:
+                      sphere:
+                        material: "Green"
+                        position: [0, 0, 0]
+                        radius: 2
+                    right:
+                      union:
+                        smoothingAmount: 1
+                        left:
+                          sphere:
+                            material: "Green"
+                            position: [-3, 0, 0]
+                            radius: 1
+                        right:
+                          sphere:
+                            material: "Green"
+                            position: [3, 0, 0]
+                            radius: 1

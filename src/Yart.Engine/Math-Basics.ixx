@@ -158,6 +158,12 @@ namespace Yart
         }
 
         export template <any_number T>
+            inline constexpr T clamp(T value, T min, T max)
+        {
+            return min(max(value, min), max);
+        }
+
+        export template <any_number T>
             inline constexpr T sqrt(T value)
         {
             if (std::is_constant_evaluated())

@@ -40,7 +40,6 @@ import RayMarcher;
 import SignedDistance;
 import SignedDistanceBinaryOperation;
 import SignedDistanceBinaryOperator;
-import SignedDistanceSmoothBinaryOperation;
 import Sphere;
 import SphereSoa;
 import TransformedGeometry;
@@ -376,49 +375,59 @@ namespace Yart::Yaml
 
     const SignedDistance* ParseSignedDistanceBinaryOperationUnionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
+        auto smoothingAmount = node["smoothingAmount"].as<real>(real{0});
+
         auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
         auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
 
         auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
         parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
 
-        auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Union>>(left, right, mixedMaterial.get());
-        parseGeometryResults.SignedDistances.push_back(signedDistance);
+        if (smoothingAmount == 0)
+        {
+            auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Union, false>>(smoothingAmount, left, right, mixedMaterial.get());
+            parseGeometryResults.SignedDistances.push_back(signedDistance);
 
-        return signedDistance.get();
+            return signedDistance.get();
+        }
+        else
+        {
+            auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Union, true>>(smoothingAmount, left, right, mixedMaterial.get());
+            parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+            return signedDistance.get();
+        }
     }
 
     const SignedDistance* ParseSignedDistanceBinaryOperationIntersectionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
+        auto smoothingAmount = node["smoothingAmount"].as<real>(real{0});
+
         auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
         auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
 
         auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
         parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
 
-        auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Intersection>>(left, right, mixedMaterial.get());
-        parseGeometryResults.SignedDistances.push_back(signedDistance);
+        if (smoothingAmount == 0)
+        {
+            auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Intersection, false>>(smoothingAmount, left, right, mixedMaterial.get());
+            parseGeometryResults.SignedDistances.push_back(signedDistance);
 
-        return signedDistance.get();
+            return signedDistance.get();
+        }
+        else
+        {
+            auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Intersection, true>>(smoothingAmount, left, right, mixedMaterial.get());
+            parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+            return signedDistance.get();
+        }
     }
 
     const SignedDistance* ParseSignedDistanceBinaryOperationDifferenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
-        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
-        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
-
-        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
-        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
-
-        auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Difference>>(left, right, mixedMaterial.get());
-        parseGeometryResults.SignedDistances.push_back(signedDistance);
-
-        return signedDistance.get();
-    }
-
-    const SignedDistance* ParseSignedSmoothDistanceBinaryOperationUnionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
-    {
-        auto smoothing = node["smoothing"].as<real>();
+        auto smoothingAmount = node["smoothingAmount"].as<real>(real{0});
 
         auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
         auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
@@ -426,42 +435,20 @@ namespace Yart::Yaml
         auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
         parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
 
-        auto signedDistance = std::make_shared<const SignedDistanceSmoothBinaryOperation<SignedDistanceBinaryOperator::Union>>(smoothing, left, right, mixedMaterial.get());
-        parseGeometryResults.SignedDistances.push_back(signedDistance);
+        if (smoothingAmount == 0)
+        {
+            auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Difference, false>>(smoothingAmount, left, right, mixedMaterial.get());
+            parseGeometryResults.SignedDistances.push_back(signedDistance);
 
-        return signedDistance.get();
-    }
+            return signedDistance.get();
+        }
+        else
+        {
+            auto signedDistance = std::make_shared<const SignedDistanceBinaryOperation<SignedDistanceBinaryOperator::Difference, true>>(smoothingAmount, left, right, mixedMaterial.get());
+            parseGeometryResults.SignedDistances.push_back(signedDistance);
 
-    const SignedDistance* ParseSignedSmoothDistanceBinaryOperationIntersectionNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
-    {
-        auto smoothing = node["smoothing"].as<real>();
-
-        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
-        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
-
-        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
-        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
-
-        auto signedDistance = std::make_shared<const SignedDistanceSmoothBinaryOperation<SignedDistanceBinaryOperator::Intersection>>(smoothing, left, right, mixedMaterial.get());
-        parseGeometryResults.SignedDistances.push_back(signedDistance);
-
-        return signedDistance.get();
-    }
-
-    const SignedDistance* ParseSignedSmoothDistanceBinaryOperationDifferenceNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
-    {
-        auto smoothing = node["smoothing"].as<real>();
-
-        auto left = std::get<0>(ParseSignedDistanceNode(node["left"], materialMap, parseGeometryResults));
-        auto right = std::get<0>(ParseSignedDistanceNode(node["right"], materialMap, parseGeometryResults));
-
-        auto mixedMaterial = std::make_shared<const MixedMaterial>(left->GetMaterial(), right->GetMaterial());
-        parseGeometryResults.AdditionalMaterials.push_back(mixedMaterial);
-
-        auto signedDistance = std::make_shared<const SignedDistanceSmoothBinaryOperation<SignedDistanceBinaryOperator::Difference>>(smoothing, left, right, mixedMaterial.get());
-        parseGeometryResults.SignedDistances.push_back(signedDistance);
-
-        return signedDistance.get();
+            return signedDistance.get();
+        }
     }
 
     static std::vector<std::tuple<std::string, bool, bool, std::function<const IntersectableGeometry* (const Node&, MaterialMap&, ParseGeometryResults&, std::vector<const IntersectableGeometry*>*)>>> GeometryMapFunctions
@@ -483,12 +470,10 @@ namespace Yart::Yaml
     static std::vector<std::tuple<std::string, std::function<const SignedDistance* (const Node&, MaterialMap&, ParseGeometryResults&, std::vector<const IntersectableGeometry*>*)>>> SignedDistanceMapFunctions
     {
         {"sphere", &ParseSphereNode},
+        {"axisAlignedBox", &ParseAxisAlignedBoxNode},
         {"union", &ParseSignedDistanceBinaryOperationUnionNode},
         {"intersection", &ParseSignedDistanceBinaryOperationIntersectionNode},
         {"difference", &ParseSignedDistanceBinaryOperationDifferenceNode},
-        {"smoothUnion", &ParseSignedSmoothDistanceBinaryOperationUnionNode},
-        {"smoothIntersection", &ParseSignedSmoothDistanceBinaryOperationIntersectionNode},
-        {"smoothDifference", &ParseSignedSmoothDistanceBinaryOperationDifferenceNode},
     };
 
     std::tuple<const IntersectableGeometry*, bool> ParseGeometryNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries, bool geometryOnly)

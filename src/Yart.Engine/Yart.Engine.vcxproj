@@ -140,10 +140,9 @@
     <ClCompile Include="Ray.ixx" />
     <ClCompile Include="RefractiveMaterial.ixx" />
     <ClCompile Include="Scene.ixx" />
-    <ClCompile Include="SignedDistanceBinaryOperation.ixx" />
     <ClCompile Include="SignedDistanceBinaryOperator.ixx" />
     <ClCompile Include="SignedDistanceResult.ixx" />
-    <ClCompile Include="SignedDistanceSmoothBinaryOperation.ixx" />
+    <ClCompile Include="SignedDistanceBinaryOperation.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />
     <ClCompile Include="TransformedGeometry.ixx" />
@@ -173,6 +172,7 @@
     <None Include="scene-atmosphere.yaml" />
     <None Include="scene.yaml" />
     <None Include="scene1.yaml" />
+    <None Include="scene2.yaml" />
     <None Include="teapot.mtl" />
   </ItemGroup>
   <ItemGroup>

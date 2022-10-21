@@ -282,9 +282,6 @@
     <ClCompile Include="RayMarcher.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
-    <ClCompile Include="SignedDistanceBinaryOperation.ixx">
-      <Filter>Modules\Geometries\RayMarching</Filter>
-    </ClCompile>
     <ClCompile Include="SignedDistanceBinaryOperator.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
@@ -294,7 +291,7 @@
     <ClCompile Include="SignedDistanceResult.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
-    <ClCompile Include="SignedDistanceSmoothBinaryOperation.ixx">
+    <ClCompile Include="SignedDistanceBinaryOperation.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
   </ItemGroup>
@@ -323,6 +320,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="scene1.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="scene2.yaml">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
