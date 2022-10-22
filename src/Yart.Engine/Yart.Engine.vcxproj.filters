@@ -294,6 +294,9 @@
     <ClCompile Include="SignedDistanceCylinder.ixx">
       <Filter>Modules\Geometries\RayMarching</Filter>
     </ClCompile>
+    <ClCompile Include="ConstantMixedMaterial.ixx">
+      <Filter>Modules\Materials</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">

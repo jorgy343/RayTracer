@@ -90,6 +90,7 @@
     <ClCompile Include="BoundingGeometry.ixx" />
     <ClCompile Include="BoundingBox.ixx" />
     <ClCompile Include="Camera.ixx" />
+    <ClCompile Include="ConstantMixedMaterial.ixx" />
     <ClCompile Include="MixedMaterial.ixx" />
     <ClCompile Include="SignedDistance.ixx" />
     <ClCompile Include="Math-Color3.ixx" />

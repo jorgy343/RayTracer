@@ -13,12 +13,12 @@ namespace Yart
     export class MixedMaterial : public Material
     {
     protected:
-        const Material* Left{};
-        const Material* Right{};
+        const Material* LeftMaterial{};
+        const Material* RightMaterial{};
 
     public:
-        MixedMaterial(const Material* left, const Material* right)
-            : Left{left}, Right{right}
+        MixedMaterial(const Material* leftMaterial, const Material* rightMaterial)
+            : LeftMaterial{leftMaterial}, RightMaterial{rightMaterial}
         {
 
         }
@@ -35,16 +35,16 @@ namespace Yart
         {
             if (mixAmount < Epsilon)
             {
-                return Left->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
+                return LeftMaterial->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
             }
             else if (real{1} - mixAmount < Epsilon)
             {
-                return Right->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
+                return RightMaterial->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
             }
             else
             {
-                Color3 leftColor = Left->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
-                Color3 rightColor = Right->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
+                Color3 leftColor = LeftMaterial->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
+                Color3 rightColor = RightMaterial->CalculateRenderingEquation(scene, random, currentDepth, hitGeometry, hitPosition, hitNormal, incomingDirection, real{0});
 
                 return leftColor * (real{1} - mixAmount) + rightColor * mixAmount;
             }
