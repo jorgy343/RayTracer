@@ -18,41 +18,41 @@ namespace Yart
         real Distance{};
         const Material* AppliedMaterial{nullptr};
 
-        inline Plane() = default;
+        Plane() = default;
 
-        inline Plane(const Vector3& normal, real distance, const Material* appliedMaterial)
+        Plane(const Vector3& normal, real distance, const Material* appliedMaterial)
             : Normal{normal}, Distance{distance}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
+        Plane(const Vector3& normal, const Vector3& point, const Material* appliedMaterial)
             : Normal{normal}, Distance{-(normal * point)}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline constexpr const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
+        virtual Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             return (ray.Direction * Normal) < real{0.0} ? Normal : -Normal;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect(ray)};
         }
 
-        inline constexpr real Intersect(const Ray& ray) const
+        force_inline constexpr real Intersect(const Ray& ray) const
         {
             real normalDotDirection = Normal * ray.Direction;
             real normalDotRayPosition = Normal * ray.Position;

@@ -14,18 +14,18 @@ namespace Yart
         Vector3 Direction{};
         Vector3 ReversedDirection{};
 
-        inline constexpr DirectionalLight(const Color3& color, const Vector3& direction)
+        DirectionalLight(const Color3& color, const Vector3& direction)
             : Light{color}, Direction{direction}, ReversedDirection{-direction}
         {
 
         }
 
-        inline constexpr Vector3 GetDirectionTowardsLight(const Vector3& hitPosition, const Vector3& hitNormal) const override
+        virtual Vector3 GetDirectionTowardsLight(const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
             return ReversedDirection;
         }
 
-        inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& directionToLight) const override
+        virtual bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& directionToLight) const override
         {
             Ray ray{hitPosition, Direction};
             real distance = scene.CastRayDistance(ray);

@@ -20,7 +20,7 @@ namespace Yart
         real Shininess{};
 
     public:
-        constexpr PhongMaterial(
+        PhongMaterial(
             const Color3& ambientColor,
             const Color3& diffuseColor,
             const Color3& specularColor,
@@ -34,7 +34,7 @@ namespace Yart
 
         }
 
-        constexpr Color3 CalculateRenderingEquation(
+        virtual Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,

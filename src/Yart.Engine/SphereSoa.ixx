@@ -40,7 +40,7 @@ namespace Yart
         const Sphere* _geometries[Elements];
 
     public:
-        constexpr SphereSoa()
+        SphereSoa()
         {
             for (int i = 0; i < Elements; i++)
             {
@@ -53,7 +53,7 @@ namespace Yart
             }
         }
 
-        constexpr explicit SphereSoa(std::initializer_list<const Sphere*> list)
+        explicit SphereSoa(std::initializer_list<const Sphere*> list)
             : SphereSoa{}
         {
             size_t index = 0;
@@ -69,7 +69,7 @@ namespace Yart
             }
         }
 
-        constexpr void Insert(size_t index, const Sphere* geometry) override
+        virtual void Insert(size_t index, const Sphere* geometry) override
         {
             assert(index >= 0 && index < Elements);
 
@@ -81,7 +81,7 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        BoundingBoxT<real> CalculateBoundingBox() const override
+        virtual BoundingBoxT<real> CalculateBoundingBox() const override
         {
             BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
 
@@ -98,12 +98,12 @@ namespace Yart
             return boundingBox;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

@@ -17,7 +17,7 @@ namespace Yart
         const IntersectableGeometry* ChildGeometry{};
 
     public:
-        inline constexpr BoundingGeometry(
+        BoundingGeometry(
             const IntersectableGeometry* boundingVolume,
             const IntersectableGeometry* childGeometry)
             :
@@ -27,17 +27,17 @@ namespace Yart
 
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             return BoundingVolume->CalculateBoundingBox();
         }
 
-        inline IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        inline IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

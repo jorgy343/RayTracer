@@ -16,9 +16,9 @@ namespace Yart
         T AdditionalData{};
         const Material* MaterialOverride{};
 
-		inline constexpr IntersectionResultT() = default;
+		IntersectionResultT() = default;
 
-        inline IntersectionResultT(const Geometry* hitGeometry, T hitDistance, T additionalData = {}, const Material* materialOverride = nullptr)
+        IntersectionResultT(const Geometry* hitGeometry, T hitDistance, T additionalData = {}, const Material* materialOverride = nullptr)
             : HitGeometry{hitGeometry}, HitDistance{hitDistance}, AdditionalData{additionalData}, MaterialOverride{materialOverride}
         {
             

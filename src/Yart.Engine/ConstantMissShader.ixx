@@ -15,13 +15,13 @@ namespace Yart
         Color3 Color;
 
     public:
-        constexpr ConstantMissShader(const Color3& color)
+        ConstantMissShader(const Color3& color)
             : Color{color}
         {
 
         }
 
-        Color3 CalculateColor(const Ray& ray, const Random& random) const override
+        virtual Color3 CalculateColor(const Ray& ray, const Random& random) const override
         {
             return Color;
         }

@@ -26,7 +26,7 @@ namespace Yart
         std::vector<const SignedDistance*> Children{};
 
     public:
-        inline explicit RayMarcher(std::vector<const SignedDistance*> children)
+        explicit RayMarcher(std::vector<const SignedDistance*> children)
             : Children{children}
         {
 

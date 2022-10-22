@@ -30,7 +30,7 @@ namespace Yart
 
         }
 
-        BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             // TODO: This will over estimate the AABB. Make it more precise.
             Vector3 min = Vector3::Min(Start, End);
@@ -44,12 +44,12 @@ namespace Yart
             };
         }
 
-        const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        SignedDistanceResult ClosestDistance(const Vector3& point) const override
+        virtual SignedDistanceResult ClosestDistance(const Vector3& point) const override
         {
             Vector3  ba = End - Start;
             Vector3  pa = point - Start;

@@ -21,15 +21,15 @@ namespace Yart
         real Radius{};
         const Material* AppliedMaterial{nullptr};
 
-        inline Sphere() = default;
+        Sphere() = default;
 
-        inline Sphere(const Vector3& position, real radius, const Material* appliedMaterial)
+        Sphere(const Vector3& position, real radius, const Material* appliedMaterial)
             : Position{position}, Radius{radius}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             return BoundingBox{
                 Position - Radius,
@@ -37,28 +37,28 @@ namespace Yart
             };
         }
 
-        inline constexpr const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
+        virtual Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             return (hitPosition - Position).Normalize();
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline constexpr real Intersect(const Ray& ray) const
+        force_inline real Intersect(const Ray& ray) const
         {
             Vector3 v = ray.Position - Position;
 
@@ -93,7 +93,7 @@ namespace Yart
             return exitDistance >= real{0.0} ? result : std::numeric_limits<real>::infinity();
         }
 
-        SignedDistanceResult ClosestDistance(const Vector3& point) const override
+        virtual SignedDistanceResult ClosestDistance(const Vector3& point) const override
         {
             return {Vector3::Distance(point, Position) - Radius, real{0}};
         }

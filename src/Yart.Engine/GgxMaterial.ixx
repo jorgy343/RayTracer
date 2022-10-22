@@ -34,7 +34,7 @@ namespace Yart
 
 		}
 
-		inline Color3 CalculateRenderingEquation(
+        virtual Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -95,7 +95,7 @@ namespace Yart
 			}
 		}
 
-		inline constexpr real NormalDistribution(real nDotH) const
+		real NormalDistribution(real nDotH) const
 		{
 			real a2 = Roughness * Roughness;
 			real d = ((nDotH * a2 - nDotH) * nDotH + 1);
@@ -103,7 +103,7 @@ namespace Yart
 			return a2 / (d * d * Pi);
 		}
 
-		inline constexpr real SchlickMaskingTerm(real nDotL, real nDotV) const
+		real SchlickMaskingTerm(real nDotL, real nDotV) const
 		{
             real k = Roughness * Roughness / real{2.0};
 
@@ -113,14 +113,14 @@ namespace Yart
 			return g_v * g_l;
 		}
 
-		inline constexpr Color3 SchlickFresnel(const Color3& f0, real lDotH) const
+		Color3 SchlickFresnel(const Color3& f0, real lDotH) const
 		{
 			real x = real{1.0} - lDotH;
 
 			return f0 + (Color3{real{1.0}} - f0) * x * x * x * x * x;
 		}
 
-		inline Vector3 GetGgxMicrofacet(const Random& random, const Vector3& hitNormal) const
+		Vector3 GetGgxMicrofacet(const Random& random, const Vector3& hitNormal) const
 		{
 			real rand1 = random.GetNormalized();
 			real rand2 = random.GetNormalized();
@@ -138,12 +138,12 @@ namespace Yart
 				hitNormal * cosThetaH;
 		}
 
-		inline constexpr real ProbabilityToSampleDiffuse() const
+		real ProbabilityToSampleDiffuse() const
 		{
 			return DiffuseLuminance / (DiffuseLuminance + SpecularLuminance);
 		}
 
-		//inline constexpr real GetPdf(real D, real nDotH, real hDotV) const
+		//real GetPdf(real D, real nDotH, real hDotV) const
 		//{
 		//    return D * nDotH / (4 * hDotV);
 		//}

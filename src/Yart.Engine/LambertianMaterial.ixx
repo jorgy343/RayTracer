@@ -16,13 +16,13 @@ namespace Yart
 		class LambertianMaterial : public DiffuseMaterial
 	{
 	public:
-		inline constexpr LambertianMaterial(const Color3& diffuseColor)
+		LambertianMaterial(const Color3& diffuseColor)
 			: DiffuseMaterial{diffuseColor}
 		{
 
 		}
 
-		constexpr Color3 CalculateRenderingEquation(
+        virtual Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -85,7 +85,7 @@ namespace Yart
 			}
 		}
 
-		inline constexpr real CalculateInversePdf(const Vector3& hitNormal, const Vector3& outgoingDirection) const
+		real CalculateInversePdf(const Vector3& hitNormal, const Vector3& outgoingDirection) const
 		{
 			real cosineTheta = Math::max(real{0.0}, hitNormal * outgoingDirection);
 			real inverseCosineTheta = cosineTheta == real{0.0} ? real{0.0} : Math::rcp(cosineTheta);

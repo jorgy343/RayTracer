@@ -13,7 +13,7 @@ namespace Yart
         Vector3T<T> Minimum{};
         Vector3T<T> Maximum{};
 
-        inline constexpr BoundingBoxT(const Vector3T<T>& minimum, const Vector3T<T>& maximum)
+        constexpr BoundingBoxT(const Vector3T<T>& minimum, const Vector3T<T>& maximum)
             : Minimum{minimum}, Maximum{maximum}
         {
 

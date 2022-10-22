@@ -25,17 +25,17 @@ namespace Yart
 
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             return Left->CalculateBoundingBox().Union(Right->CalculateBoundingBox());
         }
 
-        constexpr const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        SignedDistanceResult ClosestDistance(const Vector3& point) const override
+        virtual SignedDistanceResult ClosestDistance(const Vector3& point) const override
         {
             SignedDistanceResult distanceLeft = Left->ClosestDistance(point);
             SignedDistanceResult distanceRight = Right->ClosestDistance(point);

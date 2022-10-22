@@ -27,9 +27,9 @@ namespace Yart
 
         const Material* AppliedMaterial{nullptr};
 
-        inline Triangle() = default;
+        Triangle() = default;
 
-        inline Triangle(
+        Triangle(
             const Vector3& vertex0,
             const Vector3& vertex1,
             const Vector3& vertex2,
@@ -46,7 +46,7 @@ namespace Yart
 
         }
 
-        inline Triangle(
+        Triangle(
             const Vector3& vertex0,
             const Vector3& vertex1,
             const Vector3& vertex2,
@@ -66,7 +66,7 @@ namespace Yart
 
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             return BoundingBox{
                 Vector3::Min(Vertex0, Vector3::Min(Vertex1, Vertex2)),
@@ -74,12 +74,12 @@ namespace Yart
             };
         }
 
-        inline constexpr const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
+        virtual Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             // Barycentric coordinate calculations from: https://gamedev.stackexchange.com/a/23745
             Vector3 v0 = Vertex1 - Vertex0;
@@ -103,12 +103,12 @@ namespace Yart
             return (ray.Direction * normal) < real{0.0} ? normal : -normal;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect(ray)};
         }

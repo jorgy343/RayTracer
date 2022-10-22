@@ -42,7 +42,7 @@ namespace Yart
         const AxisAlignedBox* _geometries[Elements];
 
     public:
-        constexpr AxisAlignedBoxSoa()
+        AxisAlignedBoxSoa()
         {
             for (int i = 0; i < Elements; i++)
             {
@@ -58,7 +58,7 @@ namespace Yart
             }
         }
 
-        constexpr explicit AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
+        explicit AxisAlignedBoxSoa(std::initializer_list<const AxisAlignedBox*> list)
             : AxisAlignedBoxSoa{}
         {
             size_t index = 0;
@@ -74,7 +74,7 @@ namespace Yart
             }
         }
 
-        constexpr void Insert(size_t index, const AxisAlignedBox* geometry) override
+        virtual void Insert(size_t index, const AxisAlignedBox* geometry) override
         {
             assert(index >= 0 && index < Elements);
 
@@ -89,7 +89,7 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        BoundingBoxT<real> CalculateBoundingBox() const override
+        virtual BoundingBoxT<real> CalculateBoundingBox() const override
         {
             BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
 
@@ -106,12 +106,12 @@ namespace Yart
             return boundingBox;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

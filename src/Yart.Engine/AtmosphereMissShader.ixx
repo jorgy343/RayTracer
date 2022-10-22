@@ -87,7 +87,7 @@ namespace Yart
 
         }
 
-        Color3 CalculateColor(const Ray& ray, const Random& random) const override
+        virtual Color3 CalculateColor(const Ray& ray, const Random& random) const override
         {
             real cosTheta = ray.Direction * SunDirectionReversed;
 
@@ -124,18 +124,18 @@ namespace Yart
         }
 
     protected:
-        inline constexpr real Density(real altitude, real scaleHeight) const
+        real Density(real altitude, real scaleHeight) const
         {
             return Math::exp(-altitude / scaleHeight);
         }
 
-        inline constexpr real RayleighPhase(real cosTheta) const
+        real RayleighPhase(real cosTheta) const
         {
             real coefficient = real{3} / (real{16} *Pi);
             return coefficient * (real{1} + cosTheta * cosTheta);
         }
 
-        inline constexpr real MiePhase(real cosTheta) const
+        real MiePhase(real cosTheta) const
         {
             real coefficient = real{3} / EightPi;
 
@@ -145,7 +145,7 @@ namespace Yart
             return coefficient * (numerator / denominator);
         }
 
-        inline Color3 OpticalDepth(const Vector3& startingPoint, real distance, const Random& random) const
+        Color3 OpticalDepth(const Vector3& startingPoint, real distance, const Random& random) const
         {
             auto [randomNumber, inversePdf] = random.GetExponentialRandomAndInversePdf(distance, Lambda);
 
@@ -159,7 +159,7 @@ namespace Yart
         }
 
         // TODO: Doesn't seem to work. Probably just vectorize the main CalculateColor function.
-        inline Color3 OpticalDepthVec(const Vector3& startingPoint, real distance, const Random& random) const
+        Color3 OpticalDepthVec(const Vector3& startingPoint, real distance, const Random& random) const
         {
             real_vec normalizedRandom = random.GetNormalizedVec();
             real_vec randomNumber = random.ExponentialRandomVec(normalizedRandom, Lambda);
@@ -181,7 +181,7 @@ namespace Yart
             };
         }
 
-        inline Color3 OpticalDepthTrapazoidal(const Vector3& startingPoint, const Vector3& direction, real distance, const Random& random) const
+        Color3 OpticalDepthTrapazoidal(const Vector3& startingPoint, const Vector3& direction, real distance, const Random& random) const
         {
             constexpr int sampleCount = 8;
 

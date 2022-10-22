@@ -23,7 +23,7 @@ namespace Yart
 
         }
 
-        Color3 CalculateRenderingEquation(
+        virtual Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,
@@ -31,7 +31,7 @@ namespace Yart
             const Vector3& hitPosition,
             const Vector3& hitNormal,
             const Vector3& incomingDirection,
-            real mixAmount) const
+            real mixAmount) const override
         {
             if (mixAmount < Epsilon)
             {

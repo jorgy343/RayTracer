@@ -23,9 +23,9 @@ namespace Yart
         real Area{};
         const Material* AppliedMaterial{nullptr};
 
-        inline Disc() = default;
+        Disc() = default;
 
-        inline Disc(
+        Disc(
             const Vector3& position,
             const Vector3& normal,
             const real radius,
@@ -43,7 +43,7 @@ namespace Yart
         }
 
         // TODO: Bounding box code taken from the sphere version. Could optimize the bounding box to match the shape of a disc better.
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             return BoundingBox{
                 Position - Radius,
@@ -51,27 +51,27 @@ namespace Yart
             };
         }
 
-        inline constexpr const Material* GetMaterial() const override
+        virtual constexpr const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        inline constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
+        virtual Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             return (ray.Direction * Normal) < real{0.0} ? Normal : -Normal;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect(ray)};
         }
 
-        inline constexpr real Intersect(const Ray& ray) const
+        force_inline real Intersect(const Ray& ray) const
         {
             real normalDotDirection = Normal * ray.Direction;
             real normalDotRayPosition = Normal * ray.Position;
@@ -99,7 +99,7 @@ namespace Yart
             //return q * q < RadiusSquared ? t : std::numeric_limits<real>::infinity();
         }
 
-        inline Vector3 GetDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        virtual Vector3 GetDirectionTowardsLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
             Vector3 randomPointOnLight = GetPointOnLight(random, hitPosition, hitNormal);
             Vector3 directionToLight = (randomPointOnLight - hitPosition).Normalize();
@@ -107,7 +107,7 @@ namespace Yart
             return directionToLight;
         }
 
-        inline Vector3 GetPointOnLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
+        virtual Vector3 GetPointOnLight(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal) const override
         {
             real distanceFromCenter = Radius * Math::sqrt(random.GetNormalized());
             real theta = random.GetNormalized() * TwoPi;
@@ -122,7 +122,7 @@ namespace Yart
             return randomPointOnLight;
         }
 
-        inline bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& positionOnLight) const override
+        virtual bool IsInShadow(const Scene& scene, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& positionOnLight) const override
         {
             Vector3 directionToLight = positionOnLight - hitPosition;
             real distanceToLightSquared = directionToLight.LengthSquared();
@@ -135,7 +135,7 @@ namespace Yart
             return distance * distance >= distanceToLightSquared - real{0.01} ? false : true;
         }
 
-        inline constexpr real CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
+        virtual real CalculateInversePdf(const Random& random, const Vector3& hitPosition, const Vector3& hitNormal, const Vector3& incomingDirection, const Vector3& outgoingDirection) const override
         {
             return Area;
         }

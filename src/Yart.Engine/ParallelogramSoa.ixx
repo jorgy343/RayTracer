@@ -46,7 +46,7 @@ namespace Yart
         const Parallelogram* _geometries[Elements];
 
     public:
-        constexpr ParallelogramSoa()
+        ParallelogramSoa()
         {
             for (int i = 0; i < Elements; i++)
             {
@@ -66,7 +66,7 @@ namespace Yart
             }
         }
 
-        constexpr explicit ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
+        explicit ParallelogramSoa(std::initializer_list<const Parallelogram*> list)
             : ParallelogramSoa{}
         {
             size_t index = 0;
@@ -82,7 +82,7 @@ namespace Yart
             }
         }
 
-        constexpr void Insert(size_t index, const Parallelogram* geometry) override
+        virtual void Insert(size_t index, const Parallelogram* geometry) override
         {
             assert(index >= 0 && index < Elements);
 
@@ -101,7 +101,7 @@ namespace Yart
             _geometries[index] = geometry;
         }
 
-        BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             BoundingBox boundingBox = BoundingBox::ReverseInfinity();
 
@@ -118,12 +118,12 @@ namespace Yart
             return boundingBox;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect(ray);
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect(ray);
         }

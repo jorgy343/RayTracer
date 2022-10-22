@@ -45,7 +45,7 @@ namespace Yart
         const IntersectableGeometry* Children[NumberOfLeafs];
 
     public:
-        constexpr BoundingBoxHierarchyT()
+        BoundingBoxHierarchyT()
         {
             for (size_t i = 0; i < NumberOfLeafs; i++)
             {
@@ -61,7 +61,7 @@ namespace Yart
             }
         }
 
-        constexpr void SetChild(size_t leafIndex, const IntersectableGeometry* child)
+        void SetChild(size_t leafIndex, const IntersectableGeometry* child)
         {
             static_assert(leafIndex < NumberOfLeafs);
             assert(leafIndex < NumberOfLeafs);
@@ -79,7 +79,7 @@ namespace Yart
             Children[leafIndex] = child;
         }
 
-        constexpr void SetChild(size_t leafIndex, const BoundingBoxT<T>& boundingBox, const IntersectableGeometry* child)
+        void SetChild(size_t leafIndex, const BoundingBoxT<T>& boundingBox, const IntersectableGeometry* child)
         {
             assert(leafIndex < NumberOfLeafs);
 
@@ -94,7 +94,7 @@ namespace Yart
             Children[leafIndex] = child;
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual BoundingBox CalculateBoundingBox() const override
         {
             static_assert(NumberOfLeafs > 0);
 
@@ -116,12 +116,12 @@ namespace Yart
             return boundingBox;
         }
 
-        constexpr IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Entrance>(ray);
         }
 
-        constexpr IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return Intersect<IntersectionResultType::Exit>(ray);
         }

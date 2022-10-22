@@ -14,13 +14,13 @@ namespace Yart
 	protected:
         Color3 DiffuseColor{};
 
-		inline constexpr DiffuseMaterial(const Color3& diffuseColor)
+		DiffuseMaterial(const Color3& diffuseColor)
 			: DiffuseColor{diffuseColor}
 		{
 
 		}
 
-		inline Vector3 GenerateCosineWeightedHemisphereSample(const Random& random, const Vector3& hitNormal) const
+		Vector3 GenerateCosineWeightedHemisphereSample(const Random& random, const Vector3& hitNormal) const
 		{
 			real random1 = random.GetNormalized();
 			real random2 = random.GetNormalized();

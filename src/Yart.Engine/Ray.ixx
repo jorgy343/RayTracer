@@ -17,20 +17,20 @@ namespace Yart
         Vector3T<T> Direction{};
         Vector3T<T> InverseDirection{};
 
-        inline constexpr RayT(const Vector3T<T>& position, const Vector3T<T>& direction)
+        RayT(const Vector3T<T>& position, const Vector3T<T>& direction)
             : Position{position}, Direction{direction}, InverseDirection{Vector3{Math::rcp(direction.X), Math::rcp(direction.Y), Math::rcp(direction.Z)}}
         {
 
         }
 
-        inline constexpr RayT(const Vector3T<T>& position, const Vector3T<T>& direction, const Vector3T<T>& inverseDirection)
+        RayT(const Vector3T<T>& position, const Vector3T<T>& direction, const Vector3T<T>& inverseDirection)
             : Position{position}, Direction{direction}, InverseDirection{inverseDirection}
         {
 
         }
 
         template <real_number U>
-        inline constexpr explicit operator RayT<U>() const
+        explicit operator RayT<U>() const
         {
             return RayT<U>(static_cast<Vector3T<U>>(Position), static_cast<Vector3T<U>>(Direction), static_cast<Vector3T<U>>(InverseDirection));
         }

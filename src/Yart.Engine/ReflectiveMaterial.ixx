@@ -14,7 +14,7 @@ namespace Yart
     export class ReflectiveMaterial : public Material
     {
     public:
-        inline Color3 CalculateRenderingEquation(
+        virtual Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,

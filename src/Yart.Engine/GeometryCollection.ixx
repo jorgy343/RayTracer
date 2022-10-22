@@ -17,19 +17,19 @@ namespace Yart
 		std::vector<const IntersectableGeometry*> Children{};
 
 	public:
-		inline constexpr explicit GeometryCollection(std::initializer_list<const IntersectableGeometry*> childGeometries)
+		explicit GeometryCollection(std::initializer_list<const IntersectableGeometry*> childGeometries)
 			: Children{childGeometries}
 		{
 
 		}
 
-        inline constexpr explicit GeometryCollection(std::vector<const IntersectableGeometry*> childGeometries)
+        explicit GeometryCollection(std::vector<const IntersectableGeometry*> childGeometries)
             : Children{childGeometries}
         {
 
         }
 
-        BoundingBoxT<real> CalculateBoundingBox() const override
+        virtual BoundingBoxT<real> CalculateBoundingBox() const override
         {
             BoundingBoxT<real> boundingBox = BoundingBoxT<real>::ReverseInfinity();
 
@@ -41,12 +41,12 @@ namespace Yart
             return boundingBox;
         }
 
-		inline IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
 		{
 			return Intersect<IntersectionResultType::Entrance>(ray);
 		}
 
-		inline IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
 		{
 			return Intersect<IntersectionResultType::Exit>(ray);
 		}

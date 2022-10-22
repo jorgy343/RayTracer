@@ -21,7 +21,7 @@ namespace Yart
         class GeometrySoa : public IntersectableGeometry
     {
     public:
-        virtual constexpr void Insert(size_t index, const TGeometry* geometry) = 0;
+        virtual void Insert(size_t index, const TGeometry* geometry) = 0;
     };
 
     export template <IntersectableGeometryConcept TGeometry, typename TGeometrySoa>

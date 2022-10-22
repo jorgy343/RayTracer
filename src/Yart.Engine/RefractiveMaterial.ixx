@@ -17,13 +17,13 @@ namespace Yart
         real RefractionIndex{};
 
     public:
-        inline constexpr RefractiveMaterial(real refractionIndex)
+        RefractiveMaterial(real refractionIndex)
             : RefractionIndex{refractionIndex}
         {
 
         }
 
-        inline Color3 CalculateRenderingEquation(
+        virtual Color3 CalculateRenderingEquation(
             const Scene& scene,
             const Random& random,
             int currentDepth,

@@ -19,7 +19,7 @@ namespace Yart
 		Matrix4x4 InverseTransposedTransform{};
 
 	public:
-		inline TransformedGeometry(const Geometry* childGeometry, const Matrix4x4& transform)
+		TransformedGeometry(const Geometry* childGeometry, const Matrix4x4& transform)
 			:
 			ChildGeometry{childGeometry},
 			InversedTransform{transform.InvertConst()},
@@ -28,12 +28,12 @@ namespace Yart
 
 		}
 
-		inline constexpr const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
 		{
 			return ChildGeometry->GetMaterial();
 		}
 
-		constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
+        virtual Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
 		{
 			Vector3 hitNormal = ChildGeometry->CalculateNormal(ray, hitPosition, additionalData);
 			Vector4 transformedHitNormal = Vector4{hitNormal, real{0.0}} *InverseTransposedTransform;
@@ -41,12 +41,12 @@ namespace Yart
 			return Vector3{transformedHitNormal.X, transformedHitNormal.Y, transformedHitNormal.Z}.Normalize();
 		}
 
-		inline IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
 		{
 			return {this, Intersect<IntersectionResultType::Entrance>(ray)};
 		}
 
-		inline IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
 		{
 			return {this, Intersect<IntersectionResultType::Exit>(ray)};
 		}

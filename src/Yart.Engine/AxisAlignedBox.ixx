@@ -28,31 +28,31 @@ namespace Yart
         Vector3 Maximum{};
         const Material* AppliedMaterial{nullptr};
 
-        inline AxisAlignedBox() = default;
+        AxisAlignedBox() = default;
 
-        inline AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
+        AxisAlignedBox(const Vector3& minimum, const Vector3& maximum, const Material* appliedMaterial)
             : Minimum{minimum}, Maximum{maximum}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        inline AxisAlignedBox(const BoundingBox& boundingBox, const Material* appliedMaterial)
+        AxisAlignedBox(const BoundingBox& boundingBox, const Material* appliedMaterial)
             : Minimum{boundingBox.Minimum}, Maximum{boundingBox.Maximum}, AppliedMaterial{appliedMaterial}
         {
 
         }
 
-        constexpr BoundingBox CalculateBoundingBox() const override
+        virtual constexpr BoundingBox CalculateBoundingBox() const override
         {
             return BoundingBox{Minimum, Maximum};
         }
 
-        inline constexpr const Material* GetMaterial() const override
+        virtual const Material* GetMaterial() const override
         {
             return AppliedMaterial;
         }
 
-        constexpr Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
+        virtual Vector3 CalculateNormal(const Ray& ray, const Vector3& hitPosition, real additionalData) const override
         {
             Vector3 distanceMinimum = (hitPosition - Minimum).Abs();
             Vector3 distanceMaxmimum = (hitPosition - Maximum).Abs();
@@ -98,18 +98,18 @@ namespace Yart
             return normal;
         }
 
-        IntersectionResult IntersectEntrance(const Ray& ray) const override
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Entrance>(ray)};
         }
 
-        IntersectionResult IntersectExit(const Ray& ray) const override
+        virtual IntersectionResult IntersectExit(const Ray& ray) const override
         {
             return {this, Intersect<IntersectionResultType::Exit>(ray)};
         }
 
         template <IntersectionResultType TIntersectionResultType>
-        inline real Intersect(const Ray& ray) const
+        force_inline real Intersect(const Ray& ray) const
         {
             VclVec minimum = VclVec{}.load(&Minimum.X);
             VclVec maximum = VclVec{}.load(&Maximum.X);
@@ -149,7 +149,7 @@ namespace Yart
             return entranceDistance <= exitDistance ? result : std::numeric_limits<real>::infinity();
         }
 
-        SignedDistanceResult ClosestDistance(const Vector3& point) const override
+        virtual SignedDistanceResult ClosestDistance(const Vector3& point) const override
         {
             // Source: https://stackoverflow.com/a/30545544/1078268
             Vector3 distance = Vector3::Max(Minimum - point, point - Maximum);

@@ -12,10 +12,10 @@ namespace Yart
     export class __declspec(dllexport) IntersectableGeometry
     {
     public:
-        virtual constexpr IntersectionResult IntersectEntrance(const Ray& ray) const = 0;
-        virtual constexpr IntersectionResult IntersectExit(const Ray& ray) const = 0;
+        virtual IntersectionResult IntersectEntrance(const Ray& ray) const = 0;
+        virtual IntersectionResult IntersectExit(const Ray& ray) const = 0;
 
-        virtual constexpr BoundingBox CalculateBoundingBox() const
+        virtual BoundingBox CalculateBoundingBox() const
         {
             return BoundingBox{
                 Vector3{-std::numeric_limits<real>::infinity()},
