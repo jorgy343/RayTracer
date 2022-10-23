@@ -34,7 +34,7 @@ namespace Yart::Yaml
 
     export std::shared_ptr<YamlData> LoadYaml()
     {
-        Node node = LoadFile("../../../../Yart.Engine/scene1.yaml");
+        Node node = LoadFile("../../../../Yart.Engine/dice.yaml");
 
         std::shared_ptr<Config> config = ParseConfigNode(node["config"]);
         std::shared_ptr<Camera> camera = ParseCameraNode(node["camera"]);

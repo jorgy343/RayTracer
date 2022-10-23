@@ -2,6 +2,7 @@ export module SignedDistanceCylinder;
 
 import "Common.h";
 
+import BoundingBox;
 import Material;
 import Math;
 import SignedDistance;

@@ -1,0 +1,45 @@
+config:
+  iterations: 8
+  colorClamp: [0, 1]
+
+camera:
+  perspective:
+    position: [-4, 5, -10]
+    lookAt: [0, 0, 0]
+    up: [0, 1, 0]
+    fov: 45
+    screenSize: [1920, 1080]
+    subpixelCount: 4
+
+missShader:
+  constant:
+    color: [0]
+
+materials:
+  - phong:
+      name: "White"
+      ambientColor: [0.2]
+      diffuseColor: [1, 1, 1]
+      specularColor: [0.2]
+      shininess: 10
+
+lights:
+  - point:
+      color: [1]
+      position: [5, 20, 2]
+  - point:
+      color: [1]
+      position: [-5, -20, -2]
+
+geometry:
+  geometryCollection:
+    children:
+      - boundingGeometry:
+          child:
+            rayMarcher:
+              children:
+                - roundedAxisAlignedBox:
+                    material: "White"
+                    minimum: [-1, -1, -1]
+                    maximum: [1, 1, 1]
+                    radius: 0.1

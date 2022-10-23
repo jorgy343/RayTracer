@@ -40,6 +40,7 @@ import SignedDistance;
 import SignedDistanceBinaryOperation;
 import SignedDistanceBinaryOperator;
 import SignedDistanceCylinder;
+import SignedDistanceRoundedAxisAlignedBox;
 import Sphere;
 import SphereSoa;
 import TransformedGeometry;
@@ -74,7 +75,7 @@ namespace Yart::Yaml
         auto material = materialMap.at(materialName).get();
 
         auto position = ParseVector3(node["position"]);
-        auto radius = node["radius"].as<float>();
+        auto radius = node["radius"].as<real>();
 
         auto geometry = std::make_shared<const Sphere>(position, radius, material);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -180,7 +181,7 @@ namespace Yart::Yaml
 
         auto position = ParseVector3(node["position"]);
         auto normal = ParseVector3(node["normal"]);
-        auto radius = node["radius"].as<float>();
+        auto radius = node["radius"].as<real>();
 
         auto geometry = std::make_shared<const Disc>(position, normal, radius, material);
         parseGeometryResults.Geometries.push_back(geometry);
@@ -365,9 +366,24 @@ namespace Yart::Yaml
 
         auto start = ParseVector3(node["start"]);
         auto end = ParseVector3(node["end"]);
-        auto radius = node["radius"].as<float>();
+        auto radius = node["radius"].as<real>();
 
         auto signedDistance = std::make_shared<const SignedDistanceCylinder>(start, end, radius, material);
+        parseGeometryResults.SignedDistances.push_back(signedDistance);
+
+        return signedDistance.get();
+    }
+
+    const SignedDistanceRoundedAxisAlignedBox* ParseSignedDistanceRoundedAxisAlignedBoxNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
+    {
+        auto materialName = node["material"].as<std::string>();
+        auto material = materialMap.at(materialName).get();
+
+        auto minimum = ParseVector3(node["minimum"]);
+        auto maximum = ParseVector3(node["maximum"]);
+        auto radius = node["radius"].as<real>();
+
+        auto signedDistance = std::make_shared<const SignedDistanceRoundedAxisAlignedBox>(minimum, maximum, radius, material);
         parseGeometryResults.SignedDistances.push_back(signedDistance);
 
         return signedDistance.get();
@@ -470,6 +486,7 @@ namespace Yart::Yaml
     {
         {"sphere", &ParseSphereNode},
         {"axisAlignedBox", &ParseAxisAlignedBoxNode},
+        {"roundedAxisAlignedBox", &ParseSignedDistanceRoundedAxisAlignedBoxNode},
         {"cylinder", &ParseSignedDistanceCylinderNode},
         {"union", &ParseSignedDistanceBinaryOperationUnionNode},
         {"intersection", &ParseSignedDistanceBinaryOperationIntersectionNode},

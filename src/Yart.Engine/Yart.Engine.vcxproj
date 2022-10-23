@@ -144,6 +144,7 @@
     <ClCompile Include="SignedDistanceCylinder.ixx" />
     <ClCompile Include="SignedDistanceResult.ixx" />
     <ClCompile Include="SignedDistanceBinaryOperation.ixx" />
+    <ClCompile Include="SignedDistanceRoundedAxisAlignedBox.ixx" />
     <ClCompile Include="Sphere.ixx" />
     <ClCompile Include="SphereSoa.ixx" />
     <ClCompile Include="TransformedGeometry.ixx" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Vcl.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Dice.yaml" />
     <None Include="scene-atmosphere.yaml" />
     <None Include="scene.yaml" />
     <None Include="scene1.yaml" />

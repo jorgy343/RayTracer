@@ -297,6 +297,9 @@
     <ClCompile Include="ConstantMixedMaterial.ixx">
       <Filter>Modules\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="SignedDistanceRoundedAxisAlignedBox.ixx">
+      <Filter>Modules\Geometries\RayMarching</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -326,6 +329,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="scene2.yaml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Dice.yaml">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
