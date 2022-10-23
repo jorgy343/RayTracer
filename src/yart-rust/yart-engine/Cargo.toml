@@ -1,0 +1,10 @@
+[package]
+name = "yart-engine"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name="yart_engine"
+crate-type = ["dylib"]
+
+[dependencies]
