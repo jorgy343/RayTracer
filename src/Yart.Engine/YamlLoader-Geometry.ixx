@@ -72,7 +72,7 @@ namespace Yart::Yaml
     const Sphere* ParseSphereNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto position = ParseVector3(node["position"]);
         auto radius = node["radius"].as<real>();
@@ -91,7 +91,7 @@ namespace Yart::Yaml
     const Plane* ParsePlaneNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto normal = ParseVector3(node["normal"]);
         auto point = ParseVector3(node["point"]);
@@ -112,7 +112,7 @@ namespace Yart::Yaml
         auto areaLight = node["areaLight"].as<bool>(false);
 
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto position = ParseVector3(node["position"]);
         auto edge1 = ParseVector3(node["edge1"]);
@@ -137,7 +137,7 @@ namespace Yart::Yaml
     const Triangle* ParseTriangleNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto vertex0 = ParseVector3(node["vertex0"]);
         auto vertex1 = ParseVector3(node["vertex1"]);
@@ -177,7 +177,7 @@ namespace Yart::Yaml
         auto areaLight = node["areaLight"].as<bool>(false);
 
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto position = ParseVector3(node["position"]);
         auto normal = ParseVector3(node["normal"]);
@@ -197,7 +197,7 @@ namespace Yart::Yaml
     const AxisAlignedBox* ParseAxisAlignedBoxNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto minimum = ParseVector3(node["minimum"]);
         auto maximum = ParseVector3(node["maximum"]);
@@ -257,7 +257,7 @@ namespace Yart::Yaml
     const IntersectableGeometry* ParseTriangleMeshObjNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto transformation = Matrix4x4::CreateIdentity();
 
@@ -362,7 +362,7 @@ namespace Yart::Yaml
     const SignedDistanceCylinder* ParseSignedDistanceCylinderNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto start = ParseVector3(node["start"]);
         auto end = ParseVector3(node["end"]);
@@ -377,7 +377,7 @@ namespace Yart::Yaml
     const SignedDistanceRoundedAxisAlignedBox* ParseSignedDistanceRoundedAxisAlignedBoxNode(const Node& node, MaterialMap& materialMap, ParseGeometryResults& parseGeometryResults, std::vector<const IntersectableGeometry*>* sequenceGeometries)
     {
         auto materialName = node["material"].as<std::string>();
-        auto material = materialMap.at(materialName).get();
+        auto material = materialMap.at(materialName);
 
         auto minimum = ParseVector3(node["minimum"]);
         auto maximum = ParseVector3(node["maximum"]);
