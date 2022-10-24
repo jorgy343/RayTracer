@@ -26,10 +26,7 @@ materials:
 lights:
   - point:
       color: [1]
-      position: [5, 20, 2]
-  - point:
-      color: [1]
-      position: [-5, -20, -2]
+      position: [-5, 20, 2]
 
 geometry:
   geometryCollection:

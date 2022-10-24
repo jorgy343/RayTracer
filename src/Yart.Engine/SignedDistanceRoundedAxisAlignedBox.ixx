@@ -33,7 +33,7 @@ namespace Yart
 
         virtual BoundingBox CalculateBoundingBox() const override
         {
-            return BoundingBox{Minimum, Maximum};
+            return BoundingBox{Minimum - Radius - Epsilon, Maximum + Radius + Epsilon};
         }
 
         virtual const Material* GetMaterial() const override
