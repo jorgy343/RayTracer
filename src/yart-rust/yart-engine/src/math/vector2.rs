@@ -187,7 +187,7 @@ impl_op_ex!(/|left: &Real, right: &Vector2| -> Vector2 {
     Vector2::new(left / right.x, left / right.y)
 });
 
-// Scalary assignment binary operators.
+// Scalar assignment binary operators.
 impl_op_ex!(+=|left: &mut Vector2, right: &Real| {
     left.x += right;
     left.y += right;
