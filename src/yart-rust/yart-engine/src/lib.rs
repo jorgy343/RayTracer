@@ -1,9 +1,16 @@
-use crate::math::vector3::*;
-
 pub mod common;
 pub mod math;
 
-pub fn test() {
-    let a = Vector3::new(1.0, 2.0, 3.0);
-    // let b = 0.5f64 + a;
+use common::*;
+use math::vector::*;
+use math::vector3::*;
+
+#[no_mangle]
+pub fn test_abc(x: Real, y: Real, z: Real) -> Real {
+    let a = Vector3::new(x, y, z);
+    let b = 0.5 + a;
+
+    let c = Vector3::abs(&b);
+
+    return c.length();
 }
