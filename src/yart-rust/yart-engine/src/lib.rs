@@ -1,5 +1,10 @@
 pub mod common;
+pub mod geometries;
+pub mod lights;
+pub mod materials;
 pub mod math;
+pub mod scene;
+pub mod scene_data;
 
 use common::*;
 use math::vector::*;
