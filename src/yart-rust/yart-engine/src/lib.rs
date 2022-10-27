@@ -3,8 +3,9 @@ pub mod geometries;
 pub mod lights;
 pub mod materials;
 pub mod math;
+pub mod miss_shaders;
 pub mod scene;
-pub mod scene_data;
+pub mod yaml;
 
 use common::*;
 use math::vector::*;
