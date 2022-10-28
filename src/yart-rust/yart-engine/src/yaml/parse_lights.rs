@@ -2,7 +2,7 @@ use super::parse_math::{parse_color3, parse_vector3};
 use crate::lights::{directional_light::DirectionalLight, light::Light, point_light::PointLight};
 use yaml_rust::Yaml;
 
-pub fn parse_lights<'a>(node: &Yaml) -> Vec<Box<dyn Light>> {
+pub fn parse_lights(node: &Yaml) -> Vec<Box<dyn Light>> {
     let mut lights: Vec<Box<dyn Light>> = vec![];
 
     if !node.is_badvalue() && node.is_array() {
@@ -21,14 +21,14 @@ pub fn parse_lights<'a>(node: &Yaml) -> Vec<Box<dyn Light>> {
     lights
 }
 
-fn parse_directional_light<'a>(node: &Yaml) -> Box<DirectionalLight> {
+fn parse_directional_light(node: &Yaml) -> Box<DirectionalLight> {
     let color = parse_color3(&node["color"]).unwrap();
     let direction = parse_vector3(&node["direction"]).unwrap();
 
     Box::new(DirectionalLight::new(&color, &direction))
 }
 
-fn parse_point_light<'a>(node: &Yaml) -> Box<PointLight> {
+fn parse_point_light(node: &Yaml) -> Box<PointLight> {
     let color = parse_color3(&node["color"]).unwrap();
     let position = parse_vector3(&node["position"]).unwrap();
 

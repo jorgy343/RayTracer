@@ -1,7 +1,7 @@
 use super::geometry::Geometry;
 use crate::{common::Real, materials::material::Material};
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct IntersectionResult<'a> {
     pub hit_geometry: &'a dyn Geometry<'a>,
     pub entrance_distance: Real,

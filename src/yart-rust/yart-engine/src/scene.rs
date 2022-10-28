@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::{
     common::Real,
     geometries::{intersectable_geometry::IntersectableGeometry, ray::Ray},
@@ -8,7 +10,7 @@ use crate::{
 };
 
 pub struct Scene<'a> {
-    pub materials: Vec<Box<dyn Material<'a>>>,
+    pub materials: HashMap<String, Box<dyn Material<'a>>>,
     pub geometries: Vec<Box<dyn IntersectableGeometry<'a>>>,
     pub lights: Vec<Box<dyn Light>>,
     pub miss_shader: Box<dyn MissShader>,
@@ -17,7 +19,7 @@ pub struct Scene<'a> {
 
 impl<'a> Scene<'a> {
     pub fn new(
-        materials: Vec<Box<dyn Material<'a>>>,
+        materials: HashMap<String, Box<dyn Material<'a>>>,
         geometries: Vec<Box<dyn IntersectableGeometry<'a>>>,
         lights: Vec<Box<dyn Light>>,
         miss_shader: Box<dyn MissShader>,

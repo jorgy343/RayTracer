@@ -15,15 +15,15 @@ pub struct PhongMaterial {
 
 impl PhongMaterial {
     pub fn new(
-        ambient_color: Color3,
-        diffuse_color: Color3,
-        specular_color: Color3,
+        ambient_color: &Color3,
+        diffuse_color: &Color3,
+        specular_color: &Color3,
         shininess: Real,
     ) -> Self {
         Self {
-            ambient_color,
-            diffuse_color,
-            specular_color,
+            ambient_color: ambient_color.clone(),
+            diffuse_color: diffuse_color.clone(),
+            specular_color: specular_color.clone(),
             shininess,
         }
     }
