@@ -7,16 +7,9 @@ pub mod miss_shaders;
 pub mod scene;
 pub mod yaml;
 
-use common::*;
-use math::vector::*;
-use math::vector3::*;
+use yaml::parse::load_scene;
 
 #[no_mangle]
-pub fn test_abc(x: Real, y: Real, z: Real) -> Real {
-    let a = Vector3::new(x, y, z);
-    let b = 0.5 + a;
-
-    let c = Vector3::abs(&b);
-
-    return c.length();
+pub fn create_scene() {
+    let scene = load_scene();
 }

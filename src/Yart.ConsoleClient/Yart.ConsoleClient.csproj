@@ -17,6 +17,9 @@
         <Content Include="..\x64\$(Configuration)\Yart.Engine.dll;..\x64\$(Configuration)\Yart.Engine.pdb">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <Content Include="..\yart-rust\yart-engine\target\$(Configuration)\yart_engine.dll;..\yart-rust\yart-engine\target\$(Configuration)\yart_engine.pdb">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

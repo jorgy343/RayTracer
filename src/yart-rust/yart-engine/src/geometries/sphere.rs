@@ -1,32 +1,44 @@
 use super::{
-    geometry::Geometry, intersectable_geometry::IntersectableGeometry,
-    intersection_result::IntersectionResult, ray::Ray,
+    has_material::HasMaterial, intersectable::Intersectable, intersection::Intersection,
+    normal_calculator::NormalCalculator, ray::Ray,
 };
 use crate::{
     common::Real,
-    materials::material::Material,
+    materials::material::MaterialIndex,
     math::{vector::Vector, vector3::Vector3},
 };
 
 #[derive(Debug)]
-pub struct Sphere<'a> {
+pub struct Sphere {
     position: Vector3,
     radius: Real,
-    material: &'a dyn Material<'a>,
+    material_index: MaterialIndex,
 }
 
-impl<'a> Geometry<'a> for Sphere<'a> {
-    fn get_material(&self) -> &'a dyn Material {
-        self.material
+impl Sphere {
+    pub fn new(position: Vector3, radius: Real, material_index: u16) -> Self {
+        Self {
+            position,
+            radius,
+            material_index,
+        }
     }
+}
 
+impl HasMaterial for Sphere {
+    fn material_index(&self) -> MaterialIndex {
+        self.material_index
+    }
+}
+
+impl NormalCalculator for Sphere {
     fn calculate_normal(&self, _ray: &Ray, hit_position: &Vector3) -> Vector3 {
         Vector3::normalize(&(hit_position - self.position))
     }
 }
 
-impl<'a> IntersectableGeometry<'a> for Sphere<'a> {
-    fn intersect(&'a self, ray: &Ray) -> Option<IntersectionResult> {
+impl Intersectable for Sphere {
+    fn intersect(&self, ray: &Ray) -> Option<Intersection> {
         let v = ray.position() - self.position;
 
         let a = ray.direction() ^ ray.direction();
@@ -50,12 +62,12 @@ impl<'a> IntersectableGeometry<'a> for Sphere<'a> {
 
         let entrance_distance = (negative_b + discriminant_sqrt) * reciprocal_a;
 
-        Some(IntersectionResult::new(
+        Some(Intersection::new(
             self,
             entrance_distance,
             exit_distance,
             0.0,
-            None,
+            0,
         ))
     }
 }

@@ -1,40 +1,59 @@
 use super::parse_math::parse_color3;
 use crate::{
     common::Real,
-    materials::{material::Material, phong_material::PhongMaterial},
+    materials::{
+        material::{Material, MaterialIndex},
+        phong_material::PhongMaterial,
+    },
+    math::color3::Color3,
 };
 use std::collections::HashMap;
 use yaml_rust::Yaml;
 
-pub fn parse_materials(node: &Yaml) -> HashMap<String, Box<dyn Material>> {
-    let mut material_map: HashMap<String, Box<dyn Material>> = HashMap::new();
+pub fn parse_materials<'g>(
+    node: &Yaml,
+) -> (Vec<Box<dyn Material<'g>>>, HashMap<String, MaterialIndex>) {
+    let mut materials = Vec::new();
+    let mut material_name_to_index_map = HashMap::new();
+
+    materials.push(create_default_material());
 
     if !node.is_badvalue() && node.is_array() {
         for child_node in node.as_vec().unwrap() {
             let (name, material) = parse_material(child_node).unwrap();
-            material_map.insert(name, material);
+
+            material_name_to_index_map.insert(name, materials.len() as MaterialIndex);
+            materials.push(material);
         }
     }
 
-    material_map
+    (materials, material_name_to_index_map)
 }
 
-fn parse_material(node: &Yaml) -> Option<(String, Box<dyn Material>)> {
-    for child_node in node.as_vec().unwrap() {
-        let phong_material_node = &child_node["phong"];
+fn create_default_material<'g>() -> Box<dyn Material<'g>> {
+    // TODO: Change this to a black emissive material when emissive materials are supported.
+    Box::new(PhongMaterial::new(
+        &Color3::from_value(0.0),
+        &Color3::from_value(0.0),
+        &Color3::from_value(0.0),
+        0.0,
+    ))
+}
 
-        let name = child_node["name"].as_str().unwrap().to_string();
+fn parse_material<'g>(node: &Yaml) -> Option<(String, Box<dyn Material<'g>>)> {
+    let phong_material_node = &node["phong"];
 
-        if !phong_material_node.is_badvalue() {
-            let material = parse_phong(child_node);
-            return Some((name, material));
-        }
+    if !phong_material_node.is_badvalue() {
+        let material = parse_phong(phong_material_node);
+        let name = phong_material_node["name"].as_str().unwrap().to_string();
+
+        return Some((name, material));
     }
 
     None
 }
 
-fn parse_phong(node: &Yaml) -> Box<dyn Material> {
+fn parse_phong<'g>(node: &Yaml) -> Box<dyn Material<'g>> {
     let ambient_color = parse_color3(&node["ambientColor"]).unwrap();
     let diffuse_color = parse_color3(&node["diffuseColor"]).unwrap();
     let specular_color = parse_color3(&node["specularColor"]).unwrap();

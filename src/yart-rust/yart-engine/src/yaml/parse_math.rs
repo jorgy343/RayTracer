@@ -41,7 +41,7 @@ pub fn parse_vector3(node: &Yaml) -> Option<Vector3> {
             vec[0].as_f64().unwrap() as Real,
             vec[0].as_f64().unwrap() as Real,
         )),
-        4 => Some(Vector3::new(
+        3 => Some(Vector3::new(
             vec[0].as_f64().unwrap() as Real,
             vec[1].as_f64().unwrap() as Real,
             vec[2].as_f64().unwrap() as Real,
@@ -62,7 +62,7 @@ pub fn parse_vector2(node: &Yaml) -> Option<Vector2> {
             vec[0].as_f64().unwrap() as Real,
             vec[0].as_f64().unwrap() as Real,
         )),
-        4 => Some(Vector2::new(
+        2 => Some(Vector2::new(
             vec[0].as_f64().unwrap() as Real,
             vec[1].as_f64().unwrap() as Real,
         )),
@@ -107,7 +107,7 @@ pub fn parse_color3(node: &Yaml) -> Option<Color3> {
             vec[0].as_f64().unwrap() as Real,
             vec[0].as_f64().unwrap() as Real,
         )),
-        4 => Some(Color3::new(
+        3 => Some(Color3::new(
             vec[0].as_f64().unwrap() as Real,
             vec[1].as_f64().unwrap() as Real,
             vec[2].as_f64().unwrap() as Real,

@@ -8,6 +8,9 @@ using System.Diagnostics;
 const int screenWidth = 1920;
 const int screenHeight = 1080;
 
+Native.create_scene();
+return;
+
 var stopwatch = new Stopwatch();
 
 using (var image = new Image<Rgba32>(screenWidth, screenHeight))

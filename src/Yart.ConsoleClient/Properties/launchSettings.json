@@ -2,7 +2,10 @@
   "profiles": {
     "Yart.ConsoleClient": {
       "commandName": "Project",
-      "nativeDebugging": true
+      "nativeDebugging": true,
+      "environmentVariables": {
+        "RUST_BACKTRACE": "1"
+      }
     }
   }
 }

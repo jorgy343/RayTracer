@@ -5,12 +5,14 @@ use crate::{
 };
 use std::fmt::Debug;
 
-pub trait Material<'a>: Debug {
+pub type MaterialIndex = u16;
+
+pub trait Material<'g>: Debug {
     fn calculate_rendering_equation(
         &self,
         scene: &Scene,
         current_depth: u16,
-        hit_geometry: &'a dyn Geometry<'a>,
+        hit_geometry: &'g dyn Geometry,
         hit_position: &Vector3,
         hit_normal: &Vector3,
         incoming_direction: &Vector3,

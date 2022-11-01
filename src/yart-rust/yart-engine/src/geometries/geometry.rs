@@ -1,8 +1,7 @@
-use super::{intersectable_geometry::IntersectableGeometry, ray::Ray};
-use crate::{materials::material::Material, math::vector3::Vector3};
-use std::fmt::Debug;
+use super::{
+    has_material::HasMaterial, intersectable::Intersectable, normal_calculator::NormalCalculator,
+};
 
-pub trait Geometry<'a>: IntersectableGeometry<'a> + Debug {
-    fn get_material(&self) -> &'a dyn Material;
-    fn calculate_normal(&self, ray: &Ray, hit_position: &Vector3) -> Vector3;
-}
+pub trait Geometry: Intersectable + HasMaterial + NormalCalculator {}
+
+impl<T> Geometry for T where T: Intersectable + HasMaterial + NormalCalculator {}

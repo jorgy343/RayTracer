@@ -4,6 +4,9 @@ namespace Yart.ConsoleClient;
 
 public static unsafe class Native
 {
+    [DllImport("yart_engine", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void create_scene();
+
     [DllImport("Yart.Engine", CallingConvention = CallingConvention.Cdecl)]
     public static extern void* CreateScene();
 

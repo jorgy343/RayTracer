@@ -1,25 +1,24 @@
 use super::{
-    parse_lights::parse_lights, parse_materials::parse_materials,
-    parse_miss_shaders::parse_miss_shader,
+    parse_geometries::parse_geometries, parse_lights::parse_lights,
+    parse_materials::parse_materials, parse_miss_shaders::parse_miss_shader,
 };
-use crate::{geometries::intersectable_geometry::IntersectableGeometry, scene::Scene};
+use crate::scene::Scene;
 use std::fs::{self};
 use yaml_rust::{Yaml, YamlLoader};
 
-pub fn load_scene<'a>() -> Scene<'a> {
-    let yaml_data = fs::read_to_string("scene1.yaml").unwrap();
+pub fn load_scene<'g>() -> Scene<'g> {
+    let yaml_data = fs::read_to_string("../../../../scenes/rust-scene.yaml").unwrap();
     let doc = YamlLoader::load_from_str(yaml_data.as_str()).unwrap();
 
-    let scene: Scene<'a> = parse_scene(&doc[0]);
+    let scene = parse_scene(&doc[0]);
     scene
 }
 
-fn parse_scene<'a>(node: &Yaml) -> Scene<'a> {
+fn parse_scene<'g>(node: &Yaml) -> Scene<'g> {
     let miss_shader = parse_miss_shader(&node["missShader"]).unwrap();
     let lights = parse_lights(&node["lights"]);
-    let materials = parse_materials(&node["materials"]);
+    let (materials, material_name_to_index_map) = parse_materials(&node["materials"]);
+    let geometries = parse_geometries(&node["geometry"], &material_name_to_index_map);
 
-    let geometries: Vec<Box<dyn IntersectableGeometry<'a>>> = vec![];
-
-    Scene::<'a>::new(materials, geometries, lights, miss_shader)
+    Scene::new(materials, geometries, lights, miss_shader)
 }

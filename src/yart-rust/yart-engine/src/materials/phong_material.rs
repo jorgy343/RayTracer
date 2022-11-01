@@ -1,7 +1,9 @@
 use super::material::Material;
 use crate::{
     common::Real,
+    geometries::geometry::Geometry,
     math::{color3::Color3, vector3::Vector3},
+    scene::Scene,
 };
 
 #[derive(Debug)]
@@ -29,12 +31,12 @@ impl PhongMaterial {
     }
 }
 
-impl<'a> Material<'a> for PhongMaterial {
+impl<'g> Material<'g> for PhongMaterial {
     fn calculate_rendering_equation(
         &self,
-        scene: &crate::scene::Scene,
+        scene: &Scene,
         _current_depth: u16,
-        _hit_geometry: &'a dyn crate::geometries::geometry::Geometry<'a>,
+        _hit_geometry: &'g dyn Geometry,
         hit_position: &Vector3,
         hit_normal: &Vector3,
         incoming_direction: &Vector3,

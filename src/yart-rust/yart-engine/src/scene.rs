@@ -1,29 +1,27 @@
-use std::collections::HashMap;
-
 use crate::{
     common::Real,
-    geometries::{intersectable_geometry::IntersectableGeometry, ray::Ray},
+    geometries::{intersectable::Intersectable, ray::Ray},
     lights::light::Light,
     materials::material::Material,
     math::color3::Color3,
     miss_shaders::miss_shader::MissShader,
 };
 
-pub struct Scene<'a> {
-    pub materials: HashMap<String, Box<dyn Material<'a>>>,
-    pub geometries: Vec<Box<dyn IntersectableGeometry<'a>>>,
+pub struct Scene<'g> {
+    pub materials: Vec<Box<dyn Material<'g>>>,
+    pub geometries: Vec<Box<dyn Intersectable>>,
     pub lights: Vec<Box<dyn Light>>,
     pub miss_shader: Box<dyn MissShader>,
-    //pub root_geometry: &'a dyn IntersectableGeometry<'a>,
+    //pub root_geometry: &'a dyn Intersectable<'a>,
 }
 
-impl<'a> Scene<'a> {
+impl<'g> Scene<'g> {
     pub fn new(
-        materials: HashMap<String, Box<dyn Material<'a>>>,
-        geometries: Vec<Box<dyn IntersectableGeometry<'a>>>,
+        materials: Vec<Box<dyn Material<'g>>>,
+        geometries: Vec<Box<dyn Intersectable>>,
         lights: Vec<Box<dyn Light>>,
         miss_shader: Box<dyn MissShader>,
-        //root_geometry: &'a dyn IntersectableGeometry<'a>,
+        //root_geometry: &'a dyn Intersectable<'a>,
     ) -> Self {
         Self {
             materials,
