@@ -1,5 +1,5 @@
 use super::{
-    parse_geometries::parse_geometries, parse_lights::parse_lights,
+    parse_cameras::parse_camera, parse_geometries::parse_intersectable, parse_lights::parse_lights,
     parse_materials::parse_materials, parse_miss_shaders::parse_miss_shader,
 };
 use crate::scene::Scene;
@@ -15,10 +15,12 @@ pub fn load_scene<'g>() -> Scene<'g> {
 }
 
 fn parse_scene<'g>(node: &Yaml) -> Scene<'g> {
+    let camera = parse_camera(&node["camera"]).unwrap();
     let miss_shader = parse_miss_shader(&node["missShader"]).unwrap();
     let lights = parse_lights(&node["lights"]);
     let (materials, material_name_to_index_map) = parse_materials(&node["materials"]);
-    let geometries = parse_geometries(&node["geometry"], &material_name_to_index_map);
+    let root_geometry =
+        parse_intersectable(&node["geometry"], &material_name_to_index_map).unwrap();
 
-    Scene::new(materials, geometries, lights, miss_shader)
+    Scene::new(camera, materials, lights, miss_shader, root_geometry)
 }

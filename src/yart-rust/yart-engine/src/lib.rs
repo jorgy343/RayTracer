@@ -1,3 +1,6 @@
+#![feature(trait_upcasting)]
+
+pub mod cameras;
 pub mod common;
 pub mod geometries;
 pub mod lights;

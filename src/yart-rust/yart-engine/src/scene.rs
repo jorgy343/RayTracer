@@ -1,4 +1,5 @@
 use crate::{
+    cameras::camera::Camera,
     common::Real,
     geometries::{intersectable::Intersectable, ray::Ray},
     lights::light::Light,
@@ -8,27 +9,27 @@ use crate::{
 };
 
 pub struct Scene<'g> {
+    pub camera: Box<dyn Camera>,
     pub materials: Vec<Box<dyn Material<'g>>>,
-    pub geometries: Vec<Box<dyn Intersectable>>,
     pub lights: Vec<Box<dyn Light>>,
     pub miss_shader: Box<dyn MissShader>,
-    //pub root_geometry: &'a dyn Intersectable<'a>,
+    pub root_geometry: Box<dyn Intersectable>,
 }
 
 impl<'g> Scene<'g> {
     pub fn new(
+        camera: Box<dyn Camera>,
         materials: Vec<Box<dyn Material<'g>>>,
-        geometries: Vec<Box<dyn Intersectable>>,
         lights: Vec<Box<dyn Light>>,
         miss_shader: Box<dyn MissShader>,
-        //root_geometry: &'a dyn Intersectable<'a>,
+        root_geometry: Box<dyn Intersectable>,
     ) -> Self {
         Self {
+            camera,
             materials,
-            geometries,
             lights,
             miss_shader,
-            //root_geometry,
+            root_geometry,
         }
     }
 

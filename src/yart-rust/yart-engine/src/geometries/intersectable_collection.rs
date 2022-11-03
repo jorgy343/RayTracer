@@ -1,21 +1,21 @@
 use super::{intersectable::Intersectable, intersection::Intersection};
 
 #[derive(Debug)]
-pub struct GeometryCollection<'g> {
-    children: Vec<&'g dyn Intersectable>,
+pub struct IntersectableCollection {
+    children: Vec<Box<dyn Intersectable>>,
 }
 
-impl<'g> GeometryCollection<'g> {
-    pub fn new(children: Vec<&'g dyn Intersectable>) -> Self {
+impl IntersectableCollection {
+    pub fn new(children: Vec<Box<dyn Intersectable>>) -> Self {
         Self { children }
     }
 }
 
-impl<'g> Intersectable for GeometryCollection<'g> {
+impl Intersectable for IntersectableCollection {
     fn intersect(&self, ray: &super::ray::Ray) -> Option<Intersection> {
         let mut closest_intersection: Option<Intersection> = None;
 
-        for &geometry in &self.children {
+        for geometry in &self.children {
             let intersection = geometry.intersect(ray);
 
             closest_intersection = match closest_intersection {
