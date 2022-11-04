@@ -17,8 +17,8 @@ pub fn load_scene<'g>() -> Scene<'g> {
 fn parse_scene<'g>(node: &Yaml) -> Scene<'g> {
     let camera = parse_camera(&node["camera"]).unwrap();
     let miss_shader = parse_miss_shader(&node["missShader"]).unwrap();
-    let lights = parse_lights(&node["lights"]);
-    let (materials, material_name_to_index_map) = parse_materials(&node["materials"]);
+    let lights = parse_lights(&node["lights"]).unwrap();
+    let (materials, material_name_to_index_map) = parse_materials(&node["materials"]).unwrap();
     let root_geometry =
         parse_intersectable(&node["geometry"], &material_name_to_index_map).unwrap();
 
