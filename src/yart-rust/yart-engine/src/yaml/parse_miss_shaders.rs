@@ -6,7 +6,7 @@ pub fn parse_miss_shader(node: &Yaml) -> Option<Box<dyn MissShader>> {
     let constant_node = &node["constant"];
 
     if !constant_node.is_badvalue() {
-        parse_constant_miss_shader(&constant_node)
+        parse_constant_miss_shader(constant_node)
     } else {
         None
     }

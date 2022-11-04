@@ -64,9 +64,9 @@ impl PerspectiveCamera {
             du,
             dv,
             upper_left_corner,
-            position: position.clone(),
-            look_at: look_at.clone(),
-            up: up.clone(),
+            position: *position,
+            look_at: *look_at,
+            up: *up,
             screen_size,
             field_of_view,
         }

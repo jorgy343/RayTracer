@@ -10,8 +10,8 @@ pub struct Ray {
 impl Ray {
     pub fn new(position: &Vector3, direction: &Vector3) -> Self {
         Self {
-            position: position.clone(),
-            direction: direction.clone(),
+            position: *position,
+            direction: *direction,
             inverse_direction: Vector3::reciprical(direction),
         }
     }
@@ -19,9 +19,9 @@ impl Ray {
     // TODO: Better nane?
     pub fn new2(position: &Vector3, direction: &Vector3, inverse_direction: &Vector3) -> Self {
         Self {
-            position: position.clone(),
-            direction: direction.clone(),
-            inverse_direction: inverse_direction.clone(),
+            position: *position,
+            direction: *direction,
+            inverse_direction: *inverse_direction,
         }
     }
 

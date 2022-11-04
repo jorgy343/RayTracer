@@ -16,8 +16,8 @@ pub struct DirectionalLight {
 impl DirectionalLight {
     pub fn new(color: &Color3, direction: &Vector3) -> DirectionalLight {
         Self {
-            color: color.clone(),
-            direction: direction.clone(),
+            color: *color,
+            direction: *direction,
             reversed_direction: -direction,
         }
     }

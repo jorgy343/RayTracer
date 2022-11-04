@@ -15,13 +15,13 @@ enum GeometryEnum {
     Geometry(Box<dyn Geometry>),
 }
 
-fn create_intersectable_function_map<'a>() -> Vec<(
+fn create_intersectable_function_map() -> Vec<(
     &'static str,
-    fn(&Yaml, &'a HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
+    fn(&Yaml, &HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
 )> {
     let mut map: Vec<(
         &'static str,
-        fn(&Yaml, &'a HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
+        fn(&Yaml, &HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
     )> = Vec::new();
 
     map.push(("sphere", parse_sphere));
@@ -30,13 +30,13 @@ fn create_intersectable_function_map<'a>() -> Vec<(
     map
 }
 
-fn create_geometry_function_map<'a>() -> Vec<(
+fn create_geometry_function_map() -> Vec<(
     &'static str,
-    fn(&Yaml, &'a HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
+    fn(&Yaml, &HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
 )> {
     let mut map: Vec<(
         &'static str,
-        fn(&Yaml, &'a HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
+        fn(&Yaml, &HashMap<String, MaterialIndex>) -> Option<GeometryEnum>,
     )> = Vec::new();
 
     map.push(("sphere", parse_sphere));
@@ -44,9 +44,9 @@ fn create_geometry_function_map<'a>() -> Vec<(
     map
 }
 
-pub fn parse_intersectable<'a>(
+pub fn parse_intersectable(
     node: &Yaml,
-    material_name_to_index_map: &'a HashMap<String, MaterialIndex>,
+    material_name_to_index_map: &HashMap<String, MaterialIndex>,
 ) -> Option<Box<dyn Intersectable>> {
     let mut found_geometry_enum: Option<GeometryEnum> = None;
 
@@ -67,9 +67,9 @@ pub fn parse_intersectable<'a>(
     }
 }
 
-fn parse_intersectables<'a>(
+fn parse_intersectables(
     node: &Yaml,
-    material_name_to_index_map: &'a HashMap<String, MaterialIndex>,
+    material_name_to_index_map: &HashMap<String, MaterialIndex>,
 ) -> Option<Vec<Box<dyn Intersectable>>> {
     let mut intersectables = Vec::new();
 
@@ -82,9 +82,9 @@ fn parse_intersectables<'a>(
     Some(intersectables)
 }
 
-fn parse_geometry<'a>(
+fn parse_geometry(
     node: &Yaml,
-    material_name_to_index_map: &'a HashMap<String, MaterialIndex>,
+    material_name_to_index_map: &HashMap<String, MaterialIndex>,
 ) -> Option<Box<dyn Geometry>> {
     let mut found_geometry_enum: Option<GeometryEnum> = None;
 
@@ -105,9 +105,9 @@ fn parse_geometry<'a>(
     }
 }
 
-fn parse_sphere<'a>(
+fn parse_sphere(
     node: &Yaml,
-    material_name_to_index_map: &'a HashMap<String, MaterialIndex>,
+    material_name_to_index_map: &HashMap<String, MaterialIndex>,
 ) -> Option<GeometryEnum> {
     let material_name = node["material"].as_str()?;
 
@@ -120,15 +120,15 @@ fn parse_sphere<'a>(
     };
 
     Some(GeometryEnum::Geometry(Box::new(Sphere::new(
-        position,
+        &position,
         radius,
         material_index,
     ))))
 }
 
-fn parse_intersectable_collection<'a>(
+fn parse_intersectable_collection(
     node: &Yaml,
-    material_name_to_index_map: &'a HashMap<String, MaterialIndex>,
+    material_name_to_index_map: &HashMap<String, MaterialIndex>,
 ) -> Option<GeometryEnum> {
     let children = parse_intersectables(&node["children"], material_name_to_index_map)?;
 

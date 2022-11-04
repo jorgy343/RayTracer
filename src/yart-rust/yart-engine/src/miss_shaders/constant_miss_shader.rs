@@ -9,9 +9,7 @@ pub struct ConstantMissShader {
 
 impl ConstantMissShader {
     pub fn new(color: &Color3) -> Self {
-        Self {
-            color: color.clone(),
-        }
+        Self { color: *color }
     }
 }
 

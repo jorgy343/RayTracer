@@ -23,9 +23,9 @@ impl PhongMaterial {
         shininess: Real,
     ) -> Self {
         Self {
-            ambient_color: ambient_color.clone(),
-            diffuse_color: diffuse_color.clone(),
-            specular_color: specular_color.clone(),
+            ambient_color: *ambient_color,
+            diffuse_color: *diffuse_color,
+            specular_color: *specular_color,
             shininess,
         }
     }

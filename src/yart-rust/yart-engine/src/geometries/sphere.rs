@@ -16,9 +16,9 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(position: Vector3, radius: Real, material_index: u16) -> Self {
+    pub fn new(position: &Vector3, radius: Real, material_index: u16) -> Self {
         Self {
-            position,
+            position: *position,
             radius,
             material_index,
         }

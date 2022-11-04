@@ -1,4 +1,4 @@
-use super::{vector::Vector, vector2::Vector2};
+use super::{color3::Color3, vector::Vector, vector2::Vector2};
 use crate::common::*;
 use impl_ops::*;
 use std::ops::{self, Index, IndexMut};
@@ -23,6 +23,10 @@ impl Vector3 {
         Self::new(vector2.x, vector2.y, z)
     }
 
+    pub fn from_color3(color3: &Color3) -> Self {
+        Self::new(color3.r, color3.g, color3.b)
+    }
+
     pub fn build_perpendicular_vector(value: &Self) -> Self {
         // From: Efficient Construction of Perpendicular Vectors Without Branching.
         let a = Self::abs(value);
@@ -35,7 +39,7 @@ impl Vector3 {
         let ym = if a.y - a.z < 0.0 { 1u32 ^ xm } else { 0u32 };
         let zm = 1u32 ^ (xm | ym);
 
-        return value % Self::new(xm as Real, ym as Real, zm as Real);
+        value % Self::new(xm as Real, ym as Real, zm as Real)
     }
 
     pub fn cross(left: &Self, right: &Self) -> Self {

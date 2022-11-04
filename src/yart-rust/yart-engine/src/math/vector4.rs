@@ -1,4 +1,4 @@
-use super::{vector::Vector, vector2::Vector2, vector3::Vector3};
+use super::{color4::Color4, vector::Vector, vector2::Vector2, vector3::Vector3};
 use crate::common::*;
 use impl_ops::*;
 use std::ops::{self, Index, IndexMut};
@@ -26,6 +26,10 @@ impl Vector4 {
 
     pub fn from_vector3(vector3: &Vector3, w: Real) -> Self {
         Self::new(vector3.x, vector3.y, vector3.z, w)
+    }
+
+    pub fn from_color4(color4: &Color4) -> Self {
+        Self::new(color4.r, color4.g, color4.b, color4.a)
     }
 }
 

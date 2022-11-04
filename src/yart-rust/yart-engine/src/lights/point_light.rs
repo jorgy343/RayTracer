@@ -15,8 +15,8 @@ pub struct PointLight {
 impl PointLight {
     pub fn new(color: &Color3, position: &Vector3) -> PointLight {
         Self {
-            color: color.clone(),
-            position: position.clone(),
+            color: *color,
+            position: *position,
         }
     }
 }
@@ -46,7 +46,7 @@ impl Light for PointLight {
 
         let normalized_actual_direction_to_light = Vector3::normalize(&actual_direction_to_light);
 
-        let ray = Ray::new(&hit_position, &normalized_actual_direction_to_light);
+        let ray = Ray::new(hit_position, &normalized_actual_direction_to_light);
         let distance = scene.cast_ray_distance(&ray);
 
         distance >= distance_to_light - EPSILON

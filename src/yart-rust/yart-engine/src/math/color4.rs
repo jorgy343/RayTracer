@@ -20,7 +20,7 @@ impl Color4 {
         Self::new(value, value, value, value)
     }
 
-    pub fn from_vector4(vector4: Vector4) -> Self {
+    pub fn from_vector4(vector4: &Vector4) -> Self {
         Self::new(vector4.x, vector4.y, vector4.z, vector4.w)
     }
 }
