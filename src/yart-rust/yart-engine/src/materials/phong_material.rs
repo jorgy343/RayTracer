@@ -31,12 +31,12 @@ impl PhongMaterial {
     }
 }
 
-impl<'g> Material<'g> for PhongMaterial {
+impl Material for PhongMaterial {
     fn calculate_rendering_equation(
         &self,
         scene: &Scene,
         _current_depth: u16,
-        _hit_geometry: &'g dyn Geometry,
+        _hit_geometry: &dyn Geometry,
         hit_position: &Vector3,
         hit_normal: &Vector3,
         incoming_direction: &Vector3,

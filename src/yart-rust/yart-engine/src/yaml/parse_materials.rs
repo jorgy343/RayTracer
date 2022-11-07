@@ -12,7 +12,7 @@ use yaml_rust::Yaml;
 
 pub fn parse_materials<'g>(
     node: &Yaml,
-) -> Option<(Vec<Box<dyn Material<'g>>>, HashMap<String, MaterialIndex>)> {
+) -> Option<(Vec<Box<dyn Material>>, HashMap<String, MaterialIndex>)> {
     let mut materials = Vec::new();
     let mut material_name_to_index_map = HashMap::new();
 
@@ -30,7 +30,7 @@ pub fn parse_materials<'g>(
     Some((materials, material_name_to_index_map))
 }
 
-fn create_default_material<'g>() -> Box<dyn Material<'g>> {
+fn create_default_material<'g>() -> Box<dyn Material> {
     // TODO: Change this to a black emissive material when emissive materials are supported.
     Box::new(PhongMaterial::new(
         &Color3::from_value(0.0),
@@ -40,7 +40,7 @@ fn create_default_material<'g>() -> Box<dyn Material<'g>> {
     ))
 }
 
-fn parse_material<'g>(node: &Yaml) -> Option<(String, Box<dyn Material<'g>>)> {
+fn parse_material<'g>(node: &Yaml) -> Option<(String, Box<dyn Material>)> {
     let phong_material_node = &node["phong"];
 
     if !phong_material_node.is_badvalue() {
@@ -53,7 +53,7 @@ fn parse_material<'g>(node: &Yaml) -> Option<(String, Box<dyn Material<'g>>)> {
     None
 }
 
-fn parse_phong<'g>(node: &Yaml) -> Option<Box<dyn Material<'g>>> {
+fn parse_phong<'g>(node: &Yaml) -> Option<Box<dyn Material>> {
     let ambient_color = parse_color3(&node["ambientColor"])?;
     let diffuse_color = parse_color3(&node["diffuseColor"])?;
     let specular_color = parse_color3(&node["specularColor"])?;

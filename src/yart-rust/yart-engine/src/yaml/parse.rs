@@ -6,7 +6,7 @@ use crate::scene::Scene;
 use std::fs::{self};
 use yaml_rust::{Yaml, YamlLoader};
 
-pub fn load_scene<'g>() -> Scene<'g> {
+pub fn load_scene<'g>() -> Scene {
     let yaml_data = fs::read_to_string("../../../../scenes/rust-scene.yaml").unwrap();
     let doc = YamlLoader::load_from_str(yaml_data.as_str()).unwrap();
 
@@ -14,7 +14,7 @@ pub fn load_scene<'g>() -> Scene<'g> {
     scene
 }
 
-fn parse_scene<'g>(node: &Yaml) -> Scene<'g> {
+fn parse_scene<'g>(node: &Yaml) -> Scene {
     let camera = parse_camera(&node["camera"]).unwrap();
     let miss_shader = parse_miss_shader(&node["missShader"]).unwrap();
     let lights = parse_lights(&node["lights"]).unwrap();

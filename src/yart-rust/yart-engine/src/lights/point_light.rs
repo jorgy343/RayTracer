@@ -49,6 +49,9 @@ impl Light for PointLight {
         let ray = Ray::new(hit_position, &normalized_actual_direction_to_light);
         let distance = scene.cast_ray_distance(&ray);
 
-        distance >= distance_to_light - EPSILON
+        match distance {
+            Some(distance_some) => distance_some >= distance_to_light - EPSILON,
+            None => false,
+        }
     }
 }

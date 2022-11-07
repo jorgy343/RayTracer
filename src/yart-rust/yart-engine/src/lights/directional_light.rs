@@ -1,6 +1,5 @@
 use super::light::Light;
 use crate::{
-    common::Real,
     geometries::ray::Ray,
     math::{color3::Color3, vector3::Vector3},
     scene::Scene,
@@ -54,6 +53,9 @@ impl Light for DirectionalLight {
         let ray = Ray::new(hit_position, &self.reversed_direction);
         let distance = scene.cast_ray_distance(&ray);
 
-        distance != Real::INFINITY
+        match distance {
+            Some(_) => true,
+            None => false,
+        }
     }
 }

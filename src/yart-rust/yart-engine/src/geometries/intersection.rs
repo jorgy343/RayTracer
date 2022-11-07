@@ -1,5 +1,5 @@
 use super::geometry::Geometry;
-use crate::common::Real;
+use crate::{common::Real, materials::material::MaterialIndex};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Intersection<'g> {
@@ -7,7 +7,7 @@ pub struct Intersection<'g> {
     pub entrance_distance: Real,
     pub exit_distance: Real,
     pub mix_amount: Real,
-    pub material_index_override: u16,
+    pub material_index_override: MaterialIndex,
 }
 
 impl<'g> Intersection<'g> {
@@ -16,7 +16,7 @@ impl<'g> Intersection<'g> {
         entrance_distance: Real,
         exit_distance: Real,
         mix_amount: Real,
-        material_index_override: u16,
+        material_index_override: MaterialIndex,
     ) -> Intersection<'g> {
         Self {
             hit_geometry,
