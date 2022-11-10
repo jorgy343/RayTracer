@@ -3,6 +3,7 @@ use crate::{
     common::EPSILON,
     geometries::ray::Ray,
     math::{color3::Color3, vector::Vector, vector3::Vector3},
+    normalize3,
     scene::Scene,
 };
 
@@ -31,7 +32,7 @@ impl Light for PointLight {
         hit_position: &Vector3,
         _hit_normal: &Vector3,
     ) -> Vector3 {
-        Vector3::normalize(&(self.position - hit_position))
+        normalize3!(self.position - hit_position)
     }
 
     fn is_in_shadow(
@@ -44,7 +45,7 @@ impl Light for PointLight {
         let actual_direction_to_light = self.position - hit_position;
         let distance_to_light = actual_direction_to_light.length();
 
-        let normalized_actual_direction_to_light = Vector3::normalize(&actual_direction_to_light);
+        let normalized_actual_direction_to_light = normalize3!(actual_direction_to_light);
 
         let ray = Ray::new(hit_position, &normalized_actual_direction_to_light);
         let distance = scene.cast_ray_distance(&ray);

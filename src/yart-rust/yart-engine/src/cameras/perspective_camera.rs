@@ -3,6 +3,7 @@ use crate::{
     common::Real,
     geometries::ray::Ray,
     math::{vector::Vector, vector3::Vector3},
+    normalize3,
 };
 
 pub struct PerspectiveCamera {
@@ -34,10 +35,10 @@ impl PerspectiveCamera {
         screen_size: (u32, u32),
         field_of_view: Real,
     ) -> PerspectiveCamera {
-        let forward = Vector3::normalize(&(position - look_at));
+        let forward = normalize3!(position - look_at);
 
-        let u = Vector3::normalize(&(up % forward));
-        let v = Vector3::normalize(&(forward % u));
+        let u = normalize3!(up % forward);
+        let v = normalize3!(forward % u);
 
         let aspect_ratio = (screen_size.0 as Real) / (screen_size.1 as Real);
         let half_width = Real::tan(field_of_view * 0.5);
@@ -83,13 +84,13 @@ impl Camera for PerspectiveCamera {
         normalized_x += (subpixel.0 as Real) * self.subpixel_size_x;
         normalized_y += (subpixel.1 as Real) * self.subpixel_size_y;
 
-        normalized_x += 1.0 * self.subpixel_size_x;
-        normalized_y += 1.0 * self.subpixel_size_y;
+        normalized_x += 0.0 * self.subpixel_size_x;
+        normalized_y += 0.0 * self.subpixel_size_y;
 
-        let ray_direction = Vector3::normalize(
-            &(self.upper_left_corner + (normalized_x * self.du)
+        let ray_direction = normalize3!(
+            self.upper_left_corner + (normalized_x * self.du)
                 - (normalized_y * self.dv)
-                - self.position),
+                - self.position
         );
 
         Ray::new(&self.position, &ray_direction)

@@ -25,7 +25,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn render(scene: &Scene) -> Vec<Rgb<u8>> {
     let mut pixels: Vec<Rgb<u8>> = Vec::new();
-    pixels.reserve_exact(1920 * 1080);
 
     for y in 0..1080 {
         for x in 0..1920 {

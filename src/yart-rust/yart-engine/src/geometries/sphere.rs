@@ -6,6 +6,7 @@ use crate::{
     common::Real,
     materials::material::MaterialIndex,
     math::{vector::Vector, vector3::Vector3},
+    normalize3,
 };
 
 #[derive(Debug)]
@@ -33,7 +34,7 @@ impl HasMaterial for Sphere {
 
 impl NormalCalculator for Sphere {
     fn calculate_normal(&self, _ray: &Ray, hit_position: &Vector3) -> Vector3 {
-        Vector3::normalize(&(hit_position - self.position))
+        normalize3!(hit_position - self.position)
     }
 }
 
@@ -60,7 +61,7 @@ impl Intersectable for Sphere {
             return None;
         }
 
-        let entrance_distance = (negative_b + discriminant_sqrt) * reciprocal_a;
+        let entrance_distance = (negative_b - discriminant_sqrt) * reciprocal_a;
 
         Some(Intersection::new(
             self,
