@@ -2,7 +2,7 @@
 
 cd target\release
 
-& .\yart-engine.exe
+& .\yart.exe
 & .\test.png
 
 cd ..\..\
