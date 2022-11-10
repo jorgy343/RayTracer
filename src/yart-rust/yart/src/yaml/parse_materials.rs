@@ -10,6 +10,14 @@ use crate::{
 use std::collections::HashMap;
 use yaml_rust::Yaml;
 
+fn create_function_map() -> Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn Material>>)> {
+    let mut map: Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn Material>>)> = Vec::new();
+
+    map.push(("phong", parse_phong));
+
+    map
+}
+
 pub fn parse_materials<'g>(
     node: &Yaml,
 ) -> Option<(Vec<Box<dyn Material>>, HashMap<String, MaterialIndex>)> {
@@ -41,13 +49,15 @@ fn create_default_material<'g>() -> Box<dyn Material> {
 }
 
 fn parse_material<'g>(node: &Yaml) -> Option<(String, Box<dyn Material>)> {
-    let phong_material_node = &node["phong"];
+    for (name, function) in create_function_map() {
+        let child_node = &node[name];
 
-    if !phong_material_node.is_badvalue() {
-        let material = parse_phong(phong_material_node)?;
-        let name = phong_material_node["name"].as_str()?.to_string();
+        if !child_node.is_badvalue() {
+            let material = function(child_node)?;
+            let name = child_node["name"].as_str()?.to_string();
 
-        return Some((name, material));
+            return Some((name, material));
+        }
     }
 
     None

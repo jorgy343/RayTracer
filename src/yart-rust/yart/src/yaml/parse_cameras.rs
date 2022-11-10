@@ -1,7 +1,6 @@
+use super::parse_math::{parse_vector2u32, parse_vector3};
 use crate::cameras::{camera::Camera, perspective_camera::PerspectiveCamera};
 use yaml_rust::Yaml;
-
-use super::parse_math::{parse_vector2u32, parse_vector3};
 
 fn create_function_map() -> Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn Camera>>)> {
     let mut map: Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn Camera>>)> = Vec::new();

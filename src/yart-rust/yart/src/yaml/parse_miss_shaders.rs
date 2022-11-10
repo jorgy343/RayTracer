@@ -2,14 +2,24 @@ use super::parse_math::parse_color3;
 use crate::miss_shaders::{constant_miss_shader::ConstantMissShader, miss_shader::MissShader};
 use yaml_rust::Yaml;
 
-pub fn parse_miss_shader(node: &Yaml) -> Option<Box<dyn MissShader>> {
-    let constant_node = &node["constant"];
+fn create_function_map() -> Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn MissShader>>)> {
+    let mut map: Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn MissShader>>)> = Vec::new();
 
-    if !constant_node.is_badvalue() {
-        parse_constant_miss_shader(constant_node)
-    } else {
-        None
+    map.push(("constant", parse_constant_miss_shader));
+
+    map
+}
+
+pub fn parse_miss_shader(node: &Yaml) -> Option<Box<dyn MissShader>> {
+    for (name, function) in create_function_map() {
+        let child_node = &node[name];
+
+        if !child_node.is_badvalue() {
+            return function(child_node);
+        }
     }
+
+    None
 }
 
 fn parse_constant_miss_shader(node: &Yaml) -> Option<Box<dyn MissShader>> {

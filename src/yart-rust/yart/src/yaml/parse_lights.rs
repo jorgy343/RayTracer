@@ -2,6 +2,15 @@ use super::parse_math::{parse_color3, parse_vector3};
 use crate::lights::{directional_light::DirectionalLight, light::Light, point_light::PointLight};
 use yaml_rust::Yaml;
 
+fn create_function_map() -> Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn Light>>)> {
+    let mut map: Vec<(&'static str, fn(&Yaml) -> Option<Box<dyn Light>>)> = Vec::new();
+
+    map.push(("directional", parse_directional_light));
+    map.push(("point", parse_point_light));
+
+    map
+}
+
 pub fn parse_lights(node: &Yaml) -> Option<Vec<Box<dyn Light>>> {
     let mut lights = Vec::new();
 
@@ -15,13 +24,12 @@ pub fn parse_lights(node: &Yaml) -> Option<Vec<Box<dyn Light>>> {
 }
 
 fn parse_light(node: &Yaml) -> Option<Box<dyn Light>> {
-    let directional_light_node = &node["directional"];
-    let point_light_node = &node["point"];
+    for (name, function) in create_function_map() {
+        let child_node = &node[name];
 
-    if !directional_light_node.is_badvalue() {
-        return parse_directional_light(directional_light_node);
-    } else if !point_light_node.is_badvalue() {
-        return parse_point_light(point_light_node);
+        if !child_node.is_badvalue() {
+            return function(child_node);
+        }
     }
 
     None
