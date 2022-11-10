@@ -1,1 +1,1 @@
-cargo rustc -- --emit asm -C link-self-contained=yes -C soft-float=no -C target-cpu=znver2
+cargo rustc --bin yart -- --emit asm -C link-self-contained=yes -C soft-float=no -C target-cpu=znver2

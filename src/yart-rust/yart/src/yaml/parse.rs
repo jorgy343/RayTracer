@@ -3,11 +3,14 @@ use super::{
     parse_materials::parse_materials, parse_miss_shaders::parse_miss_shader,
 };
 use crate::scene::Scene;
-use std::fs::{self};
+use std::{
+    fs::{self},
+    path::Path,
+};
 use yaml_rust::{Yaml, YamlLoader};
 
-pub fn load_scene<'g>() -> Scene {
-    let yaml_data = fs::read_to_string("../../../../scenes/rust-scene.yaml").unwrap();
+pub fn load_scene<'g>(path: &Path) -> Scene {
+    let yaml_data = fs::read_to_string(path).unwrap();
     let doc = YamlLoader::load_from_str(yaml_data.as_str()).unwrap();
 
     let scene = parse_scene(&doc[0]);
