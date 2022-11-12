@@ -2,12 +2,7 @@ use super::{
     has_material::HasMaterial, intersectable::Intersectable, intersection::Intersection,
     normal_calculator::NormalCalculator, ray::Ray,
 };
-use crate::{
-    common::Real,
-    materials::material::MaterialIndex,
-    math::{vector::Vector, vector3::Vector3},
-    normalize3,
-};
+use crate::{common::Real, materials::material::MaterialIndex, math::vector3::Vector3, normalize};
 
 #[derive(Debug)]
 pub struct Sphere {
@@ -34,7 +29,7 @@ impl HasMaterial for Sphere {
 
 impl NormalCalculator for Sphere {
     fn calculate_normal(&self, _ray: &Ray, hit_position: &Vector3) -> Vector3 {
-        normalize3!(hit_position - self.position)
+        normalize!(hit_position - self.position)
     }
 }
 

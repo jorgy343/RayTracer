@@ -60,7 +60,6 @@ impl Vector3 {
     }
 
     pub fn refract(
-        &self,
         incoming_direction: &Self,
         normal: &Self,
         from_index: Real,
@@ -78,7 +77,6 @@ impl Vector3 {
     }
 
     pub fn schlick_approximation(
-        &self,
         incoming_direction: &Self,
         normal: &Self,
         from_index: Real,

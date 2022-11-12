@@ -1,10 +1,5 @@
 use super::camera::Camera;
-use crate::{
-    common::Real,
-    geometries::ray::Ray,
-    math::{vector::Vector, vector3::Vector3},
-    normalize3,
-};
+use crate::{common::Real, geometries::ray::Ray, math::vector3::Vector3, normalize};
 
 pub struct PerspectiveCamera {
     reciprical_width: Real,
@@ -35,10 +30,10 @@ impl PerspectiveCamera {
         screen_size: (u32, u32),
         field_of_view: Real,
     ) -> PerspectiveCamera {
-        let forward = normalize3!(position - look_at);
+        let forward = normalize!(position - look_at);
 
-        let u = normalize3!(up % forward);
-        let v = normalize3!(forward % u);
+        let u = normalize!(up % forward);
+        let v = normalize!(forward % u);
 
         let aspect_ratio = (screen_size.0 as Real) / (screen_size.1 as Real);
         let half_width = Real::tan(field_of_view * 0.5);
@@ -87,7 +82,7 @@ impl Camera for PerspectiveCamera {
         normalized_x += 0.0 * self.subpixel_size_x;
         normalized_y += 0.0 * self.subpixel_size_y;
 
-        let ray_direction = normalize3!(
+        let ray_direction = normalize!(
             self.upper_left_corner + (normalized_x * self.du)
                 - (normalized_y * self.dv)
                 - self.position

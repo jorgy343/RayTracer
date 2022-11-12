@@ -37,7 +37,7 @@ impl Scene {
         self.cast_ray_color_depth(ray, 1)
     }
 
-    fn cast_ray_color_depth(&self, ray: &Ray, depth: u16) -> Color3 {
+    pub fn cast_ray_color_depth(&self, ray: &Ray, depth: u16) -> Color3 {
         if depth > 7 {
             return Color3::default();
         }
@@ -83,7 +83,7 @@ impl Scene {
         self.cast_ray_distance_depth(ray, 1)
     }
 
-    fn cast_ray_distance_depth(&self, ray: &Ray, _depth: u16) -> Option<Real> {
+    pub fn cast_ray_distance_depth(&self, ray: &Ray, _depth: u16) -> Option<Real> {
         let intersection = self.root_geometry.intersect(ray)?;
         Some(Real::max(0.0, intersection.entrance_distance))
     }
