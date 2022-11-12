@@ -13,6 +13,7 @@ import :Vectors;
 import EmissiveMaterial;
 import GgxMaterial;
 import LambertianMaterial;
+import LambertianMaterial;
 import Material;
 import Math;
 import PhongMaterial;
@@ -23,56 +24,74 @@ using namespace YAML;
 
 namespace Yart::Yaml
 {
-    export using MaterialMap = std::unordered_map<std::string, const Material*>;
+    export using MaterialMap = std::unordered_map<std::string, std::shared_ptr<const Material>>;
 
-    std::unique_ptr<const EmissiveMaterial> ParseEmissiveMaterial(const Node& node)
+    void ParseEmissiveMaterial(const Node& node, MaterialMap& materialMap)
     {
+        auto name = node["name"].as<std::string>();
         auto emissiveColor = ParseColor3(node["emissiveColor"]);
-        return std::make_unique<const EmissiveMaterial>(emissiveColor);
+
+        auto material = std::make_shared<EmissiveMaterial>(emissiveColor);
+        materialMap[name] = material;
     }
 
-    std::unique_ptr<const LambertianMaterial<false>> ParseLambertianMaterial(const Node& node)
+    void ParseLambertianMaterial(const Node& node, MaterialMap& materialMap)
     {
+        auto name = node["name"].as<std::string>();
         auto diffuseColor = ParseColor3(node["diffuseColor"]);
-        return std::make_unique<const LambertianMaterial<false>>(diffuseColor);
+
+        auto material = std::make_shared<LambertianMaterial<false>>(diffuseColor);
+        materialMap[name] = material;
     }
 
-    std::unique_ptr<const GgxMaterial> ParseGgxMaterial(const Node& node)
+    void ParseGgxMaterial(const Node& node, MaterialMap& materialMap)
     {
+        auto name = node["name"].as<std::string>();
         auto diffuseColor = ParseColor3(node["diffuseColor"]);
         auto specularColor = ParseColor3(node["specularColor"]);
-        auto roughness = node["roughness"].as<real>();
+        float roughness = node["roughness"].as<float>();
 
-        return std::make_unique<const GgxMaterial>(diffuseColor, specularColor, roughness);
+        auto material = std::make_shared<GgxMaterial>(diffuseColor, specularColor, roughness);
+        materialMap[name] = material;
     }
 
-    std::unique_ptr<const ReflectiveMaterial> ParseReflectiveMaterial(const Node& node)
+    void ParseReflectiveMaterial(const Node& node, MaterialMap& materialMap)
     {
-        return std::make_unique<const ReflectiveMaterial>();
+        auto name = node["name"].as<std::string>();
+
+        auto material = std::make_shared<ReflectiveMaterial>();
+        materialMap[name] = material;
     }
 
-    std::unique_ptr<const RefractiveMaterial> ParseRefractiveMaterial(const Node& node)
+    void ParseRefractiveMaterial(const Node& node, MaterialMap& materialMap)
     {
-        auto refractionIndex = node["refractionIndex"].as<real>();
-        return std::make_unique<const RefractiveMaterial>(refractionIndex);
+        auto name = node["name"].as<std::string>();
+        auto refractionIndex = node["refractionIndex"].as<float>();
+
+        auto material = std::make_shared<RefractiveMaterial>(refractionIndex);
+        materialMap[name] = material;
     }
 
-    std::unique_ptr<const PhongMaterial> ParsePhongMaterial(const Node& node)
+    void ParsePhongMaterial(const Node& node, MaterialMap& materialMap)
     {
+        auto name = node["name"].as<std::string>();
+
         auto ambientColor = ParseColor3(node["ambientColor"]);
         auto diffuseColor = ParseColor3(node["diffuseColor"]);
         auto specularColor = ParseColor3(node["specularColor"]);
 
-        auto shininess = node["shininess"].as<real>();
+        auto shininess = node["shininess"].as<float>();
 
-        return std::make_unique<const PhongMaterial>(
+        auto material = std::make_shared<PhongMaterial>(
             ambientColor,
             diffuseColor,
             specularColor,
             shininess);
+
+        materialMap[name] = material;
     }
 
-    static std::vector<std::tuple<std::string, std::function<std::unique_ptr<const Material>(const Node&)>>> ParseMaterialFunctions
+    static std::vector<std::tuple<std::string, std::function<void(const Node&, MaterialMap&)>>> MaterialMapFunctions
     {
         {"emissive", &ParseEmissiveMaterial},
         {"lambertian", &ParseLambertianMaterial},
@@ -82,28 +101,22 @@ namespace Yart::Yaml
         {"phong", &ParsePhongMaterial},
     };
 
-    void ParseMaterialNode(const Node& node, MaterialMap& materialMap, std::vector<std::unique_ptr<const Material>>& materials)
+    void ParseMaterialNode(const Node& node, MaterialMap& materialMap)
     {
-        for (const auto& [nodeName, functionPointer] : ParseMaterialFunctions)
+        for (const auto& [nodeName, functionPointer] : MaterialMapFunctions)
         {
             auto childNode = node[nodeName];
             if (childNode)
             {
-                std::unique_ptr<const Material> material = functionPointer(childNode);
-                
-                auto name = node["name"].as<std::string>();
-                materialMap[name] = material.get();
-
-                materials.push_back(std::move(material));
-
+                functionPointer(childNode, materialMap);
                 return;
             }
         }
     }
 
-    export std::unique_ptr<MaterialMap> ParseMaterialsNode(const Node& node, std::vector<std::unique_ptr<const Material>>& materials)
+    export std::shared_ptr<MaterialMap> ParseMaterialsNode(const Node& node)
     {
-        auto materialMap = std::unique_ptr<MaterialMap>{new MaterialMap{}};
+        auto materialMap = std::shared_ptr<MaterialMap>{new MaterialMap{}};
 
         if (!node.IsSequence())
         {
@@ -112,7 +125,7 @@ namespace Yart::Yaml
 
         for (const Node& childNode : node)
         {
-            ParseMaterialNode(childNode, *materialMap, materials);
+            ParseMaterialNode(childNode, *materialMap);
         }
 
         return materialMap;
